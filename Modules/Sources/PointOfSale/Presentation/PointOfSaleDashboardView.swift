@@ -80,13 +80,13 @@ struct PointOfSaleDashboardView: View {
             case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
                     catalogSyncState: catalogSyncState,
-                    onExit: { dismiss() }
+                    onExit: { requestExit(confirmingFirst: false) }
                 )
                     .transition(.opacity)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
-                })
+                }, onExit: { requestExit(confirmingFirst: false) })
                 .frame(maxWidth: .infinity)
             case .error(let error):
                 PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
@@ -107,7 +107,7 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    dismiss()
+                    requestExit(confirmingFirst: false)
                 } : nil)
             case .content:
                 POSPushTransitionContainer(
@@ -127,10 +127,10 @@ struct PointOfSaleDashboardView: View {
         // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
         // report its own ideal height while POS is being presented, which must not drive this position.
         .overlay(alignment: .bottomLeading) {
-            POSFloatingControlView(onExitSelected: requestExitPermission,
+            POSFloatingControlView(onExitSelected: { requestExit(confirmingFirst: true) },
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   onSettingsSelected: requestSettingsPermission,
+                                   showSettings: $showSettings,
                                    onOrdersSelected: presentOrders)
             .offset(x: metrics.padding.medium, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, metrics.padding.medium)
@@ -428,7 +428,7 @@ struct PointOfSaleDashboardView: View {
             }
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                requestSettingsPermission()
+                showSettings = true
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
@@ -449,7 +449,7 @@ struct PointOfSaleDashboardView: View {
             }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
-                requestExitPermission()
+                requestExit(confirmingFirst: true)
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
@@ -731,26 +731,17 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Opens POS settings, gated on `.manageStoreSettings` via manager override.
-    func requestSettingsPermission() {
-        overrideHandler.gate(.manageStoreSettings, reason: Localization.settingsOverrideDescription) { _ in
-            showSettings = true
-        }
-    }
-
-    /// Presents the exit confirmation, gated on `.exitPOS` via manager override.
-    func requestExitPermission() {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { viaOverride in
-            guard viaOverride else {
+    /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
+    func requestExit(confirmingFirst: Bool) {
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
+            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
+            case .showConfirmation:
                 showExitPOSModal = true
-                return
-            }
-            // The override modal and the exit confirmation share the single POS modal manager, so
-            // present the confirmation only after the override modal has finished dismissing —
-            // presenting both together collides on the shared manager and drops the operator back into
-            // POS. Mirrors the cart-sheet → barcode-cover handoff in `phoneCartSheetView`.
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.exitOverrideHandoffDelay) {
-                showExitPOSModal = true
+            case .leave(let tracksConfirmation):
+                if tracksConfirmation {
+                    analytics.track(.pointOfSaleExitConfirmed)
+                }
+                dismiss()
             }
         }
     }
@@ -778,9 +769,6 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let floatingControlVerticalOffset: CGFloat = 0
-        // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
-        // before the exit confirmation presents on the shared modal manager.
-        static let exitOverrideHandoffDelay: TimeInterval = 0.3
         static let cartButtonAppearanceDuration: TimeInterval = 0.25
         static let supportTag = "origin:point-of-sale"
     }
@@ -810,12 +798,6 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
-        )
-        static let settingsOverrideDescription = NSLocalizedString(
-            "pointOfSaleDashboard.settings.overrideReason",
-            value: "Opening settings requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "view-settings permission tries to open Point of Sale settings."
         )
         static let exitOverrideDescription = NSLocalizedString(
             "pointOfSaleDashboard.exit.overrideReason",

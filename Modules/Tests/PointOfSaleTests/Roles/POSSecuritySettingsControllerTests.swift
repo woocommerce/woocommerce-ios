@@ -464,6 +464,25 @@ struct POSSecuritySettingsControllerTests {
         if let replacement { #expect(await replacement.value == .cancelled) }
     }
 
+    @Test func test_removal_when_pos_locks_and_admin_unlocks_before_approval_then_preserves_pins() async throws {
+        // Given
+        let (controller, session, store) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        let (handler, approval) = await removalRequest(for: controller)
+
+        // When
+        session.lock()
+        try await session.signIn(withPIN: "1234")
+        _ = await handler.submit(pin: "1234")
+
+        // Then
+        #expect(try store.configuredRoles() == [.admin])
+        #expect(session.isPINProtectionEnabled)
+        handler.cancel()
+        #expect(await approval.value == .cancelled)
+    }
+
     @Test func test_removal_when_caller_is_cancelled_before_entry_then_does_not_present_or_write() async {
         // Given
         let (controller, session, _) = makeSUT()

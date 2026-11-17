@@ -7,6 +7,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     private(set) var currentStaff: POSStaff?
     private(set) var isLocked: Bool
     private(set) var isPINProtectionEnabled: Bool
+    @ObservationIgnored private(set) var accessScope = POSPINSessionTokens.Token()
 
     @ObservationIgnored private let credentialProvider: POSPINCredentialProviding
     @ObservationIgnored private let siteID: Int64
@@ -37,6 +38,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
 
     func refreshPINProtection() throws(POSPINStoreError) {
         guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else {
+            accessScope = POSPINSessionTokens.Token()
             currentStaff = nil
             isPINProtectionEnabled = true
             isLocked = true
@@ -46,6 +48,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
         do {
             let isProtected = try !credentialProvider.credentials().isEmpty
             hasKnownProtection = isProtected
+            if isProtected != isPINProtectionEnabled {
+                accessScope = POSPINSessionTokens.Token()
+            }
             let isEnablingPINProtection = isProtected && !isPINProtectionEnabled
             if isEnablingPINProtection && !isLocked {
                 currentStaff = POSLocalRole.admin.staff
@@ -56,6 +61,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
             isPINProtectionEnabled = isProtected
             persistLockState(isLocked)
         } catch {
+            accessScope = POSPINSessionTokens.Token()
             isPINProtectionEnabled = true
             currentStaff = nil
             isLocked = true
@@ -81,6 +87,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
         let request = generation
         let staff = try await rateLimiter.authenticate(pin: pin, using: authenticator, token: request)
         guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        accessScope = POSPINSessionTokens.Token()
         currentStaff = staff
         isLocked = false
         persistLockState(false)
@@ -94,6 +101,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
 
     func lock() {
         guard isPINProtectionEnabled else { return }
+        accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         isLocked = true
         guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
@@ -102,6 +110,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func endSession() {
+        accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         _ = rateLimiter.sessionTokens.invalidate(ifCurrent: generation)
     }

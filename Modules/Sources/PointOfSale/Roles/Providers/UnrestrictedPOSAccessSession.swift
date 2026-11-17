@@ -5,6 +5,7 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff? { nil }
     var isLocked: Bool { false }
     var isPINProtectionEnabled: Bool { false }
+    let accessScope = POSPINSessionTokens.Token()
 
     func refreshPINProtection() throws(POSPINStoreError) {}
     func beginPINChange() -> POSPINChangeRegistration { POSPINChangeRegistration {} }

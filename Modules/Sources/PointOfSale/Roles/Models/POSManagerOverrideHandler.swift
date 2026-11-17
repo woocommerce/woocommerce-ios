@@ -64,16 +64,19 @@ final class POSManagerOverrideHandler {
         return result
     }
 
-    /// Runs immediately when the session grants the capability; otherwise waits for one approval.
-    /// `viaOverride` lets callers defer presentation until the approval modal has closed.
-    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ viaOverride: Bool) -> Void) {
+    /// Runs immediately when the session grants the capability; otherwise waits for one approval, which
+    /// authorizes only this call. `approved` tells callers that the approval prompt stood in for any
+    /// confirmation they would otherwise show.
+    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ approved: Bool) -> Void) {
         guard let session else { return }
         if session.allows(capability) {
             perform(false)
         } else {
+            let scope = session.accessScope
             // Publish before returning so an immediate cancel cannot miss a queued presentation.
             _ = startRequest(for: capability, reason: reason, onSuccess: {
-                guard self.session === session, !session.isLocked else { return }
+                // A lock or protection change since the request means it no longer belongs to this operator.
+                guard self.session === session, session.accessScope == scope, !session.isLocked else { return }
                 perform(true)
             })
         }

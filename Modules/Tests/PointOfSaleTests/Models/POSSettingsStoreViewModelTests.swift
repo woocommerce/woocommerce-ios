@@ -203,6 +203,55 @@ struct POSSettingsStoreViewModelTests {
         #expect(storeAddress == "456 Main Road")
     }
 
+    @Test func showsReceiptEditButton_when_operator_manages_store_settings_then_returns_true() {
+        // Given
+        let sut = makeReceiptEditSUT(receiptSettingsAdminURL: Constants.receiptSettingsAdminURL)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+
+        // When
+        let showsButton = sut.showsReceiptEditButton(for: session)
+
+        // Then
+        #expect(showsButton == true)
+    }
+
+    @Test func showsReceiptEditButton_when_operator_lacks_store_settings_then_returns_false() {
+        // Given
+        let sut = makeReceiptEditSUT(receiptSettingsAdminURL: Constants.receiptSettingsAdminURL)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+
+        // When
+        let showsButton = sut.showsReceiptEditButton(for: session)
+
+        // Then
+        #expect(showsButton == false)
+    }
+
+    @Test func showsReceiptEditButton_when_admin_URL_is_empty_then_returns_false() {
+        // Given
+        let sut = makeReceiptEditSUT(receiptSettingsAdminURL: "")
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+
+        // When
+        let showsButton = sut.showsReceiptEditButton(for: session)
+
+        // Then
+        #expect(showsButton == false)
+    }
+
+    private enum Constants {
+        static let receiptSettingsAdminURL = "https://example.com/wp-admin/admin.php?page=wc-settings"
+    }
+
+    private func makeReceiptEditSUT(receiptSettingsAdminURL: String) -> POSSettingsStoreViewModel {
+        POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                  settingsService: mockSettingsService,
+                                  pluginsService: mockPluginService,
+                                  defaultSiteName: "Test Store",
+                                  siteSettings: [],
+                                  receiptSettingsAdminURL: receiptSettingsAdminURL)
+    }
+
     private func makeSampleSiteSettingsWithSingleAddress() -> [Yosemite.SiteSetting] {
         return [
             SiteSetting(siteID: 123,

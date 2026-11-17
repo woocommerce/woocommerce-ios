@@ -87,6 +87,70 @@ struct DefaultPOSAccessSessionTests {
         try await sut.limiter.checkAllowed(token: sut.limiter.sessionTokens.current())
     }
 
+    @Test func test_accessScope_when_protection_reloads_unchanged_then_stays_until_lock_or_sign_in() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(makeStaff())))
+        try await sut.session.signIn(withPIN: "1234")
+        let signedInScope = sut.session.accessScope
+
+        // When
+        try sut.session.refreshPINProtection()
+        let reloadedScope = sut.session.accessScope
+        sut.session.lock()
+        let lockedScope = sut.session.accessScope
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(reloadedScope == signedInScope)
+        #expect(lockedScope != signedInScope)
+        #expect(sut.session.accessScope != lockedScope)
+    }
+
+    @Test func test_accessScope_when_protection_changes_on_reload_then_changes() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(makeStaff())))
+        try await sut.session.signIn(withPIN: "1234")
+        let signedInScope = sut.session.accessScope
+        sut.credentialProvider.credentialsResult = .success([])
+
+        // When
+        try sut.session.refreshPINProtection()
+
+        // Then
+        #expect(sut.session.isPINProtectionEnabled == false)
+        #expect(sut.session.accessScope != signedInScope)
+    }
+
+    @Test func test_accessScope_when_credentials_fail_to_load_on_reload_then_changes() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(makeStaff())))
+        try await sut.session.signIn(withPIN: "1234")
+        let signedInScope = sut.session.accessScope
+        sut.credentialProvider.credentialsResult = .failure(.storageFailure)
+
+        // When
+        #expect(throws: POSPINStoreError.storageFailure) {
+            try sut.session.refreshPINProtection()
+        }
+
+        // Then
+        #expect(sut.session.isLocked == true)
+        #expect(sut.session.accessScope != signedInScope)
+    }
+
+    @Test func test_accessScope_when_session_ends_then_changes() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(makeStaff())))
+        try await sut.session.signIn(withPIN: "1234")
+        let signedInScope = sut.session.accessScope
+
+        // When
+        sut.session.endSession()
+
+        // Then
+        #expect(sut.session.accessScope != signedInScope)
+    }
+
     @Test func test_lock_when_called_then_removes_currentStaff_and_denies_access() async throws {
         // Given
         let staff = makeStaff()
@@ -432,20 +496,22 @@ private extension DefaultPOSAccessSessionTests {
         let session: DefaultPOSAccessSession
         let limiter: POSLocalRateLimiter
         let scope: UserDefaultsTestScope
+        let credentialProvider: MockPOSPINCredentialProvider
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
                  credentials: Result<[POSPINCredential], POSPINStoreError>? = nil) -> SUT {
         let scope = UserDefaultsTestScope()
+        let credentialProvider = MockPOSPINCredentialProvider(credentialsResult: credentials ?? .success([makeAdminCredential()]))
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(
             siteID: 123,
             authenticator: authenticator,
             rateLimiter: limiter,
-            credentialProvider: MockPOSPINCredentialProvider(credentialsResult: credentials ?? .success([makeAdminCredential()])),
+            credentialProvider: credentialProvider,
             userDefaults: scope.defaults
         )
-        return SUT(session: session, limiter: limiter, scope: scope)
+        return SUT(session: session, limiter: limiter, scope: scope, credentialProvider: credentialProvider)
     }
 
     func seedFailures(_ count: Int, sut: SUT) async {

@@ -30,7 +30,7 @@ final class POSLockScreenIntro {
         let task = Task { @MainActor in
             defer { phase = .finished }
             do {
-                try await sleep(.milliseconds(80))
+                try await sleep(.seconds(Constants.openPauseDuration))
                 try Task.checkCancellation()
                 withAnimation(.spring(duration: Constants.closingDuration, bounce: 0.05)) {
                     phase = .closing
@@ -55,6 +55,7 @@ final class POSLockScreenIntro {
     }
 
     private enum Constants {
+        static let openPauseDuration: TimeInterval = 0.2
         static let closingDuration: TimeInterval = 0.2
         static let movementDuration: TimeInterval = 0.28
     }

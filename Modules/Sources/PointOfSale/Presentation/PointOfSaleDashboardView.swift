@@ -168,21 +168,26 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  compactStyle: .cardReaderConnection,
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
-            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        .posDialog(isPresented: $showExitPOSModal) {
+            .exitPOS(exit: {
+                analytics.track(.pointOfSaleExitConfirmed)
+                dismiss()
+            }, close: {
+                showExitPOSModal = false
+            })
         }
         .posRootModal()
         .posManagerOverrideModal(handler: overrideHandler)
@@ -357,7 +362,9 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { proxy in
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
+                            .posFullScreenFlowHeader(style: .barcodeScannerSetup, dismissAction: { phoneShowingBarcodeScannerSetup = false })
                     }
+                    .background(Color.posSurfaceBright.ignoresSafeArea())
                 }
         }
         .background(Color.posSurface.ignoresSafeArea())
@@ -431,6 +438,14 @@ struct PointOfSaleDashboardView: View {
                 presentOrders()
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
+            }
+            if session.isPINProtectionEnabled {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
             }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
@@ -763,7 +778,6 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let floatingControlVerticalOffset: CGFloat = 0
-        static let exitPOSSheetMaxWidth: CGFloat = 900.0
         // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
         // before the exit confirmation presents on the shared modal manager.
         static let exitOverrideHandoffDelay: TimeInterval = 0.3

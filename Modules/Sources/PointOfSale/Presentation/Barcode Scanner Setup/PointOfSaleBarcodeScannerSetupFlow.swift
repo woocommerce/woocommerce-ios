@@ -69,6 +69,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { [weak self] in
                     self?.previousStep()
                 }
@@ -315,6 +316,7 @@ struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeS
             primaryButton: nil,
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.previousStep() }
             )
         )
@@ -338,6 +340,7 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.transition(to: .back) }
             )
         )
@@ -386,6 +389,7 @@ struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomizatio
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: PointOfSaleBarcodeScannerSetupFlow.Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.transition(to: .back) }
             )
         )

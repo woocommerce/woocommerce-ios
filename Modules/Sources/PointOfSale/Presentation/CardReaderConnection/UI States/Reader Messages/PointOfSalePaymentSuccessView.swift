@@ -37,7 +37,7 @@ struct PointOfSalePaymentSuccessView: View {
                 isTitleFocused = true
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
             if let controller = posModel.settingsController.printerConnectionController {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .printReceipt)
             }
@@ -51,13 +51,13 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
-        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
-            POSPrintReceiptFailureModal(failure: failure,
-                                        selectAction: { action in
-                                            selectedFailureAction = action
-                                            printFailure = nil
-                                        },
-                                        close: { printFailure = nil })
+        .posDialog(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+            .printReceiptFailure(failure,
+                                 selectAction: { action in
+                                     selectedFailureAction = action
+                                     printFailure = nil
+                                 },
+                                 close: { printFailure = nil })
         }
         .task(id: printButtonState) {
             guard printButtonState == .success else { return }
@@ -174,5 +174,20 @@ private extension PointOfSalePaymentSuccessView {
         onSuccessScreenBarcodeScanned: nil
     )
     .environment(model)
+}
+
+#Preview("iPhone SE", traits: .sizeThatFitsLayout) {
+    let model = POSPreviewHelpers.makePreviewAggregateModel(
+        receiptPrinter: POSReceiptPrinterPreviewService()
+    )
+    PointOfSalePaymentSuccessView(
+        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$1,234.56",
+                                                      paymentMethod: .card),
+        customerEmail: "a.long.customer.address@example.com",
+        successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
+        onSuccessScreenBarcodeScanned: nil
+    )
+    .environment(model)
+    .posPreviewSmallestPhone()
 }
 #endif

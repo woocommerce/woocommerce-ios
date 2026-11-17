@@ -4,7 +4,6 @@ import Foundation
 public enum PrinterError: Error, Equatable {
     case discoveryFailure
     case printerNotFound
-    case connectionInProgress
     case printerNotConnected
     case paperEmpty
     case coverOpen
@@ -20,7 +19,7 @@ extension PrinterError: LocalizedError {
         switch self {
         case .connectionLost(let detail), .printFailed(let detail):
             return detail
-        case .discoveryFailure, .printerNotFound, .connectionInProgress, .printerNotConnected, .paperEmpty, .coverOpen:
+        case .discoveryFailure, .printerNotFound, .printerNotConnected, .paperEmpty, .coverOpen:
             return String(describing: self)
         }
     }

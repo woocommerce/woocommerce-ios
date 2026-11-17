@@ -4,7 +4,6 @@ struct POSPINEntryView: View {
     enum Style: Equatable {
         case standard
         case lockScreen(keySize: CGFloat)
-        /// Lock-screen keys and dots for a PIN setup flow, with feedback below the dots.
         case setup(keySize: CGFloat, page: POSPINEntryPage, feedback: String?)
     }
 
@@ -95,12 +94,16 @@ private extension POSPINEntryView {
     }
 
     static func page(for style: Style) -> POSPINEntryPage? {
-        guard case .setup(_, let page, _) = style else { return nil }
+        guard case .setup(_, let page, _) = style else {
+            return nil
+        }
         return page
     }
 
     var setupFeedback: String? {
-        guard case .setup(_, _, let feedback) = style, enteredPIN.isEmpty else { return nil }
+        guard case .setup(_, _, let feedback) = style, enteredPIN.isEmpty else {
+            return nil
+        }
         return feedback
     }
 
@@ -294,7 +297,7 @@ private extension POSPINEntryView {
     var lockScreenStatusRow: some View {
         let message = lockScreenStatusMessage
         return ZStack {
-            setupDots
+            lockScreenDots
                 .opacity(message == nil ? 1 : 0)
             if let message {
                 lockScreenMessage(message)
@@ -320,10 +323,7 @@ private extension POSPINEntryView {
 
     /// Reserve lock-screen feedback space; setup feedback participates in its own layout at accessibility sizes.
     var lockScreenStatusMinHeight: CGFloat {
-        if setupPage != nil {
-            return LockScreenConstants.statusRowHeight
-        }
-        return dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
+        setupPage == nil && dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
     }
 
     var entryCountText: String {
@@ -339,7 +339,7 @@ private extension POSPINEntryView {
     }
 
     @ViewBuilder
-    var setupDots: some View {
+    var lockScreenDots: some View {
         if let setupPage {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(spacing: metrics.spacing.small) {
@@ -377,9 +377,10 @@ private extension POSPINEntryView {
         .frame(maxWidth: .infinity)
     }
 
-    /// Each page enters and leaves on its own side, so Choose leaves to the leading side as Confirm enters from the trailing side, and Back reverses it.
     func pageTransition(edge: HorizontalEdge) -> AnyTransition {
-        guard !reduceMotion else { return .opacity }
+        guard !reduceMotion else {
+            return .opacity
+        }
         let distance = edge == .leading ? -LockScreenConstants.pageSlideDistance : LockScreenConstants.pageSlideDistance
         return .offset(x: distance).combined(with: .opacity)
     }
@@ -582,7 +583,6 @@ private extension POSPINEntryView {
         static let messageLineSpacing = POSMetrics.Scale.regular.xSmall
         static let dotPopAnimation: Animation = .spring(duration: 0.2)
         static let feedbackAnimation: Animation = .easeOut(duration: 0.12)
-        // Setup page motion from the designer prototype.
         static let pageAnimation: Animation = .easeOut(duration: 0.3)
         static let pageSlideDistance: CGFloat = 148
         // Four dots plus room for the shake.

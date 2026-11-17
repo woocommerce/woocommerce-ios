@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Security before any PIN is set.
 struct POSAccessControlSetupView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -59,7 +58,6 @@ struct POSAccessControlSetupView: View {
     }
 }
 
-/// Choose, confirm and save the first Admin PIN, then offer Guided Access.
 struct POSAdminPINOnboardingView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posLayoutScale) private var layoutScale
@@ -90,12 +88,16 @@ struct POSAdminPINOnboardingView: View {
         .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
         .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
         .posModalFullScreen(usesAccessibilityFullScreen)
-        .posInteractiveDismissDisabled(onboarding.step == .saving || onboarding.isBusy)
+        .posInteractiveDismissDisabled(onboarding.step == .saving || !onboarding.canClose)
         .onChange(of: controller.isVisible) { _, isVisible in
-            if !isVisible { dismissModal?() }
+            if !isVisible {
+                dismissModal?()
+            }
         }
         .onChange(of: onboarding.feedback) { _, feedback in
-            if let feedback { AccessibilityNotification.Announcement(message(for: feedback)).post() }
+            if let feedback {
+                AccessibilityNotification.Announcement(message(for: feedback)).post()
+            }
         }
         .onDisappear { onboarding.discard() }
         .accessibilityIdentifier("pos-admin-pin-onboarding")
@@ -133,7 +135,7 @@ private extension POSAdminPINOnboardingView {
                                                                  accessibilityLabel: Localization.back))
                 }
                 Spacer()
-                POSPageHeaderBackButton(configuration: .init(state: onboarding.isBusy ? .disabled : .enabled,
+                POSPageHeaderBackButton(configuration: .init(state: onboarding.canClose ? .enabled : .disabled,
                                                              action: closeFlow,
                                                              buttonIcon: "xmark",
                                                              accessibilityIdentifier: "pos-admin-pin-onboarding-close",
@@ -152,16 +154,13 @@ private extension POSAdminPINOnboardingView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            message(art: PointOfSaleAssets.checkCircle.decorativeImage.resizable().scaledToFit()
-                        .frame(width: Constants.checkSize, height: Constants.checkSize),
-                    title: Localization.savedTitle,
-                    message: Localization.savedMessage) {
+            messagePage(art: savedCheck, title: Localization.savedTitle, message: Localization.savedMessage) {
                 Button(Localization.continueAction) { onboarding.continueToGuidedAccessOffer() }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
             .transition(.opacity.animation(Constants.offerFade))
         case .guidedAccessOffer:
-            message(art: POSLockIllustration(), title: Localization.offerTitle, message: Localization.offerMessage) {
+            messagePage(art: POSLockIllustration(), title: Localization.offerTitle, message: Localization.offerMessage) {
                 // WOOMOB-4595 connects the Guided Access guide.
                 Button(Localization.setUpGuidedAccess) {}
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -193,11 +192,20 @@ private extension POSAdminPINOnboardingView {
                 .scrollBounceBehavior(.basedOnSize)
                 .onChange(of: onboarding.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
                 .onChange(of: onboarding.feedback) { _, feedback in
-                    if feedback != nil { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
+                    if feedback != nil {
+                        proxy.scrollTo(Constants.pinEntryTopID, anchor: .top)
+                    }
                 }
             }
         }
         .clipped()
+    }
+
+    var savedCheck: some View {
+        PointOfSaleAssets.checkCircle.decorativeImage
+            .resizable()
+            .scaledToFit()
+            .frame(width: Constants.checkSize, height: Constants.checkSize)
     }
 
     var page: POSPINEntryPage {
@@ -211,10 +219,10 @@ private extension POSAdminPINOnboardingView {
     }
 
     @ViewBuilder
-    func message<Art: View, Actions: View>(art: Art,
-                                          title: String,
-                                          message: String,
-                                          @ViewBuilder actions: () -> Actions) -> some View {
+    func messagePage<Art: View, Actions: View>(art: Art,
+                                               title: String,
+                                               message: String,
+                                               @ViewBuilder actions: () -> Actions) -> some View {
         let explanation = VStack(spacing: metrics.spacing.medium) {
             art
                 .padding(.bottom, metrics.padding.medium)
@@ -260,7 +268,9 @@ private extension POSAdminPINOnboardingView {
     }
 
     func closeFlow() {
-        if onboarding.close() { close() }
+        if onboarding.close() {
+            close()
+        }
     }
 
     enum Constants {
@@ -269,7 +279,6 @@ private extension POSAdminPINOnboardingView {
         static let compactKeySize: CGFloat = 72
         static let checkSize: CGFloat = 80
         static let messageMaxWidth: CGFloat = 470
-        // The design fades the success message out, then the Guided Access offer in.
         static let offerFadeDuration: TimeInterval = 0.3
         static let offerFade: Animation = .easeInOut(duration: offerFadeDuration)
     }

@@ -44,7 +44,9 @@ struct POSSecuritySettingsView: View {
                                     pinRows(roles, stacked: true)
                                 }
                             }
-                            if controller.hasOnlyAdminPIN { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
+                            if controller.hasOnlyAdminPIN {
+                                Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular())
+                            }
                         } else {
                             Button(Localization.retry) { controller.load() }
                                 .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
@@ -62,7 +64,10 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
-        .onDisappear { editing = nil; dismissRemovalApproval() }
+        .onDisappear {
+            editing = nil
+            dismissRemovalApproval()
+        }
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible { dismissRemovalApproval() }
         }
@@ -113,7 +118,9 @@ struct POSSecuritySettingsView: View {
                                                  showSeparator: false)
         let actions = HStack(spacing: metrics.spacing.medium) {
             Button(roles.contains(role) ? Localization.change : Localization.setPIN) {
-                controller.load(); isOnboardingAdmin = false; editing = role
+                controller.load()
+                isOnboardingAdmin = false
+                editing = role
             }
             .accessibilityLabel(String.localizedStringWithFormat(
                 roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
@@ -128,9 +135,16 @@ struct POSSecuritySettingsView: View {
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .fixedSize(horizontal: true, vertical: false)
         if stacked {
-            VStack(alignment: .leading, spacing: metrics.spacing.medium) { details; actions }
+            VStack(alignment: .leading, spacing: metrics.spacing.medium) {
+                details
+                actions
+            }
         } else {
-            HStack(spacing: metrics.spacing.medium) { details.fixedSize(); Spacer(); actions }
+            HStack(spacing: metrics.spacing.medium) {
+                details.fixedSize()
+                Spacer()
+                actions
+            }
         }
     }
 

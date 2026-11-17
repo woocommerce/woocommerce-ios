@@ -16,7 +16,9 @@ final class MockSleeper {
     }
 
     func sleep(_ duration: Duration) async throws {
-        guard !isFinished else { throw CancellationError() }
+        guard !isFinished else {
+            throw CancellationError()
+        }
         await withCheckedContinuation { continuation in
             pending.append(continuation)
             durations.append(duration)

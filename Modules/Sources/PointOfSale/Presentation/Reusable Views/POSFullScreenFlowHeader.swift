@@ -89,11 +89,8 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
     let trailingClose: POSModalFlowAction?
 
     init(backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?, placesCloseOnTrailingEdge: Bool = false) {
-        if placesCloseOnTrailingEdge {
+        if placesCloseOnTrailingEdge || backAction != nil {
             leading = backAction.map { .back($0) }
-            trailingClose = closeAction
-        } else if let backAction {
-            leading = .back(backAction)
             trailingClose = closeAction
         } else {
             leading = closeAction.map { .close($0) }

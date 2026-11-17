@@ -194,7 +194,9 @@ struct POSAdminPINOnboardingTests {
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
-        if discardDraft { sut.discard() }
+        if discardDraft {
+            sut.discard()
+        }
         _ = await sut.submit("5678")
         try await expectSleep(.milliseconds(550), from: &sleeps)
         sleeper.resumeNext()
@@ -240,7 +242,7 @@ struct POSAdminPINOnboardingTests {
         var sleeps = sleeper.calls.makeAsyncIterator()
         let submission = Task { await sut.submit("1234") }
         try await expectSleep(.milliseconds(500), from: &sleeps)
-        await waitUntil { !sut.isBusy }
+        await waitUntil { sut.canClose }
 
         // When
         let closed = sut.close()

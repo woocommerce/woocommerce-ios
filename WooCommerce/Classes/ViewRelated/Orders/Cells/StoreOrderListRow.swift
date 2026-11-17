@@ -43,7 +43,7 @@ struct StoreOrderListRow: View {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: StoreSpacing.s2) {
                         StoreBadge(viewModel.statusString,
-                                   tone: StoreOrderListBadgePalette.statusTone(for: viewModel.status))
+                                   tone: viewModel.status.storeBadgeTone)
                         if viewModel.salesChannel == .pointOfSale {
                             StoreBadge(viewModel.salesChannel?.description ?? "",
                                        tone: StoreOrderListBadgePalette.pointOfSaleTone)
@@ -52,7 +52,7 @@ struct StoreOrderListRow: View {
 
                     VStack(alignment: .leading, spacing: StoreSpacing.s2) {
                         StoreBadge(viewModel.statusString,
-                                   tone: StoreOrderListBadgePalette.statusTone(for: viewModel.status))
+                                   tone: viewModel.status.storeBadgeTone)
                         if viewModel.salesChannel == .pointOfSale {
                             StoreBadge(viewModel.salesChannel?.description ?? "",
                                        tone: StoreOrderListBadgePalette.pointOfSaleTone)

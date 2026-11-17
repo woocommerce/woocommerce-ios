@@ -42,7 +42,7 @@ final class StoreOrderListTableViewCell: UITableViewCell {
     }
 }
 
-extension StoreOrderListTableViewCell: SearchResultCell {
+extension StoreOrderListTableViewCell: @MainActor SearchResultCell {
     typealias SearchModel = OrderListCellViewModel
 
     static func register(for tableView: UITableView) {

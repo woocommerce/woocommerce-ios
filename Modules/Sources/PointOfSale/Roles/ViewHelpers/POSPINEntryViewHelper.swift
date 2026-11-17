@@ -90,12 +90,43 @@ struct POSPINEntryViewHelper {
     func lockoutMessage(remainingSeconds: Int) -> String {
         String.localizedStringWithFormat(Localization.lockoutFormat, lockoutDuration(remainingSeconds: remainingSeconds))
     }
+
+    /// VoiceOver reads "0:30" as a time of day, so the spoken message uses unit names instead.
+    func lockoutAccessibilityMessage(remainingSeconds: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let duration = Duration.seconds(max(0, remainingSeconds))
+            .formatted(.units(allowed: [.minutes, .seconds], width: .wide).locale(locale))
+        return String.localizedStringWithFormat(Localization.lockoutFormat, duration)
+    }
+
+    /// Announces each state boundary once. Countdown ticks stay silent; the status element reports the remaining wait on demand.
+    func announcement(from oldState: POSPINEntryState, to newState: POSPINEntryState,
+                      announcesWaits: Bool) -> POSPINAnnouncement? {
+        switch (oldState, newState) {
+        case (_, .error(let kind)) where oldState != newState:
+            return .status(.error(kind))
+        case (_, .unavailable) where oldState != .unavailable:
+            return .status(.unavailable)
+        case (.waiting, .waiting):
+            return nil
+        case (_, .waiting(let remainingSeconds)):
+            return announcesWaits ? .status(.lockout(remainingSeconds: remainingSeconds)) : nil
+        case (.waiting, .idle), (.unavailable, .idle):
+            return announcesWaits ? .entryAvailable : nil
+        default:
+            return nil
+        }
+    }
 }
 
 enum POSPINStatusMessage: Equatable {
     case error(POSPINErrorKind)
     case lockout(remainingSeconds: Int)
     case unavailable
+}
+
+enum POSPINAnnouncement: Equatable {
+    case status(POSPINStatusMessage)
+    case entryAvailable
 }
 
 private extension POSPINEntryViewHelper {
@@ -108,7 +139,7 @@ private extension POSPINEntryViewHelper {
         static let lockoutFormat = NSLocalizedString(
             "pos.pinEntry.lockout.incorrectAttemptsCountdown",
             value: "Too many incorrect attempts.\nTry again in %1$@.",
-            comment: "Lock-out message on the POS PIN numpad. %1$@ is a localized minute-and-second duration such as 0:30 or 5:00."
+            comment: "Lock-out message on the POS PIN numpad. %1$@ is a localized duration, such as 0:30 on screen or 30 seconds for VoiceOver."
         )
     }
 }

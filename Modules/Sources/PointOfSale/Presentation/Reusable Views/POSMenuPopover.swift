@@ -50,12 +50,14 @@ struct POSMenuPopover<Content: View>: UIViewControllerRepresentable {
                 dismiss(animated: true)
                 return
             }
-            if let hostingController {
+            if let hostingController, hostingController.presentingViewController != nil || hostingController.isBeingPresented {
+                guard !hostingController.isBeingDismissed else { return }
                 hostingController.rootView = content()
                 (hostingController.presentationController as? POSMenuPresentationController)?.metrics = metrics
                 hostingController.presentationController?.containerView?.setNeedsLayout()
                 return
             }
+            hostingController = nil
             guard let window = anchor.view.window else {
                 Task { @MainActor [weak self] in
                     guard let self, self.anchor?.view.window == nil else { return }
@@ -78,13 +80,30 @@ struct POSMenuPopover<Content: View>: UIViewControllerRepresentable {
             }
             hostingController = host
             anchor.present(host, animated: true)
+            Task { @MainActor [weak self, weak host] in
+                guard let self, let host, host.presentingViewController == nil, !host.isBeingPresented else { return }
+                self.clearPresentation(host)
+            }
         }
 
         func dismiss(animated: Bool) {
-            guard let hostingController, !hostingController.isBeingDismissed else { return }
+            guard let hostingController else { return }
+            guard hostingController.presentingViewController != nil || hostingController.isBeingPresented else {
+                clearPresentation(hostingController)
+                return
+            }
+            guard !hostingController.isBeingDismissed else { return }
             hostingController.dismiss(animated: animated) { [weak self] in
-                self?.hostingController = nil
-                self?.isPresented.wrappedValue = false
+                self?.clearPresentation(hostingController)
+            }
+        }
+
+        private func clearPresentation(_ host: POSMenuHostingController<Content>) {
+            guard hostingController === host else { return }
+            hostingController = nil
+            Task { @MainActor [weak self] in
+                guard let self, self.hostingController == nil else { return }
+                self.isPresented.wrappedValue = false
             }
         }
 

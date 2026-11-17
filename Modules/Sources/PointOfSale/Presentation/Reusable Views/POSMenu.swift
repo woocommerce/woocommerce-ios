@@ -24,7 +24,6 @@ struct POSMenu<Content: View, Label: View>: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Localization.moreActions)
         .background {
             POSMenuPopover(isPresented: $isPresented, pointer: $pointer) {
                 menuPanel
@@ -85,14 +84,12 @@ struct POSMenu<Content: View, Label: View>: View {
             320
         }
     }
+}
 
-    private enum Localization {
-        static var moreActions: String {
-            NSLocalizedString("pointOfSale.menu.moreActions.accessibilityLabel",
-                              value: "More actions",
-                              comment: "Accessibility label for the ellipsis button that opens a Point of Sale action menu.")
-        }
-    }
+enum POSMenuAccessibility {
+    static let moreActions = NSLocalizedString("pointOfSale.menu.moreActions.accessibilityLabel",
+                                              value: "More actions",
+                                              comment: "Accessibility label for the ellipsis button that opens a Point of Sale action menu.")
 }
 
 struct POSMenuPointer: Equatable {
@@ -218,6 +215,7 @@ extension EnvironmentValues {
         Image(systemName: "ellipsis")
             .font(.posBodyLargeBold)
     }
+    .accessibilityLabel(POSMenuAccessibility.moreActions)
     .posPadding(\.medium)
     .background(Color.posSurface)
 }

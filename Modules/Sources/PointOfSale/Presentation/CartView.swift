@@ -303,7 +303,6 @@ private struct CartClearMenuButton: View {
                 .font(.posButtonSymbolMedium)
                 .foregroundStyle(Color.posOnSurface)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                .accessibilityLabel(Localization.clearButtonTitle)
         }
         .accessibilityLabel(Localization.clearButtonTitle)
     }

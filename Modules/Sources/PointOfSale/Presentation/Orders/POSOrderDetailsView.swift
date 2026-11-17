@@ -603,6 +603,7 @@ private extension POSOrderDetailsView {
                     .foregroundColor(.posOnSurface)
                     .padding(metrics.padding.small)
             }
+            .accessibilityLabel(POSMenuAccessibility.moreActions)
         }
     }
 }

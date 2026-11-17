@@ -45,6 +45,7 @@ struct POSFloatingControlView: View {
                 }
                 .frame(width: Constants.size)
             }
+            .accessibilityLabel(POSMenuAccessibility.moreActions)
             .accessibilityIdentifier("pos-menu-button")
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)

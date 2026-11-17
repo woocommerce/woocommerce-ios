@@ -60,7 +60,10 @@ struct StoreOrderListRow: View {
 
             StoreDivider(variant: .inset)
         }
-        .background(isSelected ? Color.storeTintLayerPrimaryContainerOpacity16 : Color.storeSurfaceBright)
+        .background {
+            Color.storeSurfaceBright
+                .overlay(isSelected ? Color.storeTintLayerPrimaryContainerOpacity16 : Color.clear)
+        }
     }
 }
 

@@ -63,9 +63,12 @@ struct POSAccessControlSetupView: View {
 struct POSAdminPINOnboardingView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     @State private var onboarding: POSAdminPINOnboarding
+    @State private var pinStatusAndSpacingHeight: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
 
@@ -85,7 +88,8 @@ struct POSAdminPINOnboardingView: View {
         }
         .posModalFlowHeaderTitle(title, centersTitle: true)
         .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
-        .posModalSizing()
+        .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
+        .posModalFullScreen(usesAccessibilityFullScreen)
         .posInteractiveDismissDisabled(onboarding.step == .saving || onboarding.isBusy)
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible { dismissModal?() }
@@ -99,6 +103,10 @@ struct POSAdminPINOnboardingView: View {
 }
 
 private extension POSAdminPINOnboardingView {
+    var usesAccessibilityFullScreen: Bool {
+        horizontalSizeClass == .regular && dynamicTypeSize.isAccessibilitySize
+    }
+
     var title: String {
         switch onboarding.step {
         case .choose: Localization.chooseTitle
@@ -114,6 +122,7 @@ private extension POSAdminPINOnboardingView {
                     .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, POSHeaderLayoutConstants.compactBackButtonSize)
             }
@@ -166,16 +175,21 @@ private extension POSAdminPINOnboardingView {
     var pinEntry: some View {
         GeometryReader { geometry in
             let keySize = keySize(fitting: geometry.size)
+            let keypadHeight = POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).height
+            let verticalInset = min(metrics.padding.xLarge, max(0, (geometry.size.height - keypadHeight - pinStatusAndSpacingHeight) / 2))
             ScrollViewReader { proxy in
                 ScrollView {
                     POSPINEntryView(state: onboarding.pinEntryState,
                                     style: .setup(keySize: keySize, page: page, feedback: onboarding.feedback.map(message(for:))),
                                     onComplete: { pin in await onboarding.submit(pin) })
-                        .frame(width: POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).width)
-                        .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * metrics.padding.xLarge))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .onGeometryChange(for: CGFloat.self, of: { max(0, $0.size.height - keypadHeight) }) {
+                            pinStatusAndSpacingHeight = $0
+                        }
+                        .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * verticalInset))
                         .id(Constants.pinEntryTopID)
                 }
-                .contentMargins(.vertical, metrics.padding.xLarge, for: .scrollContent)
+                .contentMargins(.vertical, verticalInset, for: .scrollContent)
                 .scrollBounceBehavior(.basedOnSize)
                 .onChange(of: onboarding.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
                 .onChange(of: onboarding.feedback) { _, feedback in
@@ -191,39 +205,49 @@ private extension POSAdminPINOnboardingView {
     }
 
     func keySize(fitting size: CGSize) -> CGFloat {
-        let statusHeight = POSPINEntryView.lockScreenStatusRowHeight + metrics.spacing.xxLarge + metrics.spacing.large
-        return POSPINEntryViewHelper.lockScreenKeySize(fitting: CGSize(width: size.width, height: size.height - statusHeight),
-                                                       preferred: layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize,
-                                                       metrics: metrics)
+        POSPINEntryViewHelper.lockScreenKeySize(fitting: CGSize(width: size.width, height: size.height - pinStatusAndSpacingHeight),
+                                               preferred: layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize,
+                                               metrics: metrics)
     }
 
+    @ViewBuilder
     func message<Art: View, Actions: View>(art: Art,
-                                           title: String,
-                                           message: String,
-                                           @ViewBuilder actions: () -> Actions) -> some View {
-        VStack(spacing: metrics.spacing.medium) {
+                                          title: String,
+                                          message: String,
+                                          @ViewBuilder actions: () -> Actions) -> some View {
+        let explanation = VStack(spacing: metrics.spacing.medium) {
+            art
+                .padding(.bottom, metrics.padding.medium)
+            Text(title)
+                .font(.posBodyXLargeBold)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+            Text(message)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : Constants.messageMaxWidth)
+        }
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .posPadding(\.large)
+        .frame(maxWidth: .infinity)
+        if dynamicTypeSize.isAccessibilitySize {
             ScrollView {
                 VStack(spacing: metrics.spacing.medium) {
-                    art
-                        .padding(.bottom, metrics.padding.medium)
-                    Text(title)
-                        .font(.posBodyXLargeBold)
-                        .foregroundStyle(Color.posOnSurface)
-                        .accessibilityAddTraits(.isHeader)
-                    Text(message)
-                        .font(.posBodyLargeRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                        .frame(maxWidth: Constants.messageMaxWidth)
+                    explanation
+                    actions()
                 }
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .posPadding(\.large)
-                .frame(maxWidth: .infinity)
             }
             .scrollBounceBehavior(.basedOnSize)
-            .defaultScrollAnchor(.center)
             .clipped()
-            actions()
+        } else {
+            VStack(spacing: metrics.spacing.medium) {
+                ScrollView { explanation }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .defaultScrollAnchor(.center)
+                    .clipped()
+                actions()
+            }
         }
     }
 

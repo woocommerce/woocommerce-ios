@@ -313,9 +313,12 @@ private extension POSPINEntryView {
         return false
     }
 
-    /// Accessibility sizes wrap the error to two lines. Reserving them keeps the keys still when the next digit replaces it.
+    /// Reserve lock-screen feedback space; setup feedback participates in its own layout at accessibility sizes.
     var lockScreenStatusMinHeight: CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
+        if setupPage != nil {
+            return LockScreenConstants.statusRowHeight
+        }
+        return dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
     }
 
     var entryCountText: String {
@@ -333,26 +336,40 @@ private extension POSPINEntryView {
     @ViewBuilder
     var setupDots: some View {
         if let setupPage {
-            ZStack {
-                dotsRow
-                    .id(setupPage.id)
-                    .transition(pageTransition(edge: setupPage.edge))
-            }
-            .frame(width: LockScreenConstants.pageTrackWidth)
-            .clipped()
-            .animation(LockScreenConstants.pageAnimation, value: setupPage)
-            .offset(y: setupFeedback == nil ? 0 : -LockScreenConstants.feedbackRise)
-            .frame(maxWidth: .infinity)
-            .overlay(alignment: .top) {
-                if let setupFeedback {
-                    setupFeedbackMessage(setupFeedback)
-                        .transition(.offset(y: -LockScreenConstants.feedbackDrop).combined(with: .opacity))
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: metrics.spacing.small) {
+                    setupPageDots(setupPage)
+                    if let setupFeedback {
+                        setupFeedbackMessage(setupFeedback)
+                    }
                 }
+            } else {
+                setupPageDots(setupPage)
+                    .offset(y: setupFeedback == nil ? 0 : -LockScreenConstants.feedbackRise)
+                    .overlay(alignment: .top) {
+                        if let setupFeedback {
+                            setupFeedbackMessage(setupFeedback)
+                                .offset(y: LockScreenConstants.statusRowHeight / 2 + LockScreenConstants.feedbackGap)
+                                .transition(.offset(y: -LockScreenConstants.feedbackDrop).combined(with: .opacity))
+                        }
+                    }
+                    .animation(reduceMotion ? nil : LockScreenConstants.setupFeedbackAnimation, value: setupFeedback)
             }
-            .animation(reduceMotion ? nil : LockScreenConstants.setupFeedbackAnimation, value: setupFeedback)
         } else {
             dotsRow
         }
+    }
+
+    func setupPageDots(_ page: POSPINEntryPage) -> some View {
+        ZStack {
+            dotsRow
+                .id(page.id)
+                .transition(pageTransition(edge: page.edge))
+        }
+        .frame(width: LockScreenConstants.pageTrackWidth)
+        .clipped()
+        .animation(LockScreenConstants.pageAnimation, value: page)
+        .frame(maxWidth: .infinity)
     }
 
     /// Each page enters and leaves on its own side, so Choose leaves to the leading side as Confirm enters from the trailing side, and Back reverses it.
@@ -368,7 +385,6 @@ private extension POSPINEntryView {
             .foregroundStyle(Color.posError)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
-            .offset(y: LockScreenConstants.statusRowHeight / 2 + LockScreenConstants.feedbackGap)
     }
 
     func lockScreenMessage(_ message: POSPINStatusMessage) -> some View {

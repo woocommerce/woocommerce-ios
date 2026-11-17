@@ -41,3 +41,15 @@ final class StoreOrderListTableViewCell: UITableViewCell {
         .margins(.all, 0)
     }
 }
+
+extension StoreOrderListTableViewCell: SearchResultCell {
+    typealias SearchModel = OrderListCellViewModel
+
+    static func register(for tableView: UITableView) {
+        tableView.register(self)
+    }
+
+    func configureCell(searchModel: OrderListCellViewModel) {
+        configure(viewModel: searchModel)
+    }
+}

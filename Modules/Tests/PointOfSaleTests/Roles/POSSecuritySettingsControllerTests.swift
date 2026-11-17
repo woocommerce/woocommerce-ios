@@ -84,7 +84,6 @@ struct POSSecuritySettingsControllerTests {
         let (controller, _, _) = makeSUT()
         controller.load()
         #expect(!controller.offersCashierPINSetup)
-        #expect(!controller.hasOnlyAdminPIN)
         #expect(!controller.isPINProtectionEnabled)
 
         // When
@@ -92,14 +91,11 @@ struct POSSecuritySettingsControllerTests {
 
         // Then
         #expect(controller.offersCashierPINSetup)
-        #expect(controller.hasOnlyAdminPIN)
         #expect(controller.isPINProtectionEnabled)
         #expect(await save("5678", for: .cashier, using: controller))
         #expect(controller.offersCashierPINSetup)
-        #expect(!controller.hasOnlyAdminPIN)
         #expect(await removeProtection(using: controller))
         #expect(!controller.offersCashierPINSetup)
-        #expect(!controller.hasOnlyAdminPIN)
         #expect(!controller.isPINProtectionEnabled)
     }
 

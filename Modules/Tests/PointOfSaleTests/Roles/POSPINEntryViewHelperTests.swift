@@ -238,10 +238,11 @@ struct POSPINEntryViewHelperTests {
         #expect(unchanged == nil)
     }
 
-    @Test(arguments: [true, false])
-    func test_announcement_when_check_becomes_unavailable_then_announces_once_across_retries(announcesWaits: Bool) {
+    @Test(arguments: [(true, POSPINEntryState.loading), (false, .loading), (true, .checkingLockout), (true, .waiting(remainingSeconds: 1))])
+    func test_announcement_when_check_becomes_unavailable_then_announces_once_across_retries(announcesWaits: Bool,
+                                                                                         previousState: POSPINEntryState) {
         // Given / When
-        let failed = helper.announcement(from: .loading, to: .unavailable, announcesWaits: announcesWaits)
+        let failed = helper.announcement(from: previousState, to: .unavailable, announcesWaits: announcesWaits)
         let retried = helper.announcement(from: .unavailable, to: .unavailable, announcesWaits: announcesWaits)
 
         // Then
@@ -249,7 +250,7 @@ struct POSPINEntryViewHelperTests {
         #expect(retried == nil)
     }
 
-    @Test(arguments: [POSPINEntryState.loading, .checkingLockout])
+    @Test(arguments: [POSPINEntryState.loading, .checkingLockout, .error(kind: .invalidPIN)])
     func test_announcement_when_wait_starts_on_lock_screen_then_announces_remaining_wait(previousState: POSPINEntryState) {
         // Given / When
         let announcement = helper.announcement(from: previousState, to: .waiting(remainingSeconds: 30), announcesWaits: true)

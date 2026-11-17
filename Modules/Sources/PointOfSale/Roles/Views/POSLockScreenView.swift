@@ -39,7 +39,9 @@ struct POSLockScreenView: View {
             }
             // The intro hides the lock's content from VoiceOver, so focus moves to the title once it is readable.
             .onChange(of: isIntroActive, initial: true) { _, isActive in
-                if !isActive { isTitleFocused = true }
+                guard !isActive else { return }
+                // The title rejoins the accessibility tree in this update; focus it on the next turn.
+                Task { @MainActor in isTitleFocused = true }
             }
             .task(id: isLayoutMeasured) {
                 guard isLayoutMeasured else { return }
@@ -52,7 +54,9 @@ struct POSLockScreenView: View {
         .onDisappear {
             intro.cancel()
             // Lets VoiceOver move focus to the unlocked POS instead of a removed key.
-            AccessibilityNotification.ScreenChanged().post()
+            if !model.isLocked {
+                AccessibilityNotification.ScreenChanged().post()
+            }
         }
     }
 }

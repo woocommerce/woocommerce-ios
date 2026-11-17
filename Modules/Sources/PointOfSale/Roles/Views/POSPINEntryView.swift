@@ -267,6 +267,15 @@ private extension POSPINEntryView {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Localization.dotsAccessibilityLabel)
         .accessibilityValue(message.map(accessibilityText(for:)) ?? entryCountText)
+        // The countdown changes every second; VoiceOver should read it on request rather than on each change.
+        .accessibilityAddTraits(isWaiting ? .updatesFrequently : [])
+    }
+
+    var isWaiting: Bool {
+        if case .waiting = state {
+            return true
+        }
+        return false
     }
 
     /// Accessibility sizes wrap the error to two lines. Reserving them keeps the keys still when the next digit replaces it.

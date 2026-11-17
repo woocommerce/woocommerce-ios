@@ -57,7 +57,6 @@ private extension POSLockIllustration {
 
 #if DEBUG
 extension POSLockIllustration {
-    /// The first frame of the closing animation, for previews and snapshots.
     static var open: POSLockIllustration {
         POSLockIllustration(isOpen: true)
     }

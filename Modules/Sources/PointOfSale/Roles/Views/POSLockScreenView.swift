@@ -49,7 +49,6 @@ struct POSLockScreenView: View {
 }
 
 private extension POSLockScreenView {
-    /// Phones in landscape place the keypad beside the title so all keys stay visible without scrolling.
     var isCompactHeight: Bool {
         verticalSizeClass == .compact
     }
@@ -181,7 +180,6 @@ extension POSLockScreenView {
         return view
     }
 
-    /// Keeps the model's first lockout check from replacing a previewed wait or outage.
     private static func previewLockoutResult(for state: POSPINEntryState) -> Result<Void, POSAuthError> {
         switch state {
         case .waiting(let remainingSeconds): .failure(.rateLimited(remainingSeconds: remainingSeconds))

@@ -70,7 +70,6 @@ struct POSPINEntryViewHelper {
         }
     }
 
-    /// The message that replaces the PIN dots. An invalid PIN message goes away once a new digit is entered.
     func statusMessage(for state: POSPINEntryState, enteredPIN: String) -> POSPINStatusMessage? {
         switch state {
         case .waiting(let remainingSeconds):

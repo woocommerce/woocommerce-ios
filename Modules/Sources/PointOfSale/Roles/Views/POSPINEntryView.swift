@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSPINEntryView: View {
-    /// `lockScreen` applies the final lock-screen design and PIN feedback. Setup and approval keep `standard`.
     enum Style: Equatable {
         case standard
         case lockScreen(keySize: CGFloat)
@@ -198,7 +197,7 @@ private extension POSPINEntryView {
     }
 
     var keySpacing: CGFloat {
-        lockScreenKeySize == nil ? Constants.keySpacing : Self.lockScreenKeySpacing(metrics)
+        lockScreenKeySize == nil ? Constants.keySpacing : POSPINEntryViewHelper.lockScreenKeySpacing(metrics)
     }
 
     @ViewBuilder
@@ -282,7 +281,6 @@ private extension POSPINEntryView {
         .fixedSize(horizontal: false, vertical: true)
     }
 
-    /// Emphasizes the countdown, matching the design's semibold duration.
     func lockoutText(remainingSeconds: Int) -> AttributedString {
         var text = AttributedString(helper.lockoutMessage(remainingSeconds: remainingSeconds))
         if let range = text.range(of: helper.lockoutDuration(remainingSeconds: remainingSeconds)) {
@@ -353,7 +351,6 @@ private extension POSPINEntryView {
             attempt.revealFailure(generation: generation)
             return
         }
-        // The filled dots shake first; the message then replaces them.
         withAnimation(.linear(duration: Constants.shakeDuration)) {
             shakeAmount += 1
         } completion: {
@@ -501,10 +498,6 @@ extension POSPINEntryView {
         POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).width
     }
 
-    private static func lockScreenKeySpacing(_ metrics: POSMetrics) -> CGFloat {
-        POSPINEntryViewHelper.lockScreenKeySpacing(metrics)
-    }
-
     static var lockScreenStatusRowHeight: CGFloat { LockScreenConstants.statusRowHeight }
 
     static var preferredHeight: CGFloat {
@@ -516,7 +509,6 @@ extension POSPINEntryView {
 
 #if DEBUG
 extension POSPINEntryView {
-    /// Starts with digits already entered, for previews and snapshots of partial entry.
     func previewing(enteredPIN: String) -> Self {
         var view = self
         view.previewEnteredPIN = enteredPIN

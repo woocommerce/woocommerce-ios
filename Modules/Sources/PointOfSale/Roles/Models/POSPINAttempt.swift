@@ -1,4 +1,3 @@
-/// The digits of one PIN attempt. When failure feedback is deferred, results from an older attempt never change newer input.
 struct POSPINAttempt: Equatable {
     private(set) var pin: String
     private(set) var isMessageDeferred = false
@@ -10,7 +9,6 @@ struct POSPINAttempt: Equatable {
         self.defersFailureMessage = defersFailureMessage
     }
 
-    /// Returns the generation to submit when the digit completes the PIN.
     mutating func enter(_ digit: Character, length: Int) -> Int? {
         let result = POSPINEntryViewHelper().acceptingDigit(digit, currentPIN: pin, length: length)
         generation += 1
@@ -19,7 +17,6 @@ struct POSPINAttempt: Equatable {
         return result.shouldSubmit ? generation : nil
     }
 
-    /// Deleting while a rejected PIN is still shown discards it, so its digits are never reused.
     mutating func delete() {
         pin = POSPINEntryViewHelper().removingLastDigit(from: pin, discardingSubmittedPIN: isMessageDeferred)
         generation += 1

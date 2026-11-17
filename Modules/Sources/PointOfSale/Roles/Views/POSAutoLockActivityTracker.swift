@@ -7,7 +7,7 @@ extension View {
         session: any POSAccessSession,
         paymentModel: POSPaymentModel,
         aggregateModel: PointOfSaleAggregateModel,
-        timeout: TimeInterval = POSAutoLockActivityController.defaultTimeout
+        timeout: TimeInterval?
     ) -> some View {
         modifier(POSAutoLockActivityTracker(
             session: session,
@@ -22,7 +22,7 @@ struct POSAutoLockActivityTracker: ViewModifier {
     let session: any POSAccessSession
     let paymentModel: POSPaymentModel
     let aggregateModel: PointOfSaleAggregateModel
-    let timeout: TimeInterval
+    let timeout: TimeInterval?
 
     @State private var controller: POSAutoLockActivityController?
 
@@ -35,6 +35,9 @@ struct POSAutoLockActivityTracker: ViewModifier {
             }
             .onChange(of: aggregateModel.cart.totalItemCount) { _, _ in
                 controller?.noteActivity()
+            }
+            .onChange(of: timeout) { _, timeout in
+                controller?.updateTimeout(timeout)
             }
             .onChange(of: session.isLocked) { _, isLocked in
                 // PIN entry happens in the overlay above us; re-arm on unlock.

@@ -60,6 +60,78 @@ struct POSAccessSessionFactoryTests {
         #expect(session.allows(.manageStoreSettings))
     }
 
+    @Test func test_make_when_launch_lock_is_off_and_previous_session_ended_unlocked_then_resumes_operator() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        try sut.store.setPIN("5678", for: .cashier)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        #expect(first.isLocked)
+        try await first.signIn(withPIN: "5678")
+
+        // When
+        first.endSession()
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(!second.isLocked)
+        #expect(second.currentStaff == POSLocalRole.cashier.staff)
+        #expect(!second.allows(.manageStoreSettings))
+        #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)) == false)
+    }
+
+    @Test func test_make_when_launch_lock_is_on_then_locks_after_unlocked_session() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: true)
+        try await first.signIn(withPIN: "1234")
+
+        // When
+        first.endSession()
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: true)
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
+    @Test func test_make_when_launch_lock_is_off_and_previous_session_was_locked_then_stays_locked() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+        first.lock()
+
+        // When
+        first.endSession()
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+        #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)))
+    }
+
+    @Test func test_make_when_launch_lock_is_off_and_operator_pin_was_removed_then_locks() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        try sut.store.setPIN("5678", for: .cashier)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "5678")
+        first.endSession()
+
+        // When
+        try sut.store.removePIN(for: .cashier)
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
     @Test(arguments: PendingPINChange.allCases)
     func test_make_when_pin_mutation_is_pending_then_waits_for_committed_protection(change: PendingPINChange) async throws {
         // Given
@@ -239,10 +311,17 @@ private extension POSAccessSessionFactoryTests {
                    controller: POSSecuritySettingsController(store: blocking, session: session), defaultsScope: defaultsScope)
     }
 
-    func makeReplacement(_ sut: SUT, shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
+    func makeReplacement(_ sut: SUT,
+                         locksWhenPOSOpens: Bool = true,
+                         shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         try await POSAccessSessionFactory.make(siteID: sut.siteID, featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
                                                credentialProvider: sut.store, rateLimiter: sut.limiter, userDefaults: sut.defaultsScope.defaults,
-                                               shouldCreate: shouldCreate)
+                                               locksWhenPOSOpens: locksWhenPOSOpens, shouldCreate: shouldCreate)
+    }
+
+    /// The factory keeps unlocked operators per store in memory, so each launch-lock test uses its own store.
+    func uniqueSiteID() -> Int64 {
+        Int64.random(in: 1_000_000...Int64.max)
     }
 }
 

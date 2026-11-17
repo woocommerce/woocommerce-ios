@@ -420,6 +420,7 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private func phoneOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
+        let paymentModel = posModel.paymentModel
         POSMenu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
@@ -444,12 +445,12 @@ struct PointOfSaleDashboardView: View {
             if session.isPINProtectionEnabled {
                 POSMenuButton {
                     // The menu can stay open while a payment starts.
-                    guard !posModel.paymentState.isAutoLockSuppressing else { return }
+                    guard !paymentModel.paymentState.isAutoLockSuppressing else { return }
                     session.lock()
                 } label: {
                     Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
                 }
-                .disabled(posModel.paymentState.isAutoLockSuppressing)
+                .disabled(paymentModel.paymentState.isAutoLockSuppressing)
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
             POSMenuButton {

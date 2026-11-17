@@ -236,7 +236,6 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
-        /// Pins the confirmed preview total: the store rejects the create if the lines now total more.
         let pinsServerAmount: Bool
 
         init(order: Order,
@@ -481,13 +480,14 @@ private extension RefundSubmissionUseCase {
                                             refundService: RefundServiceProtocol,
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
+        let pinsAmount = details.pinsServerAmount && shouldRefundWithCardReader(details: details)
         do {
             _ = try await refundService.createRefund(siteID: details.order.siteID,
                                                      orderID: details.order.orderID,
                                                      reason: refund.reason,
                                                      automaticRefund: refund.createAutomated ?? false,
                                                      restockItems: true,
-                                                     amountOverride: details.pinsServerAmount ? details.amount : nil,
+                                                     amountOverride: pinsAmount ? details.amount : nil,
                                                      lineItems: lineItems)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()

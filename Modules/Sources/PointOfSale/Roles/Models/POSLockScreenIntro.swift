@@ -55,7 +55,7 @@ final class POSLockScreenIntro {
     }
 
     private enum Constants {
-        static let openPauseDuration: TimeInterval = 0.2
+        static let openPauseDuration: TimeInterval = 0.4
         static let closingDuration: TimeInterval = 0.2
         static let movementDuration: TimeInterval = 0.28
     }

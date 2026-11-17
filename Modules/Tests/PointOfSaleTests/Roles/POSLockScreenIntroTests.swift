@@ -27,7 +27,7 @@ struct POSLockScreenIntroTests {
             _ = await started.next()
         }
         starts.continuation.finish()
-        try await expectSleep(.milliseconds(200), from: &sleeps)
+        try await expectSleep(.milliseconds(400), from: &sleeps)
 
         // Then
         #expect(sut.phase == .appearing)
@@ -43,7 +43,7 @@ struct POSLockScreenIntroTests {
             await caller.value
         }
         #expect(sut.phase == .finished)
-        #expect(sleeper.durations == [.milliseconds(200), .seconds(0.2), .seconds(0.28)])
+        #expect(sleeper.durations == [.milliseconds(400), .seconds(0.2), .seconds(0.28)])
     }
 
     @Test func test_run_when_one_caller_is_cancelled_then_shared_sequence_continues() async throws {
@@ -56,7 +56,7 @@ struct POSLockScreenIntroTests {
         }
         var sleeps = sleeper.calls.makeAsyncIterator()
         let first = Task { await sut.run(shouldAnimate: true) }
-        try await expectSleep(.milliseconds(200), from: &sleeps)
+        try await expectSleep(.milliseconds(400), from: &sleeps)
         let starts = AsyncStream<Void>.makeStream()
         var started = starts.stream.makeAsyncIterator()
 
@@ -96,7 +96,7 @@ struct POSLockScreenIntroTests {
         }
         var sleeps = sleeper.calls.makeAsyncIterator()
         let caller = Task { await sut.run(shouldAnimate: true) }
-        try await expectSleep(.milliseconds(200), from: &sleeps)
+        try await expectSleep(.milliseconds(400), from: &sleeps)
         if phase != .appearing {
             sleeper.resumeNext()
             try await expectSleep(.seconds(0.2), from: &sleeps)
@@ -165,7 +165,7 @@ struct POSLockScreenIntroTests {
         }
         var sleeps = sleeper.calls.makeAsyncIterator()
         let caller = Task { await sut.run(shouldAnimate: true) }
-        for duration: Duration in [.milliseconds(200), .seconds(0.2), .seconds(0.28)] {
+        for duration: Duration in [.milliseconds(400), .seconds(0.2), .seconds(0.28)] {
             try await expectSleep(duration, from: &sleeps)
             sleeper.resumeNext()
         }

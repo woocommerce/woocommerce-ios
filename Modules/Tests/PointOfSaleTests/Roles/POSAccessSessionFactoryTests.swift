@@ -115,6 +115,25 @@ struct POSAccessSessionFactoryTests {
         #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)))
     }
 
+    @Test func test_make_when_unlocked_staff_was_forgotten_then_locks_without_persisting_lock() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        POSAccessSessionFactory.forgetUnlockedStaff(siteID: sut.siteID)
+        let persistedLockAfterExit = sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID))
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(!persistedLockAfterExit)
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
     @Test func test_make_when_launch_lock_is_off_and_operator_pin_was_removed_then_locks() async throws {
         // Given
         let sut = makeSUT(siteID: uniqueSiteID())
@@ -448,7 +467,9 @@ private extension POSAccessSessionFactoryTests {
         let session = DefaultPOSAccessSession(siteID: siteID, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                               rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
         return SUT(siteID: siteID, store: store, blocking: blocking, limiter: limiter, session: session,
-                   controller: POSSecuritySettingsController(store: blocking, session: session), defaultsScope: defaultsScope)
+                   controller: POSSecuritySettingsController(store: blocking, session: session,
+                                                             lockSettings: POSLockSettings(siteID: siteID, userDefaults: defaultsScope.defaults)),
+                   defaultsScope: defaultsScope)
     }
 
     func makeReplacement(_ sut: SUT,

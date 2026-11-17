@@ -246,7 +246,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = { handler.cancel() }
@@ -268,7 +268,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
 
         // When
@@ -423,7 +423,7 @@ struct POSSecuritySettingsControllerTests {
         controller.updateLockPreferences { $0.inactivityTimeout = .never }
 
         // Then
-        #expect(controller.lockPreferences?.inactivityTimeout == .never)
+        #expect(controller.lockPreferences.inactivityTimeout == .never)
         #expect(POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults).preferences.inactivityTimeout == .never)
     }
 
@@ -458,7 +458,7 @@ struct POSSecuritySettingsControllerTests {
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                               rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         if wasProtected { #expect(await save("1234", for: .admin, using: controller)) }
         let before = storage.values
@@ -488,7 +488,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = {
@@ -512,7 +512,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         var replacement: Task<POSManagerOverrideHandler.ApprovalResult, Never>?
@@ -958,7 +958,11 @@ struct POSSecuritySettingsControllerTests {
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
-        return (POSSecuritySettingsController(store: store, session: session, lockSettings: lockSettings, flowSleep: { _ in }), session, store)
+        return (POSSecuritySettingsController(store: store, session: session, lockSettings: lockSettings ?? makeLockSettings(), flowSleep: { _ in }), session, store)
+    }
+
+    private func makeLockSettings() -> POSLockSettings {
+        POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults)
     }
 }
 

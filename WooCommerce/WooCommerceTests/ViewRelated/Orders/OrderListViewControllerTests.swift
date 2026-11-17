@@ -63,6 +63,23 @@ struct OrderListViewControllerTests {
     }
 
     @Test
+    func test_store_order_cell_when_used_as_search_result_then_registers_and_configures_the_cell() throws {
+        // Given
+        let order = MockOrders().empty().copy(orderID: 1, number: "1", status: .processing, dateCreated: .now)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: .init())
+        let tableView = UITableView()
+        StoreOrderListTableViewCell.register(for: tableView)
+
+        // When
+        let cell = try #require(tableView.dequeueReusableCell(withIdentifier: StoreOrderListTableViewCell.reuseIdentifier)
+                                as? StoreOrderListTableViewCell)
+        cell.configureCell(searchModel: viewModel)
+
+        // Then
+        #expect(cell.accessibilityIdentifier == "#1 Guest")
+    }
+
+    @Test
     func test_restoreSelectedOrderDetails_when_second_order_is_selected_then_recreates_its_detail() async throws {
         // Given
         let siteID: Int64 = 3932

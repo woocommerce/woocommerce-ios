@@ -93,3 +93,15 @@ private struct StoreOrderListPlaceholderContent: View {
         RoundedRectangle(cornerRadius: StoreRadius.small).fill(.storeSurfaceContainerHighest)
     }
 }
+
+extension StoreOrderListTableViewCell: @MainActor SearchResultCell {
+    typealias SearchModel = OrderListCellViewModel
+
+    static func register(for tableView: UITableView) {
+        tableView.register(self)
+    }
+
+    func configureCell(searchModel: OrderListCellViewModel) {
+        configure(viewModel: searchModel)
+    }
+}

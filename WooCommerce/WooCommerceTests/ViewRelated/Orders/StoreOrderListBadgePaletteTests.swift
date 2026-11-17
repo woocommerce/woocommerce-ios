@@ -1,20 +1,19 @@
 import SwiftUI
 import Testing
-import Yosemite
+@testable import StoreDesignSystem
 @testable import WooCommerce
 
 @Suite struct StoreOrderListBadgePaletteTests {
-    @Test(arguments: [
-        OrderStatusEnum.processing,
-        .failed,
-        .completed,
-        .onHold,
-        .pending,
-        .cancelled,
-        .refunded,
-        .custom("custom")
-    ])
-    func test_status_background_when_status_changes_then_matches_last_order_dashboard_card(status: OrderStatusEnum) {
-        #expect(StoreOrderListBadgePalette.statusBackground(for: status) == Color(uiColor: status.backgroundColor))
+    @Test func test_point_of_sale_tone_when_rendered_then_uses_primary_container_colors_without_border() {
+        // Given
+        let tone = StoreOrderListBadgePalette.pointOfSaleTone
+
+        // When
+        let appearance = tone.appearance
+
+        // Then
+        #expect(appearance.background == Color.storePrimaryContainer)
+        #expect(appearance.foreground == Color.storeOnPrimaryContainer)
+        #expect(appearance.border == nil)
     }
 }

@@ -32,7 +32,7 @@ struct POSFloatingControlView: View {
 
     var body: some View {
         HStack {
-            Menu {
+            POSMenu {
                 menuOptions()
             } label: {
                 VStack {
@@ -45,6 +45,7 @@ struct POSFloatingControlView: View {
                 }
                 .frame(width: Constants.size)
             }
+            .accessibilityLabel(POSMenuAccessibility.moreActions)
             .accessibilityIdentifier("pos-menu-button")
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
@@ -81,38 +82,18 @@ private extension POSFloatingControlView {
     }
 
     @ViewBuilder private func menuOptions() -> some View {
-        // First-declared items render nearest the ellipsis button (the bottom), so declaring the staff
-        // row here keeps it at the bottom of the menu.
-        if let staff = session.currentStaff {
-            POSStaffMenuRow(staff: staff)
-
-            Divider()
-        }
-
-        Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            onExitSelected()
-        } label: {
-            Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-            )
-        }
-        .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || isPhoneLayout {
-            if canLockPOS {
-                Button {
-                    session.lock()
-                } label: {
-                    Label(
-                        title: { Text(Localization.lockPOS) },
-                        icon: { Image(systemName: "lock") }
-                    )
-                }
-                .accessibilityIdentifier("pos-lock-menu-item")
+            POSMenuButton {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                onOrdersSelected()
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
             }
 
-            Button {
+            POSMenuButton {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
@@ -123,15 +104,35 @@ private extension POSFloatingControlView {
             }
             .accessibilityIdentifier("pos-settings-menu-item")
 
-            Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                onOrdersSelected()
-            } label: {
-                Label(
-                    title: { Text(Localization.orders) },
-                    icon: { Image(systemName: "text.document") }
-                )
+            if canLockPOS {
+                POSMenuButton {
+                    session.lock()
+                } label: {
+                    Label(
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
+                    )
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
             }
+        }
+
+        POSMenuButton {
+            analytics.track(.pointOfSaleExitMenuItemTapped)
+            onExitSelected()
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        .accessibilityIdentifier("pos-exit-menu-item")
+
+        if let staff = session.currentStaff {
+            Divider()
+
+            POSStaffMenuRow(staff: staff)
+                .posPadding(\.medium)
         }
     }
 

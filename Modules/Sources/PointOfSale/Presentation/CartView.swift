@@ -290,8 +290,8 @@ private struct CartClearMenuButton: View {
     let removeAllItemsFromCart: () -> Void
 
     var body: some View {
-        Menu {
-            Button(role: .destructive,
+        POSMenu {
+            POSMenuButton(role: .destructive,
                    action: {
                 removeAllItemsFromCart()
                 analytics.track(.pointOfSaleClearCartTapped)
@@ -303,8 +303,8 @@ private struct CartClearMenuButton: View {
                 .font(.posButtonSymbolMedium)
                 .foregroundStyle(Color.posOnSurface)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                .accessibilityLabel(Localization.clearButtonTitle)
         }
+        .accessibilityLabel(Localization.clearButtonTitle)
     }
 
     enum Localization {

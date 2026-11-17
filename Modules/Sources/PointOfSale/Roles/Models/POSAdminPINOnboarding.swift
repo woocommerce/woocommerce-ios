@@ -100,7 +100,7 @@ private extension POSAdminPINOnboarding {
 
     func confirm(_ pin: String, request: Int) async -> Bool {
         guard setup.confirms(pin) else {
-            _ = await setup.submit(pin)
+            setup.discardDraft()
             showMismatch(request: request)
             return false
         }

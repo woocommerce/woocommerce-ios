@@ -187,12 +187,14 @@ struct POSAdminPINOnboardingTests {
         #expect(storage.values.isEmpty)
     }
 
-    @Test func test_choose_after_mismatch_when_new_pin_is_entered_then_clears_mismatch_and_needs_confirmation() async throws {
+    @Test(arguments: [false, true])
+    func test_choose_after_mismatch_when_new_pin_is_entered_then_clears_mismatch_and_needs_confirmation(discardDraft: Bool) async throws {
         // Given
         let (sut, controller, _) = makeSUT()
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
+        if discardDraft { sut.discard() }
         _ = await sut.submit("5678")
         try await expectSleep(.milliseconds(550), from: &sleeps)
         sleeper.resumeNext()
@@ -201,9 +203,12 @@ struct POSAdminPINOnboardingTests {
         await waitUntil { sut.feedback == .mismatch }
 
         // When
-        try await enterFirstPIN("2468", sut: sut, sleeps: &sleeps)
+        let submission = Task { await sut.submit("5678") }
+        try await expectSleep(.milliseconds(500), from: &sleeps)
+        sleeper.resumeNext()
 
         // Then
+        #expect(await submission.value)
         #expect(sut.feedback == nil)
         #expect(sut.step == .confirm)
         #expect(controller.roles == [])

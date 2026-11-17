@@ -18,6 +18,7 @@
 - [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
 - [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
+- [*] Order creation: Custom amounts are no longer lost when the phone uses Eastern Arabic numerals. [https://github.com/woocommerce/woocommerce-ios/pull/18382]
 - [*] Login: Browser sign-in for site credentials now only saves a password approved on the store you're logging into. [https://github.com/woocommerce/woocommerce-ios/pull/18321]
 
 

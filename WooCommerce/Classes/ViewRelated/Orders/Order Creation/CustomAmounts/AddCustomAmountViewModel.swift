@@ -132,8 +132,16 @@ final class AddCustomAmountViewModel: ObservableObject {
         guard let amount = inputTypeViewModelAdapter.amount else { return }
         trackEventsOnDoneButtonPressed()
 
+        // WooCommerce only reads ASCII digits; `.toLatin` leaves combining marks on Persian digits.
+        let asciiAmount = amount.map { character in
+            guard character.unicodeScalars.first?.properties.generalCategory == .decimalNumber,
+                  let digit = character.wholeNumberValue else {
+                return String(character)
+            }
+            return String(digit)
+        }.joined()
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
-        onCustomAmountEntered(amount, customAmountName, feeID, isTaxable)
+        onCustomAmountEntered(asciiAmount, customAmountName, feeID, isTaxable)
     }
 
     func deleteButtonPressed() {

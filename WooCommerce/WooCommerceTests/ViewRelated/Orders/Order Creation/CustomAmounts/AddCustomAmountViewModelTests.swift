@@ -200,6 +200,71 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(enteredAmount, "1235")
     }
 
+    func test_doneButtonPressed_when_fixed_amount_has_eastern_arabic_digits_then_passes_ascii_digits() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 locale: Locale(identifier: "ar_SA"),
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        // ar_SA types "٫" as the decimal separator; the field swaps it for the store's ".".
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("١٠٫٥٠")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(viewModel.formattableAmountTextFieldViewModel?.amount, "١٠.٥٠")
+        XCTAssertEqual(enteredAmount, "10.50")
+    }
+
+    func test_doneButtonPressed_when_fixed_amount_has_persian_digits_then_passes_ascii_digits() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 locale: Locale(identifier: "fa_IR"),
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("۱۰")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(enteredAmount, "10")
+    }
+
+    func test_doneButtonPressed_when_percentage_amount_has_eastern_arabic_digits_then_passes_ascii_digits() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.preset(with: OrderFeeLine.fake().copy(feeID: 1, total: "١٢٣٤.٥٠"))
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(viewModel.percentageViewModel?.amount, "١٢٣٤.٥٠")
+        XCTAssertEqual(enteredAmount, "1234.50")
+    }
+
+    func test_doneButtonPressed_when_fixed_amount_has_a_numeral_that_is_not_a_decimal_digit_then_does_not_convert_it() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("Ⅻ")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(enteredAmount, "Ⅻ")
+    }
+
     func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })

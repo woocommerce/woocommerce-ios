@@ -215,6 +215,16 @@ custom_rules:
     included: Modules/Sources/PointOfSale/.*\.swift
     severity: error
 
+  pos_menu_presentation:
+    name: "POS Menu Presentation"
+    regex: '\bMenu\b'
+    match_kinds:
+      - identifier
+      - typeidentifier
+    message: "In POS, use `POSMenu` and `POSMenuButton` instead of SwiftUI `Menu` so menus use POS styling."
+    included: Modules/Sources/PointOfSale/.*\.swift
+    severity: error
+
   pos_modal_presentation:
     name: "POS Modal Presentation"
     # `.alert(` counts only as a modifier at the start of a line; enum cases such as `.alert(.foundReader(...))` are not presentations.

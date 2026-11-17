@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Hosted rows capture caller dependencies. Forwarding the whole environment also copies the presenting screen's dismissal context.
 struct POSMenu<Content: View, Label: View>: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.isEnabled) private var isEnabled

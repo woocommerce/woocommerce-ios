@@ -591,9 +591,9 @@ private extension POSOrderDetailsView {
         }
 
         if !setup.secondary.isEmpty {
-            Menu {
+            POSMenu {
                 ForEach(setup.secondary) { action in
-                    Button(action.title, action: handler(for: action))
+                    POSMenuButton(action.title, action: handler(for: action))
                         .accessibilityHint(action.accessibilityHint)
                 }
             } label: {
@@ -603,7 +603,6 @@ private extension POSOrderDetailsView {
                     .foregroundColor(.posOnSurface)
                     .padding(metrics.padding.small)
             }
-            .menuIndicator(.hidden)
         }
     }
 }

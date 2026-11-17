@@ -14,7 +14,7 @@ struct OrderListViewControllerTests {
         let siteID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let storageManager = MockStorageManager()
-        let order = MockOrders().empty().copy(siteID: siteID, orderID: 1, status: .processing, dateCreated: .now)
+        let order = MockOrders().empty().copy(siteID: siteID, orderID: 1, number: "1", status: .processing, dateCreated: .now)
         try await insert([order], into: storageManager)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,

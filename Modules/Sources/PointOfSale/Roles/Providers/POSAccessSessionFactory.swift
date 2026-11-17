@@ -85,4 +85,10 @@ enum POSAccessSessionFactory {
             }
         )
     }
+
+    /// Stops the operator of an ended session from resuming on the next POS visit,
+    /// without persisting a lock that would make the app reopen POS on cold launch.
+    static func forgetUnlockedStaff(siteID: Int64) {
+        unlockedStaff[siteID] = nil
+    }
 }

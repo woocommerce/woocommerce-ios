@@ -273,8 +273,13 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, session, onPointOfSaleModeActiveStateChange] in
+            let cleanup = { [posModel, posModalManager, session, lockSettings, siteID, onPointOfSaleModeActiveStateChange] in
+                // Exiting from a completed sale must not carry its operator into the next POS visit.
+                let endsAfterSale = lockSettings.preferences.locksAfterSale && posModel?.paymentState.isSuccess == true
                 session.endSession()
+                if endsAfterSale {
+                    POSAccessSessionFactory.forgetUnlockedStaff(siteID: siteID)
+                }
                 onPointOfSaleModeActiveStateChange(false)
                 posModalManager.onDisappear()
                 posModel?.pointOfSaleClosed()

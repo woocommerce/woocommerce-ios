@@ -6,7 +6,7 @@ import Testing
 struct POSLockScreenIntroTests {
     @Test func test_run_when_callers_overlap_then_shares_one_animation_sequence() async throws {
         // Given
-        let sleeper = ControlledSleeper()
+        let sleeper = MockSleeper()
         let sut = POSLockScreenIntro(sleep: sleeper.sleep)
         defer {
             sut.cancel()
@@ -48,7 +48,7 @@ struct POSLockScreenIntroTests {
 
     @Test func test_run_when_one_caller_is_cancelled_then_shared_sequence_continues() async throws {
         // Given
-        let sleeper = ControlledSleeper()
+        let sleeper = MockSleeper()
         let sut = POSLockScreenIntro(sleep: sleeper.sleep)
         defer {
             sut.cancel()
@@ -88,7 +88,7 @@ struct POSLockScreenIntroTests {
     @Test(arguments: [POSLockScreenIntro.Phase.appearing, .closing, .revealing])
     func test_cancel_when_sequence_is_active_then_finishes_without_advancing(phase: POSLockScreenIntro.Phase) async throws {
         // Given
-        let sleeper = ControlledSleeper()
+        let sleeper = MockSleeper()
         let sut = POSLockScreenIntro(sleep: sleeper.sleep)
         defer {
             sut.cancel()
@@ -121,7 +121,7 @@ struct POSLockScreenIntroTests {
 
     @Test func test_run_when_animation_is_disabled_then_finishes_without_sleeping() async {
         // Given
-        let sleeper = ControlledSleeper()
+        let sleeper = MockSleeper()
         let sut = POSLockScreenIntro(sleep: sleeper.sleep)
         defer {
             sut.cancel()
@@ -157,7 +157,7 @@ struct POSLockScreenIntroTests {
 
     @Test func test_run_when_sequence_has_finished_then_does_not_restart() async throws {
         // Given
-        let sleeper = ControlledSleeper()
+        let sleeper = MockSleeper()
         let sut = POSLockScreenIntro(sleep: sleeper.sleep)
         defer {
             sut.cancel()
@@ -185,47 +185,5 @@ private extension POSLockScreenIntroTests {
         let next = await iterator.next(isolation: MainActor.shared)
         let actual = try #require(next)
         try #require(actual == duration)
-    }
-
-    @MainActor
-    final class ControlledSleeper {
-        let calls: AsyncStream<Duration>
-        private(set) var durations: [Duration] = []
-        private let callContinuation: AsyncStream<Duration>.Continuation
-        private var pending: [CheckedContinuation<Void, Never>] = []
-        private var isFinished = false
-
-        init() {
-            let stream = AsyncStream<Duration>.makeStream()
-            calls = stream.stream
-            callContinuation = stream.continuation
-        }
-
-        func sleep(_ duration: Duration) async throws {
-            guard !isFinished else { throw CancellationError() }
-            await withCheckedContinuation { continuation in
-                pending.append(continuation)
-                durations.append(duration)
-                // Store the gate before signalling readiness; both operations run on the main actor.
-                callContinuation.yield(duration)
-            }
-            try Task.checkCancellation()
-        }
-
-        func resumeNext() {
-            guard !pending.isEmpty else {
-                Issue.record("No sleep is pending")
-                return
-            }
-            pending.removeFirst().resume()
-        }
-
-        func finish() {
-            isFinished = true
-            let continuations = pending
-            pending.removeAll()
-            continuations.forEach { $0.resume() }
-            callContinuation.finish()
-        }
     }
 }

@@ -4,6 +4,8 @@ struct POSPINEntryView: View {
     enum Style: Equatable {
         case standard
         case lockScreen(keySize: CGFloat)
+        /// Lock-screen keys and dots for a PIN setup flow, with feedback below the dots.
+        case setup(keySize: CGFloat, page: POSPINEntryPage, feedback: String?)
     }
 
     @Environment(\.posMetrics) private var metrics
@@ -17,6 +19,7 @@ struct POSPINEntryView: View {
 
     @State private var attempt: POSPINAttempt
     @State private var shakeAmount: CGFloat = 0
+    @State private var attemptPageID: Int?
     #if DEBUG
     private var previewEnteredPIN: String?
     #endif
@@ -33,6 +36,7 @@ struct POSPINEntryView: View {
         self.style = style
         self.onComplete = onComplete
         self._attempt = State(initialValue: POSPINAttempt(defersFailureMessage: style != .standard))
+        self._attemptPageID = State(initialValue: Self.page(for: style)?.id)
     }
 
     var body: some View {
@@ -45,6 +49,10 @@ struct POSPINEntryView: View {
         }
         .onChange(of: state) { _, newState in
             handleStateChange(newState)
+        }
+        .onChange(of: setupPage?.id) { _, pageID in
+            attempt.startOver()
+            attemptPageID = pageID
         }
     }
 }
@@ -72,14 +80,41 @@ private extension POSPINEntryView {
     }
 
     var lockScreenKeySize: CGFloat? {
-        if case .lockScreen(let keySize) = style {
-            return keySize
+        switch style {
+        case .standard:
+            nil
+        case .lockScreen(let keySize), .setup(let keySize, _, _):
+            keySize
         }
-        return nil
+    }
+
+    var setupPage: POSPINEntryPage? {
+        Self.page(for: style)
+    }
+
+    var setupFeedback: String? {
+        guard case .setup(_, _, let feedback) = style, enteredPIN.isEmpty else { return nil }
+        return feedback
+    }
+
+    /// A new setup page starts empty in the same update that slides it in.
+    var enteredPIN: String {
+        attemptPageID == setupPage?.id ? attempt.pin : ""
+    }
+
+    var contentSpacing: CGFloat {
+        switch style {
+        case .standard:
+            Self.contentSpacing
+        case .lockScreen:
+            metrics.spacing.xLarge
+        case .setup:
+            metrics.spacing.xxLarge + metrics.spacing.large
+        }
     }
 
     var content: some View {
-        VStack(spacing: lockScreenKeySize == nil ? Self.contentSpacing : metrics.spacing.xLarge) {
+        VStack(spacing: contentSpacing) {
             statusRow
                 .frame(maxWidth: .infinity, alignment: .center)
             numpad
@@ -116,14 +151,14 @@ private extension POSPINEntryView {
         TimelineView(.animation(paused: !animatesLoadingDots)) { context in
             HStack(spacing: dotSpacing) {
                 ForEach(0..<pinLength, id: \.self) { index in
-                    dot(filled: isLoading || index < attempt.pin.count,
+                    dot(filled: isLoading || index < enteredPIN.count,
                         yOffset: waveOffset(index: index, date: context.date))
                 }
             }
             .modifier(ShakeEffect(animatableData: shakeAmount))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Localization.dotsAccessibilityLabel)
-            .accessibilityValue(Localization.dotsAccessibilityValue(entered: attempt.pin.count, total: pinLength))
+            .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
         .frame(height: statusRowHeight)
     }
@@ -251,7 +286,7 @@ private extension POSPINEntryView {
     var lockScreenStatusRow: some View {
         let message = lockScreenStatusMessage
         return ZStack {
-            dotsRow
+            setupDots
                 .opacity(message == nil ? 1 : 0)
                 .accessibilityHidden(message != nil)
             if let message {
@@ -261,6 +296,47 @@ private extension POSPINEntryView {
         }
         .frame(minHeight: LockScreenConstants.statusRowHeight)
         .animation(LockScreenConstants.feedbackAnimation, value: message == nil)
+    }
+
+    @ViewBuilder
+    var setupDots: some View {
+        if let setupPage {
+            ZStack {
+                dotsRow
+                    .id(setupPage.id)
+                    .transition(pageTransition(edge: setupPage.edge))
+            }
+            .frame(width: LockScreenConstants.pageTrackWidth)
+            .clipped()
+            .animation(LockScreenConstants.pageAnimation, value: setupPage)
+            .offset(y: setupFeedback == nil ? 0 : -LockScreenConstants.feedbackRise)
+            .frame(maxWidth: .infinity)
+            .overlay(alignment: .top) {
+                if let setupFeedback {
+                    setupFeedbackMessage(setupFeedback)
+                        .transition(.offset(y: -LockScreenConstants.feedbackDrop).combined(with: .opacity))
+                }
+            }
+            .animation(LockScreenConstants.setupFeedbackAnimation, value: setupFeedback)
+        } else {
+            dotsRow
+        }
+    }
+
+    /// Each page enters and leaves on its own side, so Choose leaves to the leading side as Confirm enters from the trailing side, and Back reverses it.
+    func pageTransition(edge: HorizontalEdge) -> AnyTransition {
+        guard !reduceMotion else { return .opacity }
+        let distance = edge == .leading ? -LockScreenConstants.pageSlideDistance : LockScreenConstants.pageSlideDistance
+        return .offset(x: distance).combined(with: .opacity)
+    }
+
+    func setupFeedbackMessage(_ text: String) -> some View {
+        Text(text)
+            .font(.posBodySmallRegular())
+            .foregroundStyle(Color.posError)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .offset(y: LockScreenConstants.statusRowHeight / 2 + LockScreenConstants.feedbackGap)
     }
 
     func lockScreenMessage(_ message: POSPINStatusMessage) -> some View {
@@ -441,6 +517,15 @@ private extension POSPINEntryView {
         static let messageLineSpacing = POSMetrics.Scale.regular.xSmall
         static let dotPopAnimation: Animation = .spring(duration: 0.2)
         static let feedbackAnimation: Animation = .easeOut(duration: 0.12)
+        // Setup page motion from the designer prototype.
+        static let pageAnimation: Animation = .easeOut(duration: 0.3)
+        static let pageSlideDistance: CGFloat = 148
+        // Four dots plus room for the shake.
+        static let pageTrackWidth: CGFloat = 136
+        static let setupFeedbackAnimation: Animation = .easeInOut(duration: 0.3)
+        static let feedbackRise: CGFloat = 18
+        static let feedbackDrop: CGFloat = 8
+        static let feedbackGap: CGFloat = 4
     }
 }
 
@@ -499,6 +584,11 @@ extension POSPINEntryView {
     }
 
     static var lockScreenStatusRowHeight: CGFloat { LockScreenConstants.statusRowHeight }
+
+    static func page(for style: Style) -> POSPINEntryPage? {
+        guard case .setup(_, let page, _) = style else { return nil }
+        return page
+    }
 
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight

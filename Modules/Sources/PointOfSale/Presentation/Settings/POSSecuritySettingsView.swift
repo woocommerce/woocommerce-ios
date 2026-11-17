@@ -4,43 +4,52 @@ struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     let controller: POSSecuritySettingsController
     @State private var editing: POSLocalRole?
+    @State private var isOnboardingAdmin = false
     @State private var removalApproval = POSManagerOverrideHandler()
     @State private var removalApprovalTask: Task<Void, Never>?
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.title)
-            ScrollView {
-                VStack(alignment: .leading, spacing: metrics.spacing.medium) {
-                    if let roles = controller.roles {
-                        if controller.isPINProtectionEnabled {
-                            POSInformationCard {
-                                POSInformationCardFieldRowWithToggle(label: Localization.pinProtection,
-                                                                     value: Localization.protectionOn,
-                                                                     showSeparator: false,
-                                                                     isOn: protectionBinding)
-                            }
-                        } else {
-                            Text(Localization.protectionOff).font(.posBodyMediumRegular())
-                        }
-                        POSInformationCard {
-                            ViewThatFits(in: .horizontal) {
-                                pinRows(roles, stacked: false)
-                                pinRows(roles, stacked: true)
-                            }
-                        }
-                        if controller.hasOnlyAdminPIN { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
-                    } else {
-                        Button(Localization.retry) { controller.load() }
-                            .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
-                    }
-                    if let error = controller.error {
-                        Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
-                            .foregroundStyle(Color.posError).font(.posBodyMediumRegular())
-                    }
+            if controller.roles?.isEmpty == true {
+                POSAccessControlSetupView {
+                    controller.load()
+                    isOnboardingAdmin = true
+                    editing = .admin
                 }
-                .posContentPadding(.horizontal, metrics.padding.medium)
-                .posPadding(.vertical, \.medium)
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: metrics.spacing.medium) {
+                        if let roles = controller.roles {
+                            if controller.isPINProtectionEnabled {
+                                POSInformationCard {
+                                    POSInformationCardFieldRowWithToggle(label: Localization.pinProtection,
+                                                                         value: Localization.protectionOn,
+                                                                         showSeparator: false,
+                                                                         isOn: protectionBinding)
+                                }
+                            } else {
+                                Text(Localization.protectionOff).font(.posBodyMediumRegular())
+                            }
+                            POSInformationCard {
+                                ViewThatFits(in: .horizontal) {
+                                    pinRows(roles, stacked: false)
+                                    pinRows(roles, stacked: true)
+                                }
+                            }
+                            if controller.hasOnlyAdminPIN { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
+                        } else {
+                            Button(Localization.retry) { controller.load() }
+                                .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
+                        }
+                        if let error = controller.error {
+                            Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
+                                .foregroundStyle(Color.posError).font(.posBodyMediumRegular())
+                        }
+                    }
+                    .posContentPadding(.horizontal, metrics.padding.medium)
+                    .posPadding(.vertical, \.medium)
+                }
             }
         }
         .background(Color.posSurface)
@@ -53,7 +62,9 @@ struct POSSecuritySettingsView: View {
         .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }),
                   compactStyle: .fullScreen(title: Localization.title),
                   onDismiss: { controller.load() }) {
-            if let role = editing {
+            if isOnboardingAdmin {
+                POSAdminPINOnboardingView(controller: controller, close: { editing = nil })
+            } else if let role = editing {
                 POSSecurityPINEntryModal(role: role, controller: controller, close: { editing = nil })
             }
         }
@@ -95,7 +106,7 @@ struct POSSecuritySettingsView: View {
                                                  showSeparator: false)
         let actions = HStack(spacing: metrics.spacing.medium) {
             Button(roles.contains(role) ? Localization.change : Localization.setPIN) {
-                controller.load(); editing = role
+                controller.load(); isOnboardingAdmin = false; editing = role
             }
             .accessibilityLabel(String.localizedStringWithFormat(
                 roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))

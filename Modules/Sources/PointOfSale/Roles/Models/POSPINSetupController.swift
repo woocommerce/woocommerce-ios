@@ -25,6 +25,10 @@ final class POSPINSetupController {
 
     var isConfirmingPIN: Bool { firstPIN != nil }
 
+    func confirms(_ pin: String) -> Bool {
+        firstPIN == pin
+    }
+
     func submit(_ pin: String) async -> SubmissionResult {
         guard !isSaving else { return .rejected }
         hasMismatch = false

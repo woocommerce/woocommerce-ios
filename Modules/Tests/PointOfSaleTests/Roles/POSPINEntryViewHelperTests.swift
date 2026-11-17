@@ -221,7 +221,7 @@ struct POSPINEntryViewHelperTests {
     @Test(arguments: [(-1, "0 seconds"), (1, "1 second"), (30, "30 seconds"), (299, "4 minutes, 59 seconds"), (3600, "60 minutes")])
     func test_lockoutAccessibilityMessage_when_wait_changes_then_spells_out_units(seconds: Int, duration: String) {
         // Given / When
-        let message = helper.lockoutAccessibilityMessage(remainingSeconds: seconds)
+        let message = helper.lockoutAccessibilityMessage(remainingSeconds: seconds, locale: Locale(identifier: "en_US"))
 
         // Then
         #expect(message == "Too many incorrect attempts.\nTry again in \(duration).")

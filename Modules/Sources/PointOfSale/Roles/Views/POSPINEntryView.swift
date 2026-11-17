@@ -317,7 +317,7 @@ private extension POSPINEntryView {
         var text = AttributedString(helper.lockoutMessage(remainingSeconds: remainingSeconds))
         if let range = text.range(of: helper.lockoutDuration(remainingSeconds: remainingSeconds)) {
             let style = POSFontStyle.posBodySmallRegular()
-            text[range].font = style
+            text[range][AttributeScopes.SwiftUIAttributes.FontAttribute.self] = style
                 .font(baseSize: style.baseSize(for: layoutScale), maximumContentSizeCategory: UIContentSizeCategory(dynamicTypeSize))
                 .weight(.semibold)
         }
@@ -407,7 +407,7 @@ private extension POSPINEntryView {
         }
         var announcement = AttributedString(text)
         // Later entry counts must not cut off an error or wait.
-        announcement.accessibilitySpeechAnnouncementPriority = .high
+        announcement[AttributeScopes.AccessibilityAttributes.AnnouncementPriorityAttribute.self] = .high
         AccessibilityNotification.Announcement(announcement).post()
     }
 }

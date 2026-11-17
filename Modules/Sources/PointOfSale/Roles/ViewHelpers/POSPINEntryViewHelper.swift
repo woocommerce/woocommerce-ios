@@ -92,9 +92,9 @@ struct POSPINEntryViewHelper {
     }
 
     /// VoiceOver reads "0:30" as a time of day, so the spoken message uses unit names instead.
-    func lockoutAccessibilityMessage(remainingSeconds: Int) -> String {
+    func lockoutAccessibilityMessage(remainingSeconds: Int, locale: Locale = .autoupdatingCurrent) -> String {
         let duration = Duration.seconds(max(0, remainingSeconds))
-            .formatted(.units(allowed: [.minutes, .seconds], width: .wide))
+            .formatted(.units(allowed: [.minutes, .seconds], width: .wide).locale(locale))
         return String.localizedStringWithFormat(Localization.lockoutFormat, duration)
     }
 

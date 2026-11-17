@@ -16,9 +16,12 @@ struct POSLockScreenOverlay<Content: View>: View {
             // Keep POS mounted; hide its covered rendering without animating the lock-state change.
             .opacity(session.isLocked ? 0 : 1)
             .animation(nil, value: session.isLocked)
+            .background(POSLockPresentationHost(session: session,
+                                                 lockContent: POSLockScreenView(session: session).id(ObjectIdentifier(session))))
             .overlay {
                 if session.isLocked {
-                    POSLockScreenView(session: session)
+                    // Keep the source opaque before its scene window is attached.
+                    Color.posSurfaceContainerLow.ignoresSafeArea()
                 }
             }
     }

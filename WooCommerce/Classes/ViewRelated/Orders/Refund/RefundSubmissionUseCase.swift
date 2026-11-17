@@ -236,20 +236,20 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
-        let pinsServerAmount: Bool
+        let pinsCardReaderRefundAmount: Bool
 
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
              serverLineItems: [ComputedRefundLineItem]? = nil,
-             pinsServerAmount: Bool = false) {
+             pinsCardReaderRefundAmount: Bool = false) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
             self.serverLineItems = serverLineItems
-            self.pinsServerAmount = pinsServerAmount
+            self.pinsCardReaderRefundAmount = pinsCardReaderRefundAmount
         }
 
         var calculationFlow: RefundFlow {
@@ -480,7 +480,7 @@ private extension RefundSubmissionUseCase {
                                             refundService: RefundServiceProtocol,
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
-        let pinsAmount = details.pinsServerAmount && shouldRefundWithCardReader(details: details)
+        let pinsAmount = details.pinsCardReaderRefundAmount && shouldRefundWithCardReader(details: details)
         do {
             _ = try await refundService.createRefund(siteID: details.order.siteID,
                                                      orderID: details.order.orderID,

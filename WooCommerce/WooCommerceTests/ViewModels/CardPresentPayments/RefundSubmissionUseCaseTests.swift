@@ -84,7 +84,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     amount: "36.3",
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)],
-                                    pinsServerAmount: true)
+                                    pinsCardReaderRefundAmount: true)
         let useCase = createUseCase(details: details)
         refundService.createRefundResult = .success(.fake())
 
@@ -116,7 +116,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     amount: "36.3",
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)],
-                                    pinsServerAmount: true)
+                                    pinsCardReaderRefundAmount: true)
         let useCase = createUseCase(details: details)
         mockCardPresentPaymentActions(clientSideRefundResult: .success(()))
         refundService.createRefundResult = .success(.fake())

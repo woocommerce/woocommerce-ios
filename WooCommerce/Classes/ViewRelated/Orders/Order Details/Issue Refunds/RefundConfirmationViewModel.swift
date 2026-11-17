@@ -104,7 +104,7 @@ final class RefundConfirmationViewModel {
                            amount: details.amount,
                            paymentGatewayAccount: details.paymentGatewayAccount,
                            serverLineItems: details.serverLineItems,
-                           pinsServerAmount: details.serverLineItems != nil),
+                           pinsCardReaderRefundAmount: details.serverLineItems != nil),
             rootViewController: rootViewController,
             alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                               presentingController: rootViewController),

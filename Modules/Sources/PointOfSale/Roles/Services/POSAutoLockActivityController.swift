@@ -10,7 +10,7 @@ final class POSAutoLockActivityController {
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState
-    private let timeout: TimeInterval
+    private var timeout: TimeInterval?
     private let now: () -> Date
 
     private var lastActivityAt: Date
@@ -18,7 +18,7 @@ final class POSAutoLockActivityController {
 
     init(session: any POSAccessSession,
          paymentStateProvider: @escaping () -> PointOfSalePaymentState,
-         timeout: TimeInterval = POSAutoLockActivityController.defaultTimeout,
+         timeout: TimeInterval? = POSAutoLockActivityController.defaultTimeout,
          now: @escaping () -> Date = Date.init) {
         self.session = session
         self.paymentStateProvider = paymentStateProvider
@@ -30,6 +30,13 @@ final class POSAutoLockActivityController {
     func noteActivity() {
         lastActivityAt = now()
         restartTimer()
+    }
+
+    /// A new interval starts from now; `nil` turns inactivity locking off.
+    func updateTimeout(_ timeout: TimeInterval?) {
+        guard timeout != self.timeout else { return }
+        self.timeout = timeout
+        noteActivity()
     }
 
     func noteActivityThrottled() {
@@ -45,7 +52,7 @@ final class POSAutoLockActivityController {
     }
 
     func handleTimerFire() {
-        guard session.isPINProtectionEnabled, session.currentStaff != nil else {
+        guard let timeout, session.isPINProtectionEnabled, session.currentStaff != nil else {
             stop()
             return
         }
@@ -65,6 +72,10 @@ final class POSAutoLockActivityController {
 private extension POSAutoLockActivityController {
     func restartTimer() {
         timer?.invalidate()
+        guard let timeout else {
+            timer = nil
+            return
+        }
         let scheduled = Timer(timeInterval: timeout, repeats: false) { [weak self] _ in
             Task { @MainActor in self?.handleTimerFire() }
         }

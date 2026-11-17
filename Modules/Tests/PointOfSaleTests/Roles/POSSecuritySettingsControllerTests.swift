@@ -377,6 +377,78 @@ struct POSSecuritySettingsControllerTests {
         #expect(try store.credentials().count == 2)
     }
 
+    @Test func test_pinActions_when_only_admin_pin_is_set_then_offers_admin_change_and_cashier_setup() async {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+
+        // When
+        #expect(await save("1234", for: .admin, using: controller))
+
+        // Then
+        #expect(controller.pinActions(for: .admin) == [.change])
+        #expect(controller.pinActions(for: .cashier) == [.setUp])
+    }
+
+    @Test func test_pinActions_when_cashier_pin_is_set_then_offers_change_and_delete_for_cashier_only() async {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+
+        // When
+        #expect(await save("5678", for: .cashier, using: controller))
+
+        // Then
+        #expect(controller.pinActions(for: .admin) == [.change])
+        #expect(controller.pinActions(for: .cashier) == [.change, .delete])
+    }
+
+    @Test func test_pinActions_when_no_pin_is_set_then_offers_only_admin_setup() {
+        // Given
+        let (controller, _, _) = makeSUT()
+
+        // When
+        controller.load()
+
+        // Then
+        #expect(controller.pinActions(for: .admin) == [.setUp])
+        #expect(controller.pinActions(for: .cashier).isEmpty)
+    }
+
+    @Test func test_updateLockPreferences_when_admin_is_unlocked_then_saves_change() async {
+        // Given
+        let lockSettings = POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults)
+        let (controller, _, _) = makeSUT(lockSettings: lockSettings)
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+
+        // When
+        controller.updateLockPreferences { $0.inactivityTimeout = .never }
+
+        // Then
+        #expect(controller.lockPreferences?.inactivityTimeout == .never)
+        #expect(POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults).preferences.inactivityTimeout == .never)
+    }
+
+    @Test func test_updateLockPreferences_when_locked_or_cashier_then_keeps_preferences() async throws {
+        // Given
+        let lockSettings = POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults)
+        let (controller, session, _) = makeSUT(lockSettings: lockSettings)
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
+        session.lock()
+
+        // When
+        controller.updateLockPreferences { $0.locksInBackground = false }
+        try await session.signIn(withPIN: "5678")
+        controller.updateLockPreferences { $0.locksAfterSale = true }
+
+        // Then
+        #expect(lockSettings.preferences == POSLockPreferences())
+    }
+
     @Test(arguments: [POSLocalRole.admin, .cashier])
     func test_role_display_names_when_local_roles_then_maps_to_current_names(role: POSLocalRole) {
         // Given / When / Then
@@ -882,7 +954,7 @@ struct POSSecuritySettingsControllerTests {
         return await setup.submit(pin) == .saved
     }
 
-    private func makeSUT() -> (POSSecuritySettingsController, DefaultPOSAccessSession, POSLocalPINStore) {
+    private func makeSUT(lockSettings: POSLockSettings? = nil) -> (POSSecuritySettingsController, DefaultPOSAccessSession, POSLocalPINStore) {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         let defaults = defaultsScope.defaults
         let session = DefaultPOSAccessSession(siteID: 123,
@@ -890,7 +962,7 @@ struct POSSecuritySettingsControllerTests {
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
-        return (POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in }), session, store)
+        return (POSSecuritySettingsController(store: store, session: session, lockSettings: lockSettings, flowSleep: { _ in }), session, store)
     }
 }
 

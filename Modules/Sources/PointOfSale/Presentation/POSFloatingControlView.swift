@@ -106,6 +106,8 @@ private extension POSFloatingControlView {
 
             if canLockPOS {
                 POSMenuButton {
+                    // The menu can stay open while a payment starts.
+                    guard !posModel.paymentState.isAutoLockSuppressing else { return }
                     session.lock()
                 } label: {
                     Label(
@@ -113,6 +115,7 @@ private extension POSFloatingControlView {
                         icon: { Image(systemName: "lock") }
                     )
                 }
+                .disabled(posModel.paymentState.isAutoLockSuppressing)
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
         }

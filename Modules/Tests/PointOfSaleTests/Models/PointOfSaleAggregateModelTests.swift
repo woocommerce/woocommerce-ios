@@ -863,6 +863,38 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
+        @Test(arguments: [PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle),
+                          PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)])
+        func startNewCart_after_completed_sale_counts_new_order_after_sale(paymentState: PointOfSalePaymentState) async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: MockPointOfSaleItemsController(),
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                paymentState: paymentState)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.newOrdersAfterSale == 1)
+        }
+
+        @Test func startNewCart_without_completed_sale_does_not_count_new_order_after_sale() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: MockPointOfSaleItemsController(),
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                paymentState: PointOfSalePaymentState(card: .paymentError, cash: .idle))
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.newOrdersAfterSale == 0)
+        }
+
         @Test func startNewCart_sets_payment_message_to_nil() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()

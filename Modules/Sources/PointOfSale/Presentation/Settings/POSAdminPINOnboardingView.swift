@@ -3,6 +3,7 @@ import SwiftUI
 /// Security before any PIN is set.
 struct POSAccessControlSetupView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let onGetStarted: () -> Void
 
     var body: some View {
@@ -31,10 +32,16 @@ struct POSAccessControlSetupView: View {
                 }
                 .posContentPadding(.horizontal, metrics.padding.xxLarge)
                 .posPadding(.vertical, \.medium)
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * navigationInset))
             }
+            .contentMargins(.vertical, navigationInset, for: .scrollContent)
             .scrollBounceBehavior(.basedOnSize)
         }
+    }
+
+    private var navigationInset: CGFloat {
+        // Equal insets keep the content centered in the full pane while clearing the phone's Back control.
+        horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight + metrics.padding.medium + metrics.padding.large : 0
     }
 
     private enum Constants {

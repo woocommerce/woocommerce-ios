@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let controller: POSSecuritySettingsController
     @State private var editing: POSLocalRole?
     @State private var isOnboardingAdmin = false
@@ -10,14 +11,20 @@ struct POSSecuritySettingsView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            POSPageHeaderView(title: Localization.title)
             if controller.roles?.isEmpty == true {
                 POSAccessControlSetupView {
                     controller.load()
                     isOnboardingAdmin = true
                     editing = .admin
                 }
+                .overlay(alignment: .top) {
+                    if horizontalSizeClass == .compact {
+                        POSPageHeaderView(title: "")
+                            .background(Color.posSurface)
+                    }
+                }
             } else {
+                POSPageHeaderView(title: Localization.title)
                 ScrollView {
                     VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                         if let roles = controller.roles {

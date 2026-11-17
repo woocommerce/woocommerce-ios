@@ -24,6 +24,7 @@ private struct POSShadowLayer {
 struct POSShadowStyleModifier: ViewModifier {
     let style: POSShadowStyle
     let cornerRadius: CGFloat
+    var shape: AnyShape? = nil
 
     func body(content: Content) -> some View {
         content
@@ -32,7 +33,8 @@ struct POSShadowStyleModifier: ViewModifier {
                     let shadowLayers = shadowLayers(for: style)
                     RasterizedShadowBackground(
                         cornerRadius: cornerRadius,
-                        shadowLayers: shadowLayers
+                        shadowLayers: shadowLayers,
+                        shadowPath: shape?.path(in: CGRect(origin: .zero, size: geometry.size)).cgPath
                     )
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 }
@@ -68,6 +70,10 @@ extension View {
     ///   - cornerRadius: The corner radius for the shadow background. Default is 0.
     func posShadow(_ style: POSShadowStyle, cornerRadius: CGFloat = 0) -> some View {
         modifier(POSShadowStyleModifier(style: style, cornerRadius: cornerRadius))
+    }
+
+    func posShadow<S: Shape>(_ style: POSShadowStyle, shape: S) -> some View {
+        modifier(POSShadowStyleModifier(style: style, cornerRadius: 0, shape: AnyShape(shape)))
     }
 }
 
@@ -110,6 +116,7 @@ extension View {
 private class MultiShadowView: UIView {
     var cornerRadius: CGFloat = 0
     var shadowLayers: [POSShadowLayer] = []
+    var shadowPath: CGPath?
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -134,7 +141,7 @@ private class MultiShadowView: UIView {
             shadowLayer.masksToBounds = false
             shadowLayer.shouldRasterize = true
             shadowLayer.rasterizationScale = UIScreen.main.scale
-            shadowLayer.shadowPath = UIBezierPath(roundedRect: shadowLayer.bounds, cornerRadius: cornerRadius).cgPath
+            shadowLayer.shadowPath = shadowPath ?? UIBezierPath(roundedRect: shadowLayer.bounds, cornerRadius: cornerRadius).cgPath
             layer.insertSublayer(shadowLayer, at: UInt32(index))
         }
     }
@@ -143,17 +150,20 @@ private class MultiShadowView: UIView {
 private struct RasterizedShadowBackground: UIViewRepresentable {
     let cornerRadius: CGFloat
     let shadowLayers: [POSShadowLayer]
+    var shadowPath: CGPath? = nil
 
     func makeUIView(context: Context) -> MultiShadowView {
         let view = MultiShadowView()
         view.cornerRadius = cornerRadius
         view.shadowLayers = shadowLayers
+        view.shadowPath = shadowPath
         return view
     }
 
     func updateUIView(_ uiView: MultiShadowView, context: Context) {
         uiView.cornerRadius = cornerRadius
         uiView.shadowLayers = shadowLayers
+        uiView.shadowPath = shadowPath
         uiView.setNeedsLayout()
     }
 }

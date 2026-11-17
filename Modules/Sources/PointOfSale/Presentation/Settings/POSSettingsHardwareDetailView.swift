@@ -192,8 +192,8 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var reconnectingMenuButton: some View {
-        Menu {
-            Button(Localization.cancelReconnectionTitle) {
+        POSMenu {
+            POSMenuButton(Localization.cancelReconnectionTitle) {
                 isCancellingReconnection = true
                 posModel.cancelReconnection()
             }
@@ -214,6 +214,7 @@ private extension POSSettingsHardwareDetailView {
                     .strokeBorder(Color.posOnSurface, lineWidth: 2)
             )
         }
+        .accessibilityLabel(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
         .disabled(isCancellingReconnection)
         .onChange(of: posModel.cardReaderConnectionStatus) {
             isCancellingReconnection = false

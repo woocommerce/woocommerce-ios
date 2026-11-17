@@ -418,36 +418,36 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private func phoneOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
-        Menu {
+        POSMenu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
             if canCreateCoupon {
-                Button(action: onCreateCoupon) {
+                POSMenuButton(action: onCreateCoupon) {
                     Label(Localization.phoneMenuCreateCoupon, systemImage: "plus")
                 }
             }
-            Button {
+            POSMenuButton {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
             .accessibilityIdentifier("pos-settings-menu-item")
-            Button {
+            POSMenuButton {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 presentOrders()
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
             if session.isPINProtectionEnabled {
-                Button {
+                POSMenuButton {
                     session.lock()
                 } label: {
                     Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
                 }
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
-            Button {
+            POSMenuButton {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
                 requestExit(confirmingFirst: true)
             } label: {
@@ -466,9 +466,6 @@ struct PointOfSaleDashboardView: View {
                 .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
                 .fixedSize()
         }
-        // Keep the declared order (Exit last) instead of letting the system reorder items by the
-        // button's position on screen.
-        .menuOrder(.fixed)
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-compact-overflow-menu")
     }

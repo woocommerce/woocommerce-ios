@@ -322,12 +322,8 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func waitForReaderConnected() -> Self {
-        // Wait for the reader connection status to show "Reader connected"
-        let connectedStatus = app.otherElements["pos-reader-connected"]
-
-        guard connectedStatus.waitForExistence(timeout: 3) else {
-            return self
-        }
+        let connectedStatus = app.buttons["pos-reader-connected"]
+        XCTAssertTrue(connectedStatus.waitForExistence(timeout: 3), "Reader should be connected.")
 
         return self
     }

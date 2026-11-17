@@ -37,6 +37,9 @@ struct OrderListViewControllerTests {
         #expect((cell is StoreOrderListTableViewCell) == usesStoreDesignSystem)
         #expect((cell is OrderTableViewCell) != usesStoreDesignSystem)
         #expect(cell.accessibilityIdentifier == "#1 Guest")
+        let header = viewController.tableView(viewController.tableView, viewForHeaderInSection: 0)
+        #expect((header is StoreOrderListSectionHeaderView) == usesStoreDesignSystem)
+        #expect((header is TwoColumnSectionHeaderView) != usesStoreDesignSystem)
     }
 
     @Test
@@ -106,7 +109,8 @@ struct OrderListViewControllerTests {
         #expect(shownOrderIDs == [selectedOrder.orderID])
     }
 
-    @Test func empty_state_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state() throws {
+    @Test(arguments: [false, true])
+    func empty_state_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state(usesStoreDesignSystem: Bool) throws {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
@@ -121,6 +125,7 @@ struct OrderListViewControllerTests {
         let viewController = OrderListViewController(siteID: siteID,
                                                      title: "Orders",
                                                      viewModel: viewModel,
+                                                     usesStoreDesignSystem: usesStoreDesignSystem,
                                                      stores: stores,
                                                      switchDetailsHandler: { _, _, _, _ in })
 
@@ -128,6 +133,11 @@ struct OrderListViewControllerTests {
         viewController.loadViewIfNeeded()
 
         // Then
+        if usesStoreDesignSystem {
+            #expect(viewController.tableView.tableFooterView is StoreOrderListFooterView)
+            return
+        }
+
         let emptyStateView = try #require(viewController.tableView.tableFooterView as? ListEmptyView)
         let mirror = try mirror(of: emptyStateView)
 
@@ -137,8 +147,8 @@ struct OrderListViewControllerTests {
         #expect(mirror.actionButton.titleLabel?.text == "Learn more")
     }
 
-    @Test(.timeLimit(.minutes(1)))
-    func test_sync_when_loading_fails_then_reuses_the_same_table_and_refresh_control() async throws {
+    @Test(.timeLimit(.minutes(1)), arguments: [false, true])
+    func test_sync_when_loading_fails_then_reuses_the_same_table_and_refresh_control(usesStoreDesignSystem: Bool) async throws {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
@@ -148,6 +158,7 @@ struct OrderListViewControllerTests {
         let viewController = OrderListViewController(siteID: siteID,
                                                      title: "Orders",
                                                      viewModel: viewModel,
+                                                     usesStoreDesignSystem: usesStoreDesignSystem,
                                                      stores: stores,
                                                      switchDetailsHandler: { _, _, _, _ in })
         var completeSync: ((TimeInterval, Result<[Yosemite.Order], Error>) -> Void)?
@@ -175,7 +186,8 @@ struct OrderListViewControllerTests {
         #expect(viewController.firstAvailableOrder == nil)
         let firstRow = IndexPath(row: 0, section: 0)
         let loadingCell = try #require(tableView.dataSource?.tableView(tableView, cellForRowAt: firstRow))
-        #expect(loadingCell is OrderTableViewCell)
+        #expect((loadingCell is StoreOrderListTableViewCell) == usesStoreDesignSystem)
+        #expect((loadingCell is OrderTableViewCell) != usesStoreDesignSystem)
         #expect(loadingCell.accessibilityIdentifier == nil)
         #expect(!loadingCell.isUserInteractionEnabled)
         #expect(viewController.tableView(tableView, willSelectRowAt: IndexPath(row: 0, section: 0)) == nil)
@@ -193,7 +205,8 @@ struct OrderListViewControllerTests {
         // Then: the error and empty content belong to that table
         #expect(failedSyncSucceeded == false)
         #expect(tableView.tableHeaderView?.subviews.contains { $0 is TopBannerView } == true)
-        #expect(tableView.tableFooterView is ListEmptyView)
+        #expect((tableView.tableFooterView is StoreOrderListFooterView) == usesStoreDesignSystem)
+        #expect((tableView.tableFooterView is ListEmptyView) != usesStoreDesignSystem)
         #expect(viewController.children.isEmpty)
         #expect(tableView.refreshControl === refreshControl)
 
@@ -212,9 +225,10 @@ struct OrderListViewControllerTests {
         #expect(tableView.numberOfRows(inSection: 0) == 1)
         #expect(viewController.firstAvailableOrder?.orderID == order.orderID)
         let orderCell = try #require(tableView.dataSource?.tableView(tableView, cellForRowAt: firstRow))
-        #expect(orderCell.reuseIdentifier != loadingCell.reuseIdentifier)
+        #expect((orderCell.reuseIdentifier == loadingCell.reuseIdentifier) == usesStoreDesignSystem)
         #expect(orderCell.isUserInteractionEnabled)
-        #expect(tableView.tableFooterView is FooterSpinnerView)
+        #expect((tableView.tableFooterView is StoreOrderListFooterView) == usesStoreDesignSystem)
+        #expect((tableView.tableFooterView is FooterSpinnerView) != usesStoreDesignSystem)
         #expect(viewController.children.isEmpty)
         #expect(viewController.tableView === tableView)
         #expect(tableView.refreshControl === refreshControl)

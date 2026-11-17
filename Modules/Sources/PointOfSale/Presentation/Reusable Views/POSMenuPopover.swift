@@ -20,7 +20,12 @@ struct POSMenuPopover<Content: View>: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ controller: UIViewController, context: Context) {
-        context.coordinator.update(anchor: controller, content: content, isPresented: $isPresented, pointer: $pointer, metrics: metrics)
+        context.coordinator.update(anchor: controller,
+                                   content: content,
+                                   isPresented: $isPresented,
+                                   pointer: $pointer,
+                                   metrics: metrics,
+                                   transaction: context.transaction)
     }
 
     static func dismantleUIViewController(_ controller: UIViewController, coordinator: Coordinator) {
@@ -41,13 +46,18 @@ struct POSMenuPopover<Content: View>: UIViewControllerRepresentable {
             self.metrics = metrics
         }
 
-        func update(anchor: UIViewController, content: () -> Content, isPresented: Binding<Bool>, pointer: Binding<POSMenuPointer>, metrics: POSMetrics) {
+        func update(anchor: UIViewController,
+                    content: () -> Content,
+                    isPresented: Binding<Bool>,
+                    pointer: Binding<POSMenuPointer>,
+                    metrics: POSMetrics,
+                    transaction: Transaction = Transaction()) {
             self.isPresented = isPresented
             self.pointer = pointer
             self.metrics = metrics
             self.anchor = anchor
             guard isPresented.wrappedValue else {
-                dismiss(animated: true)
+                dismiss(animated: !transaction.disablesAnimations)
                 return
             }
             if let hostingController, hostingController.presentingViewController != nil || hostingController.isBeingPresented {

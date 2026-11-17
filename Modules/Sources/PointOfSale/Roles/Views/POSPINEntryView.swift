@@ -185,7 +185,7 @@ private extension POSPINEntryView {
 
     var numpad: some View {
         VStack(spacing: keySpacing) {
-            ForEach(Constants.rows, id: \.self) { row in
+            ForEach(POSPINEntryViewHelper.keypadRows, id: \.self) { row in
                 HStack(spacing: keySpacing) {
                     ForEach(row, id: \.self) { key in
                         keyButton(for: key)
@@ -423,7 +423,8 @@ private extension POSPINEntryView {
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
         static let keySpacing: CGFloat = POSMetrics.Scale.regular.medium
-        static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
+        static let keypadHeight = keySize * CGFloat(POSPINEntryViewHelper.keypadRows.count)
+            + keySpacing * CGFloat(POSPINEntryViewHelper.keypadRows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
         static let waveHeight: CGFloat = 6
@@ -431,12 +432,6 @@ private extension POSPINEntryView {
         static let wavePhase: Double = 0.7
         static let emptyKey = ""
         static let deleteKey = "delete"
-        static let rows: [[String]] = [
-            ["1", "2", "3"],
-            ["4", "5", "6"],
-            ["7", "8", "9"],
-            [emptyKey, "0", deleteKey]
-        ]
     }
 
     enum LockScreenConstants {
@@ -503,13 +498,14 @@ extension POSPINEntryView {
     static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
 
     static func lockScreenKeypadWidth(keySize: CGFloat, metrics: POSMetrics) -> CGFloat {
-        let columns = CGFloat(Constants.rows[0].count)
-        return keySize * columns + lockScreenKeySpacing(metrics) * (columns - 1)
+        POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).width
     }
 
     private static func lockScreenKeySpacing(_ metrics: POSMetrics) -> CGFloat {
-        metrics.spacing.small
+        POSPINEntryViewHelper.lockScreenKeySpacing(metrics)
     }
+
+    static var lockScreenStatusRowHeight: CGFloat { LockScreenConstants.statusRowHeight }
 
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight

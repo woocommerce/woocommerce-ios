@@ -5,6 +5,7 @@ struct POSLockScreenView: View {
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .body) private var statusLineHeight = POSPINEntryView.lockScreenStatusRowHeight
     @State private var model: POSLockScreenModel
     @State private var illustrationFrame: CGRect = .zero
     @State private var titleHeight: CGFloat = 0
@@ -22,10 +23,11 @@ struct POSLockScreenView: View {
 
     var body: some View {
         GeometryReader { geometry in
+            let configuration = layoutConfiguration(viewportSize: geometry.size)
             ScrollView {
-                content(viewportSize: geometry.size)
+                content(viewportSize: geometry.size, configuration: configuration)
                     .padding(.horizontal, metrics.padding.xxLarge)
-                    .padding(.vertical, verticalPadding)
+                    .padding(.vertical, configuration.verticalPadding)
                     .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
             .coordinateSpace(name: Constants.coordinateSpace)
@@ -37,7 +39,7 @@ struct POSLockScreenView: View {
             .task(id: isLayoutMeasured) {
                 guard isLayoutMeasured else { return }
                 await intro.run(shouldAnimate: animatesLock && !reduceMotion
-                                && showsIllustration(availableHeight: geometry.size.height - verticalPadding * 2))
+                                && configuration.showsIllustration)
             }
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
@@ -52,37 +54,28 @@ private extension POSLockScreenView {
         verticalSizeClass == .compact
     }
 
-    var keySize: CGFloat {
-        if isCompactHeight {
-            return Constants.compactHeightKeySize
-        }
-        return layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize
-    }
-
-    var verticalPadding: CGFloat {
-        isCompactHeight ? metrics.padding.small : metrics.padding.xxLarge
-    }
-
-    func showsIllustration(availableHeight: CGFloat) -> Bool {
-        let headerHeight = illustrationFrame.height + metrics.spacing.xLarge + titleHeight
-        let contentHeight = isCompactHeight
-            ? max(headerHeight, keypadHeight)
-            : headerHeight + metrics.spacing.xLarge + keypadHeight
-        return contentHeight <= availableHeight
+    func layoutConfiguration(viewportSize: CGSize) -> POSLockScreenLayout {
+        POSLockScreenLayout(viewportSize: viewportSize,
+                            preferredKeySize: layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize,
+                            titleHeight: titleHeight,
+                            illustrationHeight: POSLockIllustration.size,
+                            // Reserve the two-line wait message so keys do not resize when feedback replaces the dots.
+                            statusHeight: statusLineHeight * Constants.statusLineCount,
+                            isHorizontal: isCompactHeight, metrics: metrics)
     }
 
     /// One layout container keeps the PIN entry's identity, so rotating does not clear entered digits.
-    func content(viewportSize: CGSize) -> some View {
+    func content(viewportSize: CGSize, configuration: POSLockScreenLayout) -> some View {
         let layout = isCompactHeight
             ? AnyLayout(HStackLayout(spacing: metrics.spacing.xxLarge))
             : AnyLayout(VStackLayout(spacing: metrics.spacing.xLarge))
         return layout {
-            header(showsIllustration: showsIllustration(availableHeight: viewportSize.height - verticalPadding * 2),
+            header(showsIllustration: configuration.showsIllustration,
                    viewportSize: viewportSize)
                 .frame(maxWidth: isCompactHeight ? POSPINEntryView.contentWidth : nil)
                 .zIndex(1)
-            pinEntry
-                .frame(width: isCompactHeight ? POSPINEntryView.lockScreenKeypadWidth(keySize: keySize, metrics: metrics) : nil)
+            pinEntry(keySize: configuration.keySize)
+                .frame(width: isCompactHeight ? POSPINEntryView.lockScreenKeypadWidth(keySize: configuration.keySize, metrics: metrics) : nil)
                 .frame(maxWidth: isCompactHeight ? nil : POSPINEntryView.contentWidth)
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { keypadHeight = $0 }
@@ -140,7 +133,7 @@ private extension POSLockScreenView {
                       height: viewportSize.height / 2 - illustrationFrame.midY)
     }
 
-    var pinEntry: some View {
+    func pinEntry(keySize: CGFloat) -> some View {
         let view = POSPINEntryView(state: model.pinEntryState, style: .lockScreen(keySize: keySize), onComplete: { pin in
             await model.signIn(withPIN: pin)
         })
@@ -155,7 +148,7 @@ private extension POSLockScreenView {
     enum Constants {
         static let regularKeySize: CGFloat = 90
         static let compactKeySize: CGFloat = 72
-        static let compactHeightKeySize: CGFloat = 60
+        static let statusLineCount: CGFloat = 2
         static let coordinateSpace = "posLockScreen"
     }
 }

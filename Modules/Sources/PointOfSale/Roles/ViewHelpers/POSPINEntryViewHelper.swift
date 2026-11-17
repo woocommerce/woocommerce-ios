@@ -1,6 +1,35 @@
 import Foundation
 
 struct POSPINEntryViewHelper {
+    static let keypadRows = [
+        ["1", "2", "3"],
+        ["4", "5", "6"],
+        ["7", "8", "9"],
+        ["", "0", "delete"]
+    ]
+
+    static func lockScreenKeySpacing(_ metrics: POSMetrics) -> CGFloat {
+        metrics.spacing.small
+    }
+
+    static func lockScreenKeypadSize(keySize: CGFloat, metrics: POSMetrics) -> CGSize {
+        let columns = CGFloat(keypadRows[0].count)
+        let rows = CGFloat(keypadRows.count)
+        let spacing = lockScreenKeySpacing(metrics)
+        return CGSize(width: keySize * columns + spacing * (columns - 1),
+                      height: keySize * rows + spacing * (rows - 1))
+    }
+
+    static func lockScreenKeySize(fitting size: CGSize, preferred: CGFloat, metrics: POSMetrics) -> CGFloat {
+        let columns = CGFloat(keypadRows[0].count)
+        let rows = CGFloat(keypadRows.count)
+        let spacing = lockScreenKeySpacing(metrics)
+        let widthLimit = (size.width - spacing * (columns - 1)) / columns
+        let heightLimit = (size.height - spacing * (rows - 1)) / rows
+        let minimum = max(Constants.minimumKeySize, preferred * Constants.minimumKeyScale)
+        return min(preferred, max(minimum, min(widthLimit, heightLimit).rounded(.down)))
+    }
+
     func appending(_ digit: Character, to pin: String, length: Int) -> String {
         guard pin.count < length else {
             return pin
@@ -71,6 +100,11 @@ enum POSPINStatusMessage: Equatable {
 }
 
 private extension POSPINEntryViewHelper {
+    enum Constants {
+        static let minimumKeySize: CGFloat = 60
+        static let minimumKeyScale: CGFloat = 0.8
+    }
+
     enum Localization {
         static let lockoutFormat = NSLocalizedString(
             "pos.pinEntry.lockout.incorrectAttemptsCountdown",

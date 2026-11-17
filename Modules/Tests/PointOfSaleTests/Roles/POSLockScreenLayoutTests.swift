@@ -66,16 +66,29 @@ struct POSLockScreenLayoutTests {
         #expect(layout.showsIllustration)
     }
 
-    @Test func test_layout_when_phone_has_compact_height_then_fits_keys_beside_header() {
+    @Test func test_layout_when_phone_has_compact_height_then_stacks_title_above_keys_without_illustration() {
         // Given
-        let viewport = CGSize(width: 844, height: 360)
+        let viewport = CGSize(width: 874, height: 381)
 
         // When
-        let layout = makeLayout(viewport, preferredKeySize: 72, titleHeight: 52, isHorizontal: true, metrics: .compact)
+        let layout = makeLayout(viewport, preferredKeySize: 72, titleHeight: 26, isCompactHeight: true, metrics: .compact)
 
         // Then
-        #expect(layout.keySize == 63)
-        #expect(layout.showsIllustration)
+        #expect(!layout.showsIllustration)
+        #expect(layout.keySize == 60)
+        #expect(layout.verticalPadding == POSMetrics.compact.padding.small)
+        #expect(layout.sectionSpacing == POSMetrics.compact.spacing.medium)
+    }
+
+    @Test func test_layout_when_height_is_regular_then_keeps_regular_section_spacing() {
+        // Given
+        let viewport = CGSize(width: 834, height: 1190)
+
+        // When
+        let layout = makeLayout(viewport)
+
+        // Then
+        #expect(layout.sectionSpacing == POSMetrics.regular.spacing.xLarge)
     }
 
     @Test(arguments: [CGFloat(72), 90])
@@ -107,8 +120,8 @@ struct POSLockScreenLayoutTests {
 
 private extension POSLockScreenLayoutTests {
     func makeLayout(_ viewport: CGSize, preferredKeySize: CGFloat = 90, titleHeight: CGFloat = 36,
-                    isHorizontal: Bool = false, metrics: POSMetrics = .regular) -> POSLockScreenLayout {
+                    isCompactHeight: Bool = false, metrics: POSMetrics = .regular) -> POSLockScreenLayout {
         POSLockScreenLayout(viewportSize: viewport, preferredKeySize: preferredKeySize, titleHeight: titleHeight,
-                            illustrationHeight: 88, statusHeight: 48, isHorizontal: isHorizontal, metrics: metrics)
+                            illustrationHeight: 88, statusHeight: 48, isCompactHeight: isCompactHeight, metrics: metrics)
     }
 }

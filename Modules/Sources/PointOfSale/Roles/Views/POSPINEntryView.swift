@@ -10,6 +10,7 @@ struct POSPINEntryView: View {
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .body) private var lockScreenStatusLineHeight = LockScreenConstants.statusRowHeight
     private let state: POSPINEntryState
     private let pinLength: Int
     private let style: Style
@@ -43,8 +44,9 @@ struct POSPINEntryView: View {
             if let previewEnteredPIN { attempt = POSPINAttempt(pin: previewEnteredPIN, defersFailureMessage: style != .standard) }
             #endif
         }
-        .onChange(of: state) { _, newState in
+        .onChange(of: state) { oldState, newState in
             handleStateChange(newState)
+            announceStateChange(from: oldState, to: newState)
         }
     }
 }
@@ -208,10 +210,11 @@ private extension POSPINEntryView {
             Color.clear.frame(width: size, height: size)
         case Constants.deleteKey:
             keyContainer(action: handleDelete) {
-                Image(systemName: lockScreenKeySize == nil ? "delete.backward" : "delete.left")
+                Label(Localization.deleteAccessibilityLabel,
+                      systemImage: lockScreenKeySize == nil ? "delete.backward" : "delete.left")
+                    .labelStyle(.iconOnly)
                     .font(.posHeadingBold)
             }
-            .accessibilityLabel(Localization.deleteAccessibilityLabel)
             .disabled(!isInputEnabled || attempt.pin.isEmpty)
         default:
             keyContainer(action: { handleDigit(key) }) {
@@ -253,14 +256,34 @@ private extension POSPINEntryView {
         return ZStack {
             dotsRow
                 .opacity(message == nil ? 1 : 0)
-                .accessibilityHidden(message != nil)
             if let message {
                 lockScreenMessage(message)
                     .transition(.opacity)
             }
         }
-        .frame(minHeight: LockScreenConstants.statusRowHeight)
+        .frame(minHeight: lockScreenStatusMinHeight)
         .animation(LockScreenConstants.feedbackAnimation, value: message == nil)
+        // One stable element keeps VoiceOver focus in place while the dots and messages swap.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.dotsAccessibilityLabel)
+        .accessibilityValue(message.map(accessibilityText(for:)) ?? entryCountText)
+    }
+
+    /// Accessibility sizes wrap the error to two lines. Reserving them keeps the keys still when the next digit replaces it.
+    var lockScreenStatusMinHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
+    }
+
+    var entryCountText: String {
+        Localization.dotsAccessibilityValue(entered: attempt.pin.count, total: pinLength)
+    }
+
+    func accessibilityText(for message: POSPINStatusMessage) -> String {
+        switch message {
+        case .error(let kind): Localization.message(for: kind)
+        case .lockout(let remainingSeconds): helper.lockoutAccessibilityMessage(remainingSeconds: remainingSeconds)
+        case .unavailable: Localization.unavailableMessage
+        }
     }
 
     func lockScreenMessage(_ message: POSPINStatusMessage) -> some View {
@@ -310,6 +333,7 @@ private extension POSPINEntryView {
         }
         haptics.digitEntered()
         guard let submittedGeneration else {
+            announceEntryCount()
             return
         }
         let pin = attempt.pin
@@ -329,6 +353,7 @@ private extension POSPINEntryView {
             return
         }
         attempt.delete()
+        announceEntryCount()
     }
 
     func handleStateChange(_ newState: POSPINEntryState) {
@@ -339,7 +364,6 @@ private extension POSPINEntryView {
 
     func handleFailedAttempt(generation: Int) {
         haptics.attemptFailed()
-        announceFailure()
         guard lockScreenKeySize != nil else {
             attempt.clear()
             withAnimation(.linear(duration: Constants.shakeDuration)) {
@@ -358,15 +382,24 @@ private extension POSPINEntryView {
         }
     }
 
-    func announceFailure() {
-        switch state {
-        case .error(let kind):
-            AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
-        case .unavailable:
-            AccessibilityNotification.Announcement(Localization.unavailableMessage).post()
-        default:
-            break
+    /// The lock screen's focus stays on the keypad, so the entered count is spoken there. The PIN itself never is.
+    func announceEntryCount() {
+        guard lockScreenKeySize != nil else { return }
+        AccessibilityNotification.Announcement(entryCountText).post()
+    }
+
+    /// Announces from the new value: a task started by a key press still holds the state from before the check.
+    func announceStateChange(from oldState: POSPINEntryState, to newState: POSPINEntryState) {
+        let text: String
+        switch helper.announcement(from: oldState, to: newState, announcesWaits: lockScreenKeySize != nil) {
+        case .status(let message): text = accessibilityText(for: message)
+        case .entryAvailable: text = Localization.entryAvailableMessage
+        case nil: return
         }
+        var announcement = AttributedString(text)
+        // Later entry counts must not cut off an error or wait.
+        announcement.accessibilitySpeechAnnouncementPriority = .high
+        AccessibilityNotification.Announcement(announcement).post()
     }
 }
 
@@ -384,6 +417,8 @@ private struct LockScreenKeyButtonStyle: ButtonStyle {
             .background(background(isPressed: configuration.isPressed),
                         in: RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
             .contentShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
+            // Larger digits would not fit the fixed-size keys.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
     private func background(isPressed: Bool) -> Color {
@@ -476,6 +511,11 @@ private extension POSPINEntryView {
             value: "Something went wrong. Try again.",
             comment: "Error message and VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
         )
+        static let entryAvailableMessage = NSLocalizedString(
+            "pos.pinEntry.entryAvailable.accessibilityAnnouncement",
+            value: "You can enter your PIN now.",
+            comment: "VoiceOver announcement on the POS lock screen when a wait or temporary problem ends and the keypad is enabled again."
+        )
         static let unavailableMessage = NSLocalizedString(
             "pos.pinEntry.unavailable.retrying",
             value: "Something went wrong. Retrying…",
@@ -493,10 +533,6 @@ private extension POSPINEntryView {
 extension POSPINEntryView {
     static let contentWidth: CGFloat = 420
     static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
-
-    static func lockScreenKeypadWidth(keySize: CGFloat, metrics: POSMetrics) -> CGFloat {
-        POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).width
-    }
 
     static var lockScreenStatusRowHeight: CGFloat { LockScreenConstants.statusRowHeight }
 

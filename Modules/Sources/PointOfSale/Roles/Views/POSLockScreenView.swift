@@ -11,6 +11,7 @@ struct POSLockScreenView: View {
     @State private var titleHeight: CGFloat = 0
     @State private var keypadHeight: CGFloat = 0
     @State private var intro = POSLockScreenIntro()
+    @AccessibilityFocusState private var isTitleFocused: Bool
     private let animatesLock: Bool
     #if DEBUG
     private var previewEnteredPIN: String?
@@ -36,6 +37,10 @@ struct POSLockScreenView: View {
             .onChange(of: reduceMotion) { _, reduced in
                 if reduced { intro.cancel() }
             }
+            // The intro hides the lock's content from VoiceOver, so focus moves to the title once it is readable.
+            .onChange(of: isIntroActive, initial: true) { _, isActive in
+                if !isActive { isTitleFocused = true }
+            }
             .task(id: isLayoutMeasured) {
                 guard isLayoutMeasured else { return }
                 await intro.run(shouldAnimate: animatesLock && !reduceMotion
@@ -44,7 +49,11 @@ struct POSLockScreenView: View {
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .task { await model.observeWait() }
-        .onDisappear { intro.cancel() }
+        .onDisappear {
+            intro.cancel()
+            // Lets VoiceOver move focus to the unlocked POS instead of a removed key.
+            AccessibilityNotification.ScreenChanged().post()
+        }
     }
 }
 
@@ -60,22 +69,17 @@ private extension POSLockScreenView {
                             illustrationHeight: POSLockIllustration.size,
                             // Reserve the two-line wait message so keys do not resize when feedback replaces the dots.
                             statusHeight: statusLineHeight * Constants.statusLineCount,
-                            isHorizontal: isCompactHeight, metrics: metrics)
+                            isCompactHeight: isCompactHeight, metrics: metrics)
     }
 
-    /// One layout container keeps the PIN entry's identity, so rotating does not clear entered digits.
+    /// One column in every orientation keeps the PIN entry's identity, so rotating does not clear entered digits.
     func content(viewportSize: CGSize, configuration: POSLockScreenLayout) -> some View {
-        let layout = isCompactHeight
-            ? AnyLayout(HStackLayout(spacing: metrics.spacing.xxLarge))
-            : AnyLayout(VStackLayout(spacing: metrics.spacing.xLarge))
-        return layout {
+        VStack(spacing: configuration.sectionSpacing) {
             header(showsIllustration: configuration.showsIllustration,
                    viewportSize: viewportSize)
-                .frame(maxWidth: isCompactHeight ? POSPINEntryView.contentWidth : nil)
                 .zIndex(1)
             pinEntry(keySize: configuration.keySize)
-                .frame(width: isCompactHeight ? POSPINEntryView.lockScreenKeypadWidth(keySize: configuration.keySize, metrics: metrics) : nil)
-                .frame(maxWidth: isCompactHeight ? nil : POSPINEntryView.contentWidth)
+                .frame(maxWidth: POSPINEntryView.contentWidth)
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { keypadHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
@@ -107,6 +111,7 @@ private extension POSLockScreenView {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($isTitleFocused)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { titleHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
                 .offset(y: introOffset(viewportSize: viewportSize).height)

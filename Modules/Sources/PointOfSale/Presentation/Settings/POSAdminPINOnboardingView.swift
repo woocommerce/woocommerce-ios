@@ -168,6 +168,7 @@ private extension POSAdminPINOnboardingView {
             }
             .scrollBounceBehavior(.basedOnSize)
         }
+        .clipped()
     }
 
     var page: POSPINEntryPage {
@@ -206,6 +207,7 @@ private extension POSAdminPINOnboardingView {
             }
             .scrollBounceBehavior(.basedOnSize)
             .defaultScrollAnchor(.center)
+            .clipped()
             actions()
         }
     }

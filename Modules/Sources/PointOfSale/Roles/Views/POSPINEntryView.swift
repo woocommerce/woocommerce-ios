@@ -317,7 +317,7 @@ private extension POSPINEntryView {
                         .transition(.offset(y: -LockScreenConstants.feedbackDrop).combined(with: .opacity))
                 }
             }
-            .animation(LockScreenConstants.setupFeedbackAnimation, value: setupFeedback)
+            .animation(reduceMotion ? nil : LockScreenConstants.setupFeedbackAnimation, value: setupFeedback)
         } else {
             dotsRow
         }

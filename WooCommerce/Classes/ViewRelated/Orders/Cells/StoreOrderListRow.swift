@@ -71,7 +71,6 @@ struct StoreOrderListRow: View {
             StoreDivider(variant: .inset)
         }
         .background(isSelected ? Color.storeTintLayerPrimaryContainerOpacity16 : Color.storeSurfaceBright)
-        .accessibilityElement(children: .combine)
     }
 }
 

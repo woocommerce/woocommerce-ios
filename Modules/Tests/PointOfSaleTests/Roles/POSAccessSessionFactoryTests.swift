@@ -1,11 +1,12 @@
 import Foundation
 import Observation
 import Testing
+import UIKit
 import enum Experiments.FeatureFlag
 @testable import PointOfSale
 
 @MainActor
-@Suite(.timeLimit(.minutes(5)))
+@Suite(.serialized, .timeLimit(.minutes(5)))
 struct POSAccessSessionFactoryTests {
     @Test(arguments: [false, true])
     func test_validation_when_session_is_retired_then_does_not_restore_draft_or_block_replacement(endOnly: Bool) async throws {
@@ -130,6 +131,145 @@ struct POSAccessSessionFactoryTests {
         // Then
         #expect(second.isLocked)
         #expect(second.currentStaff == nil)
+    }
+
+    @Test(arguments: POSInactivityLockTimeout.allCases.filter { $0 != .never })
+    func test_make_when_retained_operator_reaches_inactivity_timeout_then_locks(timeout: POSInactivityLockTimeout) async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        let clock = ResumeClock()
+        POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.inactivityTimeout = timeout }
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        clock.current += TimeInterval(timeout.rawValue * 60)
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
+    @Test func test_make_when_retained_operator_is_within_inactivity_timeout_then_resumes() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        let clock = ResumeClock()
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        clock.current += 299
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+
+        // Then
+        #expect(!second.isLocked)
+        #expect(second.currentStaff == POSLocalRole.admin.staff)
+    }
+
+    @Test func test_make_when_inactivity_is_never_then_retains_operator_across_idle_gap() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        let clock = ResumeClock()
+        POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.inactivityTimeout = .never }
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        clock.current += 86400
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+
+        // Then
+        #expect(!second.isLocked)
+    }
+
+    @Test(arguments: [true, false])
+    func test_make_when_app_backgrounds_outside_pos_then_obeys_background_preference(locksInBackground: Bool) async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.locksInBackground = locksInBackground }
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(second.isLocked == locksInBackground)
+        #expect((second.currentStaff == nil) == locksInBackground)
+    }
+
+    @Test func test_make_when_session_cleanup_follows_background_notification_then_does_not_retain_operator() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        first.endSession()
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
+    @Test func test_background_when_store_preferences_change_then_evicts_only_matching_store() async throws {
+        // Given
+        let firstStore = makeSUT(siteID: uniqueSiteID())
+        let secondStore = makeSUT(siteID: uniqueSiteID())
+        let firstSettings = POSLockSettings(siteID: firstStore.siteID, userDefaults: firstStore.defaultsScope.defaults)
+        firstSettings.update { $0.locksInBackground = false }
+        POSLockSettings(siteID: secondStore.siteID, userDefaults: secondStore.defaultsScope.defaults).update { $0.locksInBackground = false }
+        try firstStore.store.setPIN("1234", for: .admin)
+        try secondStore.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(firstStore, locksWhenPOSOpens: false)
+        let second = try await makeReplacement(secondStore, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+        try await second.signIn(withPIN: "1234")
+        first.endSession()
+        second.endSession()
+
+        // When
+        firstSettings.update { $0.locksInBackground = true }
+        NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        let reopenedFirst = try await makeReplacement(firstStore, locksWhenPOSOpens: false)
+        let reopenedSecond = try await makeReplacement(secondStore, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(reopenedFirst.isLocked)
+        #expect(!reopenedSecond.isLocked)
+    }
+
+    @Test func test_make_when_clock_moves_backwards_then_does_not_extend_retained_operator() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        let clock = ResumeClock()
+        try sut.store.setPIN("1234", for: .admin)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        clock.current -= 1
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, now: { clock.current })
+
+        // Then
+        #expect(second.isLocked)
     }
 
     @Test(arguments: PendingPINChange.allCases)
@@ -313,10 +453,11 @@ private extension POSAccessSessionFactoryTests {
 
     func makeReplacement(_ sut: SUT,
                          locksWhenPOSOpens: Bool = true,
+                         now: @escaping @MainActor () -> Date = Date.init,
                          shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         try await POSAccessSessionFactory.make(siteID: sut.siteID, featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
                                                credentialProvider: sut.store, rateLimiter: sut.limiter, userDefaults: sut.defaultsScope.defaults,
-                                               locksWhenPOSOpens: locksWhenPOSOpens, shouldCreate: shouldCreate)
+                                               locksWhenPOSOpens: locksWhenPOSOpens, now: now, shouldCreate: shouldCreate)
     }
 
     /// The factory keeps unlocked operators per store in memory, so each launch-lock test uses its own store.
@@ -342,4 +483,9 @@ private final class StubPOSFeatureFlagProviding: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool {
         enabledFlags.contains(flag)
     }
+}
+
+@MainActor
+private final class ResumeClock {
+    var current = Date(timeIntervalSinceReferenceDate: 0)
 }

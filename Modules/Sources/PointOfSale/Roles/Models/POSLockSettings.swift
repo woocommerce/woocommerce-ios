@@ -16,6 +16,7 @@ enum POSInactivityLockTimeout: Int, CaseIterable, Codable, Sendable {
     }
 }
 
+// New fields need a decoder migration that preserves existing saved choices.
 struct POSLockPreferences: Codable, Equatable, Sendable {
     var locksWhenPOSOpens = true
     var locksInBackground = true

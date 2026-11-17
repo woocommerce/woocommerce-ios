@@ -19,11 +19,6 @@ struct POSModalSizing: ViewModifier {
     let fitsContentHeight: Bool
     let fillsAvailableSpace: Bool
 
-    init(fitsContentHeight: Bool, fillsAvailableSpace: Bool = false) {
-        self.fitsContentHeight = fitsContentHeight
-        self.fillsAvailableSpace = fillsAvailableSpace
-    }
-
     @ViewBuilder
     func body(content: Content) -> some View {
         if fillsAvailableSpace {

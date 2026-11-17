@@ -94,6 +94,11 @@ private extension POSPINEntryView {
         Self.page(for: style)
     }
 
+    static func page(for style: Style) -> POSPINEntryPage? {
+        guard case .setup(_, let page, _) = style else { return nil }
+        return page
+    }
+
     var setupFeedback: String? {
         guard case .setup(_, _, let feedback) = style, enteredPIN.isEmpty else { return nil }
         return feedback
@@ -645,11 +650,6 @@ extension POSPINEntryView {
     static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
 
     static var lockScreenStatusRowHeight: CGFloat { LockScreenConstants.statusRowHeight }
-
-    static func page(for style: Style) -> POSPINEntryPage? {
-        guard case .setup(_, let page, _) = style else { return nil }
-        return page
-    }
 
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight

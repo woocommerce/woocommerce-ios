@@ -3,7 +3,6 @@
 
 26.2
 -----
-- [*] POS: Menu actions open without waiting for the popup to fade out. [https://github.com/woocommerce/woocommerce-ios/pull/18392]
 - [*] POS: Action menus now match POS styling in light and dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/18390]
 - [*] Orders: On stores with WooCommerce 11.1 or later, refund amounts in Issue Refund are calculated by the store. [https://github.com/woocommerce/woocommerce-ios/pull/18373]
 - [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]

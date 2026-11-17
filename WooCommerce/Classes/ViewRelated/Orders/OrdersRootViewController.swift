@@ -20,6 +20,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
+        usesStoreDesignSystem: featureFlagService.usesStoreDesignSystem,
         switchDetailsHandler: switchDetailsHandler
     )
 

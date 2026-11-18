@@ -10,6 +10,7 @@ final class AddCustomAmountFormViewModel {
 
     let currencySymbol: String
     private let currencySettings: CurrencySettings
+    private let currencyFormatter: CurrencyFormatter
     private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
     private let amountInputFormatter: POSCashAmountInputFormatter
@@ -19,8 +20,14 @@ final class AddCustomAmountFormViewModel {
 
     var isEditing: Bool { editingID != nil }
 
+    var formattedAmount: String {
+        guard let value = parsedAmount else { return amount }
+        return currencyFormatter.formatAmount(value) ?? amount
+    }
+
     init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
         self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
         self.amountInputFormatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)

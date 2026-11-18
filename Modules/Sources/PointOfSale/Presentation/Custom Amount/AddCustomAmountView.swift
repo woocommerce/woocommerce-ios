@@ -4,7 +4,6 @@ import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Bindable var viewModel: AddCustomAmountFormViewModel
     let requiresSubmitGuard: Bool
     let onBack: () -> Void
@@ -27,8 +26,7 @@ struct AddCustomAmountView: View {
             ScrollView {
                 VStack(spacing: metrics.spacing.medium) {
                     detailCard(label: Localization.amountLabel,
-                               value: CurrencyFormatter(currencySettings: currencyProvider.currencySettings)
-                                .formatAmount(viewModel.amount) ?? viewModel.amount,
+                               value: viewModel.formattedAmount,
                                isPlaceholder: false,
                                accessibilityLabel: Localization.editAmount,
                                identifier: "pos-custom-amount-amount-card",

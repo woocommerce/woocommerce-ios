@@ -11,6 +11,7 @@ final class AddCustomAmountFormViewModel {
     let currencySymbol: String
     private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
+    private let amountInputFormatter: POSCashAmountInputFormatter
     private let fractionDigits: Int
     private let editingID: UUID?
     private let resolvedID: UUID
@@ -19,6 +20,7 @@ final class AddCustomAmountFormViewModel {
 
     init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
+        self.amountInputFormatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
 
         let formatter = NumberFormatter()
@@ -58,6 +60,18 @@ final class AddCustomAmountFormViewModel {
             return
         }
         amount = sanitizer.formatDecimal(value / pow(Decimal(10), fractionDigits))
+    }
+
+    /// Rebuilds the cash input after another step has edited the shared amount draft.
+    func makeAmountInputState() -> POSCashAmountInputState {
+        guard let value = parsedAmount else { return POSCashAmountInputState() }
+        let digits = amountInputFormatter.digits(from: value)
+        let formatted = amountInputFormatter.formattedAmount(from: digits)
+        return POSCashAmountInputState(amount: formatted,
+                                       displayText: formatted,
+                                       inputDigits: digits,
+                                       hasAppliedPreset: true,
+                                       isDisplayingPreset: true)
     }
 
     var isAddEnabled: Bool {

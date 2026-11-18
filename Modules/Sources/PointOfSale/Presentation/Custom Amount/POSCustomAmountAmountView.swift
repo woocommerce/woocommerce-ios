@@ -45,6 +45,9 @@ struct POSCustomAmountAmountView: View {
             .padding(metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
+        .onAppear {
+            amountInput = viewModel.makeAmountInputState()
+        }
         .onChange(of: amountInput.inputDigits) { _, digits in
             viewModel.setAmount(digits: digits)
         }

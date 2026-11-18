@@ -201,6 +201,68 @@ struct AddCustomAmountFormViewModelTests {
         #expect(sut.isAddEnabled == false)
     }
 
+    @Test(arguments: [(".", 2, "25.00", "2500", "25.00"),
+                      (",", 2, "1234,50", "123450", "1.234,50"),
+                      (".", 0, "1500", "1500", "1,500")])
+    func test_makeAmountInputState_when_form_changes_amount_then_restores_current_draft(
+        separator: String, decimals: Int, amount: String, digits: String, display: String
+    ) throws {
+        // Given
+        let settings = CurrencySettings(currencyCode: .USD,
+                                        currencyPosition: .left,
+                                        thousandSeparator: separator == "." ? "," : ".",
+                                        decimalSeparator: separator,
+                                        numberOfDecimals: decimals)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+        sut.setAmount(digits: "1000")
+        let previousInput = sut.makeAmountInputState()
+        sut.setAmount(amount)
+
+        // When
+        let restoredInput = sut.makeAmountInputState()
+
+        // Then
+        #expect(restoredInput != previousInput)
+        #expect(restoredInput.inputDigits == digits)
+        #expect(restoredInput.displayText == display)
+        #expect(restoredInput.amount == display)
+        #expect(try #require(sut.resolvedCustomAmount()).amount == amount)
+    }
+
+    @Test func test_makeAmountInputState_when_amount_is_empty_then_leaves_input_empty() {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        sut.setAmount(digits: "1000")
+        sut.setAmount("")
+
+        // When
+        let input = sut.makeAmountInputState()
+
+        // Then
+        #expect(input == POSCashAmountInputState())
+        #expect(sut.isAddEnabled == false)
+    }
+
+    @Test func test_makeAmountInputState_when_typing_after_restoration_then_replaces_previous_value() throws {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        sut.setAmount(digits: "1000")
+        sut.setAmount("25.00")
+        let input = sut.makeAmountInputState()
+        let formatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
+
+        // When
+        let digits = try #require(formatter.applyingEdit(from: input.displayText,
+                                                        to: input.displayText + "7",
+                                                        currentDigits: input.inputDigits,
+                                                        isReplacingPreset: input.isDisplayingPreset))
+        sut.setAmount(digits: digits)
+
+        // Then
+        #expect(sut.amount == "0.07")
+        #expect(sut.resolvedCustomAmount()?.amount == "0.07")
+    }
+
     @Test(arguments: [true, false])
     func test_init_when_editing_existing_then_prefills_fields(isTaxable: Bool) async throws {
         // Given

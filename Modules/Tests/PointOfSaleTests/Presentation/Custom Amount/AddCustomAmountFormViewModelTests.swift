@@ -13,6 +13,66 @@ struct AddCustomAmountFormViewModelTests {
         numberOfDecimals: 2
     )
 
+    @Test(arguments: [(CurrencySettings.CurrencyPosition.left, "$1,234.50"),
+                      (.right, "1,234.50$"),
+                      (.leftSpace, "$\u{00a0}1,234.50"),
+                      (.rightSpace, "1,234.50\u{00a0}$")])
+    func test_formattedAmount_when_currency_position_varies_then_uses_injected_settings(
+        position: CurrencySettings.CurrencyPosition, expected: String
+    ) {
+        // Given
+        let settings = CurrencySettings(currencyCode: .USD, currencyPosition: position,
+                                        thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 2)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+
+        // When
+        sut.setAmount(digits: "123450")
+
+        // Then
+        #expect(sut.formattedAmount == expected)
+    }
+
+    @Test func test_formattedAmount_when_store_uses_comma_decimals_then_formats_euro_amount() {
+        // Given
+        let settings = CurrencySettings(currencyCode: .EUR, currencyPosition: .rightSpace,
+                                        thousandSeparator: ".", decimalSeparator: ",", numberOfDecimals: 2)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+
+        // When
+        sut.setAmount(digits: "123450")
+
+        // Then
+        #expect(sut.formattedAmount == "1.234,50\u{00a0}€")
+        #expect(sut.amount == "1234,50")
+    }
+
+    @Test func test_formattedAmount_when_store_has_no_fraction_digits_then_formats_whole_yen_amount() {
+        // Given
+        let settings = CurrencySettings(currencyCode: .JPY, currencyPosition: .left,
+                                        thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 0)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+
+        // When
+        sut.setAmount(digits: "1500")
+
+        // Then
+        #expect(sut.formattedAmount == settings.symbol(from: .JPY) + "1,500")
+    }
+
+    @Test func test_formattedAmount_when_amount_changes_then_reflects_latest_draft() {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        sut.setAmount("10.00")
+        let previousDisplay = sut.formattedAmount
+
+        // When
+        sut.setAmount("25.00")
+
+        // Then
+        #expect(previousDisplay == "$10.00")
+        #expect(sut.formattedAmount == "$25.00")
+    }
+
     @Test func test_isAddEnabled_when_amount_is_empty_then_false() async throws {
         // Given
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
@@ -261,6 +321,71 @@ struct AddCustomAmountFormViewModelTests {
         // Then
         #expect(sut.amount == "0.07")
         #expect(sut.resolvedCustomAmount()?.amount == "0.07")
+    }
+
+    @Test func test_makeAmountDraft_when_edited_then_leaves_details_unchanged() throws {
+        // Given
+        let existing = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, editing: existing)
+        let draft = sut.makeAmountDraft()
+
+        // When
+        draft.setAmount(digits: "2500")
+
+        // Then
+        #expect(draft.amount == "25.00")
+        #expect(try #require(sut.resolvedCustomAmount()) == existing)
+    }
+
+    @Test func test_makeAmountDraft_when_saved_then_updates_only_amount_and_preserves_item_identity() throws {
+        // Given
+        let existing = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, editing: existing)
+        let draft = sut.makeAmountDraft()
+        draft.setAmount(digits: "2500")
+
+        // When
+        sut.setAmount(draft.amount)
+
+        // Then
+        let result = try #require(sut.resolvedCustomAmount())
+        #expect(result.id == existing.id)
+        #expect(result.amount == "25.00")
+        #expect(result.name == existing.name)
+        #expect(result.isTaxable == existing.isTaxable)
+    }
+
+    @Test func test_makeAmountDraft_when_invalid_edit_is_discarded_then_reopening_uses_details_amount() {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        sut.setAmount("10.00")
+        let discardedDraft = sut.makeAmountDraft()
+        discardedDraft.setAmount(digits: "")
+
+        // When
+        let reopenedDraft = sut.makeAmountDraft()
+
+        // Then
+        #expect(discardedDraft.isAddEnabled == false)
+        #expect(reopenedDraft.amount == "10.00")
+        #expect(reopenedDraft.isAddEnabled)
+        #expect(reopenedDraft.makeAmountInputState().inputDigits == "1000")
+    }
+
+    @Test func test_makeAmountDraft_when_store_uses_comma_decimals_then_preserves_currency_settings() {
+        // Given
+        let settings = CurrencySettings(currencyCode: .EUR, currencyPosition: .right,
+                                        thousandSeparator: ".", decimalSeparator: ",", numberOfDecimals: 2)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+        sut.setAmount("1234,50")
+
+        // When
+        let draft = sut.makeAmountDraft()
+        draft.setAmount(digits: "2500")
+
+        // Then
+        #expect(draft.amount == "25,00")
+        #expect(sut.amount == "1234,50")
     }
 
     @Test(arguments: [true, false])

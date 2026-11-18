@@ -43,11 +43,6 @@ final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
         _ = try validatedPINs(for: pin, role: role)
     }
 
-    /// Runs up to two PBKDF2 derivations, so call it off the main actor.
-    func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
-        try preparePIN(pin, for: role)()
-    }
-
     func preparePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) -> POSPINCommit {
         let previous = try validatedPINs(for: pin, role: role)
         var pins = previous

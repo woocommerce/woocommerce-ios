@@ -65,7 +65,7 @@ struct POSPINSetupFlowView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-    @State private var flow: POSPINSetupFlow
+    private let flow: POSPINSetupFlow
     @State private var pinStatusAndSpacingHeight: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
@@ -73,7 +73,7 @@ struct POSPINSetupFlowView: View {
     init(flow: POSPINSetupFlow, controller: POSSecuritySettingsController, close: @escaping () -> Void) {
         self.controller = controller
         self.close = close
-        self._flow = State(initialValue: flow)
+        self.flow = flow
     }
 
     var body: some View {
@@ -111,8 +111,8 @@ private extension POSPINSetupFlowView {
 
     var title: String {
         switch flow.step {
-        case .choose: flow.mode.role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
-        case .confirm: flow.mode.role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
+        case .choose: flow.mode.chooseTitle
+        case .confirm: flow.mode.confirmTitle
         case .saving, .saved, .guidedAccessOffer: ""
         }
     }
@@ -154,9 +154,8 @@ private extension POSPINSetupFlowView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            messagePage(art: savedCheck, title: flow.mode.role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle,
-                        message: flow.mode.role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage) {
-                Button(flow.mode == .adminOnboarding ? Localization.continueAction : Localization.done) {
+            messagePage(art: savedCheck, title: flow.mode.savedTitle, message: flow.mode.savedMessage) {
+                Button(flow.mode.savedActionTitle) {
                     if flow.continueFromSuccess() { closeFlow() }
                 }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -323,6 +322,30 @@ private extension POSPINSetupFlowView {
                                             comment: "Accessibility label of the button that returns to choosing the admin PIN.")
         static let close = NSLocalizedString("pos.adminPINOnboarding.close", value: "Close",
                                              comment: "Accessibility label of the button that closes admin PIN setup.")
+    }
+}
+
+private extension POSPINSetupFlow.Mode {
+    typealias Localization = POSPINSetupFlowView.Localization
+
+    var chooseTitle: String {
+        role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
+    }
+
+    var confirmTitle: String {
+        role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
+    }
+
+    var savedTitle: String {
+        role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle
+    }
+
+    var savedMessage: String {
+        role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage
+    }
+
+    var savedActionTitle: String {
+        self == .adminOnboarding ? Localization.continueAction : Localization.done
     }
 }
 

@@ -101,18 +101,16 @@ public final class POSScreen: ScreenObject {
         XCTAssertTrue(customAmountEntryRow.waitForIsHittable(timeout: 10), "Custom amount entry row should be tappable.")
         customAmountEntryRow.tap()
 
-        let amountField = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-amount-field").firstMatch
-        if amountField.waitForIsHittable(timeout: 5) {
-            amountField.tap()
-        } else {
-            XCTAssertTrue(waitForVisibleElement(amountField, timeout: 5), "Custom amount amount field should be visible.")
-            amountField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
+        // The amount step focuses its field on open. Its digits fill from the right, so "12.34" types as 12.34.
         if let firstDigit = amount.first {
             XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
         }
         app.typeText(amount)
+
+        let continueButton = app.buttons["pos-custom-amount-continue-button"]
+        XCTAssertTrue(continueButton.waitForIsHittable(timeout: 5), "Custom amount Continue button should be tappable.")
+        continueButton.tap()
 
         let nameField = app.textFields["pos-custom-amount-name-field"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")

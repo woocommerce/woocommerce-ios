@@ -11,6 +11,8 @@ final class AddCustomAmountFormViewModel {
     let currencySymbol: String
     private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
+    private let amountInputFormatter: POSCashAmountInputFormatter
+    private let fractionDigits: Int
     private let editingID: UUID?
     private let resolvedID: UUID
 
@@ -18,6 +20,7 @@ final class AddCustomAmountFormViewModel {
 
     init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
+        self.amountInputFormatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
 
         let formatter = NumberFormatter()
@@ -28,6 +31,7 @@ final class AddCustomAmountFormViewModel {
         formatter.minimumFractionDigits = currencySettings.fractionDigits
         formatter.maximumFractionDigits = currencySettings.fractionDigits
         self.numberFormatter = formatter
+        self.fractionDigits = currencySettings.fractionDigits
 
         if let existing {
             self.editingID = existing.id
@@ -44,6 +48,30 @@ final class AddCustomAmountFormViewModel {
     func setAmount(_ rawInput: String) {
         guard let sanitized = sanitizer.sanitize(rawInput) else { return }
         amount = sanitized
+    }
+
+    /// Sets the amount from the cash amount field's digits, which fill from the right ("1234" is 12.34 with two
+    /// fraction digits). The field's display text has grouping separators, which `setAmount(_:)` would reject when
+    /// the device and store decimal separators differ.
+    func setAmount(digits: String) {
+        let latinDigits = digits.applyingTransform(.toLatin, reverse: false) ?? digits
+        guard !latinDigits.isEmpty, let value = Decimal(string: latinDigits, locale: Locale(identifier: "en_US_POSIX")) else {
+            amount = ""
+            return
+        }
+        amount = sanitizer.formatDecimal(value / pow(Decimal(10), fractionDigits))
+    }
+
+    /// Rebuilds the cash input after another step has edited the shared amount draft.
+    func makeAmountInputState() -> POSCashAmountInputState {
+        guard let value = parsedAmount else { return POSCashAmountInputState() }
+        let digits = amountInputFormatter.digits(from: value)
+        let formatted = amountInputFormatter.formattedAmount(from: digits)
+        return POSCashAmountInputState(amount: formatted,
+                                       displayText: formatted,
+                                       inputDigits: digits,
+                                       hasAppliedPreset: true,
+                                       isDisplayingPreset: true)
     }
 
     var isAddEnabled: Bool {

@@ -4,10 +4,10 @@ import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
     @Environment(\.posMetrics) private var metrics
-    let onDismiss: () -> Void
+    @Bindable var viewModel: AddCustomAmountFormViewModel
+    let onBack: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
 
-    @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
     @FocusState private var isNameFocused: Bool
 
@@ -18,18 +18,6 @@ struct AddCustomAmountView: View {
         )
     }
 
-    init(currencySettings: CurrencySettings,
-         editing: POSCustomAmount? = nil,
-         onDismiss: @escaping () -> Void,
-         onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self.onDismiss = onDismiss
-        self.onSubmit = onSubmit
-        self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
-            currencySettings: currencySettings,
-            editing: editing
-        ))
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
@@ -38,7 +26,7 @@ struct AddCustomAmountView: View {
                     state: .enabled,
                     action: {
                         clearFocus()
-                        onDismiss()
+                        onBack()
                     }
                 )
             )
@@ -174,7 +162,6 @@ struct AddCustomAmountView: View {
         guard let customAmount = viewModel.resolvedCustomAmount() else { return }
         clearFocus()
         onSubmit(customAmount)
-        onDismiss()
     }
 
     /// Clears focus so the keyboard dismisses as the form goes away, rather than lingering over the
@@ -241,17 +228,19 @@ private extension AddCustomAmountView {
 #if DEBUG
 #Preview("Adding") {
     AddCustomAmountView(
-        currencySettings: CurrencySettings(),
-        onDismiss: {},
+        viewModel: AddCustomAmountFormViewModel(currencySettings: CurrencySettings()),
+        onBack: {},
         onSubmit: { _ in }
     )
 }
 
 #Preview("Editing") {
     AddCustomAmountView(
-        currencySettings: CurrencySettings(),
-        editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
-        onDismiss: {},
+        viewModel: AddCustomAmountFormViewModel(
+            currencySettings: CurrencySettings(),
+            editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false)
+        ),
+        onBack: {},
         onSubmit: { _ in }
     )
 }

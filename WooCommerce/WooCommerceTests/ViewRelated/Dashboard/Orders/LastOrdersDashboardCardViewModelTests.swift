@@ -1,5 +1,4 @@
 import XCTest
-import TestKit
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -292,7 +291,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_saving_shown_order_when_status_changes_then_shows_reloaded_orders() async {
+    func test_saving_shown_order_when_status_changes_then_shows_reloaded_orders() async throws {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -308,11 +307,11 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         await saveOrder(completedOrder)
 
         // Then
-        await until { viewModel.rows.first?.order.status == .completed }
+        try await waitUntilOnMainActor { viewModel.rows.first?.order.status == .completed }
     }
 
     @MainActor
-    func test_saving_shown_order_when_billing_name_changes_then_shows_reloaded_orders() async {
+    func test_saving_shown_order_when_billing_name_changes_then_shows_reloaded_orders() async throws {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -328,7 +327,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         await saveOrder(renamedOrder)
 
         // Then
-        await until { viewModel.rows.first?.customerName == renamedOrder.billingAddress?.fullName }
+        try await waitUntilOnMainActor { viewModel.rows.first?.customerName == renamedOrder.billingAddress?.fullName }
     }
 
     @MainActor
@@ -351,7 +350,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_ordersBadgeReloadRequired_when_card_has_loaded_then_reloads_orders() async {
+    func test_ordersBadgeReloadRequired_when_card_has_loaded_then_reloads_orders() async throws {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -366,7 +365,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
 
         // Then
-        await until { self.orderFetchCount == 2 }
+        try await waitUntilOnMainActor { self.orderFetchCount == 2 }
     }
 
     @MainActor
@@ -415,7 +414,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(fetchCountInBackground, 1)
-        await until { self.orderFetchCount == 2 }
+        try await waitUntilOnMainActor { self.orderFetchCount == 2 }
     }
 
     @MainActor
@@ -463,7 +462,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
 
         // When
         notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
-        await until { completeRefresh != nil }
+        try await waitUntilOnMainActor { completeRefresh != nil }
         let finishRefresh = try XCTUnwrap(completeRefresh)
         let rowsDuringRefresh = viewModel.rows.map(\.id)
         let syncingDataDuringRefresh = viewModel.syncingData
@@ -473,11 +472,11 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(rowsDuringRefresh, sampleOrders.map(\.orderID))
         XCTAssertFalse(syncingDataDuringRefresh)
-        await until { viewModel.rows.first?.order.status == .completed }
+        try await waitUntilOnMainActor { viewModel.rows.first?.order.status == .completed }
     }
 
     @MainActor
-    func test_ordersBadgeReloadRequired_when_last_load_failed_then_shows_orders_without_error() async {
+    func test_ordersBadgeReloadRequired_when_last_load_failed_then_shows_orders_without_error() async throws {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -499,7 +498,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
 
         // Then
-        await until { viewModel.syncingError == nil && viewModel.rows.count == self.sampleOrders.count }
+        try await waitUntilOnMainActor { viewModel.syncingError == nil && viewModel.rows.count == self.sampleOrders.count }
     }
 
     @MainActor
@@ -526,7 +525,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         let firstReload = Task {
             await viewModel.reloadData()
         }
-        await until { completeFirstFetch != nil }
+        try await waitUntilOnMainActor { completeFirstFetch != nil }
         let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
 
         // When
@@ -568,7 +567,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         let firstReload = Task {
             await viewModel.reloadData()
         }
-        await until { completeFirstFetch != nil }
+        try await waitUntilOnMainActor { completeFirstFetch != nil }
         let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
 
         // When
@@ -619,6 +618,20 @@ private extension LastOrdersDashboardCardViewModelTests {
         }
     }
 
+    /// Checks `condition` on the main actor, like the tests and the view model. TestKit's `until` checks it outside the main
+    /// actor, which sends the test case and the closure across actors.
+    @MainActor
+    func waitUntilOnMainActor(timeout: Duration = .seconds(5), _ condition: () -> Bool) async throws {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() {
+            guard ContinuousClock.now < deadline else {
+                return XCTFail("The condition wasn't met within \(timeout)")
+            }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+    }
+
+    @MainActor
     func saveOrder(_ order: Order) async {
         await withCheckedContinuation { continuation in
             storageManager.performAndSave({ storage in

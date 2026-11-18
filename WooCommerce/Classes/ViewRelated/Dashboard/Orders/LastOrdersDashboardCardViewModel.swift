@@ -142,13 +142,14 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         application: ApplicationAdapter = UIApplication.shared,
+         application: ApplicationAdapter? = nil,
          notificationCenter: NotificationCenter = .default) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
-        self.application = application
+        // Not a default value: default values are evaluated outside the main actor, which `UIApplication.shared` requires.
+        self.application = application ?? UIApplication.shared
 
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
@@ -167,7 +168,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                     // A card that never loaded isn't on the dashboard.
                     guard let self, reloadCount > 0 else { return }
                     // In the background, for example for an order push, card loading events would be counted as user activity.
-                    guard application.applicationState != .background else {
+                    guard self.application.applicationState != .background else {
                         hasPendingReload = true
                         return
                     }
@@ -179,7 +180,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         notificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self, hasPendingReload, application.applicationState != .background else { return }
+                    guard let self, hasPendingReload, self.application.applicationState != .background else { return }
                     await reloadData(showsLoadingState: false)
                 }
             }

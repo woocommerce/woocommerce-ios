@@ -31,7 +31,6 @@ final class StoreOrderListHeaderView: UIView {
 
         if let hostedView {
             hostedView.configuration = configuration
-            invalidateIntrinsicContentSize()
             superview?.setNeedsLayout()
             return
         }
@@ -46,6 +45,5 @@ final class StoreOrderListHeaderView: UIView {
             hostedView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         self.hostedView = hostedView
-        invalidateIntrinsicContentSize()
     }
 }

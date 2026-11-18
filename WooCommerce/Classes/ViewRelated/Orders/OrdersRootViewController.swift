@@ -159,6 +159,8 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
         if !featureFlagService.usesStoreDesignSystem {
             updateTimeoutText()
+        } else {
+            ordersViewController.updateStoreHeader()
         }
     }
 

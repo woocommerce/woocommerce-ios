@@ -2,33 +2,33 @@ import Foundation
 
 enum OrderListLocalization {
     static let allOrdersHeaderTitle = NSLocalizedString(
-        "orderList.header.allOrders.title",
+        "All Orders",
         value: "All Orders",
         comment: "Header title on the Orders list when no filters are applied."
     )
 
     static let filteredOrdersHeaderTitle = NSLocalizedString(
-        "orderList.header.filteredOrders.title",
+        "Filtered Orders",
         value: "Filtered Orders",
         comment: "Header title on the Orders list when one or more filters are applied."
     )
 
     static let filterButtonTitle = NSLocalizedString(
-        "orderList.header.filter.button",
+        "Filter",
         value: "Filter",
         comment: "Title of the button that opens order filters when no filters are applied."
     )
 
     private static let filterButtonWithCountFormat = NSLocalizedString(
-        "orderList.header.filter.button.withCount",
-        value: "Filter (%1$ld)",
-        comment: "Title of the button that opens order filters. %1$ld is the number of active filters."
+        "Filter (%ld)",
+        value: "Filter (%ld)",
+        comment: "Title of the button that opens order filters. %ld is the number of active filters."
     )
 
     private static let lastUpdatedFormat = NSLocalizedString(
-        "orderList.header.lastUpdated",
-        value: "Last Updated: %1$@",
-        comment: "Time when the orders were last updated. %1$@ is a localized time or date and time."
+        "Last Updated: %@",
+        value: "Last Updated: %@",
+        comment: "Time when the orders were last updated. %@ is a localized time or date and time."
     )
 
     static let currencyUnavailableTitle = NSLocalizedString(

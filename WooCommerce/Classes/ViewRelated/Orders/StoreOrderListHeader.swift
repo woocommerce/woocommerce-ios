@@ -15,30 +15,18 @@ struct StoreOrderListHeader: View {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: StoreSpacing.s4) {
                     StoreOrderListHeaderTitle(state: state)
-                    StoreFilterChip(state.filterButtonTitle,
-                                    icon: StoreIcon.BarsFilter.regular,
-                                    isSelected: state.activeFilterCount > 0,
-                                    action: onFilter)
-                        .accessibilityIdentifier("orders-filter-button")
+                    StoreOrderListFilterChip(state: state, action: onFilter)
                 }
             } else {
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .center, spacing: StoreSpacing.s4) {
                         StoreOrderListHeaderTitle(state: state)
                         Spacer(minLength: StoreSpacing.s4)
-                        StoreFilterChip(state.filterButtonTitle,
-                                        icon: StoreIcon.BarsFilter.regular,
-                                        isSelected: state.activeFilterCount > 0,
-                                        action: onFilter)
-                            .accessibilityIdentifier("orders-filter-button")
+                        StoreOrderListFilterChip(state: state, action: onFilter)
                     }
                     VStack(alignment: .leading, spacing: StoreSpacing.s4) {
                         StoreOrderListHeaderTitle(state: state)
-                        StoreFilterChip(state.filterButtonTitle,
-                                        icon: StoreIcon.BarsFilter.regular,
-                                        isSelected: state.activeFilterCount > 0,
-                                        action: onFilter)
-                            .accessibilityIdentifier("orders-filter-button")
+                        StoreOrderListFilterChip(state: state, action: onFilter)
                     }
                 }
             }

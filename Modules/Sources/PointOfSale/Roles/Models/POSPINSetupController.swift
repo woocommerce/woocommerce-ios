@@ -14,11 +14,12 @@ final class POSPINSetupController {
     private(set) var error: POSPINStoreError?
     private var firstPIN: String?
     private var draftVersion = 0
+    private var saveTask: Task<Bool, Error>?
     private let validatePIN: @MainActor (String) async throws -> Void
-    private let savePIN: @MainActor (String) async -> Bool
+    private let savePIN: @MainActor (String) async throws(POSPINStoreError) -> Bool
 
     init(validatePIN: @escaping @MainActor (String) async throws -> Void,
-         savePIN: @escaping @MainActor (String) async -> Bool) {
+         savePIN: @escaping @MainActor (String) async throws(POSPINStoreError) -> Bool) {
         self.validatePIN = validatePIN
         self.savePIN = savePIN
     }
@@ -54,10 +55,25 @@ final class POSPINSetupController {
             return .rejected
         }
         isSaving = true
-        let saved = await savePIN(pin)
+        let version = draftVersion
+        let task = Task { try await savePIN(pin) }
+        saveTask = task
+        let result = await withTaskCancellationHandler {
+            await task.result
+        } onCancel: {
+            task.cancel()
+        }
+        saveTask = nil
+        let isCurrent = version == draftVersion && !Task.isCancelled
         discardDraft()
         isSaving = false
-        return saved ? .saved : .rejected
+        guard isCurrent else { return .rejected }
+        switch result {
+        case .success(let saved): return saved ? .saved : .rejected
+        case .failure(let error):
+            self.error = (error as? POSPINStoreError) ?? .storageFailure
+            return .rejected
+        }
     }
 
     func cancel() -> Bool {
@@ -67,6 +83,7 @@ final class POSPINSetupController {
     }
 
     func discardDraft() {
+        saveTask?.cancel()
         draftVersion += 1
         firstPIN = nil
         hasMismatch = false

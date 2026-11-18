@@ -1,10 +1,22 @@
 import Observation
 
-/// Presents first Admin PIN setup on top of `POSPINSetupController`, which owns validation and the single save.
+/// Presents local PIN setup on top of `POSPINSetupController`, which owns validation and the single save.
 /// Presentation pauses run alongside that work and never delay saving.
 @MainActor
 @Observable
-final class POSAdminPINOnboarding {
+final class POSPINSetupFlow {
+    enum Mode: Equatable, CaseIterable {
+        case adminOnboarding
+        case adminChange
+        case cashier
+
+        var role: POSLocalRole {
+            self == .cashier ? .cashier : .admin
+        }
+    }
+
+    let mode: Mode
+
     enum Step: Equatable {
         case choose
         case confirm
@@ -26,8 +38,9 @@ final class POSAdminPINOnboarding {
     private let setup: POSPINSetupController
     private let sleep: @MainActor (Duration) async throws -> Void
 
-    init(setup: POSPINSetupController,
+    init(mode: Mode, setup: POSPINSetupController,
          sleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+        self.mode = mode
         self.setup = setup
         self.sleep = sleep
     }
@@ -65,11 +78,12 @@ final class POSAdminPINOnboarding {
         show(.choose, feedback: nil)
     }
 
-    func continueToGuidedAccessOffer() {
-        guard step == .saved else {
-            return
-        }
+    /// Returns whether the caller should close the saved flow.
+    func continueFromSuccess() -> Bool {
+        guard step == .saved else { return false }
+        guard mode == .adminOnboarding else { return true }
         step = .guidedAccessOffer
+        return false
     }
 
     /// Returns `false` while the PIN is being checked or saved.
@@ -89,7 +103,7 @@ final class POSAdminPINOnboarding {
     }
 }
 
-private extension POSAdminPINOnboarding {
+private extension POSPINSetupFlow {
     func choose(_ pin: String, request: Int) async -> Bool {
         async let hold: Void = pause(Constants.filledDotsHold)
         let result = await setup.submit(pin)
@@ -120,7 +134,7 @@ private extension POSAdminPINOnboarding {
         }
         isProcessing = false
         guard result == .saved else {
-            show(.choose, feedback: .failure(.storageFailure))
+            show(.choose, feedback: .failure(setup.error ?? .storageFailure))
             return false
         }
         step = .saved

@@ -125,9 +125,10 @@ struct POSAccessSessionFactoryTests {
         #expect(sut.limiter.sessionTokens.isCurrent(token))
         #expect(sut.defaultsScope.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool == marker)
         sut.blocking.releaseMutation()
-        #expect(await save.value)
+        #expect(await save.value == false)
         #expect(sut.limiter.pendingPINChanges.isEmpty)
-        #expect(sut.session.currentStaff == POSLocalRole.admin.staff)
+        #expect(try sut.store.configuredRoles().isEmpty)
+        #expect(sut.session.currentStaff == nil)
     }
 
     @Test func test_make_when_already_cancelled_then_does_not_claim_owner_or_write_marker() async {

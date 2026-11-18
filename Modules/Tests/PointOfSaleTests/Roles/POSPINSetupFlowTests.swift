@@ -5,10 +5,39 @@ import Testing
 
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
-struct POSAdminPINOnboardingTests {
+struct POSPINSetupFlowTests {
     private let storage = InMemoryPOSSecureStorage()
-    private let defaultsScope = POSAdminPINOnboardingTestDefaults()
+    private let defaultsScope = POSPINSetupFlowTestDefaults()
     private let sleeper = MockSleeper()
+
+    @Test(arguments: POSPINSetupFlow.Mode.allCases)
+    func test_continue_when_saved_then_only_initial_admin_setup_offers_guided_access(mode: POSPINSetupFlow.Mode) async {
+        // Given
+        var saves = 0
+        let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in saves += 1; return true })
+        let sut = POSPINSetupFlow(mode: mode, setup: setup, sleep: { _ in })
+        #expect(await sut.submit("1234"))
+        #expect(await sut.submit("1234"))
+
+        // When
+        let closes = sut.continueFromSuccess()
+
+        // Then
+        #expect(saves == 1)
+        #expect(closes == (mode != .adminOnboarding))
+        #expect(sut.step == (mode == .adminOnboarding ? .guidedAccessOffer : .saved))
+        #expect(mode.role == (mode == .cashier ? .cashier : .admin))
+    }
+
+    @Test(arguments: POSPINSetupFlow.Mode.allCases)
+    func test_continue_when_not_saved_then_does_not_close_or_offer_guided_access(mode: POSPINSetupFlow.Mode) {
+        // Given
+        let sut = POSPINSetupFlow(mode: mode, setup: POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in true }))
+
+        // When / Then
+        #expect(!sut.continueFromSuccess())
+        #expect(sut.step == .choose)
+    }
 
     @Test func test_choose_when_four_digits_are_entered_then_holds_filled_dots_before_confirm() async throws {
         // Given
@@ -67,7 +96,7 @@ struct POSAdminPINOnboardingTests {
             saveCount += 1
             return true
         })
-        let sut = POSAdminPINOnboarding(setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -93,7 +122,7 @@ struct POSAdminPINOnboardingTests {
             saveCount += 1
             return true
         })
-        let sut = POSAdminPINOnboarding(setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -116,7 +145,7 @@ struct POSAdminPINOnboardingTests {
         let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in
             await withCheckedContinuation { finishSave = $0 }
         })
-        let sut = POSAdminPINOnboarding(setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -289,7 +318,7 @@ struct POSAdminPINOnboardingTests {
         _ = await submission.value
 
         // When
-        sut.continueToGuidedAccessOffer()
+        _ = sut.continueFromSuccess()
         let closed = sut.close()
 
         // Then
@@ -300,8 +329,8 @@ struct POSAdminPINOnboardingTests {
     }
 }
 
-private extension POSAdminPINOnboardingTests {
-    func makeSUT() -> (POSAdminPINOnboarding, POSSecuritySettingsController, DefaultPOSAccessSession) {
+private extension POSPINSetupFlowTests {
+    func makeSUT() -> (POSPINSetupFlow, POSSecuritySettingsController, DefaultPOSAccessSession) {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         let session = DefaultPOSAccessSession(siteID: 123,
                                              authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
@@ -310,10 +339,10 @@ private extension POSAdminPINOnboardingTests {
                                              userDefaults: defaultsScope.defaults)
         let controller = POSSecuritySettingsController(store: store, session: session)
         controller.load()
-        return (POSAdminPINOnboarding(setup: controller.makePINSetupController(for: .admin), sleep: sleeper.sleep), controller, session)
+        return (POSPINSetupFlow(mode: .adminOnboarding, setup: controller.makePINSetupController(for: .admin), sleep: sleeper.sleep), controller, session)
     }
 
-    func enterFirstPIN(_ pin: String, sut: POSAdminPINOnboarding, sleeps: inout AsyncStream<Duration>.Iterator) async throws {
+    func enterFirstPIN(_ pin: String, sut: POSPINSetupFlow, sleeps: inout AsyncStream<Duration>.Iterator) async throws {
         let submission = Task { await sut.submit(pin) }
         try await expectSleep(.milliseconds(500), from: &sleeps)
         sleeper.resumeNext()
@@ -340,9 +369,9 @@ private extension POSAdminPINOnboardingTests {
     }
 }
 
-private final class POSAdminPINOnboardingTestDefaults {
+private final class POSPINSetupFlowTestDefaults {
     let defaults: UserDefaults
-    private let name = "POSAdminPINOnboardingTests.\(UUID().uuidString)"
+    private let name = "POSPINSetupFlowTests.\(UUID().uuidString)"
     init() { defaults = UserDefaults(suiteName: name)! }
     deinit { defaults.removePersistentDomain(forName: name) }
 }

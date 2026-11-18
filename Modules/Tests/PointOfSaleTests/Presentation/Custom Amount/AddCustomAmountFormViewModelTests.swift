@@ -73,6 +73,29 @@ struct AddCustomAmountFormViewModelTests {
         #expect(sut.formattedAmount == "$25.00")
     }
 
+    @Test(arguments: [true, false])
+    func test_init_when_creating_new_amount_then_uses_saved_tax_choice(isTaxable: Bool) {
+        // Given, When
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, defaultIsTaxable: isTaxable)
+
+        // Then
+        #expect(sut.isTaxable == isTaxable)
+    }
+
+    @Test(arguments: [true, false])
+    func test_init_when_editing_then_item_tax_choice_overrides_saved_preference(isTaxable: Bool) {
+        // Given
+        let existing = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: isTaxable)
+
+        // When
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings,
+                                              editing: existing,
+                                              defaultIsTaxable: !isTaxable)
+
+        // Then
+        #expect(sut.isTaxable == isTaxable)
+    }
+
     @Test func test_isAddEnabled_when_amount_is_empty_then_false() async throws {
         // Given
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)

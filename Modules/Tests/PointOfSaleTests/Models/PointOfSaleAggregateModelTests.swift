@@ -199,6 +199,55 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
+        @Test(arguments: [true, false])
+        func test_upsertCustomAmount_when_confirmed_then_saves_tax_choice_for_current_store(isTaxable: Bool) {
+            // Given
+            let preferences = MockPOSCustomAmountTaxPreferences()
+            let sut = makePointOfSaleAggregateModel(siteID: 123, customAmountTaxPreferences: preferences)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: !isTaxable)
+            sut.upsertCustomAmount(original, mode: .add)
+            #expect(preferences.values[123] == !isTaxable)
+
+            // When
+            let updated = POSCustomAmount(id: original.id, name: original.name, amount: "25.00", isTaxable: isTaxable)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then
+            #expect(preferences.savedSiteIDs == [123, 123])
+            #expect(preferences.values[123] == isTaxable)
+            #expect(sut.defaultCustomAmountIsTaxable == isTaxable)
+            #expect(sut.cart.customAmounts == [updated])
+        }
+
+        @Test func test_defaultCustomAmountIsTaxable_when_stores_differ_then_reads_each_stores_preference() {
+            // Given
+            let preferences = MockPOSCustomAmountTaxPreferences()
+            preferences.values[123] = true
+            let firstStore = makePointOfSaleAggregateModel(siteID: 123, customAmountTaxPreferences: preferences)
+            let secondStore = makePointOfSaleAggregateModel(siteID: 456, customAmountTaxPreferences: preferences)
+
+            // When, Then
+            #expect(firstStore.defaultCustomAmountIsTaxable)
+            #expect(secondStore.defaultCustomAmountIsTaxable == false)
+            #expect(preferences.savedSiteIDs.isEmpty)
+        }
+
+        @Test func test_customAmountFlow_when_cancelled_then_does_not_save_tax_preference() {
+            // Given
+            let preferences = MockPOSCustomAmountTaxPreferences()
+            preferences.values[123] = true
+            let sut = makePointOfSaleAggregateModel(siteID: 123, customAmountTaxPreferences: preferences)
+            sut.customAmountFlow = .add
+
+            // When
+            sut.customAmountFlow = nil
+
+            // Then
+            #expect(preferences.savedSiteIDs.isEmpty)
+            #expect(sut.defaultCustomAmountIsTaxable)
+            #expect(sut.cart.customAmounts.isEmpty)
+        }
+
         @Test func upsertCustomAmount_adds_a_new_custom_amount_to_cart() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -1906,7 +1955,8 @@ private func makePointOfSaleAggregateModel(
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
     isLocalCatalogEligible: Bool = false,
-    receiptPrinter: ReceiptPrinterServiceProtocol? = nil
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+    customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = MockPOSCustomAmountTaxPreferences()
 ) -> PointOfSaleAggregateModel {
     let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
 
@@ -1930,7 +1980,8 @@ private func makePointOfSaleAggregateModel(
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
         isLocalCatalogEligible: isLocalCatalogEligible,
-        receiptPrinter: receiptPrinter
+        receiptPrinter: receiptPrinter,
+        customAmountTaxPreferences: customAmountTaxPreferences
     )
 }
 

@@ -25,7 +25,7 @@ final class AddCustomAmountFormViewModel {
         return currencyFormatter.formatAmount(value) ?? amount
     }
 
-    init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
+    init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil, defaultIsTaxable: Bool = false) {
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
@@ -51,6 +51,7 @@ final class AddCustomAmountFormViewModel {
         } else {
             self.editingID = nil
             self.resolvedID = UUID()
+            self.isTaxable = defaultIsTaxable
         }
     }
 

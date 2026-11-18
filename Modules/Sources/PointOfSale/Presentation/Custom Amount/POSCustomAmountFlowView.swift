@@ -13,6 +13,7 @@ struct POSCustomAmountFlowView: View {
         POSCustomAmountFlowStepsView(
             flow: flow,
             currencySettings: currencyProvider.currencySettings,
+            defaultIsTaxable: posModel.defaultCustomAmountIsTaxable,
             onSubmit: { customAmount in
                 posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
                 dismiss()
@@ -44,6 +45,7 @@ private struct POSCustomAmountFlowStepsView: View {
 
     init(flow: POSCustomAmountFlow,
          currencySettings: CurrencySettings,
+         defaultIsTaxable: Bool,
          onSubmit: @escaping (POSCustomAmount) -> Void,
          onDismiss: @escaping () -> Void) {
         self.currencySettings = currencySettings
@@ -51,7 +53,8 @@ private struct POSCustomAmountFlowStepsView: View {
         self.onDismiss = onDismiss
         self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
             currencySettings: currencySettings,
-            editing: flow.editingCustomAmount
+            editing: flow.editingCustomAmount,
+            defaultIsTaxable: defaultIsTaxable
         ))
         self._step = State(initialValue: flow.editingCustomAmount == nil ? .initialAmount : .details(requiresSubmitGuard: false))
     }

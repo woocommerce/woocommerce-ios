@@ -89,6 +89,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteID: Int64
+    private let customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
@@ -118,6 +119,10 @@ protocol PointOfSaleAggregateModelProtocol {
     // Type-safe accessor specifically for the view
     var viewStateCoordinatorForView: PointOfSaleViewStateCoordinator {
         _viewStateCoordinator
+    }
+
+    var defaultCustomAmountIsTaxable: Bool {
+        customAmountTaxPreferences.isTaxable(for: siteID)
     }
 
     // Track stale sync warning (only relevant when using local catalog)
@@ -162,7 +167,8 @@ protocol PointOfSaleAggregateModelProtocol {
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
-         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
+         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
+         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences()) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -178,6 +184,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.barcodeScanService = barcodeScanService
         self.soundPlayer = soundPlayer
         self.siteID = siteID
+        self.customAmountTaxPreferences = customAmountTaxPreferences
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
@@ -258,6 +265,7 @@ extension PointOfSaleAggregateModel {
         analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
         trackCustomerInteractionStarted()
         cart.upsertCustomAmount(customAmount)
+        customAmountTaxPreferences.setTaxable(customAmount.isTaxable, for: siteID)
     }
 
     func removeCustomAmount(id: UUID) {

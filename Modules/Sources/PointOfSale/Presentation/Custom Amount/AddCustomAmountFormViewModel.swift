@@ -9,6 +9,7 @@ final class AddCustomAmountFormViewModel {
     var isTaxable: Bool = false
 
     let currencySymbol: String
+    private let currencySettings: CurrencySettings
     private let sanitizer: CurrencyInputSanitizer
     private let numberFormatter: NumberFormatter
     private let amountInputFormatter: POSCashAmountInputFormatter
@@ -19,6 +20,7 @@ final class AddCustomAmountFormViewModel {
     var isEditing: Bool { editingID != nil }
 
     init(currencySettings: CurrencySettings, editing existing: POSCustomAmount? = nil) {
+        self.currencySettings = currencySettings
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
         self.amountInputFormatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
@@ -43,6 +45,12 @@ final class AddCustomAmountFormViewModel {
             self.editingID = nil
             self.resolvedID = UUID()
         }
+    }
+
+    func makeAmountDraft() -> AddCustomAmountFormViewModel {
+        let draft = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        draft.amount = amount
+        return draft
     }
 
     func setAmount(_ rawInput: String) {

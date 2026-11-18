@@ -112,19 +112,22 @@ public final class POSScreen: ScreenObject {
         XCTAssertTrue(continueButton.waitForIsHittable(timeout: 5), "Custom amount Continue button should be tappable.")
         continueButton.tap()
 
-        let nameField = app.textFields["pos-custom-amount-name-field"]
-        XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
-        let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
-        for _ in 0..<4 where !nameField.isHittable {
-            form.swipeUp()
-        }
-        XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
-        nameField.tap()
         if let name {
+            let nameCard = app.buttons["pos-custom-amount-name-card"]
+            XCTAssertTrue(nameCard.waitForIsHittable(timeout: 10), "Custom amount Name card should be tappable.")
+            nameCard.tap()
+            let nameField = app.textFields["pos-custom-amount-name-field"]
+            XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
+            nameField.tap()
             nameField.typeText(name)
+            let saveNameButton = app.buttons["pos-custom-amount-name-save-button"]
+            XCTAssertTrue(saveNameButton.waitForIsHittable(timeout: 5), "Custom amount name Save button should be tappable.")
+            saveNameButton.tap()
         }
 
         let submitButton = app.buttons["pos-add-custom-amount-submit-button"]
+        XCTAssertTrue(waitFor(element: submitButton, predicate: "exists == true AND isEnabled == true", timeout: 5),
+                      "Custom amount submit button should be enabled.")
         if submitButton.waitForIsHittable(timeout: 2) {
             submitButton.tap()
         } else {

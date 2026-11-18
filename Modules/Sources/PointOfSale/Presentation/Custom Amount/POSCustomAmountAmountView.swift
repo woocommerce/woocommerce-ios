@@ -5,18 +5,33 @@ import WooFoundation
 struct POSCustomAmountAmountView: View {
     @Environment(\.posMetrics) private var metrics
 
-    let viewModel: AddCustomAmountFormViewModel
+    enum Mode {
+        case initial
+        case edit
+    }
+
+    @State private var viewModel: AddCustomAmountFormViewModel
     let currencySettings: CurrencySettings
     let onBack: () -> Void
-    let onContinue: () -> Void
+    let onSave: (String) -> Void
+    let mode: Mode
 
     @State private var amountInput = POSCashAmountInputState()
     @FocusState private var isAmountFocused: Bool
 
+    init(viewModel: AddCustomAmountFormViewModel, currencySettings: CurrencySettings, mode: Mode,
+         onBack: @escaping () -> Void, onSave: @escaping (String) -> Void) {
+        self._viewModel = State(initialValue: viewModel.makeAmountDraft())
+        self.currencySettings = currencySettings
+        self.mode = mode
+        self.onBack = onBack
+        self.onSave = onSave
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: Localization.title,
+                title: mode == .initial ? Localization.title : AddCustomAmountView.Localization.editAmount,
                 backButtonConfiguration: .init(state: .enabled, action: {
                     isAmountFocused = false
                     onBack()
@@ -36,18 +51,19 @@ struct POSCustomAmountAmountView: View {
             Spacer()
 
             Button(action: continueIfValid) {
-                Text(Localization.continueButton)
+                Text(mode == .initial ? Localization.continueButton : Localization.saveButton)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .frame(maxWidth: .infinity)
             .disabled(!viewModel.isAddEnabled)
-            .accessibilityIdentifier("pos-custom-amount-continue-button")
+            .accessibilityIdentifier(mode == .initial ? "pos-custom-amount-continue-button" : "pos-custom-amount-save-button")
             .padding(metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .onAppear {
             amountInput = viewModel.makeAmountInputState()
         }
+        .posEdgeSwipeBackAction(onBack: onBack)
         .onChange(of: amountInput.inputDigits) { _, digits in
             viewModel.setAmount(digits: digits)
         }
@@ -55,12 +71,16 @@ struct POSCustomAmountAmountView: View {
 
     private func continueIfValid() {
         guard viewModel.isAddEnabled else { return }
-        onContinue()
+        isAmountFocused = false
+        onSave(viewModel.amount)
     }
 }
 
-private extension POSCustomAmountAmountView {
+extension POSCustomAmountAmountView {
     enum Localization {
+        static let saveButton = NSLocalizedString(
+            "pos.customAmount.amountStep.saveButton", value: "Save",
+            comment: "Button that saves an edited custom amount and returns to its details.")
         static let title = NSLocalizedString(
             "pos.customAmount.amountStep.title",
             value: "Amount",
@@ -77,8 +97,9 @@ private extension POSCustomAmountAmountView {
     POSCustomAmountAmountView(
         viewModel: AddCustomAmountFormViewModel(currencySettings: CurrencySettings()),
         currencySettings: CurrencySettings(),
+        mode: .initial,
         onBack: {},
-        onContinue: {}
+        onSave: { _ in }
     )
 }
 #endif

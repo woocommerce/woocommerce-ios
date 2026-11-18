@@ -28,23 +28,24 @@ struct POSCustomAmountFlowView: View {
 
 /// Holds the draft shared by every step, so it needs the currency settings at init.
 private struct POSCustomAmountFlowStepsView: View {
-    private enum Step: Hashable {
-        case form
+    private enum Step {
+        case initialAmount
+        case details
+        case editAmount
+        case name
     }
 
-    let flow: POSCustomAmountFlow
     let currencySettings: CurrencySettings
     let onSubmit: (POSCustomAmount) -> Void
     let onDismiss: () -> Void
 
     @State private var viewModel: AddCustomAmountFormViewModel
-    @State private var path: [Step] = []
+    @State private var step: Step
 
     init(flow: POSCustomAmountFlow,
          currencySettings: CurrencySettings,
          onSubmit: @escaping (POSCustomAmount) -> Void,
          onDismiss: @escaping () -> Void) {
-        self.flow = flow
         self.currencySettings = currencySettings
         self.onSubmit = onSubmit
         self.onDismiss = onDismiss
@@ -52,50 +53,46 @@ private struct POSCustomAmountFlowStepsView: View {
             currencySettings: currencySettings,
             editing: flow.editingCustomAmount
         ))
+        self._step = State(initialValue: flow.editingCustomAmount == nil ? .initialAmount : .details)
     }
 
     var body: some View {
-        // The dashboard ignores the keyboard safe area, so without a navigation host of its own
-        // the pinned buttons stay under the keyboard.
-        NavigationStack(path: $path) {
-            rootStep
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(for: Step.self) { step in
-                    switch step {
-                    case .form:
-                        form
-                            .toolbar(.hidden, for: .navigationBar)
-                    }
+        // The dashboard ignores the keyboard safe area, so the flow needs its own navigation host.
+        // Steps replace the root so Back from Details cannot pop to the initial Amount screen.
+        NavigationStack {
+            Group {
+                switch step {
+                case .initialAmount:
+                    amountView(mode: .initial, onBack: onDismiss)
+                case .details:
+                    AddCustomAmountView(viewModel: viewModel,
+                                        onBack: onDismiss,
+                                        onEditAmount: { step = .editAmount },
+                                        onEditName: { step = .name },
+                                        onSubmit: onSubmit)
+                case .editAmount:
+                    amountView(mode: .edit, onBack: { step = .details })
+                case .name:
+                    POSCustomAmountNameView(name: viewModel.name,
+                                            onBack: { step = .details },
+                                            onSave: { name in
+                        viewModel.name = name
+                        step = .details
+                    })
                 }
+            }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
-    @ViewBuilder
-    private var rootStep: some View {
-        switch flow {
-        case .add:
-            POSCustomAmountAmountView(
-                viewModel: viewModel,
-                currencySettings: currencySettings,
-                onBack: onDismiss,
-                onContinue: { path.append(.form) }
-            )
-        case .edit:
-            form
-        }
-    }
-
-    private var form: some View {
-        AddCustomAmountView(
-            viewModel: viewModel,
-            onBack: {
-                if path.isEmpty {
-                    onDismiss()
-                } else {
-                    path.removeLast()
-                }
-            },
-            onSubmit: onSubmit
-        )
+    private func amountView(mode: POSCustomAmountAmountView.Mode, onBack: @escaping () -> Void) -> some View {
+        POSCustomAmountAmountView(viewModel: viewModel,
+                                  currencySettings: currencySettings,
+                                  mode: mode,
+                                  onBack: onBack,
+                                  onSave: { amount in
+            viewModel.setAmount(amount)
+            step = .details
+        })
     }
 }

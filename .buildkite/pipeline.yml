@@ -15,6 +15,9 @@ steps:
   - label: ":pipeline: Build"
     key: build
     command: .buildkite/commands/build-for-testing.sh
+    agents:
+      queue: mac
+      hostname: MV-MKE-ARM64-002
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
@@ -86,6 +89,9 @@ steps:
   - label: ":microscope: Unit Tests"
     key: unit-tests
     command: .buildkite/commands/run-unit-tests.sh
+    agents:
+      queue: mac
+      hostname: MV-MKE-ARM64-002
     depends_on: build
     plugins:
       - $CI_TOOLKIT

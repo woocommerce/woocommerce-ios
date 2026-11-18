@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
 - [*] POS: Action menus now match POS styling in light and dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/18390]
 - [*] Orders: On stores with WooCommerce 11.1 or later, refund amounts in Issue Refund are calculated by the store. [https://github.com/woocommerce/woocommerce-ios/pull/18373]
 - [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]

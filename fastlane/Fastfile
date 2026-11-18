@@ -92,7 +92,7 @@ COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 TEST_SCHEME = 'WooCommerce'
 
 # Naming the device, deployment target and app stops scan from running `xcodebuild -showBuildSettings`, which resolves every Swift package.
-# The default device is CI only: a developer's Mac may not have it, and without a device scan needs the lookup to pick one.
+# The default device is CI only: a developer's Mac may not have it, and without a device, `scan` needs the lookup to pick one.
 CI_SIMULATOR_DEVICE = 'iPhone 17 Pro'
 
 def scan_settings(device: nil, deployment_target_version: nil)

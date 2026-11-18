@@ -6,13 +6,18 @@ struct AddCustomAmountView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Bindable var viewModel: AddCustomAmountFormViewModel
+    let requiresSubmitGuard: Bool
     let onBack: () -> Void
     let onEditAmount: () -> Void
     let onEditName: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
 
-    @State private var isReadyToSubmit = false
+    @State private var hasFinishedSubmitGuard = false
     @State private var hasSubmitted = false
+
+    private var isReadyToSubmit: Bool {
+        !requiresSubmitGuard || hasFinishedSubmitGuard
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -54,7 +59,8 @@ struct AddCustomAmountView: View {
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .frame(maxWidth: .infinity)
-            .disabled(!viewModel.isAddEnabled || !isReadyToSubmit || hasSubmitted)
+            .disabled(!viewModel.isAddEnabled || hasSubmitted)
+            .allowsHitTesting(isReadyToSubmit)
             .accessibilityIdentifier("pos-add-custom-amount-submit-button")
             .padding(metrics.padding.xLarge)
         }
@@ -62,14 +68,15 @@ struct AddCustomAmountView: View {
         .posIgnoresHiddenKeyboardSafeArea()
         .posEdgeSwipeBackAction(onBack: onBack)
         .task {
-            // A second tap on Continue must not submit Details in the same button position.
+            guard requiresSubmitGuard else { return }
+            // A second tap on Continue or Save must not submit Details in the same button position.
             do {
                 try await Task.sleep(for: .milliseconds(300))
             } catch {
                 // Leaving Details cancels the delay.
                 return
             }
-            isReadyToSubmit = true
+            hasFinishedSubmitGuard = true
         }
     }
 
@@ -160,6 +167,7 @@ extension AddCustomAmountView {
 #if DEBUG
 #Preview {
     AddCustomAmountView(viewModel: AddCustomAmountFormViewModel(currencySettings: CurrencySettings()),
+                        requiresSubmitGuard: false,
                         onBack: {}, onEditAmount: {}, onEditName: {}, onSubmit: { _ in })
 }
 #endif

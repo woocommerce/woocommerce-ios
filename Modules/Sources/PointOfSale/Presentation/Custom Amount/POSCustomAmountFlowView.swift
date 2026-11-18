@@ -30,7 +30,7 @@ struct POSCustomAmountFlowView: View {
 private struct POSCustomAmountFlowStepsView: View {
     private enum Step {
         case initialAmount
-        case details
+        case details(requiresSubmitGuard: Bool)
         case editAmount
         case name
     }
@@ -53,7 +53,7 @@ private struct POSCustomAmountFlowStepsView: View {
             currencySettings: currencySettings,
             editing: flow.editingCustomAmount
         ))
-        self._step = State(initialValue: flow.editingCustomAmount == nil ? .initialAmount : .details)
+        self._step = State(initialValue: flow.editingCustomAmount == nil ? .initialAmount : .details(requiresSubmitGuard: false))
     }
 
     var body: some View {
@@ -64,20 +64,21 @@ private struct POSCustomAmountFlowStepsView: View {
                 switch step {
                 case .initialAmount:
                     amountView(mode: .initial, onBack: onDismiss)
-                case .details:
+                case .details(let requiresSubmitGuard):
                     AddCustomAmountView(viewModel: viewModel,
+                                        requiresSubmitGuard: requiresSubmitGuard,
                                         onBack: onDismiss,
                                         onEditAmount: { step = .editAmount },
                                         onEditName: { step = .name },
                                         onSubmit: onSubmit)
                 case .editAmount:
-                    amountView(mode: .edit, onBack: { step = .details })
+                    amountView(mode: .edit, onBack: { step = .details(requiresSubmitGuard: false) })
                 case .name:
                     POSCustomAmountNameView(name: viewModel.name,
-                                            onBack: { step = .details },
+                                            onBack: { step = .details(requiresSubmitGuard: false) },
                                             onSave: { name in
                         viewModel.name = name
-                        step = .details
+                        step = .details(requiresSubmitGuard: true)
                     })
                 }
             }
@@ -92,7 +93,7 @@ private struct POSCustomAmountFlowStepsView: View {
                                   onBack: onBack,
                                   onSave: { amount in
             viewModel.setAmount(amount)
-            step = .details
+            step = .details(requiresSubmitGuard: true)
         })
     }
 }

@@ -126,14 +126,9 @@ public final class POSScreen: ScreenObject {
         }
 
         let submitButton = app.buttons["pos-add-custom-amount-submit-button"]
-        XCTAssertTrue(waitFor(element: submitButton, predicate: "exists == true AND isEnabled == true", timeout: 5),
-                      "Custom amount submit button should be enabled.")
-        if submitButton.waitForIsHittable(timeout: 2) {
-            submitButton.tap()
-        } else {
-            XCTAssertTrue(waitForVisibleElement(submitButton, timeout: 5), "Custom amount submit button should be visible.")
-            submitButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
+        XCTAssertTrue(waitFor(element: submitButton, predicate: "exists == true AND isEnabled == true AND isHittable == true", timeout: 5),
+                      "Custom amount submit button should be enabled and tappable.")
+        submitButton.tap()
 
         showCompactCartIfNeeded()
         XCTAssertTrue(app.descendants(matching: .any)["pos-custom-amount-row"].waitForExistence(timeout: 10),

@@ -13,7 +13,7 @@ struct POSSecuritySettingsView: View {
             if controller.roles?.isEmpty == true {
                 POSAccessControlSetupView {
                     controller.load()
-                    editing = POSPINSetupFlow(mode: .adminOnboarding, setup: controller.makePINSetupController(for: .admin))
+                    editing = controller.makePINSetupFlow(for: .admin)
                 }
                 .overlay(alignment: .top) {
                     if horizontalSizeClass == .compact {
@@ -62,16 +62,10 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
-        .onDisappear {
-            editing = nil
-            controller.endPINEditing()
-            dismissApproval()
-        }
+        .onDisappear(perform: endEditing)
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible {
-                editing = nil
-                controller.endPINEditing()
-                dismissApproval()
+                endEditing()
             }
         }
         .posModal(item: presentationBinding,
@@ -121,6 +115,12 @@ struct POSSecuritySettingsView: View {
         })
     }
 
+    private func endEditing() {
+        editing = nil
+        controller.endPINEditing()
+        dismissApproval()
+    }
+
     private func closeEditor() {
         editing = nil
         controller.endPINEditing()
@@ -149,13 +149,12 @@ struct POSSecuritySettingsView: View {
         dismissApproval()
         if role == .admin, controller.roles?.contains(.admin) == true {
             approvalTask = Task {
-                if let setup = await controller.requestAdminPINChange(using: approval, reason: Localization.changeAdminPINReason) {
-                    editing = POSPINSetupFlow(mode: .adminChange, setup: setup)
+                if let flow = await controller.requestAdminPINChange(using: approval, reason: Localization.changeAdminPINReason) {
+                    editing = flow
                 }
             }
         } else {
-            editing = POSPINSetupFlow(mode: role == .admin ? .adminOnboarding : .cashier,
-                                      setup: controller.makePINSetupController(for: role))
+            editing = controller.makePINSetupFlow(for: role)
         }
     }
 

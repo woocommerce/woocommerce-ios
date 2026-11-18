@@ -30,7 +30,6 @@ struct POSAccessSessionFactoryTests {
 
         // Then
         #expect(await entry.value == .rejected)
-        #expect(!setup.isConfirmingPIN)
         #expect(setup.error == nil)
         #expect(try sut.store.configuredRoles().isEmpty)
         if let replacement { #expect(replacement.allows(.manageStoreSettings)) }

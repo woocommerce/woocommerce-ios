@@ -55,7 +55,7 @@ struct POSSecuritySettingsView: View {
                         }
                     }
                     .posContentPadding(.horizontal, metrics.padding.medium)
-                    .posPadding(.vertical, \.medium)
+                    .posPadding(.bottom, \.medium)
                 }
             }
         }

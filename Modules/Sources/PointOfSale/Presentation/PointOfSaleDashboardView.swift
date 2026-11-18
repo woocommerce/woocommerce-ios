@@ -421,6 +421,7 @@ struct PointOfSaleDashboardView: View {
     private func phoneOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
         let paymentModel = posModel.paymentModel
+        let staff = session.currentStaff
         POSMenu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
@@ -460,6 +461,11 @@ struct PointOfSaleDashboardView: View {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
             .accessibilityIdentifier("pos-exit-menu-item")
+            if let staff {
+                Divider()
+                POSStaffMenuRow(staff: staff)
+                    .posPadding(\.medium)
+            }
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)

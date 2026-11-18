@@ -7,8 +7,18 @@ final class POSSecuritySettingsController {
     private(set) var roles: Set<POSLocalRole>?
     private(set) var isSaving = false
     private(set) var error: POSPINStoreError?
-    private var removalRequestID: UUID?
-    private var isVerifyingRemoval = false
+    private enum ApprovalAction {
+        case removeProtection
+        case changeAdminPIN
+    }
+    private struct ApprovalRequest: Equatable {
+        let id = UUID()
+        let scope: POSPINSessionTokens.Token
+        let action: ApprovalAction
+    }
+    private var approvalRequest: ApprovalRequest?
+    private var isVerifyingApproval = false
+    private var editorID: UUID?
     private let store: POSPINManaging
     private let session: POSAccessSession
 
@@ -25,9 +35,9 @@ final class POSSecuritySettingsController {
 
     var offersCashierPINSetup: Bool { roles?.contains(.admin) == true }
 
-    var hasOnlyAdminPIN: Bool { roles == [.admin] }
+    var isApprovingProtectionRemoval: Bool { approvalRequest?.action == .removeProtection }
 
-    var isApprovingProtectionRemoval: Bool { removalRequestID != nil }
+    var hasOnlyAdminPIN: Bool { roles == [.admin] }
 
     func load() {
         do {
@@ -41,8 +51,32 @@ final class POSSecuritySettingsController {
     }
 
     func makePINSetupController(for role: POSLocalRole) -> POSPINSetupController {
-        POSPINSetupController(validatePIN: { pin in try await self.validatePIN(pin, for: role) },
-                              savePIN: { pin in await self.save(pin, for: role) })
+        makePINSetupController(for: role, permitsAdminChange: false)
+    }
+
+    func endPINEditing() {
+        editorID = nil
+    }
+
+    private func makePINSetupController(for role: POSLocalRole, permitsAdminChange: Bool) -> POSPINSetupController {
+        let id = UUID()
+        let scope = session.accessScope
+        let isAuthorized = role != .admin || roles?.contains(.admin) == false || permitsAdminChange
+        editorID = id
+        return POSPINSetupController(validatePIN: { pin in
+            guard isAuthorized, self.isCurrentEditor(id, scope: scope) else { throw CancellationError() }
+            try await self.validatePIN(pin, for: role)
+            guard self.isCurrentEditor(id, scope: scope) else { throw CancellationError() }
+        }, savePIN: { pin throws(POSPINStoreError) in
+            guard isAuthorized, self.isCurrentEditor(id, scope: scope) else { return false }
+            let saved = await self.save(pin, for: role, editorID: id, scope: scope)
+            if !saved, let error = self.error { throw error }
+            return saved
+        })
+    }
+
+    private func isCurrentEditor(_ id: UUID, scope: POSPINSessionTokens.Token) -> Bool {
+        editorID == id && session.accessScope == scope && isVisible && !Task.isCancelled
     }
 
     func requestRemoval(for role: POSLocalRole) async {
@@ -52,35 +86,52 @@ final class POSSecuritySettingsController {
 
     func requestProtectionRemoval(using handler: POSManagerOverrideHandler,
                                   reason: String) async -> POSManagerOverrideHandler.ApprovalResult {
-        guard isVisible, !isSaving, roles?.contains(.admin) == true, !Task.isCancelled else { return .cancelled }
-        let requestID = UUID()
-        let scope = session.accessScope
-        removalRequestID = requestID
-        defer {
-            if removalRequestID == requestID { removalRequestID = nil }
-        }
-        return await handler.requestApproval(for: .manageStoreSettings, reason: reason, operation: { pin throws(POSAuthError) in
-            try await self.approveProtectionRemoval(withPIN: pin, requestID: requestID, scope: scope)
-        })
+        await requestApproval(.removeProtection, using: handler, reason: reason)
     }
 
-    private func approveProtectionRemoval(withPIN pin: String,
-                                          requestID: UUID,
-                                          scope: POSPINSessionTokens.Token) async throws(POSAuthError) -> Bool {
-        guard removalRequestID == requestID, session.accessScope == scope, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else {
-            return false
+    func requestAdminPINChange(using handler: POSManagerOverrideHandler, reason: String) async -> POSPINSetupController? {
+        let scope = session.accessScope
+        guard await requestApproval(.changeAdminPIN, using: handler, reason: reason) == .completed,
+              session.accessScope == scope, isVisible, !Task.isCancelled else { return nil }
+        return makePINSetupController(for: .admin, permitsAdminChange: true)
+    }
+
+    private func requestApproval(_ action: ApprovalAction, using handler: POSManagerOverrideHandler,
+                                 reason: String) async -> POSManagerOverrideHandler.ApprovalResult {
+        guard isVisible, !isSaving, roles?.contains(.admin) == true, !Task.isCancelled else { return .cancelled }
+        handler.configure(session: session)
+        endPINEditing()
+        let request = ApprovalRequest(scope: session.accessScope, action: action)
+        approvalRequest = request
+        defer {
+            if approvalRequest == request { approvalRequest = nil }
         }
-        isVerifyingRemoval = true
-        defer { isVerifyingRemoval = false }
+        let result = await handler.requestApproval(for: .manageStoreSettings, reason: reason, operation: { pin throws(POSAuthError) in
+            try await self.approve(withPIN: pin, request: request)
+        })
+        guard approvalRequest == request, !Task.isCancelled else { return .cancelled }
+        return result
+    }
+
+    private func approve(withPIN pin: String, request: ApprovalRequest) async throws(POSAuthError) -> Bool {
+        guard isCurrentApproval(request), !isSaving, !isVerifyingApproval else { return false }
+        isVerifyingApproval = true
+        defer { isVerifyingApproval = false }
         do {
             try await session.requestManagerApproval(withPIN: pin, for: .manageStoreSettings)
         } catch {
-            guard removalRequestID == requestID, !Task.isCancelled else { return false }
+            guard isCurrentApproval(request) else { return false }
             throw error
         }
-        guard removalRequestID == requestID, session.accessScope == scope, isVisible, !Task.isCancelled else { return false }
-        let removed = await save(nil, for: .admin)
-        return removed
+        guard isCurrentApproval(request) else { return false }
+        switch request.action {
+        case .changeAdminPIN: return true
+        case .removeProtection: return await save(nil, for: .admin)
+        }
+    }
+
+    private func isCurrentApproval(_ request: ApprovalRequest) -> Bool {
+        approvalRequest == request && session.accessScope == request.scope && isVisible && !Task.isCancelled
     }
 
     private func validatePIN(_ pin: String, for role: POSLocalRole) async throws {
@@ -93,8 +144,9 @@ final class POSSecuritySettingsController {
         try result.get()
     }
 
-    private func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
-        guard isVisible, !isSaving, roles != nil else { return false }
+    private func save(_ pin: String?, for role: POSLocalRole,
+                      editorID: UUID? = nil, scope: POSPINSessionTokens.Token? = nil) async -> Bool {
+        guard isVisible, !isSaving, roles != nil, !Task.isCancelled else { return false }
         let change = session.beginPINChange()
         isSaving = true
         defer {
@@ -103,9 +155,14 @@ final class POSSecuritySettingsController {
         }
         do {
             let store = store
-            try await Task.detached {
-                if let pin { try store.setPIN(pin, for: role) } else { try store.removePIN(for: role) }
-            }.value
+            if let pin {
+                let commit = try await Task.detached { try store.preparePIN(pin, for: role) }.value
+                guard let editorID, let scope, isCurrentEditor(editorID, scope: scope) else { return false }
+                try commit()
+                self.editorID = nil
+            } else {
+                try await Task.detached { try store.removePIN(for: role) }.value
+            }
             load()
             return error == nil
         } catch {

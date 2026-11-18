@@ -58,22 +58,22 @@ struct POSAccessControlSetupView: View {
     }
 }
 
-struct POSAdminPINOnboardingView: View {
+struct POSPINSetupFlowView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-    @State private var onboarding: POSAdminPINOnboarding
+    @State private var onboarding: POSPINSetupFlow
     @State private var pinStatusAndSpacingHeight: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
 
-    init(controller: POSSecuritySettingsController, close: @escaping () -> Void) {
+    init(flow: POSPINSetupFlow, controller: POSSecuritySettingsController, close: @escaping () -> Void) {
         self.controller = controller
         self.close = close
-        self._onboarding = State(initialValue: POSAdminPINOnboarding(setup: controller.makePINSetupController(for: .admin)))
+        self._onboarding = State(initialValue: flow)
     }
 
     var body: some View {
@@ -100,19 +100,19 @@ struct POSAdminPINOnboardingView: View {
             }
         }
         .onDisappear { onboarding.discard() }
-        .accessibilityIdentifier("pos-admin-pin-onboarding")
+        .accessibilityIdentifier("pos-pin-setup")
     }
 }
 
-private extension POSAdminPINOnboardingView {
+private extension POSPINSetupFlowView {
     var usesAccessibilityFullScreen: Bool {
         horizontalSizeClass == .regular && dynamicTypeSize.isAccessibilitySize
     }
 
     var title: String {
         switch onboarding.step {
-        case .choose: Localization.chooseTitle
-        case .confirm: Localization.confirmTitle
+        case .choose: onboarding.mode.role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
+        case .confirm: onboarding.mode.role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
         case .saving, .saved, .guidedAccessOffer: ""
         }
     }
@@ -138,7 +138,7 @@ private extension POSAdminPINOnboardingView {
                 POSPageHeaderBackButton(configuration: .init(state: onboarding.canClose ? .enabled : .disabled,
                                                              action: closeFlow,
                                                              buttonIcon: "xmark",
-                                                             accessibilityIdentifier: "pos-admin-pin-onboarding-close",
+                                                             accessibilityIdentifier: "pos-pin-setup-close",
                                                              accessibilityLabel: Localization.close))
             }
         }
@@ -154,8 +154,11 @@ private extension POSAdminPINOnboardingView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            messagePage(art: savedCheck, title: Localization.savedTitle, message: Localization.savedMessage) {
-                Button(Localization.continueAction) { onboarding.continueToGuidedAccessOffer() }
+            messagePage(art: savedCheck, title: onboarding.mode.role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle,
+                        message: onboarding.mode.role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage) {
+                Button(onboarding.mode == .adminOnboarding ? Localization.continueAction : Localization.done) {
+                    if onboarding.continueFromSuccess() { closeFlow() }
+                }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
             .transition(.opacity.animation(Constants.offerFade))
@@ -259,7 +262,7 @@ private extension POSAdminPINOnboardingView {
         }
     }
 
-    func message(for feedback: POSAdminPINOnboarding.Feedback) -> String {
+    func message(for feedback: POSPINSetupFlow.Feedback) -> String {
         switch feedback {
         case .mismatch: POSSecuritySettingsView.Localization.mismatch
         case .failure(.pinMatchesOtherRole): POSSecuritySettingsView.Localization.distinctPINs
@@ -274,7 +277,7 @@ private extension POSAdminPINOnboardingView {
     }
 
     enum Constants {
-        static let pinEntryTopID = "admin-pin-entry-top"
+        static let pinEntryTopID = "pin-entry-top"
         static let regularKeySize: CGFloat = 90
         static let compactKeySize: CGFloat = 72
         static let checkSize: CGFloat = 80
@@ -284,15 +287,27 @@ private extension POSAdminPINOnboardingView {
     }
 
     enum Localization {
+        static let chooseCashierTitle = NSLocalizedString("pos.pinSetup.cashier.choose.title", value: "Choose a Cashier PIN",
+                                                          comment: "Title while choosing a Cashier PIN in POS.")
+        static let confirmCashierTitle = NSLocalizedString("pos.pinSetup.cashier.confirm.title", value: "Confirm the Cashier PIN",
+                                                           comment: "Title while confirming a Cashier PIN in POS.")
+        static let cashierSavedTitle = NSLocalizedString("pos.pinSetup.cashier.saved.title", value: "The cashier PIN is set",
+                                                         comment: "Title after the Cashier PIN is saved in POS.")
+        static let cashierSavedMessage = NSLocalizedString("pos.pinSetup.cashier.saved.message",
+                                                           value: "Your team can use this PIN to unlock Point of Sale and process sales. " +
+                                                           "Creating coupons, issuing refunds, and exiting Point of Sale require admin approval.",
+                                                           comment: "Explains what the saved Cashier PIN permits in POS.")
+        static let done = NSLocalizedString("pos.pinSetup.saved.done", value: "Done",
+                                            comment: "Closes Cashier PIN setup or an Admin PIN change after saving.")
         static let chooseTitle = NSLocalizedString("pos.adminPINOnboarding.choose.title", value: "Choose your admin PIN",
-                                                   comment: "Title while choosing the first admin PIN in POS.")
+                                                   comment: "Title while choosing an admin PIN in POS.")
         static let confirmTitle = NSLocalizedString("pos.adminPINOnboarding.confirm.title", value: "Confirm your admin PIN",
-                                                    comment: "Title while re-entering the first admin PIN in POS.")
+                                                    comment: "Title while re-entering an admin PIN in POS.")
         static let savedTitle = NSLocalizedString("pos.adminPINOnboarding.saved.title", value: "Your admin PIN is set",
-                                                  comment: "Title after the first admin PIN is saved in POS.")
+                                                  comment: "Title after an admin PIN is saved in POS.")
         static let savedMessage = NSLocalizedString("pos.adminPINOnboarding.saved.message",
                                                     value: "Use your admin PIN to unlock Point of Sale with full access.",
-                                                    comment: "Explanation after the first admin PIN is saved in POS.")
+                                                    comment: "Explanation after an admin PIN is saved in POS.")
         static let continueAction = NSLocalizedString("pos.adminPINOnboarding.saved.continue", value: "Continue",
                                                       comment: "Button after the admin PIN is saved. Shows the Guided Access offer.")
         static let offerTitle = NSLocalizedString("pos.adminPINOnboarding.guidedAccess.title", value: "Keep your device on POS",

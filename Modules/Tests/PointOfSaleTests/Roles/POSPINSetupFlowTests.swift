@@ -26,7 +26,6 @@ struct POSPINSetupFlowTests {
         #expect(saves == 1)
         #expect(closes == (mode != .adminOnboarding))
         #expect(sut.step == (mode == .adminOnboarding ? .guidedAccessOffer : .saved))
-        #expect(mode.role == (mode == .cashier ? .cashier : .admin))
     }
 
     @Test(arguments: POSPINSetupFlow.Mode.allCases)

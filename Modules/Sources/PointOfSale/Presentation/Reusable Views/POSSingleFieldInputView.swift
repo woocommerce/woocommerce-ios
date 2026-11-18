@@ -114,7 +114,7 @@ struct POSSingleFieldInputView: View {
                     .accessibilityIdentifier(submitButtonAccessibilityIdentifier)
                 }
                 .padding(.horizontal, metrics.padding[keyPath: horizontalPadding])
-                .padding(.bottom, fillsAvailableHeight ? 0 : keyboardFrame.height)
+                .padding(.bottom, fillsAvailableHeight ? metrics.padding.medium : keyboardFrame.height)
             }
             .frame(minHeight: fillsAvailableHeight ? availableHeight : nil)
             .animation(.easeInOut, value: errorMessage)

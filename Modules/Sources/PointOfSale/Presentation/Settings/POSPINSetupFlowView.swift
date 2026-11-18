@@ -111,8 +111,8 @@ private extension POSPINSetupFlowView {
 
     var title: String {
         switch flow.step {
-        case .choose: flow.mode.chooseTitle
-        case .confirm: flow.mode.confirmTitle
+        case .choose: flow.configuration.copy.chooseTitle
+        case .confirm: flow.configuration.copy.confirmTitle
         case .saving, .saved, .guidedAccessOffer: ""
         }
     }
@@ -154,8 +154,8 @@ private extension POSPINSetupFlowView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            messagePage(art: savedCheck, title: flow.mode.savedTitle, message: flow.mode.savedMessage) {
-                Button(flow.mode.savedActionTitle) {
+            messagePage(art: savedCheck, title: flow.configuration.copy.savedTitle, message: flow.configuration.copy.savedMessage) {
+                Button(flow.configuration.successAction.title) {
                     if flow.continueFromSuccess() { closeFlow() }
                 }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -286,29 +286,6 @@ private extension POSPINSetupFlowView {
     }
 
     enum Localization {
-        static let chooseCashierTitle = NSLocalizedString("pos.pinSetup.cashier.choose.title", value: "Choose a Cashier PIN",
-                                                          comment: "Title while choosing a Cashier PIN in POS.")
-        static let confirmCashierTitle = NSLocalizedString("pos.pinSetup.cashier.confirm.title", value: "Confirm the Cashier PIN",
-                                                           comment: "Title while confirming a Cashier PIN in POS.")
-        static let cashierSavedTitle = NSLocalizedString("pos.pinSetup.cashier.saved.title", value: "The cashier PIN is set",
-                                                         comment: "Title after the Cashier PIN is saved in POS.")
-        static let cashierSavedMessage = NSLocalizedString("pos.pinSetup.cashier.saved.message",
-                                                           value: "Your team can use this PIN to unlock Point of Sale and process sales. " +
-                                                           "Creating coupons, issuing refunds, and exiting Point of Sale require admin approval.",
-                                                           comment: "Explains what the saved Cashier PIN permits in POS.")
-        static let done = NSLocalizedString("pos.pinSetup.saved.done", value: "Done",
-                                            comment: "Closes Cashier PIN setup or an Admin PIN change after saving.")
-        static let chooseTitle = NSLocalizedString("pos.adminPINOnboarding.choose.title", value: "Choose your admin PIN",
-                                                   comment: "Title while choosing an admin PIN in POS.")
-        static let confirmTitle = NSLocalizedString("pos.adminPINOnboarding.confirm.title", value: "Confirm your admin PIN",
-                                                    comment: "Title while re-entering an admin PIN in POS.")
-        static let savedTitle = NSLocalizedString("pos.adminPINOnboarding.saved.title", value: "Your admin PIN is set",
-                                                  comment: "Title after an admin PIN is saved in POS.")
-        static let savedMessage = NSLocalizedString("pos.adminPINOnboarding.saved.message",
-                                                    value: "Use your admin PIN to unlock Point of Sale with full access.",
-                                                    comment: "Explanation after an admin PIN is saved in POS.")
-        static let continueAction = NSLocalizedString("pos.adminPINOnboarding.saved.continue", value: "Continue",
-                                                      comment: "Button after the admin PIN is saved. Shows the Guided Access offer.")
         static let offerTitle = NSLocalizedString("pos.adminPINOnboarding.guidedAccess.title", value: "Keep your device on POS",
                                                   comment: "Title of the optional Guided Access offer after admin PIN setup.")
         static let offerMessage = NSLocalizedString("pos.adminPINOnboarding.guidedAccess.message",
@@ -322,30 +299,6 @@ private extension POSPINSetupFlowView {
                                             comment: "Accessibility label of the button that returns to choosing the admin PIN.")
         static let close = NSLocalizedString("pos.adminPINOnboarding.close", value: "Close",
                                              comment: "Accessibility label of the button that closes admin PIN setup.")
-    }
-}
-
-private extension POSPINSetupFlow.Mode {
-    typealias Localization = POSPINSetupFlowView.Localization
-
-    var chooseTitle: String {
-        role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
-    }
-
-    var confirmTitle: String {
-        role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
-    }
-
-    var savedTitle: String {
-        role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle
-    }
-
-    var savedMessage: String {
-        role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage
-    }
-
-    var savedActionTitle: String {
-        self == .adminOnboarding ? Localization.continueAction : Localization.done
     }
 }
 

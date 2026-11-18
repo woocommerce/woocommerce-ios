@@ -21,10 +21,13 @@ final class POSSecuritySettingsController {
     private var editorID: UUID?
     private let store: POSPINManaging
     private let session: POSAccessSession
+    private let flowSleep: @MainActor (Duration) async throws -> Void
 
-    init(store: POSPINManaging, session: POSAccessSession) {
+    init(store: POSPINManaging, session: POSAccessSession,
+         flowSleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
         self.store = store
         self.session = session
+        self.flowSleep = flowSleep
     }
 
     var isVisible: Bool {
@@ -50,6 +53,16 @@ final class POSSecuritySettingsController {
         }
     }
 
+    func makePINSetupFlow(for role: POSLocalRole) -> POSPINSetupFlow {
+        let configuration: POSPINSetupFlow.Configuration
+        switch role {
+        case .admin: configuration = .initialAdmin
+        case .cashier: configuration = .cashier
+        }
+        let setup = makePINSetupController(for: configuration.role)
+        return POSPINSetupFlow(configuration: configuration, setup: setup, sleep: flowSleep)
+    }
+
     func makePINSetupController(for role: POSLocalRole) -> POSPINSetupController {
         makePINSetupController(for: role, permitsAdminChange: false)
     }
@@ -65,8 +78,7 @@ final class POSSecuritySettingsController {
         editorID = id
         return POSPINSetupController(validatePIN: { pin in
             guard isAuthorized, self.isCurrentEditor(id, scope: scope) else { throw CancellationError() }
-            try await self.validatePIN(pin, for: role)
-            guard self.isCurrentEditor(id, scope: scope) else { throw CancellationError() }
+            try await self.validatePIN(pin, for: role, editorID: id, scope: scope)
         }, savePIN: { pin throws(POSPINStoreError) in
             guard isAuthorized, self.isCurrentEditor(id, scope: scope) else { return false }
             let saved = await self.save(pin, for: role, editorID: id, scope: scope)
@@ -89,11 +101,13 @@ final class POSSecuritySettingsController {
         await requestApproval(.removeProtection, using: handler, reason: reason)
     }
 
-    func requestAdminPINChange(using handler: POSManagerOverrideHandler, reason: String) async -> POSPINSetupController? {
+    func requestAdminPINChange(using handler: POSManagerOverrideHandler, reason: String) async -> POSPINSetupFlow? {
         let scope = session.accessScope
         guard await requestApproval(.changeAdminPIN, using: handler, reason: reason) == .completed,
               session.accessScope == scope, isVisible, !Task.isCancelled else { return nil }
-        return makePINSetupController(for: .admin, permitsAdminChange: true)
+        let configuration = POSPINSetupFlow.Configuration.adminChange
+        let setup = makePINSetupController(for: configuration.role, permitsAdminChange: true)
+        return POSPINSetupFlow(configuration: configuration, setup: setup, sleep: flowSleep)
     }
 
     private func requestApproval(_ action: ApprovalAction, using handler: POSManagerOverrideHandler,
@@ -134,13 +148,14 @@ final class POSSecuritySettingsController {
         approvalRequest == request && session.accessScope == request.scope && isVisible && !Task.isCancelled
     }
 
-    private func validatePIN(_ pin: String, for role: POSLocalRole) async throws {
+    private func validatePIN(_ pin: String, for role: POSLocalRole,
+                             editorID: UUID, scope: POSPINSessionTokens.Token) async throws {
         guard isVisible, !isSaving, roles != nil, !Task.isCancelled else { throw CancellationError() }
         isSaving = true
         defer { isSaving = false }
         let store = store
         let result = await Task.detached { try store.validatePIN(pin, for: role) }.result
-        guard isVisible, !Task.isCancelled else { throw CancellationError() }
+        guard isCurrentEditor(editorID, scope: scope) else { throw CancellationError() }
         try result.get()
     }
 
@@ -156,8 +171,9 @@ final class POSSecuritySettingsController {
         do {
             let store = store
             if let pin {
-                let commit = try await Task.detached { try store.preparePIN(pin, for: role) }.value
+                let preparation = await Task.detached { try store.preparePIN(pin, for: role) }.result
                 guard let editorID, let scope, isCurrentEditor(editorID, scope: scope) else { return false }
+                let commit = try preparation.get()
                 try commit()
                 self.editorID = nil
             } else {

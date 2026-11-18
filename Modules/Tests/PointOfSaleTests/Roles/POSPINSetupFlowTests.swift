@@ -10,39 +10,38 @@ struct POSPINSetupFlowTests {
     private let defaultsScope = POSPINSetupFlowTestDefaults()
     private let sleeper = MockSleeper()
 
-    @Test(arguments: POSPINSetupFlow.Mode.allCases)
-    func test_continue_when_saved_then_only_initial_admin_setup_offers_guided_access(mode: POSPINSetupFlow.Mode) async {
+    @Test(arguments: [(.initialAdmin, false), (.adminChange, true), (.cashier, true)] as [(POSPINSetupFlow.Configuration, Bool)])
+    func test_continue_when_saved_then_only_initial_admin_setup_offers_guided_access(configuration: POSPINSetupFlow.Configuration, closes: Bool) async {
         // Given
         var saves = 0
         let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in saves += 1; return true })
-        let sut = POSPINSetupFlow(mode: mode, setup: setup, sleep: { _ in })
+        let sut = POSPINSetupFlow(configuration: configuration, setup: setup, sleep: { _ in })
         #expect(await sut.submit("1234"))
         #expect(await sut.submit("1234"))
 
         // When
-        let closes = sut.continueFromSuccess()
+        let shouldClose = sut.continueFromSuccess()
 
         // Then
         #expect(saves == 1)
-        #expect(closes == (mode != .adminOnboarding))
-        #expect(sut.step == (mode == .adminOnboarding ? .guidedAccessOffer : .saved))
+        #expect(shouldClose == closes)
+        #expect(sut.step == (closes ? .saved : .guidedAccessOffer))
     }
 
-    @Test(arguments: POSPINSetupFlow.Mode.allCases)
-    func test_continue_when_not_saved_then_does_not_close_or_offer_guided_access(mode: POSPINSetupFlow.Mode) {
+    @Test func test_continue_when_not_saved_then_does_not_close_or_offer_guided_access() {
         // Given
-        let sut = POSPINSetupFlow(mode: mode, setup: POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in true }))
+        let sut = POSPINSetupFlow(configuration: .initialAdmin, setup: POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in true }))
 
         // When / Then
         #expect(!sut.continueFromSuccess())
         #expect(sut.step == .choose)
     }
 
-    @Test(arguments: POSPINSetupFlow.Mode.allCases, [POSPINStoreError.storageFailure, .pinMatchesOtherRole])
-    func test_confirm_when_save_rejects_then_shows_specific_failure_without_success(mode: POSPINSetupFlow.Mode, error: POSPINStoreError) async {
+    @Test(arguments: [POSPINStoreError.storageFailure, .pinMatchesOtherRole])
+    func test_confirm_when_save_rejects_then_shows_specific_failure_without_success(error: POSPINStoreError) async {
         // Given
         let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ throws(POSPINStoreError) in throw error })
-        let sut = POSPINSetupFlow(mode: mode, setup: setup, sleep: { _ in })
+        let sut = POSPINSetupFlow(configuration: .cashier, setup: setup, sleep: { _ in })
         #expect(await sut.submit("1234"))
 
         // When
@@ -59,7 +58,7 @@ struct POSPINSetupFlowTests {
     func test_choose_when_validation_rejects_then_waits_for_shake_before_showing_feedback(error: POSPINStoreError) async throws {
         // Given
         let setup = POSPINSetupController(validatePIN: { _ in throw error }, savePIN: { _ in true })
-        let sut = POSPINSetupFlow(mode: .cashier, setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(configuration: .cashier, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         let submission = Task { await sut.submit("1234") }
@@ -79,6 +78,27 @@ struct POSPINSetupFlowTests {
         #expect(sut.step == .choose)
         #expect(sut.pageID == 0)
         #expect(sleeper.durations == [.milliseconds(500), .milliseconds(550)])
+    }
+
+    @Test func test_close_when_validating_then_keeps_flow_open_and_rejects_reentry() async {
+        // Given
+        weak var flow: POSPINSetupFlow?
+        let setup = POSPINSetupController(validatePIN: { _ in
+            let current = try #require(flow)
+            #expect(!current.canClose)
+            #expect(!current.close())
+            #expect(await current.submit("5678") == false)
+        }, savePIN: { _ in Issue.record("Validation must not save"); return false })
+        let sut = POSPINSetupFlow(configuration: .initialAdmin, setup: setup, sleep: { _ in })
+        flow = sut
+
+        // When
+        let accepted = await sut.submit("1234")
+
+        // Then
+        #expect(accepted)
+        #expect(sut.step == .confirm)
+        #expect(sut.canClose)
     }
 
     @Test func test_choose_when_four_digits_are_entered_then_holds_filled_dots_before_confirm() async throws {
@@ -138,7 +158,7 @@ struct POSPINSetupFlowTests {
             saveCount += 1
             return true
         })
-        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(configuration: .initialAdmin, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -164,7 +184,7 @@ struct POSPINSetupFlowTests {
             saveCount += 1
             return true
         })
-        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(configuration: .initialAdmin, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -188,7 +208,7 @@ struct POSPINSetupFlowTests {
         let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ in
             await withCheckedContinuation { finishSave = $0 }
         })
-        let sut = POSPINSetupFlow(mode: .adminOnboarding, setup: setup, sleep: sleeper.sleep)
+        let sut = POSPINSetupFlow(configuration: .initialAdmin, setup: setup, sleep: sleeper.sleep)
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
@@ -259,16 +279,12 @@ struct POSPINSetupFlowTests {
         #expect(storage.values.isEmpty)
     }
 
-    @Test(arguments: [false, true])
-    func test_choose_after_mismatch_when_new_pin_is_entered_then_clears_mismatch_and_needs_confirmation(discardDraft: Bool) async throws {
+    @Test func test_choose_after_mismatch_when_new_pin_is_entered_then_clears_mismatch_and_needs_confirmation() async throws {
         // Given
         let (sut, controller, _) = makeSUT()
         defer { sleeper.finish() }
         var sleeps = sleeper.calls.makeAsyncIterator()
         try await enterFirstPIN("1234", sut: sut, sleeps: &sleeps)
-        if discardDraft {
-            sut.discard()
-        }
         _ = await sut.submit("5678")
         try await expectSleep(.milliseconds(550), from: &sleeps)
         sleeper.resumeNext()
@@ -380,9 +396,9 @@ private extension POSPINSetupFlowTests {
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaultsScope.defaults)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: sleeper.sleep)
         controller.load()
-        return (POSPINSetupFlow(mode: .adminOnboarding, setup: controller.makePINSetupController(for: .admin), sleep: sleeper.sleep), controller, session)
+        return (controller.makePINSetupFlow(for: .admin), controller, session)
     }
 
     func enterFirstPIN(_ pin: String, sut: POSPINSetupFlow, sleeps: inout AsyncStream<Duration>.Iterator) async throws {

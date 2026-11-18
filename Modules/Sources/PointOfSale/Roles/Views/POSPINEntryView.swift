@@ -189,7 +189,6 @@ private extension POSPINEntryView {
                     }
                 }
                 .transaction { transaction in
-                    // Setup feedback moves empty dots; a filled overlay must not fade through the message.
                     if setupPage != nil && !filled && enteredPIN.isEmpty {
                         transaction.animation = nil
                     }

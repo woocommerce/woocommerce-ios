@@ -40,7 +40,6 @@ struct POSSecuritySettingsControllerTests {
         // Then
         #expect(result == .rejected)
         #expect(setup.error == .storageFailure)
-        #expect(!setup.isConfirmingPIN)
         #expect(storage.values.isEmpty)
     }
 
@@ -119,9 +118,9 @@ struct POSSecuritySettingsControllerTests {
         let result = await setup.submit("5678")
 
         // Then
-        #expect(result == .rejected)
-        #expect(!setup.isConfirmingPIN)
-        #expect(setup.error == .pinMatchesOtherRole)
+        #expect(!result)
+        await waitUntil { setup.feedback != nil }
+        #expect(setup.feedback == .failure(.pinMatchesOtherRole))
         #expect(controller.roles == [.admin, .cashier])
         #expect(session.currentStaff == POSLocalRole.admin.staff)
     }
@@ -137,8 +136,8 @@ struct POSSecuritySettingsControllerTests {
         let setup = try #require(await approval.value)
 
         // When
-        #expect(await setup.submit("2468") == .confirmationRequired)
-        #expect(await setup.submit("2468") == .saved)
+        #expect(await setup.submit("2468") == true)
+        #expect(await setup.submit("2468") == true)
         session.lock()
 
         // Then
@@ -159,7 +158,6 @@ struct POSSecuritySettingsControllerTests {
 
         // Then
         #expect(result == .rejected)
-        #expect(!setup.isConfirmingPIN)
         #expect(setup.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin])
         #expect(session.isPINProtectionEnabled)
@@ -252,7 +250,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = { handler.cancel() }
@@ -274,7 +272,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
 
         // When
@@ -312,7 +310,6 @@ struct POSSecuritySettingsControllerTests {
         #expect(await setup.submit("1234") == .rejected)
 
         // Then
-        #expect(!setup.isConfirmingPIN)
         #expect(setup.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin])
         #expect(await setup.submit("5678") == .confirmationRequired)
@@ -393,7 +390,7 @@ struct POSSecuritySettingsControllerTests {
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                               rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
         if wasProtected { #expect(await save("1234", for: .admin, using: controller)) }
         let before = storage.values
@@ -423,7 +420,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = {
@@ -447,7 +444,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         var replacement: Task<POSManagerOverrideHandler.ApprovalResult, Never>?
@@ -551,18 +548,19 @@ struct POSSecuritySettingsControllerTests {
         let setup = try #require(await approval.value)
 
         // Then
+        #expect(setup.configuration == .adminChange)
         #expect(session.currentStaff == POSLocalRole.admin.staff)
         #expect(session.accessScope == scope)
         #expect(!controller.isApprovingProtectionRemoval)
         #expect(try store.credentials() == before)
-        #expect(await setup.submit("2468") == .confirmationRequired)
+        #expect(await setup.submit("2468") == true)
         #expect(try store.credentials() == before)
-        #expect(await setup.submit("2468") == .saved)
+        #expect(await setup.submit("2468") == true)
         let after = try store.credentials()
         #expect(after.first { $0.staff == POSLocalRole.admin.staff }?.pinHash.matches("2468") == true)
         #expect(after.first { $0.staff == POSLocalRole.admin.staff }?.pinHash.matches("1234") == false)
         #expect(after.first { $0.staff == POSLocalRole.cashier.staff } == before.first { $0.staff == POSLocalRole.cashier.staff })
-        #expect(await setup.submit("1357") == .rejected)
+        #expect(await setup.submit("1357") == false)
         session.lock()
         try await session.signIn(withPIN: "2468")
         #expect(session.currentStaff == POSLocalRole.admin.staff)
@@ -631,7 +629,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session)
+        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
         controller.load()
         let before = storage.values
         let (handler, approval) = await changeRequest(for: controller)
@@ -662,27 +660,27 @@ struct POSSecuritySettingsControllerTests {
         controller.load()
         #expect(await save("1234", for: .admin, using: controller))
         #expect(await save("5678", for: .cashier, using: controller))
-        let setup: POSPINSetupController
+        let setup: POSPINSetupFlow
         if role == .admin {
             let (handler, approval) = await changeRequest(for: controller)
             #expect(await handler.submit(pin: "1234"))
             setup = try #require(await approval.value)
         } else {
-            setup = controller.makePINSetupController(for: .cashier)
+            setup = controller.makePINSetupFlow(for: .cashier)
         }
         let before = try store.credentials()
-        #expect(await setup.submit("2468") == .confirmationRequired)
+        #expect(await setup.submit("2468") == true)
         storage.shouldFailWrites = true
 
         // When
-        #expect(await setup.submit("2468") == .rejected)
+        #expect(await setup.submit("2468") == false)
 
         // Then
         #expect(try store.credentials() == before)
         #expect(controller.error == .storageFailure)
         storage.shouldFailWrites = false
-        #expect(await setup.submit("2468") == .confirmationRequired)
-        #expect(await setup.submit("2468") == .saved)
+        #expect(await setup.submit("2468") == true)
+        #expect(await setup.submit("2468") == true)
     }
 
     @Test(arguments: [0, 1, 2])
@@ -718,17 +716,17 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("1234", for: .admin, using: original))
         #expect(await save("5678", for: .cashier, using: original))
         let blocking = MockBlockingPOSPINStore(store: store)
-        let controller = POSSecuritySettingsController(store: blocking, session: session)
+        let controller = POSSecuritySettingsController(store: blocking, session: session, flowSleep: { _ in })
         controller.load()
-        let setup: POSPINSetupController
+        let setup: POSPINSetupFlow
         if role == .admin {
             let (handler, approval) = await changeRequest(for: controller)
             #expect(await handler.submit(pin: "1234"))
             setup = try #require(await approval.value)
         } else {
-            setup = controller.makePINSetupController(for: .cashier)
+            setup = controller.makePINSetupFlow(for: .cashier)
         }
-        #expect(await setup.submit("2468") == .confirmationRequired)
+        #expect(await setup.submit("2468") == true)
         let before = try store.credentials()
         let save = Task { await setup.submit("2468") }
         defer { blocking.releaseMutation() }
@@ -740,19 +738,82 @@ struct POSSecuritySettingsControllerTests {
             session.lock()
             try await session.signIn(withPIN: "1234")
         case 1: session.endSession()
-        case 2: setup.discardDraft()
+        case 2: setup.discard()
         case 3: controller.endPINEditing()
         default: save.cancel()
         }
         blocking.releaseMutation()
 
         // Then
-        #expect(await save.value == .rejected)
+        #expect(await save.value == false)
         #expect(try store.credentials() == before)
     }
 
+    @Test(arguments: [(.admin, .initialAdmin), (.cashier, .cashier)] as [(POSLocalRole, POSPINSetupFlow.Configuration)])
+    func test_direct_setup_when_created_then_uses_role_preset(role: POSLocalRole, configuration: POSPINSetupFlow.Configuration) async throws {
+        // Given
+        let (controller, _, store) = makeSUT()
+        controller.load()
+        if role == .cashier { #expect(await save("1234", for: .admin, using: controller)) }
+        let flow = controller.makePINSetupFlow(for: role)
+
+        // When
+        #expect(await flow.submit("5678"))
+        #expect(await flow.submit("5678"))
+
+        // Then
+        #expect(flow.configuration == configuration)
+        #expect(try store.credentials().first { $0.staff == role.staff }?.pinHash.matches("5678") == true)
+        #expect(flow.continueFromSuccess() == (role == .cashier))
+    }
+
+    private enum WorkerStage: CaseIterable {
+        case validation
+        case preparation
+    }
+
+    @Test(arguments: WorkerStage.allCases)
+    private func test_editor_when_failing_worker_finishes_after_editing_ends_then_does_not_publish_error(stage: WorkerStage) async throws {
+        // Given
+        let (original, session, store) = makeSUT()
+        original.load()
+        #expect(await save("1234", for: .admin, using: original))
+        #expect(await save("5678", for: .cashier, using: original))
+        let blocking = MockBlockingPOSPINStore(store: store, fails: true, blocksValidation: stage == .validation)
+        let controller = POSSecuritySettingsController(store: blocking, session: session, flowSleep: { _ in })
+        controller.load()
+        let setup = controller.makePINSetupController(for: .cashier)
+        if stage == .preparation {
+            #expect(await setup.submit("2468") == .confirmationRequired)
+        }
+        let before = try store.credentials()
+        let submission = Task { await setup.submit("2468") }
+        defer { blocking.releaseMutation() }
+        try await blocking.waitUntilEntered()
+
+        // When
+        controller.endPINEditing()
+        blocking.releaseMutation()
+
+        // Then
+        #expect(await submission.value == .rejected)
+        #expect(controller.error == nil)
+        #expect(setup.error == nil)
+        #expect(try store.credentials() == before)
+    }
+
+    private func waitUntil(_ condition: @escaping @MainActor () -> Bool) async {
+        while !condition() {
+            await withCheckedContinuation { continuation in
+                withObservationTracking { _ = condition() } onChange: {
+                    Task { @MainActor in continuation.resume() }
+                }
+            }
+        }
+    }
+
     private func changeRequest(for controller: POSSecuritySettingsController) async
-        -> (POSManagerOverrideHandler, Task<POSPINSetupController?, Never>) {
+        -> (POSManagerOverrideHandler, Task<POSPINSetupFlow?, Never>) {
         let handler = POSManagerOverrideHandler()
         let (ready, input) = AsyncStream.makeStream(of: Void.self, bufferingPolicy: .bufferingNewest(1))
         withObservationTracking { _ = handler.request } onChange: { input.yield(()) }
@@ -803,7 +864,7 @@ struct POSSecuritySettingsControllerTests {
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
-        return (POSSecuritySettingsController(store: store, session: session), session, store)
+        return (POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in }), session, store)
     }
 }
 

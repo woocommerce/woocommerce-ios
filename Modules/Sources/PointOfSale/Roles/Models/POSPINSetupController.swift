@@ -23,8 +23,6 @@ final class POSPINSetupController {
         self.savePIN = savePIN
     }
 
-    var isConfirmingPIN: Bool { firstPIN != nil }
-
     func confirms(_ pin: String) -> Bool {
         firstPIN == pin
     }
@@ -71,12 +69,6 @@ final class POSPINSetupController {
             self.error = (error as? POSPINStoreError) ?? .storageFailure
             return .rejected
         }
-    }
-
-    func cancel() -> Bool {
-        guard !isSaving else { return false }
-        discardDraft()
-        return true
     }
 
     func discardDraft() {

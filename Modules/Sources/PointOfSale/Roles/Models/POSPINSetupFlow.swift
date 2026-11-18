@@ -1,21 +1,10 @@
 import Observation
 
-/// Presents local PIN setup on top of `POSPINSetupController`, which owns validation and the single save.
 /// Presentation pauses run alongside that work and never delay saving.
 @MainActor
 @Observable
 final class POSPINSetupFlow {
-    enum Mode: Equatable, CaseIterable {
-        case adminOnboarding
-        case adminChange
-        case cashier
-
-        var role: POSLocalRole {
-            self == .cashier ? .cashier : .admin
-        }
-    }
-
-    let mode: Mode
+    let configuration: Configuration
 
     enum Step: Equatable {
         case choose
@@ -38,9 +27,9 @@ final class POSPINSetupFlow {
     private let setup: POSPINSetupController
     private let sleep: @MainActor (Duration) async throws -> Void
 
-    init(mode: Mode, setup: POSPINSetupController,
+    init(configuration: Configuration, setup: POSPINSetupController,
          sleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
-        self.mode = mode
+        self.configuration = configuration
         self.setup = setup
         self.sleep = sleep
     }
@@ -78,17 +67,19 @@ final class POSPINSetupFlow {
         show(.choose, feedback: nil)
     }
 
-    /// Returns whether the caller should close the saved flow.
     func continueFromSuccess() -> Bool {
         guard step == .saved else { return false }
-        guard mode == .adminOnboarding else { return true }
-        step = .guidedAccessOffer
-        return false
+        switch configuration.successAction {
+        case .offerGuidedAccess:
+            step = .guidedAccessOffer
+            return false
+        case .done:
+            return true
+        }
     }
 
-    /// Returns `false` while the PIN is being checked or saved.
     func close() -> Bool {
-        guard setup.cancel() else {
+        guard canClose else {
             return false
         }
         discard()
@@ -150,7 +141,6 @@ private extension POSPINSetupFlow {
         await pause(Constants.minimumSavingDuration)
     }
 
-    /// A failed submission starts the entry's shake. Feedback waits until that shake finishes.
     func showEntryFeedback(_ feedback: Feedback, request: Int) {
         Task { @MainActor in
             await pause(Constants.failedEntryPause)

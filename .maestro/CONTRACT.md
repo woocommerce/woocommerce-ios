@@ -16,8 +16,9 @@ stack. Flow owners may reference these interfaces but must not redefine them.
   of `full` require an iPad and never degrade to a phone no-op. `--pos-device`
   picks the iPad for `full`.
 - Flows launch the app with `-ui_testing`, which turns off analytics and skips the
-  privacy banner and login onboarding. No Maestro invocation passes XCUITest mock
-  arguments.
+  privacy banner and login onboarding, and with `-AppleLocale en_US` (unless the
+  flow tests another locale), so dates and numbers use US formats whatever the
+  simulator region. No Maestro invocation passes XCUITest mock arguments.
 - The runner passes `NOTIFICATIONS=deny`, and `login.yaml` has Maestro answer the
   app's notification prompt with it, so no notification banner can take a tap.
   Before the notification flow, the runner signs in again with

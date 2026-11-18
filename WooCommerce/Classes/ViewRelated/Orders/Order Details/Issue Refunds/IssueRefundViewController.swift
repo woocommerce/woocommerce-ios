@@ -32,7 +32,10 @@ final class IssueRefundViewController: UIViewController {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          imageService: ImageService = ServiceLocator.imageService) {
         self.imageService = imageService
-        self.viewModel = IssueRefundViewModel(order: order, refunds: refunds, currencySettings: currencySettings)
+        self.viewModel = IssueRefundViewModel(order: order,
+                                              refunds: refunds,
+                                              currencySettings: currencySettings,
+                                              serverRefunds: .make())
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -93,6 +96,12 @@ private extension IssueRefundViewController {
             presenter.presentingViewController = self
             presenter.enqueue(notice: Notice(title: Localization.fetchRefundsError,
                                              feedbackType: .error, actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle, actionHandler: retry))
+        }
+
+        viewModel.showRefundPreviewErrorNotice = { [weak self] message in
+            let presenter = DefaultNoticePresenter()
+            presenter.presentingViewController = self
+            presenter.enqueue(notice: Notice(title: message, feedbackType: .error))
         }
 
         viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in

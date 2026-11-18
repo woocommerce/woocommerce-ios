@@ -8,6 +8,7 @@ import WooFoundation
 class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection
     @ObservationIgnored @Binding var isPresented: Bool
+    @ObservationIgnored var onDismiss: (() -> Void)?
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
     private let analytics: POSAnalyticsProviding
     // Read from the nonisolated deinit; otherwise only set once from `init` on the main actor.
@@ -40,10 +41,18 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
                 self?.goBackToSelection()
             },
             onDismiss: { [weak self] in
-                self?.isPresented = false
+                self?.dismiss()
             }
         )
         currentState = .setupFlow(scannerType)
+    }
+
+    private func dismiss() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            isPresented = false
+        }
     }
 
     func goBackToSelection() {

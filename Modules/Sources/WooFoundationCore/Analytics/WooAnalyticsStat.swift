@@ -1240,6 +1240,7 @@ public enum WooAnalyticsStat: String {
     case applicationPasswordAuthorizationApproved = "application_password_authorization_approved"
     case applicationPasswordAuthorizationURLNotAvailable = "application_password_authorization_url_not_available"
     case applicationPasswordAuthorizationURLFetchFailed = "application_password_authorization_url_fetch_failed"
+    case applicationPasswordAuthorizationSiteMismatch = "application_password_authorization_site_mismatch"
 
     // MARK: Jetpack setup for non-Jetpack sites
     case jetpackSetupLoginButtonTapped = "jetpack_benefits_login_button_tapped"

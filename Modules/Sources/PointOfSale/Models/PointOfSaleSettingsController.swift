@@ -13,6 +13,7 @@ import class Yosemite.POSCatalogSettingsService
 
 @MainActor
 protocol POSSettingsControllerProtocol {
+    var securityController: POSSecuritySettingsController? { get }
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
     var paymentsViewModel: POSSettingsPaymentsViewModel { get }
@@ -24,11 +25,16 @@ protocol POSSettingsControllerProtocol {
     var printerConnectionController: POSPrinterConnectionController? { get }
 }
 
+extension POSSettingsControllerProtocol {
+    var securityController: POSSecuritySettingsController? { nil }
+}
+
 @MainActor
 @Observable final class PointOfSaleSettingsController: POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
+    private(set) var securityController: POSSecuritySettingsController?
     let storeViewModel: POSSettingsStoreViewModel
     let paymentsViewModel: POSSettingsPaymentsViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
@@ -69,6 +75,10 @@ protocol POSSettingsControllerProtocol {
         self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
+    }
+
+    func configureSecurity(store: POSPINManaging, session: POSAccessSession) {
+        securityController = POSSecuritySettingsController(store: store, session: session)
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {

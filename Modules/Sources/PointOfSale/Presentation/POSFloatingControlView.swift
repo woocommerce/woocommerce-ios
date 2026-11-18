@@ -10,12 +10,9 @@ struct POSFloatingControlView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
-    /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS` before
-    /// presenting the exit confirmation.
+    @Binding private var showSettings: Bool
+    /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS`.
     private let onExitSelected: () -> Void
-    /// Invoked when the Settings menu item is tapped. The host gates it on `.manageStoreSettings` before
-    /// presenting the settings screen.
-    private let onSettingsSelected: () -> Void
     /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
@@ -24,18 +21,18 @@ struct POSFloatingControlView: View {
     init(onExitSelected: @escaping () -> Void,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         onSettingsSelected: @escaping () -> Void,
+         showSettings: Binding<Bool>,
          onOrdersSelected: @escaping () -> Void) {
         self.onExitSelected = onExitSelected
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
-        self.onSettingsSelected = onSettingsSelected
+        self._showSettings = showSettings
         self.onOrdersSelected = onOrdersSelected
     }
 
     var body: some View {
         HStack {
-            Menu {
+            POSMenu {
                 menuOptions()
             } label: {
                 VStack {
@@ -48,6 +45,7 @@ struct POSFloatingControlView: View {
                 }
                 .frame(width: Constants.size)
             }
+            .accessibilityLabel(POSMenuAccessibility.moreActions)
             .accessibilityIdentifier("pos-menu-button")
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
@@ -62,10 +60,10 @@ struct POSFloatingControlView: View {
                     .disabled(horizontalSizeClass != .regular)
             }
         }
-        .posModal(isPresented: $showProductRestrictionsModal) {
+        .posModal(isPresented: $showProductRestrictionsModal, compactStyle: .bottomSheet) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
-        .posModal(isPresented: $showBarcodeScanningModal) {
+        .posModal(isPresented: $showBarcodeScanningModal, compactStyle: .barcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
         .frame(height: Constants.size)
@@ -84,37 +82,8 @@ private extension POSFloatingControlView {
     }
 
     @ViewBuilder private func menuOptions() -> some View {
-        // First-declared items render nearest the ellipsis button (the bottom), so declaring the staff
-        // row here keeps it at the bottom of the menu.
-        if let staff = session.currentStaff {
-            POSStaffMenuRow(staff: staff)
-
-            Divider()
-        }
-
-        Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            onExitSelected()
-        } label: {
-            Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-            )
-        }
-        .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || isPhoneLayout {
-            Button {
-                analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                onSettingsSelected()
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
-            .accessibilityIdentifier("pos-settings-menu-item")
-
-            Button {
+            POSMenuButton {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 onOrdersSelected()
             } label: {
@@ -124,8 +93,19 @@ private extension POSFloatingControlView {
                 )
             }
 
+            POSMenuButton {
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
+            .accessibilityIdentifier("pos-settings-menu-item")
+
             if canLockPOS {
-                Button {
+                POSMenuButton {
                     session.lock()
                 } label: {
                     Label(
@@ -135,6 +115,24 @@ private extension POSFloatingControlView {
                 }
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
+        }
+
+        POSMenuButton {
+            analytics.track(.pointOfSaleExitMenuItemTapped)
+            onExitSelected()
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        .accessibilityIdentifier("pos-exit-menu-item")
+
+        if let staff = session.currentStaff {
+            Divider()
+
+            POSStaffMenuRow(staff: staff)
+                .posPadding(\.medium)
         }
     }
 
@@ -212,13 +210,19 @@ private extension POSFloatingControlView {
     }
 }
 
+extension POSFloatingControlView {
+    static var lockPOSTitle: String {
+        Localization.lockPOS
+    }
+}
+
 #if DEBUG
 
 #Preview("Reader Disconnected") {
     POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           onSettingsSelected: {},
+                           showSettings: .constant(false),
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
@@ -233,7 +237,7 @@ private extension POSFloatingControlView {
     return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  onSettingsSelected: {},
+                                  showSettings: .constant(false),
                                   onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -243,7 +247,7 @@ private extension POSFloatingControlView {
     POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           onSettingsSelected: {},
+                           showSettings: .constant(false),
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
@@ -256,7 +260,7 @@ private extension POSFloatingControlView {
     return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  onSettingsSelected: {},
+                                  showSettings: .constant(false),
                                   onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(\.posAccessSession, session)

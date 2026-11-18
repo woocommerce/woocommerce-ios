@@ -30,11 +30,7 @@ public struct ShippingLineTax: Decodable, Hashable, Sendable, GeneratedFakeable 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        // Even though a plain install of WooCommerce Core provides Int values,
-        // some plugins alter the field value from Int to String.
-        let taxID = container.failsafeDecodeIfPresent(targetType: Int64.self,
-                                                       forKey: .taxID,
-                                                       alternativeTypes: [.string(transform: { Int64($0) ?? 0 })]) ?? 0
+        let taxID = container.failsafeDecodeInt64(forKey: .taxID)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let total = try container.decode(String.self, forKey: .total)
 

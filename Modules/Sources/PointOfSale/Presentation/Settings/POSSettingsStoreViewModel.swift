@@ -34,6 +34,12 @@ final class POSSettingsStoreViewModel: ObservableObject {
         self.receiptSettingsAdminURL = receiptSettingsAdminURL
     }
 
+    /// The receipt editor opens WP Admin signed in with the store account, so only operators who manage store settings see it.
+    @MainActor
+    func showsReceiptEditButton(for session: POSAccessSession) -> Bool {
+        !receiptSettingsAdminURL.isEmpty && session.allows(.manageStoreSettings)
+    }
+
     var storeName: String {
         if let defaultSiteName {
             return defaultSiteName

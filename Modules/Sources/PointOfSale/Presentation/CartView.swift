@@ -73,7 +73,7 @@ struct CartView: View {
                 // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
                 // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
                 // tear CartView down before the cover fully presents.
-                .posModal(isPresented: $showBarcodeScanningModal) {
+                .posModal(isPresented: $showBarcodeScanningModal, compactStyle: .barcodeScannerSetup) {
                     POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
                 }
                 .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
@@ -290,8 +290,8 @@ private struct CartClearMenuButton: View {
     let removeAllItemsFromCart: () -> Void
 
     var body: some View {
-        Menu {
-            Button(role: .destructive,
+        POSMenu {
+            POSMenuButton(role: .destructive,
                    action: {
                 removeAllItemsFromCart()
                 analytics.track(.pointOfSaleClearCartTapped)
@@ -303,8 +303,8 @@ private struct CartClearMenuButton: View {
                 .font(.posButtonSymbolMedium)
                 .foregroundStyle(Color.posOnSurface)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                .accessibilityLabel(Localization.clearButtonTitle)
         }
+        .accessibilityLabel(Localization.clearButtonTitle)
     }
 
     enum Localization {

@@ -25,10 +25,14 @@ struct StoreTopPerformersDashboardCard: View {
                 header
                 if !viewModel.analyticsEnabled {
                     StoreDashboardUnavailableAnalyticsView(title: Localization.unavailableAnalytics)
-                } else if viewModel.syncingError != nil {
-                    errorState
                 } else {
-                    topPerformersContent
+                    StoreDashboardRangedCardContent(cardType: .topPerformers,
+                                                    hasError: viewModel.syncingError != nil,
+                                                    reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                        dateRangeHeader
+                    } content: {
+                        topPerformersContent
+                    }
                 }
             }
         }
@@ -57,23 +61,25 @@ private extension StoreTopPerformersDashboardCard {
         }
     }
 
+    var dateRangeHeader: some View {
+        StoreDashboardDateRangeHeader(
+            timeRange: viewModel.timeRange,
+            dateText: viewModel.timeRangeText,
+            customTitle: Localization.custom,
+            isDisabled: viewModel.syncingData,
+            accessibilityPrefix: "top-performers",
+            onSelect: selectTimeRange,
+            onEditCustom: editCustomRange
+        )
+        .padding(.horizontal, StorePadding.p5)
+        .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
+        .shimmering(active: viewModel.periodViewModel.redacted.header)
+    }
+
     var topPerformersContent: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            StoreDashboardDateRangeHeader(
-                timeRange: viewModel.timeRange,
-                dateText: viewModel.timeRangeText,
-                customTitle: Localization.custom,
-                isDisabled: viewModel.syncingData,
-                accessibilityPrefix: "top-performers",
-                onSelect: selectTimeRange,
-                onEditCustom: editCustomRange
-            )
-            .padding(.horizontal, StorePadding.p5)
-            .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
-            .shimmering(active: viewModel.periodViewModel.redacted.header)
-            StoreDivider()
-                .padding(.bottom, StorePadding.p5)
             StoreTopPerformersPeriodView(viewModel: viewModel.periodViewModel)
+                .padding(.top, StorePadding.p5)
             StoreDashboardTimestamp(
                 text: timestampText,
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
@@ -90,13 +96,6 @@ private extension StoreTopPerformersDashboardCard {
             }
             .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? .placeholder : [])
             .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
-        }
-    }
-
-    var errorState: some View {
-        StoreDashboardCardErrorView {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
-            Task { await viewModel.reloadDataIfNeeded(forceRefresh: true) }
         }
     }
 

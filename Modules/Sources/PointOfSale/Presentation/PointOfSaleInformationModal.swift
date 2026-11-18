@@ -54,33 +54,26 @@ struct PointOfSaleInformationModal<Content: View>: View {
         .frame(width: modalFrameWidth)
     }
 
+    /// The phone bottom sheet adds the padding.
     private var compactBody: some View {
-        VStack(spacing: metrics.spacing.none) {
-            header
+        VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
+            Text(title)
+                .font(.posHeadingBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
 
-            Spacer(minLength: metrics.spacing.none)
-
-            VStack(spacing: metrics.spacing.xxLarge) {
+            ViewThatFits(in: .vertical) {
+                modalContent
                 ScrollView {
                     modalContent
-                        .measureHeight { height in
-                            // Workaround for ScrollView not updating its height immediately on iOS 17
-                            withAnimation(.easeIn(duration: 0)) {
-                                contentHeight = height
-                            }
-                        }
                 }
-                .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
-                .frame(maxHeight: contentHeight)
-
-                okButton
             }
 
-            Spacer(minLength: metrics.spacing.none)
+            okButton
         }
-        .padding(contentPadding)
-        .background(Color.posSurfaceBright)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity)
     }
 
     private var header: some View {
@@ -165,7 +158,7 @@ private extension PointOfSaleInformationModal {
     }
 
     var contentPadding: CGFloat {
-        isCompactWidth ? metrics.padding.xLarge : metrics.padding.xxLarge
+        metrics.padding.xxLarge
     }
 
     var modalFrameWidth: CGFloat {

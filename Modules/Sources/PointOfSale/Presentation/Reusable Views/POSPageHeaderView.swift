@@ -12,12 +12,18 @@ struct POSPageHeaderBackButtonConfiguration {
     let action: () -> Void
     let buttonIcon: String?
     let accessibilityIdentifier: String?
+    let accessibilityLabel: String?
 
-    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil, accessibilityIdentifier: String? = nil) {
+    init(state: State,
+         action: @escaping () -> Void,
+         buttonIcon: String? = nil,
+         accessibilityIdentifier: String? = nil,
+         accessibilityLabel: String? = nil) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
         self.accessibilityIdentifier = accessibilityIdentifier
+        self.accessibilityLabel = accessibilityLabel
     }
 }
 

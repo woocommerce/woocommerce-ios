@@ -7,7 +7,7 @@ import Yosemite
 /// verdicts and the WooCommerce version gate (11.1.0).
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
-struct POSRefundFlowResolverTests {
+struct RefundFlowResolverTests {
 
     private let siteID: Int64 = 123
 
@@ -84,7 +84,7 @@ struct POSRefundFlowResolverTests {
     }
 }
 
-private extension POSRefundFlowResolverTests {
+private extension RefundFlowResolverTests {
 
     /// Store version fixtures relative to `Versions.minimum`, the earliest release with the
     /// server-calculated refund endpoints (also passed to the SUT as `minimumWooVersion`).
@@ -96,15 +96,15 @@ private extension POSRefundFlowResolverTests {
     }
 
     func makeSUT(cachedWooVersion: String? = Versions.minimum,
-                 cache: ServerRefundAvailabilityCache? = nil) -> POSRefundFlowResolver {
+                 cache: ServerRefundAvailabilityCache? = nil) -> RefundFlowResolver {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
         let cache = cache ?? ServerRefundAvailabilityCache()
         let session = SessionManager.testingInstance
         session.cachedWooCommerceVersion = cachedWooVersion
         let stores = MockStoresManager(sessionManager: session)
-        return POSRefundFlowResolver(stores: stores,
-                                     availabilityCache: cache,
-                                     minimumWooVersion: Versions.minimum)
+        return RefundFlowResolver(stores: stores,
+                                  availabilityCache: cache,
+                                  minimumWooVersion: Versions.minimum)
     }
 }

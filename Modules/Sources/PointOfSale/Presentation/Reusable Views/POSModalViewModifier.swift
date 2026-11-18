@@ -1,18 +1,54 @@
 import SwiftUI
 
+/// How a POS modal is shown on phone. Regular width always shows a centered card.
+enum POSModalCompactStyle: Equatable {
+    case dialog
+    case bottomSheet
+    case fullScreen(title: String)
+
+    var fullScreenTitle: String? {
+        guard case .fullScreen(let title) = self else {
+            return nil
+        }
+        return title
+    }
+}
+
 struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @State private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone we standardize the modal experience: every posModal renders as a full-screen
-    /// take-over rather than a centered card, matching the rest of the phone-prototype UI.
     private var isFullScreen: Bool {
-        modalManager.isFullScreen || horizontalSizeClass == .compact
+        (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
+    }
+
+    private var isCompactDialog: Bool {
+        isCompactStyle(.dialog)
+    }
+
+    private var isCompactBottomSheet: Bool {
+        isCompactStyle(.bottomSheet)
+    }
+
+    private func isCompactStyle(_ style: POSModalCompactStyle) -> Bool {
+        activeCompactStyle == style
+    }
+
+    private var activeCompactStyle: POSModalCompactStyle? {
+        horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
+    }
+
+    private var dismissActionIfAllowed: (() -> Void)? {
+        guard modalManager.allowsInteractiveDismissal else {
+            return nil
+        }
+        return { modalManager.dismiss() }
     }
 
     func body(content: Content) -> some View {
@@ -42,39 +78,123 @@ struct POSRootModalViewModifier: ViewModifier {
                                     .edgesIgnoringSafeArea(.all)
                                     .animation(nil, value: modalManager.isPresented)
                             }
-                            ZStack {
-                                modalManager.getContent()
-                                    .environment(\.posModalParentSize, geometry.size)
-                                    .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
-                                    .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                                    .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
-                                    .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                                    .posShadow(isFullScreen ? .none : .large,
-                                               cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                                    .padding(modalPadding)
+                            if isCompactBottomSheet {
+                                bottomSheet(parentSize: geometry.size, bottomSafeArea: geometry.safeAreaInsets.bottom)
+                            } else {
+                                ZStack {
+                                    modalManager.getContent()
+                                        .environment(\.posModalParentSize, geometry.size)
+                                        .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
+                                        .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                                        .environment(\.posModalCompactStyle, activeCompactStyle)
+                                        .posFullScreenFlowHeader(style: activeCompactStyle, dismissAction: dismissActionIfAllowed)
+                                        .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
+                                        .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                        .posShadow(isFullScreen ? .none : .large,
+                                                   cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                        .padding(modalPadding)
+                                }
+                                .zIndex(1)
+                                // Scale the modal container in and out, fading appropriately.
+                                // Unfortunately combined doesn't work on removal.
+                                // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                                // consistent even when animating out, which it wouldn't be if unspecified.
+                                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
                             }
-                            .zIndex(1)
-                            // Scale the modal container in and out, fading appropriately.
-                            // Unfortunately combined doesn't work on removal.
-                            // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
-                            // consistent even when animating out, which it wouldn't be if unspecified.
-                            .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 }
-                // Center cards across the bottom system inset; full-screen content keeps its safe area.
-                .ignoresSafeArea(.container, edges: isFullScreen ? [] : .bottom)
+                // Center cards across the bottom system inset; full-screen content and bottom sheets keep the safe area.
+                .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .onChange(of: modalManager.isPresented) { _, isPresented in
+                if isPresented {
+                    bottomSheetDragOffset = 0
+                }
+            }
             .posIgnoresHiddenKeyboardSafeArea()
     }
 }
 
 private extension POSRootModalViewModifier {
+    func bottomSheet(parentSize: CGSize, bottomSafeArea: CGFloat) -> some View {
+        VStack(spacing: metrics.spacing.none) {
+            Spacer(minLength: metrics.spacing.xxLarge)
+
+            modalManager.getContent()
+                .environment(\.posModalParentSize, parentSize)
+                .environment(\.posHeaderTopPadding, nil)
+                .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                .environment(\.posModalCompactStyle, activeCompactStyle)
+                .padding(metrics.bottomSheetContentInsets)
+                // The home indicator area is already enough space under the content.
+                .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
+                .frame(maxWidth: .infinity)
+                // No close button, so VoiceOver closes the sheet with the escape gesture.
+                .accessibilityElement(children: .contain)
+                .accessibilityAction(.escape, dismissInteractively)
+                .overlay(alignment: .top) {
+                    Capsule()
+                        .fill(Color.posOnSurfaceVariantLowest)
+                        .frame(width: Constants.grabberSize.width, height: Constants.grabberSize.height)
+                        .padding(.top, metrics.padding.small)
+                        .accessibilityElement()
+                        .accessibilityLabel(Localization.grabberAccessibilityLabel)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction { dismissInteractively() }
+                        .accessibilityHidden(!modalManager.allowsInteractiveDismissal)
+                }
+            .background {
+                UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
+                                       topTrailingRadius: POSCornerRadiusStyle.extraLarge.value)
+                .fill(Color.posSurfaceBright)
+                .ignoresSafeArea(edges: .bottom)
+            }
+            .offset(y: bottomSheetDragOffset)
+            .gesture(bottomSheetDismissGesture)
+        }
+        .zIndex(1)
+        .transition(.move(edge: .bottom))
+    }
+
+    func dismissInteractively() {
+        guard modalManager.allowsInteractiveDismissal else { return }
+        modalManager.dismiss()
+    }
+
+    var bottomSheetDismissGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                guard modalManager.allowsInteractiveDismissal else { return }
+                bottomSheetDragOffset = max(0, value.translation.height)
+            }
+            .onEnded { value in
+                guard modalManager.allowsInteractiveDismissal,
+                      value.translation.height > Constants.bottomSheetDismissDistance else {
+                    withAnimation(.interactiveSpring()) {
+                        bottomSheetDragOffset = 0
+                    }
+                    return
+                }
+                modalManager.dismiss()
+            }
+    }
+
     enum Constants {
         static let animationDuration: CGFloat = 0.25
         static let scaleTransitionAmount: CGFloat = 0.9
+        static let grabberSize = CGSize(width: 36, height: 5)
+        static let bottomSheetDismissDistance: CGFloat = 80
+    }
+
+    enum Localization {
+        static let grabberAccessibilityLabel = NSLocalizedString(
+            "pos.modal.bottomSheet.grabber.accessibilityLabel",
+            value: "Close",
+            comment: "Accessibility label for the grabber at the top of a POS bottom sheet on phone. Activating it closes the sheet."
+        )
     }
 }
 
@@ -91,6 +211,7 @@ extension View {
 }
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -104,7 +225,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(compactStyle: compactStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         item = nil
@@ -121,6 +242,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 }
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
+    let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -134,7 +256,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(compactStyle: compactStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         isPresented = false
@@ -160,13 +282,16 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
+    ///   - compactStyle: How the modal is shown on phone. Regular width always shows a centered card.
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      compactStyle: POSModalCompactStyle,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifierForBool(isPresented: isPresented,
+            POSModalViewModifierForBool(compactStyle: compactStyle,
+                                        isPresented: isPresented,
                                         onDismiss: onDismiss,
                                         modalContent: content))
     }
@@ -180,14 +305,17 @@ extension View {
     ///
     /// - Parameters:
     ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
+    ///   - compactStyle: How the modal is shown on phone. Regular width always shows a centered card.
     ///   - content: Content to show
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
+        compactStyle: POSModalCompactStyle,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifier(item: item,
+            POSModalViewModifier(compactStyle: compactStyle,
+                                 item: item,
                                  onDismiss: onDismiss,
                                  modalContent: content))
     }
@@ -258,6 +386,23 @@ extension EnvironmentValues {
     }
 }
 
+// MARK: - POS Modal Compact Style Environment
+
+private struct POSModalCompactStyleKey: EnvironmentKey {
+    static let defaultValue: POSModalCompactStyle? = nil
+}
+
+extension EnvironmentValues {
+    var posModalCompactStyle: POSModalCompactStyle? {
+        get { self[POSModalCompactStyleKey.self] }
+        set { self[POSModalCompactStyleKey.self] = newValue }
+    }
+
+    var isPOSModalFullScreenFlow: Bool {
+        posModalCompactStyle?.fullScreenTitle != nil
+    }
+}
+
 // MARK: - POS Modal Dismiss Action Environment
 
 /// Environment key providing a direct dismiss action for POS modal content.
@@ -293,7 +438,7 @@ extension EnvironmentValues {
             showModal = true
         }
     }
-    .posModal(isPresented: $showModal) {
+    .posModal(isPresented: $showModal, compactStyle: .cardReaderConnection) {
         PointOfSaleCardPresentPaymentAlert(alertType: .connectionSuccess(
             viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {
             })
@@ -316,7 +461,7 @@ extension EnvironmentValues {
             showModal = true
         }
     }
-    .posModal(isPresented: $showModal) {
+    .posModal(isPresented: $showModal, compactStyle: .barcodeScannerSetup) {
         POSBarcodeScannerSetup(isPresented: $showModal, analytics: EmptyPOSAnalytics())
     }
     .posRootModal()
@@ -324,3 +469,13 @@ extension EnvironmentValues {
     .environmentObject(coverManager)
 }
 #endif
+
+extension POSMetrics {
+    /// The top inset is measured from the top edge of the sheet, so the title clears the grabber.
+    var bottomSheetContentInsets: EdgeInsets {
+        EdgeInsets(top: padding.xxLarge + padding.large,
+                   leading: padding.xxLarge,
+                   bottom: padding.none,
+                   trailing: padding.xxLarge)
+    }
+}

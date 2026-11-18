@@ -27,7 +27,9 @@ struct POSCashAmountTextField: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            TextField("", text: $input.displayText)
+            TextField("", text: $input.displayText,
+                      prompt: Text(formatter.formattedAmount(from: ""))
+                        .foregroundColor(.posOnDisabledContainer))
                 .keyboardType(formatter.hasFractionDigits ? .decimalPad : .numberPad)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.posOnSurface)

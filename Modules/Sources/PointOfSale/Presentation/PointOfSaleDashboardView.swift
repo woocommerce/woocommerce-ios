@@ -112,6 +112,8 @@ struct PointOfSaleDashboardView: View {
             case .content:
                 POSPushTransitionContainer(
                     item: posModel.customAmountFlow,
+                    // Each custom amount step owns Back; the container must not also dismiss the flow.
+                    isBackGestureEnabled: false,
                     onBack: { posModel.customAmountFlow = nil }
                 ) {
                     contentView

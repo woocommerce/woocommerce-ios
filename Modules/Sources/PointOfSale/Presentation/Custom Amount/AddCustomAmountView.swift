@@ -81,17 +81,23 @@ struct AddCustomAmountView: View {
     private func detailCard(label: String, value: String, isPlaceholder: Bool,
                             accessibilityLabel: String, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: metrics.spacing.medium) {
-                    cardLabel(label)
-                    Spacer()
-                    cardValue(value, isPlaceholder: isPlaceholder)
+            HStack(spacing: metrics.spacing.medium) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: metrics.spacing.medium) {
+                        cardLabel(label)
+                        Spacer()
+                        cardValue(value, isPlaceholder: isPlaceholder)
+                    }
+                    VStack(alignment: .leading, spacing: metrics.spacing.small) {
+                        cardLabel(label)
+                        cardValue(value, isPlaceholder: isPlaceholder)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                VStack(alignment: .leading, spacing: metrics.spacing.small) {
-                    cardLabel(label)
-                    cardValue(value, isPlaceholder: isPlaceholder)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "square.and.pencil")
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityHidden(true)
             }
             .padding(metrics.padding.xLarge)
             .background(Color.posSurfaceContainerLowest)

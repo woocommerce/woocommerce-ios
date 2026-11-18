@@ -67,9 +67,7 @@ struct TotalsView: View {
                         .environment(\.floatingControlAreaSize,
                                      bottomControlState == .hidden ? floatingControlAreaSize : .zero)
 
-                    bottomControls
-                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
-                        .layoutPriority(1)
+                    scrollableBottomControls
                 }
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
             case .idle, .syncing, .loaded:
@@ -127,9 +125,7 @@ struct TotalsView: View {
                     // A completed payment replaces the checkout content. Start the new screen at its top.
                     .id(displayPaymentState.isSuccess)
 
-                    bottomControls
-                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
-                        .layoutPriority(1)
+                    scrollableBottomControls
                 }
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
                 .animation(.default, value: isShowingPaymentView)
@@ -797,6 +793,16 @@ private extension TotalsView {
             return false
         }
         return true
+    }
+
+    @ViewBuilder
+    var scrollableBottomControls: some View {
+        // ViewThatFits drops EmptyView, leaving its fallback ScrollView to reserve space for hidden controls.
+        if bottomControlState != .hidden {
+            bottomControls
+                .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
+                .layoutPriority(1)
+        }
     }
 
     @ViewBuilder

@@ -24,7 +24,7 @@ struct StoreOrderListEmptyView: View {
                     Text(verbatim: title)
                 }
             }
-                .storeTextStyle(titleIsStrong ? .titleLarge.strong : .titleLarge.emphasized)
+                .storeTextStyle(titleIsStrong ? .titleLarge.strong : .titleLarge)
                 .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)
 

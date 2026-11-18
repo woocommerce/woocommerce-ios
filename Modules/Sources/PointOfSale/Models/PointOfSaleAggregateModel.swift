@@ -38,8 +38,6 @@ protocol PointOfSaleAggregateModelProtocol {
 @MainActor
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
-    /// Counts new orders started from a completed sale, so the "Lock POS after each sale" setting can react to it.
-    private(set) var newOrdersAfterSale = 0
     private var checkoutGeneration = 0
 
     let paymentModel: POSPaymentModel
@@ -294,9 +292,6 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
-        if paymentState.isSuccess {
-            newOrdersAfterSale += 1
-        }
         collectOrderPaymentAnalyticsTracker.resetCheckoutTiming()
         removeAllItemsFromCart()
         orderController.clearOrder()

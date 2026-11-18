@@ -52,7 +52,6 @@ final class POSSecuritySettingsController {
 
     var lockPreferences: POSLockPreferences { lockSettings.preferences }
 
-    /// The Admin PIN can only be changed; turning protection off is the way to remove it.
     func pinActions(for role: POSLocalRole) -> [POSPINAction] {
         guard let roles, role == .admin || offersCashierPINSetup else { return [] }
         guard roles.contains(role) else { return [.setUp] }

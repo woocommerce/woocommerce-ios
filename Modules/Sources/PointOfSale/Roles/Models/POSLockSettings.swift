@@ -10,13 +10,11 @@ enum POSInactivityLockTimeout: Int, CaseIterable, Codable, Sendable {
     case tenMinutes = 10
     case fifteenMinutes = 15
 
-    /// `nil` turns inactivity locking off.
     var interval: TimeInterval? {
         self == .never ? nil : TimeInterval(rawValue * 60)
     }
 }
 
-// New fields need a decoder migration that preserves existing saved choices.
 struct POSLockPreferences: Codable, Equatable, Sendable {
     var locksWhenPOSOpens = true
     var locksInBackground = true
@@ -24,7 +22,6 @@ struct POSLockPreferences: Codable, Equatable, Sendable {
     var inactivityTimeout: POSInactivityLockTimeout = .fiveMinutes
 }
 
-/// The Security "Lock POS when" preferences for one store on this device.
 @MainActor
 @Observable
 final class POSLockSettings {
@@ -51,7 +48,6 @@ final class POSLockSettings {
         }
     }
 
-    /// Logout clears the local PIN setup, so the lock preferences that belong to it go too.
     nonisolated static func clearAll(in userDefaults: UserDefaults) {
         let prefix = "\(baseKey)."
         for key in userDefaults.dictionaryRepresentation().keys where key.hasPrefix(prefix) {

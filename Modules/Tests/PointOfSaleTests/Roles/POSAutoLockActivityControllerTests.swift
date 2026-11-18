@@ -240,6 +240,109 @@ struct POSAutoLockActivityControllerTests {
         #expect(session.lockCallCount == 1)
     }
 
+    @Test(arguments: [PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle),
+                      PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
+                      PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .paymentSuccess),
+                      PointOfSalePaymentState(card: .idle, cash: .idle, markAsPaid: .paymentSuccess)])
+    func test_handlePaymentStateChange_when_completed_sale_is_left_and_lock_after_sale_is_on_then_locks(completedSale: PointOfSalePaymentState) {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: completedSale, to: .idle, locksAfterSale: true)
+
+        // Then
+        #expect(session.lockCallCount == 1)
+    }
+
+    @Test func test_handlePaymentStateChange_when_completed_sale_is_left_and_lock_after_sale_is_off_then_does_not_lock() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle), to: .idle, locksAfterSale: false)
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
+    @Test func test_handlePaymentStateChange_when_sale_completes_then_does_not_lock_the_receipt() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .idle, cash: .collectingCash),
+                                     to: PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
+                                     locksAfterSale: true)
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
+    @Test func test_handlePaymentStateChange_when_failed_payment_is_left_then_does_not_lock() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .paymentError, cash: .idle), to: .idle, locksAfterSale: true)
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
+    @Test func test_handlePaymentStateChange_when_completed_sale_is_left_for_payment_in_flight_then_does_not_lock() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
+                                     to: PointOfSalePaymentState(card: .processingPayment, cash: .idle),
+                                     locksAfterSale: true)
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
+    @Test func test_handlePaymentStateChange_when_isPINProtectionEnabled_is_false_then_does_not_lock() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: nil, isLocked: false, isPINProtectionEnabled: false)
+        let sut = makeSUT(session: session)
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle), to: .idle, locksAfterSale: true)
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
+    @Test func test_handlePaymentStateChange_when_it_does_not_lock_then_resets_the_idle_window() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let clock = ClockHandle()
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 300, now: clock.now)
+        defer { sut.stop() }
+
+        // When
+        clock.advance(by: 250)
+        sut.handlePaymentStateChange(from: PointOfSalePaymentState(card: .idle, cash: .collectingCash), to: .idle, locksAfterSale: true)
+        clock.advance(by: 250)
+        sut.handleTimerFire()
+
+        // Then
+        #expect(session.lockCallCount == 0)
+    }
+
     @Test func test_handleTimerFire_when_session_unlocked_then_relocked_via_noteActivity_then_relocks_after_timeout() {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: true, isPINProtectionEnabled: true)

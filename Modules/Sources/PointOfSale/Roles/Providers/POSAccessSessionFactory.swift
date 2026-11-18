@@ -33,7 +33,6 @@ enum POSAccessSessionFactory {
                      credentialProvider: POSPINCredentialProviding? = nil,
                      rateLimiter: POSLocalRateLimiter? = nil,
                      userDefaults: UserDefaults = .standard,
-                     locksWhenPOSOpens: Bool = true,
                      now: @escaping @MainActor () -> Date = Date.init,
                      shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) else {
@@ -60,6 +59,7 @@ enum POSAccessSessionFactory {
         let preferences = POSLockSettings(siteID: siteID, userDefaults: userDefaults).preferences
         let retained = unlockedStaff.removeValue(forKey: siteID)
         let resumingStaff = retained.flatMap { retained -> POSStaff? in
+            if preferences.locksWhenPOSOpens { return nil }
             if isAppInBackground && preferences.locksInBackground { return nil }
             if let timeout = preferences.inactivityTimeout.interval {
                 let elapsed = now().timeIntervalSince(retained.endedAt)
@@ -73,7 +73,7 @@ enum POSAccessSessionFactory {
             rateLimiter: limiter,
             credentialProvider: credentialProvider,
             userDefaults: userDefaults,
-            resumingStaff: locksWhenPOSOpens ? nil : resumingStaff,
+            resumingStaff: resumingStaff,
             onEnd: { staff in
                 let preferences = POSLockSettings(siteID: siteID, userDefaults: userDefaults).preferences
                 // Cleanup can finish after the background notification has already cleared the cache.
@@ -86,9 +86,10 @@ enum POSAccessSessionFactory {
         )
     }
 
-    /// Stops the operator of an ended session from resuming on the next POS visit,
-    /// without persisting a lock that would make the app reopen POS on cold launch.
-    static func forgetUnlockedStaff(siteID: Int64) {
+    /// Locking the ended session instead would persist, and the app would reopen POS on cold launch.
+    static func handleCompletedSaleExit(siteID: Int64) {
+        guard let retained = unlockedStaff[siteID],
+              POSLockSettings(siteID: siteID, userDefaults: retained.userDefaults).preferences.locksAfterSale else { return }
         unlockedStaff[siteID] = nil
     }
 }

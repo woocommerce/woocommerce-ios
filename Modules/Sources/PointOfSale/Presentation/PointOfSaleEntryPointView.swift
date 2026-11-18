@@ -212,12 +212,8 @@ public struct PointOfSaleEntryPointView: View {
                         session: accessSession,
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel,
-                        timeout: lockSettings.preferences.inactivityTimeout.interval
+                        preferences: lockSettings.preferences
                     )
-                    .onChange(of: posModel.newOrdersAfterSale) {
-                        guard lockSettings.preferences.locksAfterSale else { return }
-                        lockIfUnlocked()
-                    }
                     .posLockScreenOverlay()
             } else {
                 PointOfSaleLoadingView()
@@ -233,7 +229,6 @@ public struct PointOfSaleEntryPointView: View {
             let session: POSAccessSession
             do {
                 session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
-                                                                 locksWhenPOSOpens: lockSettings.preferences.locksWhenPOSOpens,
                                                                  shouldCreate: { posModel == nil })
             } catch {
                 return
@@ -273,12 +268,10 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, session, lockSettings, siteID, onPointOfSaleModeActiveStateChange] in
-                // Exiting from a completed sale must not carry its operator into the next POS visit.
-                let endsAfterSale = lockSettings.preferences.locksAfterSale && posModel?.paymentState.isSuccess == true
+            let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()
-                if endsAfterSale {
-                    POSAccessSessionFactory.forgetUnlockedStaff(siteID: siteID)
+                if posModel?.paymentState.isSuccess == true {
+                    POSAccessSessionFactory.handleCompletedSaleExit(siteID: siteID)
                 }
                 onPointOfSaleModeActiveStateChange(false)
                 posModalManager.onDisappear()
@@ -314,18 +307,14 @@ public struct PointOfSaleEntryPointView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard lockSettings.preferences.locksInBackground else { return }
-            lockIfUnlocked()
+            guard lockSettings.preferences.locksInBackground,
+                  accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
+            accessSession.lock()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             let session = accessSession
             Task { await session.saveElapsedTime() }
         }
-    }
-
-    private func lockIfUnlocked() {
-        guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
-        accessSession.lock()
     }
 
     private enum Constants {

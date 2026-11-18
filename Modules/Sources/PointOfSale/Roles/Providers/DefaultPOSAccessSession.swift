@@ -37,10 +37,10 @@ final class DefaultPOSAccessSession: POSAccessSession {
         self.hasKnownProtection = hasCredentials == true
         let isProtected = hasCredentials ?? true
         self.isPINProtectionEnabled = isProtected
-        // Only an operator still unlocked in this app run can resume, and only while their PIN still exists.
-        let resumedStaff = resumingStaff.flatMap { staff in
-            credentials?.contains { $0.staff == staff } == true
-                && !userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) ? staff : nil
+        let resumedStaff = resumingStaff.flatMap { staff -> POSStaff? in
+            let hasPIN = credentials?.contains { $0.staff == staff } == true
+            let wasLeftUnlocked = !userDefaults.bool(forKey: POSLockStateKey.key(for: siteID))
+            return hasPIN && wasLeftUnlocked ? staff : nil
         }
         self.currentStaff = isProtected ? resumedStaff : nil
         self.isLocked = isProtected && resumedStaff == nil

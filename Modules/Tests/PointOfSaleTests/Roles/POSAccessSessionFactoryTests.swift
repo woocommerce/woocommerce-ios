@@ -115,7 +115,27 @@ struct POSAccessSessionFactoryTests {
         #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)))
     }
 
-    @Test func test_make_when_unlocked_staff_was_forgotten_then_locks_without_persisting_lock() async throws {
+    @Test func test_make_when_session_ended_after_completed_sale_and_lock_after_sale_is_on_then_locks_without_persisting_lock() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.locksAfterSale = true }
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "1234")
+        first.endSession()
+
+        // When
+        POSAccessSessionFactory.handleCompletedSaleExit(siteID: sut.siteID)
+        let persistedLockAfterExit = sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID))
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(!persistedLockAfterExit)
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+    }
+
+    @Test func test_make_when_session_ended_after_completed_sale_and_lock_after_sale_is_off_then_resumes_operator() async throws {
         // Given
         let sut = makeSUT(siteID: uniqueSiteID())
         try sut.store.setPIN("1234", for: .admin)
@@ -124,14 +144,12 @@ struct POSAccessSessionFactoryTests {
         first.endSession()
 
         // When
-        POSAccessSessionFactory.forgetUnlockedStaff(siteID: sut.siteID)
-        let persistedLockAfterExit = sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID))
+        POSAccessSessionFactory.handleCompletedSaleExit(siteID: sut.siteID)
         let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
 
         // Then
-        #expect(!persistedLockAfterExit)
-        #expect(second.isLocked)
-        #expect(second.currentStaff == nil)
+        #expect(!second.isLocked)
+        #expect(second.currentStaff == POSLocalRole.admin.staff)
     }
 
     @Test func test_make_when_launch_lock_is_off_and_operator_pin_was_removed_then_locks() async throws {
@@ -476,9 +494,11 @@ private extension POSAccessSessionFactoryTests {
                          locksWhenPOSOpens: Bool = true,
                          now: @escaping @MainActor () -> Date = Date.init,
                          shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
-        try await POSAccessSessionFactory.make(siteID: sut.siteID, featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
-                                               credentialProvider: sut.store, rateLimiter: sut.limiter, userDefaults: sut.defaultsScope.defaults,
-                                               locksWhenPOSOpens: locksWhenPOSOpens, now: now, shouldCreate: shouldCreate)
+        POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.locksWhenPOSOpens = locksWhenPOSOpens }
+        return try await POSAccessSessionFactory.make(siteID: sut.siteID,
+                                                      featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
+                                                      credentialProvider: sut.store, rateLimiter: sut.limiter,
+                                                      userDefaults: sut.defaultsScope.defaults, now: now, shouldCreate: shouldCreate)
     }
 
     /// The factory keeps unlocked operators per store in memory, so each launch-lock test uses its own store.

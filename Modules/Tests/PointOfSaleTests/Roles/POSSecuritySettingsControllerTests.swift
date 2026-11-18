@@ -697,7 +697,7 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let before = storage.values
         let (handler, approval) = await changeRequest(for: controller)
@@ -784,7 +784,7 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("1234", for: .admin, using: original))
         #expect(await save("5678", for: .cashier, using: original))
         let blocking = MockBlockingPOSPINStore(store: store)
-        let controller = POSSecuritySettingsController(store: blocking, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: blocking, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let setup: POSPINSetupFlow
         if role == .admin {

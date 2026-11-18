@@ -15,7 +15,6 @@ protocol POSPINCredentialProviding: Sendable {
 protocol POSPINManaging: Sendable {
     func configuredRoles() throws(POSPINStoreError) -> Set<POSLocalRole>
     func validatePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError)
-    func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError)
     /// Prepares the expensive hash off the main actor; the caller rechecks authority before committing.
     func preparePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) -> POSPINCommit
     func removePIN(for role: POSLocalRole) throws(POSPINStoreError)

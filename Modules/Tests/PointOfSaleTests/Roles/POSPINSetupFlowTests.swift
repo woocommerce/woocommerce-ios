@@ -39,6 +39,23 @@ struct POSPINSetupFlowTests {
         #expect(sut.step == .choose)
     }
 
+    @Test(arguments: POSPINSetupFlow.Mode.allCases, [POSPINStoreError.storageFailure, .pinMatchesOtherRole])
+    func test_confirm_when_save_rejects_then_shows_specific_failure_without_success(mode: POSPINSetupFlow.Mode, error: POSPINStoreError) async {
+        // Given
+        let setup = POSPINSetupController(validatePIN: { _ in }, savePIN: { _ throws(POSPINStoreError) in throw error })
+        let sut = POSPINSetupFlow(mode: mode, setup: setup, sleep: { _ in })
+        #expect(await sut.submit("1234"))
+
+        // When
+        let accepted = await sut.submit("1234")
+
+        // Then
+        #expect(!accepted)
+        #expect(sut.step == .choose)
+        #expect(sut.feedback == .failure(error))
+        #expect(!sut.continueFromSuccess())
+    }
+
     @Test func test_choose_when_four_digits_are_entered_then_holds_filled_dots_before_confirm() async throws {
         // Given
         let (sut, controller, _) = makeSUT()

@@ -65,7 +65,7 @@ struct POSPINSetupFlowView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-    @State private var onboarding: POSPINSetupFlow
+    @State private var flow: POSPINSetupFlow
     @State private var pinStatusAndSpacingHeight: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
@@ -73,33 +73,33 @@ struct POSPINSetupFlowView: View {
     init(flow: POSPINSetupFlow, controller: POSSecuritySettingsController, close: @escaping () -> Void) {
         self.controller = controller
         self.close = close
-        self._onboarding = State(initialValue: flow)
+        self._flow = State(initialValue: flow)
     }
 
     var body: some View {
         VStack(spacing: metrics.spacing.medium) {
-            if !isFullScreenFlow && onboarding.step != .saving {
+            if !isFullScreenFlow && flow.step != .saving {
                 header
             }
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .posModalFlowHeaderTitle(title, alignment: .center)
-        .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
+        .posModalFlowBackAction(enabled: isFullScreenFlow && flow.canGoBack) { flow.goBack() }
         .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
         .posModalFullScreen(usesAccessibilityFullScreen)
-        .posInteractiveDismissDisabled(onboarding.step == .saving || !onboarding.canClose)
+        .posInteractiveDismissDisabled(flow.step == .saving || !flow.canClose)
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible {
                 dismissModal?()
             }
         }
-        .onChange(of: onboarding.feedback) { _, feedback in
+        .onChange(of: flow.feedback) { _, feedback in
             if let feedback {
                 AccessibilityNotification.Announcement(message(for: feedback)).post()
             }
         }
-        .onDisappear { onboarding.discard() }
+        .onDisappear { flow.discard() }
         .accessibilityIdentifier("pos-pin-setup")
     }
 }
@@ -110,9 +110,9 @@ private extension POSPINSetupFlowView {
     }
 
     var title: String {
-        switch onboarding.step {
-        case .choose: onboarding.mode.role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
-        case .confirm: onboarding.mode.role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
+        switch flow.step {
+        case .choose: flow.mode.role == .cashier ? Localization.chooseCashierTitle : Localization.chooseTitle
+        case .confirm: flow.mode.role == .cashier ? Localization.confirmCashierTitle : Localization.confirmTitle
         case .saving, .saved, .guidedAccessOffer: ""
         }
     }
@@ -129,13 +129,13 @@ private extension POSPINSetupFlowView {
                     .padding(.horizontal, POSHeaderLayoutConstants.compactBackButtonSize)
             }
             HStack {
-                if onboarding.canGoBack {
+                if flow.canGoBack {
                     POSPageHeaderBackButton(configuration: .init(state: .enabled,
-                                                                 action: { onboarding.goBack() },
+                                                                 action: { flow.goBack() },
                                                                  accessibilityLabel: Localization.back))
                 }
                 Spacer()
-                POSPageHeaderBackButton(configuration: .init(state: onboarding.canClose ? .enabled : .disabled,
+                POSPageHeaderBackButton(configuration: .init(state: flow.canClose ? .enabled : .disabled,
                                                              action: closeFlow,
                                                              buttonIcon: "xmark",
                                                              accessibilityIdentifier: "pos-pin-setup-close",
@@ -147,17 +147,17 @@ private extension POSPINSetupFlowView {
 
     @ViewBuilder
     var content: some View {
-        switch onboarding.step {
+        switch flow.step {
         case .choose, .confirm:
             pinEntry
         case .saving:
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            messagePage(art: savedCheck, title: onboarding.mode.role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle,
-                        message: onboarding.mode.role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage) {
-                Button(onboarding.mode == .adminOnboarding ? Localization.continueAction : Localization.done) {
-                    if onboarding.continueFromSuccess() { closeFlow() }
+            messagePage(art: savedCheck, title: flow.mode.role == .cashier ? Localization.cashierSavedTitle : Localization.savedTitle,
+                        message: flow.mode.role == .cashier ? Localization.cashierSavedMessage : Localization.savedMessage) {
+                Button(flow.mode == .adminOnboarding ? Localization.continueAction : Localization.done) {
+                    if flow.continueFromSuccess() { closeFlow() }
                 }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
@@ -181,9 +181,9 @@ private extension POSPINSetupFlowView {
             let verticalInset = min(metrics.padding.xLarge, max(0, (geometry.size.height - keypadHeight - pinStatusAndSpacingHeight) / 2))
             ScrollViewReader { proxy in
                 ScrollView {
-                    POSPINEntryView(state: onboarding.pinEntryState,
-                                    style: .setup(keySize: keySize, page: page, feedback: onboarding.feedback.map(message(for:))),
-                                    onComplete: { pin in await onboarding.submit(pin) })
+                    POSPINEntryView(state: flow.pinEntryState,
+                                    style: .setup(keySize: keySize, page: page, feedback: flow.feedback.map(message(for:))),
+                                    onComplete: { pin in await flow.submit(pin) })
                         .fixedSize(horizontal: false, vertical: true)
                         .onGeometryChange(for: CGFloat.self, of: { max(0, $0.size.height - keypadHeight) }) {
                             pinStatusAndSpacingHeight = $0
@@ -193,8 +193,8 @@ private extension POSPINSetupFlowView {
                 }
                 .contentMargins(.vertical, verticalInset, for: .scrollContent)
                 .scrollBounceBehavior(.basedOnSize)
-                .onChange(of: onboarding.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
-                .onChange(of: onboarding.feedback) { _, feedback in
+                .onChange(of: flow.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
+                .onChange(of: flow.feedback) { _, feedback in
                     if feedback != nil {
                         proxy.scrollTo(Constants.pinEntryTopID, anchor: .top)
                     }
@@ -212,7 +212,7 @@ private extension POSPINSetupFlowView {
     }
 
     var page: POSPINEntryPage {
-        POSPINEntryPage(id: onboarding.pageID, edge: onboarding.step == .confirm ? .trailing : .leading)
+        POSPINEntryPage(id: flow.pageID, edge: flow.step == .confirm ? .trailing : .leading)
     }
 
     func keySize(fitting size: CGSize) -> CGFloat {
@@ -271,7 +271,7 @@ private extension POSPINSetupFlowView {
     }
 
     func closeFlow() {
-        if onboarding.close() {
+        if flow.close() {
             close()
         }
     }

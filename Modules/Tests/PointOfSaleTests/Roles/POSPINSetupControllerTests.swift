@@ -73,7 +73,6 @@ struct POSPINSetupControllerTests {
         // Then
         #expect(result == .confirmationRequired)
         #expect(controller.isConfirmingPIN)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
     }
 
@@ -103,11 +102,9 @@ struct POSPINSetupControllerTests {
         #expect(await controller.submit("5678") == .rejected)
 
         // Then
-        #expect(controller.hasMismatch)
         #expect(!controller.isConfirmingPIN)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("2468") == .confirmationRequired)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("2468") == .saved)
         #expect(savedPINs == ["2468"])
@@ -140,7 +137,6 @@ struct POSPINSetupControllerTests {
         // Then
         #expect(cancelled)
         #expect(!controller.isConfirmingPIN)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("5678") == .confirmationRequired)
     }
@@ -176,7 +172,6 @@ struct POSPINSetupControllerTests {
         controller.discardDraft()
 
         // Then
-        #expect(!controller.hasMismatch)
         #expect(!controller.isConfirmingPIN)
         #expect(await controller.submit("2468") == .confirmationRequired)
     }

@@ -56,6 +56,32 @@ struct POSPINSetupFlowTests {
         #expect(!sut.continueFromSuccess())
     }
 
+    @Test(arguments: [POSPINStoreError.pinMatchesOtherRole, .storageFailure])
+    func test_choose_when_validation_rejects_then_waits_for_shake_before_showing_feedback(error: POSPINStoreError) async throws {
+        // Given
+        let setup = POSPINSetupController(validatePIN: { _ in throw error }, savePIN: { _ in true })
+        let sut = POSPINSetupFlow(mode: .cashier, setup: setup, sleep: sleeper.sleep)
+        defer { sleeper.finish() }
+        var sleeps = sleeper.calls.makeAsyncIterator()
+        let submission = Task { await sut.submit("1234") }
+        try await expectSleep(.milliseconds(500), from: &sleeps)
+
+        // When
+        sleeper.resumeNext()
+        #expect(await submission.value == false)
+
+        // Then
+        try #require(sut.feedback == nil)
+        #expect(sut.pinEntryState == .loading)
+        try await expectSleep(.milliseconds(550), from: &sleeps)
+        sleeper.resumeNext()
+        await waitUntil { sut.feedback == .failure(error) }
+        #expect(sut.pinEntryState == .idle)
+        #expect(sut.step == .choose)
+        #expect(sut.pageID == 0)
+        #expect(sleeper.durations == [.milliseconds(500), .milliseconds(550)])
+    }
+
     @Test func test_choose_when_four_digits_are_entered_then_holds_filled_dots_before_confirm() async throws {
         // Given
         let (sut, controller, _) = makeSUT()

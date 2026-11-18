@@ -130,6 +130,7 @@ struct POSPINSetupFlowTests {
         try await expectSleep(.milliseconds(500), from: &sleeps)
 
         // When
+        await waitUntil { sut.canClose }
         #expect(sut.close())
         sleeper.resumeNext()
 

@@ -25,6 +25,9 @@ enum PointOfSaleAssets: CaseIterable {
     case netum1228BCPairBarcode
     case testEan13Barcode
     case noOrders
+    case lock
+    case lockShackleFill
+    case lockShackleStroke
 
     var image: Image {
         Image(imageName, bundle: .module)
@@ -82,6 +85,12 @@ enum PointOfSaleAssets: CaseIterable {
             "netum-1228bc-pair-barcode"
         case .noOrders:
             "pos-no-orders"
+        case .lock:
+            "pos-lock"
+        case .lockShackleFill:
+            "pos-lock-shackle-fill"
+        case .lockShackleStroke:
+            "pos-lock-shackle-stroke"
         }
     }
 }

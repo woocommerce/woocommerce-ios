@@ -21,8 +21,8 @@ struct CardReaderConnectionStatusView: View {
         Group {
             switch posModel.cardReaderConnectionStatus {
             case .connected:
-                Menu {
-                    Button {
+                POSMenu {
+                    POSMenuButton {
                         posModel.disconnectCardReader()
                     } label: {
                         Text(Localization.disconnectCardReader)
@@ -36,6 +36,7 @@ struct CardReaderConnectionStatusView: View {
                     .padding(.horizontal, metrics.padding.large)
                     .frame(maxHeight: .infinity)
                 }
+                .accessibilityLabel(Localization.readerConnected)
                 .accessibilityIdentifier("pos-reader-connected")
             case .disconnecting:
                 progressIndicatingCardReaderStatus(title: Localization.readerDisconnecting)
@@ -60,8 +61,8 @@ struct CardReaderConnectionStatusView: View {
                 }
                 .accessibilityIdentifier("pos-connect-reader-button")
             case .reconnecting:
-                Menu {
-                    Button {
+                POSMenu {
+                    POSMenuButton {
                         isCancellingReconnection = true
                         posModel.cancelReconnection()
                     } label: {
@@ -72,6 +73,7 @@ struct CardReaderConnectionStatusView: View {
                         title: isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting
                     )
                 }
+                .accessibilityLabel(isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting)
                 .disabled(isCancellingReconnection)
                 .accessibilityIdentifier("pos-reader-reconnecting")
             }

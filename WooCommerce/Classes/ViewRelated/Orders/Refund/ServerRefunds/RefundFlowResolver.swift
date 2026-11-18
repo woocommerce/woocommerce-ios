@@ -2,8 +2,8 @@ import Foundation
 import Yosemite
 import class WooFoundation.VersionHelpers
 
-/// The two POS refund calculation flows.
-enum POSRefundFlow: Equatable {
+/// The two refund calculation flows.
+enum RefundFlow: Equatable {
     /// Refund totals come from the server: `/wc/v3` preview + `compute_totals` create (WC 11.1.0+).
     case serverComputed
 
@@ -29,7 +29,7 @@ enum POSRefundFlow: Equatable {
 /// preview for the selection being submitted — see `POSRefundSubmissionAdaptor`.
 ///
 @MainActor
-struct POSRefundFlowResolver {
+struct RefundFlowResolver {
     private let stores: StoresManager
     private let availabilityCache: ServerRefundAvailabilityCache
     private let minimumWooVersion: String
@@ -44,7 +44,7 @@ struct POSRefundFlowResolver {
         self.minimumWooVersion = minimumWooVersion
     }
 
-    func resolveFlow(siteID: Int64) -> POSRefundFlow {
+    func resolveFlow(siteID: Int64) -> RefundFlow {
         guard availabilityCache.isAvailable(siteID: siteID) != false else {
             return .localComputed
         }

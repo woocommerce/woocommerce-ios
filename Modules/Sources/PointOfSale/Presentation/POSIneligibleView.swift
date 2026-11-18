@@ -5,11 +5,11 @@ import SwiftUI
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
 struct POSIneligibleView: View {
     @Environment(\.posMetrics) private var metrics
-    let reason: POSIneligibleReason
-    let onRefresh: () async throws -> Void
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posAnalytics) private var analytics
+    let reason: POSIneligibleReason
+    let onRefresh: () async throws -> Void
+    let onExit: () -> Void
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -78,7 +78,7 @@ struct POSIneligibleView: View {
                         .accessibilityIdentifier("pos-ineligible-refresh-button")
 
                         Button {
-                            dismiss()
+                            onExit()
                         } label: {
                             Text(Localization.dismiss)
                         }
@@ -223,42 +223,48 @@ private extension POSIneligibleReason {
 #Preview("No internet connection") {
     POSIneligibleView(
         reason: .noInternetConnection,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Unsupported currency") {
     POSIneligibleView(
         reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("WooCommerce plugin not found") {
     POSIneligibleView(
         reason: .wooCommercePluginNotFound,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Feature switch disabled") {
     POSIneligibleView(
         reason: .featureSwitchDisabled,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Site settings unavailable") {
     POSIneligibleView(
         reason: .siteSettingsNotAvailable,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Unsupported WooCommerce version") {
     POSIneligibleView(
         reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 

@@ -30,39 +30,33 @@ struct TopPerformersDashboardView: View {
             if !viewModel.analyticsEnabled {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.syncingError != nil {
-                DashboardCardErrorView(onRetry: {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
-                    Task {
-                        await viewModel.reloadDataIfNeeded(forceRefresh: true)
-                    }
-                })
-                .padding(.horizontal, Layout.padding)
             } else {
-                timeRangeBar
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.header)
+                DashboardCardRangedContent(cardType: .topPerformers,
+                                           hasError: viewModel.syncingError != nil,
+                                           reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                    timeRangeBar
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.header)
+                } content: {
+                    topPerformersList
 
-                Divider()
+                    Divider()
+                        .padding(.leading, Layout.padding)
 
-                topPerformersList
+                    timestampView
+                        .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                        .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.rows)
 
-                Divider()
-                    .padding(.leading, Layout.padding)
+                    Divider()
+                        .padding(.leading, Layout.padding)
 
-                timestampView
-                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
-                    .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.rows)
-
-                Divider()
-                    .padding(.leading, Layout.padding)
-
-                viewAllAnalyticsButton
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
+                    viewAllAnalyticsButton
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
+                }
             }
         }
         .padding(.vertical, Layout.padding)

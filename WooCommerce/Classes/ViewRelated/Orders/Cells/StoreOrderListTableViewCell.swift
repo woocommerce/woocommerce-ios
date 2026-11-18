@@ -5,6 +5,8 @@ import SwiftUI
 final class StoreOrderListTableViewCell: UITableViewCell {
     private var viewModel: OrderListCellViewModel?
     private var isPlaceholder = false
+    private var isFirstInSection = false
+    private var isLastInSection = false
     private(set) var usesSelectedAppearance = false
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -18,8 +20,12 @@ final class StoreOrderListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(viewModel: OrderListCellViewModel?) {
+    func configure(viewModel: OrderListCellViewModel?,
+                   isFirstInSection: Bool = false,
+                   isLastInSection: Bool = false) {
         self.viewModel = viewModel
+        self.isFirstInSection = isFirstInSection
+        self.isLastInSection = isLastInSection
         isPlaceholder = false
         isUserInteractionEnabled = true
         accessibilityElementsHidden = false
@@ -29,6 +35,8 @@ final class StoreOrderListTableViewCell: UITableViewCell {
 
     func configurePlaceholder() {
         viewModel = nil
+        isFirstInSection = false
+        isLastInSection = false
         isPlaceholder = true
         isUserInteractionEnabled = false
         accessibilityElementsHidden = true
@@ -40,6 +48,8 @@ final class StoreOrderListTableViewCell: UITableViewCell {
         super.prepareForReuse()
         viewModel = nil
         isPlaceholder = false
+        isFirstInSection = false
+        isLastInSection = false
         isUserInteractionEnabled = true
         accessibilityElementsHidden = false
         accessibilityIdentifier = nil
@@ -52,9 +62,12 @@ final class StoreOrderListTableViewCell: UITableViewCell {
         guard viewModel != nil || isPlaceholder else { return }
 
         usesSelectedAppearance = !isPlaceholder && (state.isSelected || state.isHighlighted)
-        contentConfiguration = UIHostingConfiguration { [viewModel, usesSelectedAppearance] in
+        contentConfiguration = UIHostingConfiguration { [viewModel, usesSelectedAppearance, isFirstInSection, isLastInSection] in
             if let viewModel {
-                StoreOrderListRow(viewModel: viewModel, isSelected: usesSelectedAppearance)
+                StoreOrderListRow(viewModel: viewModel,
+                                  isSelected: usesSelectedAppearance,
+                                  isFirstInSection: isFirstInSection,
+                                  isLastInSection: isLastInSection)
             } else {
                 StoreOrderListPlaceholderContent()
             }

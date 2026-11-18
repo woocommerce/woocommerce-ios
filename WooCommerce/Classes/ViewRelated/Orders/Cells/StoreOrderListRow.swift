@@ -5,6 +5,8 @@ import Yosemite
 struct StoreOrderListRow: View {
     let viewModel: OrderListCellViewModel
     let isSelected: Bool
+    let isFirstInSection: Bool
+    let isLastInSection: Bool
 
     var body: some View {
         VStack(spacing: StoreSpacing.s0) {
@@ -58,11 +60,14 @@ struct StoreOrderListRow: View {
                    minHeight: Constants.minimumRowHeight,
                    alignment: .leading)
 
-            StoreDivider(variant: .inset)
+            StoreDivider(variant: isLastInSection ? .full : .inset)
         }
         .background {
             Color.storeSurfaceBright
                 .overlay(isSelected ? Color.storeTintLayerPrimaryContainerOpacity16 : Color.clear)
+        }
+        .overlay(alignment: .top) {
+            StoreDivider().opacity(isFirstInSection ? 1 : 0)
         }
     }
 }

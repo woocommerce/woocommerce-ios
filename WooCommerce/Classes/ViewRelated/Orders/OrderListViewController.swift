@@ -287,7 +287,9 @@ final class OrderListViewController: UIViewController {
             }
 
             let cell = tableView.dequeueReusableCell(StoreOrderListTableViewCell.self, for: indexPath)
-            cell.configure(viewModel: viewModel)
+            cell.configure(viewModel: viewModel,
+                           isFirstInSection: indexPath.row == 0,
+                           isLastInSection: indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1)
             cell.layoutIfNeeded()
             return cell
         }

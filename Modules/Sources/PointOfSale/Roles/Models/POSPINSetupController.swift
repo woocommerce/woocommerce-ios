@@ -9,7 +9,6 @@ final class POSPINSetupController {
         case rejected
     }
 
-    private(set) var hasMismatch = false
     private(set) var isSaving = false
     private(set) var error: POSPINStoreError?
     private var firstPIN: String?
@@ -32,7 +31,6 @@ final class POSPINSetupController {
 
     func submit(_ pin: String) async -> SubmissionResult {
         guard !isSaving else { return .rejected }
-        hasMismatch = false
         error = nil
         guard let firstPIN else {
             let version = draftVersion
@@ -51,7 +49,6 @@ final class POSPINSetupController {
         }
         guard pin == firstPIN else {
             self.firstPIN = nil
-            hasMismatch = true
             return .rejected
         }
         isSaving = true
@@ -86,7 +83,6 @@ final class POSPINSetupController {
         saveTask?.cancel()
         draftVersion += 1
         firstPIN = nil
-        hasMismatch = false
         error = nil
     }
 }

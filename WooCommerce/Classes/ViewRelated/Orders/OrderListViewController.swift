@@ -757,6 +757,7 @@ private extension OrderListViewController {
             if usesStoreDesignSystem {
                 storeEmptyStateView.setContent(StoreOrderListEmptyView(title: Localization.allOrdersEmptyStateMessage,
                                                                        titleIsStrong: true,
+                                                                       emphasizedTitle: nil,
                                                                        details: Localization.allOrdersEmptyStateDetail,
                                                                        image: .boxesImage,
                                                                        actionTitle: Localization.learnMore,
@@ -773,20 +774,22 @@ private extension OrderListViewController {
             return
         }
 
-        let boldSearchKeyword = NSAttributedString(string: filters.readableString,
-                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
-        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
-        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
-
         if usesStoreDesignSystem {
-            storeEmptyStateView.setContent(StoreOrderListEmptyView(title: message.string,
+            let title = String.localizedStringWithFormat(Localization.filteredOrdersEmptyStateMessage, filters.readableString)
+            storeEmptyStateView.setContent(StoreOrderListEmptyView(title: title,
                                                                    titleIsStrong: false,
+                                                                   emphasizedTitle: filters.readableString,
                                                                    details: nil,
                                                                    image: .magnifyingGlassNotFound,
                                                                    actionTitle: Localization.clearButton,
                                                                    action: clearFilters))
             return
         }
+
+        let boldSearchKeyword = NSAttributedString(string: filters.readableString,
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         emptyStateView.configure(message: message,
                                  image: .magnifyingGlassNotFound,

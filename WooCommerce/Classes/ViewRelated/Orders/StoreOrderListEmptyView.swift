@@ -4,6 +4,7 @@ import SwiftUI
 struct StoreOrderListEmptyView: View {
     let title: String
     let titleIsStrong: Bool
+    let emphasizedTitle: String?
     let details: String?
     let image: UIImage
     let actionTitle: String
@@ -13,7 +14,16 @@ struct StoreOrderListEmptyView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s8) {
-            Text(title)
+            Group {
+                if let emphasizedTitle, let range = title.range(of: emphasizedTitle) {
+                    let prefix = Text(verbatim: String(title[..<range.lowerBound]))
+                    let emphasis = Text(verbatim: emphasizedTitle).bold()
+                    let suffix = Text(verbatim: String(title[range.upperBound...]))
+                    Text("\(prefix)\(emphasis)\(suffix)")
+                } else {
+                    Text(verbatim: title)
+                }
+            }
                 .storeTextStyle(titleIsStrong ? .titleLarge.strong : .titleLarge.emphasized)
                 .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)

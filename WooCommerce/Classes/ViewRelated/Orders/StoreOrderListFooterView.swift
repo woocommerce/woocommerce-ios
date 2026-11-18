@@ -3,6 +3,7 @@ import SwiftUI
 @MainActor
 final class StoreOrderListFooterView: UIView {
     private let fillsAvailableHeight: Bool
+    private var hostedView: (UIView & UIContentView)?
 
     init(fillsAvailableHeight: Bool = false) {
         self.fillsAvailableHeight = fillsAvailableHeight
@@ -12,11 +13,15 @@ final class StoreOrderListFooterView: UIView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     func setContent<Content: View>(_ content: Content) {
-        subviews.forEach { $0.removeFromSuperview() }
+        let configuration = UIHostingConfiguration { content }
+            .margins(.all, 0)
 
-        let hostedView = UIHostingConfiguration { content }
-        .margins(.all, 0)
-        .makeContentView()
+        if let hostedView {
+            hostedView.configuration = configuration
+            return
+        }
+
+        let hostedView = configuration.makeContentView()
         hostedView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(hostedView)
         NSLayoutConstraint.activate([
@@ -25,19 +30,31 @@ final class StoreOrderListFooterView: UIView {
             hostedView.topAnchor.constraint(equalTo: topAnchor),
             hostedView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        self.hostedView = hostedView
     }
 
     func show(in tableView: UITableView) {
-        frame.size = fittedSize(in: tableView)
-        tableView.tableFooterView = self
+        guard tableView.tableFooterView !== self else {
+            updateHeight(in: tableView)
+            return
+        }
+
+        UIView.performWithoutAnimation {
+            frame.size = fittedSize(in: tableView)
+            layoutIfNeeded()
+            tableView.tableFooterView = self
+        }
     }
 
     func updateHeight(in tableView: UITableView) {
         guard tableView.tableFooterView === self else { return }
         let size = fittedSize(in: tableView)
         guard frame.size != size else { return }
-        frame.size = size
-        tableView.tableFooterView = self
+        UIView.performWithoutAnimation {
+            frame.size = size
+            layoutIfNeeded()
+            tableView.tableFooterView = self
+        }
     }
 
     private func fittedSize(in tableView: UITableView) -> CGSize {

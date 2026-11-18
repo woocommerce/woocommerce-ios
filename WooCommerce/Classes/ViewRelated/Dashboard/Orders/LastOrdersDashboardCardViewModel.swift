@@ -1,6 +1,7 @@
 import Combine
 import CoreData
 import Foundation
+import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -113,6 +114,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let application: ApplicationAdapter
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -133,14 +135,20 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     /// Number of reloads started, used to keep only the results of the latest one.
     private var reloadCount = 0
 
+    /// Set when orders change while the app is in the background, to reload once the app is active again.
+    private var hasPendingReload = false
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         application: ApplicationAdapter = UIApplication.shared,
+         notificationCenter: NotificationCenter = .default) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
+        self.application = application
 
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
@@ -148,11 +156,31 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
         configureStatusResultsController()
 
-        displayedOrderChanged
+        // Posted after an order's status changes or the order is trashed, for example in order details, and for new
+        // order notifications. Unlike `observeStoredOrders`, this also covers orders the card doesn't show yet.
+        notificationCenter.publisher(for: .ordersBadgeReloadRequired)
+            .map { _ in () }
+            .merge(with: displayedOrderChanged)
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] in
-                Task {
-                    await self?.reloadData()
+                Task { @MainActor [weak self] in
+                    // A card that never loaded isn't on the dashboard.
+                    guard let self, reloadCount > 0 else { return }
+                    // In the background, for example for an order push, card loading events would be counted as user activity.
+                    guard application.applicationState != .background else {
+                        hasPendingReload = true
+                        return
+                    }
+                    await reloadData()
+                }
+            }
+            .store(in: &subscriptions)
+
+        notificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, hasPendingReload, application.applicationState != .background else { return }
+                    await reloadData()
                 }
             }
             .store(in: &subscriptions)
@@ -160,6 +188,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        hasPendingReload = false
         reloadCount += 1
         let reloadNumber = reloadCount
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .lastOrders))

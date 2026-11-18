@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -17,6 +18,10 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                        OrderStatus.fake().copy(siteID: 134, slug: "completed")]
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
+
+    private var orderFetchCount = 0
+    /// Orders returned by `mockFetchFilteredOrders()`.
+    private lazy var remoteOrders = sampleOrders
 
     /// View storage for tests
     private var storage: StorageType {
@@ -268,6 +273,146 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         }
         await viewModel.reloadData()
     }
+
+    @MainActor
+    func test_saving_shown_order_when_status_changes_then_shows_reloaded_orders() async {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        let completedOrder = sampleOrders[0].copy(status: .completed)
+        remoteOrders = [completedOrder] + sampleOrders.dropFirst()
+        await saveOrder(completedOrder)
+
+        // Then
+        await until { viewModel.rows.first?.order.status == .completed }
+    }
+
+    @MainActor
+    func test_saving_shown_order_when_billing_name_changes_then_shows_reloaded_orders() async {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        let renamedOrder = sampleOrders[0].copy(billingAddress: Address.fake().copy(firstName: "Alma", lastName: "Reyes"))
+        remoteOrders = [renamedOrder] + sampleOrders.dropFirst()
+        await saveOrder(renamedOrder)
+
+        // Then
+        await until { viewModel.rows.first?.customerName == renamedOrder.billingAddress?.fullName }
+    }
+
+    @MainActor
+    func test_saving_shown_order_when_displayed_details_are_unchanged_then_does_not_reload_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        await saveOrder(sampleOrders[0].copy(customerNote: "Leave at the door"))
+        try await Task.sleep(for: .milliseconds(500)) // Longer than the reload debounce
+
+        // Then
+        XCTAssertEqual(orderFetchCount, 1)
+    }
+
+    @MainActor
+    func test_reloadData_when_earlier_reload_finishes_last_then_shows_orders_of_latest_reload() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let completedOrder = sampleOrders[1]
+        var completeFirstFetch: ((TimeInterval, Result<[Order], Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(_, statuses, _, _, _, _, _, _, _, _, completion) = action else {
+                return
+            }
+            if statuses == [OrderStatusEnum.completed.rawValue] {
+                completion(1, .success([completedOrder]))
+            } else {
+                completeFirstFetch = completion
+            }
+        }
+        mockOrderStatuses()
+        let firstReload = Task {
+            await viewModel.reloadData()
+        }
+        await until { completeFirstFetch != nil }
+        let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
+
+        // When
+        await viewModel.updateOrderStatus(.completed)
+        finishFirstFetch(1, .success(sampleOrders))
+        await firstReload.value
+
+        // Then
+        XCTAssertEqual(viewModel.rows.map(\.id), [completedOrder.orderID])
+        XCTAssertFalse(viewModel.syncingData)
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0.hasPrefix("dynamic_dashboard_card_data_loading") },
+                       ["dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_completed",
+                        "dynamic_dashboard_card_data_loading_completed"])
+    }
+
+    @MainActor
+    func test_reloadData_when_earlier_reload_fails_last_then_shows_orders_of_latest_reload_without_error() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let completedOrder = sampleOrders[1]
+        var completeFirstFetch: ((TimeInterval, Result<[Order], Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(_, statuses, _, _, _, _, _, _, _, _, completion) = action else {
+                return
+            }
+            if statuses == [OrderStatusEnum.completed.rawValue] {
+                completion(1, .success([completedOrder]))
+            } else {
+                completeFirstFetch = completion
+            }
+        }
+        mockOrderStatuses()
+        let firstReload = Task {
+            await viewModel.reloadData()
+        }
+        await until { completeFirstFetch != nil }
+        let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
+
+        // When
+        await viewModel.updateOrderStatus(.completed)
+        finishFirstFetch(1, .failure(NSError(domain: "test", code: 500)))
+        await firstReload.value
+
+        // Then
+        XCTAssertNil(viewModel.syncingError)
+        XCTAssertEqual(viewModel.rows.map(\.id), [completedOrder.orderID])
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0.hasPrefix("dynamic_dashboard_card_data_loading") },
+                       ["dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_completed",
+                        "dynamic_dashboard_card_data_loading_failed"])
+    }
 }
 
 private extension LastOrdersDashboardCardViewModelTests {
@@ -283,7 +428,8 @@ private extension LastOrdersDashboardCardViewModelTests {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(1, .success(self.sampleOrders))
+                self.orderFetchCount += 1
+                completion(1, .success(self.remoteOrders))
             default:
                 break
             }
@@ -298,6 +444,17 @@ private extension LastOrdersDashboardCardViewModelTests {
             default:
                 break
             }
+        }
+    }
+
+    func saveOrder(_ order: Order) async {
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+                storageOrder.update(with: order)
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

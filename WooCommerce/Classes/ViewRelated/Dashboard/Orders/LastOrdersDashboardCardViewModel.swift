@@ -1,3 +1,5 @@
+import Combine
+import CoreData
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -124,6 +126,13 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     ///
     private var siteStatuses: [OrderStatus] = []
 
+    private var orderListeners: [EntityListener<Order>] = []
+    private let displayedOrderChanged = PassthroughSubject<Void, Never>()
+    private var subscriptions = Set<AnyCancellable>()
+
+    /// Number of reloads started, used to keep only the results of the latest one.
+    private var reloadCount = 0
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -138,10 +147,21 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         }
 
         configureStatusResultsController()
+
+        displayedOrderChanged
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                Task {
+                    await self?.reloadData()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     @MainActor
     func reloadData() async {
+        reloadCount += 1
+        let reloadNumber = reloadCount
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .lastOrders))
         syncingData = true
         syncingError = nil
@@ -151,13 +171,22 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
             let siteStatuses = statusResultsController.fetchedObjects
-            rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
+            let fetchedOrders = try await orders
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
+            // A reload started meanwhile, e.g. for another status or after an order change, has more recent results.
+            guard reloadNumber == reloadCount else {
+                return
+            }
+            rows = fetchedOrders
+                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
+            observeStoredOrders(for: rows)
         } catch {
-            syncingError = error
             DDLogError("⛔️ Dashboard (Last orders) — Error loading orders: \(error)")
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .lastOrders, error: error))
+            guard reloadNumber == reloadCount else {
+                return
+            }
+            syncingError = error
         }
         syncingData = false
     }
@@ -245,6 +274,31 @@ private extension LastOrdersDashboardCardViewModel {
     func updateStatuses() {
         siteStatuses = statusResultsController.fetchedObjects
         allStatuses = [.any] + siteStatuses.map { OrderStatusRow($0.status) }
+    }
+
+    /// Reloads the card when an order it shows is saved with another status or other displayed details, for example after
+    /// an edit in order details. Reloading, instead of updating the row, also replaces an order that no longer matches the
+    /// selected status.
+    ///
+    /// Saved orders are compared with the rows as shown: a new status is saved locally before the server applies it, so the
+    /// reload this triggers can still fetch the old status, and the server's copy saved afterwards then triggers another one.
+    ///
+    func observeStoredOrders(for rows: [LastOrderDashboardRowViewModel]) {
+        guard let viewContext = storageManager.viewStorage as? NSManagedObjectContext else {
+            return
+        }
+        orderListeners = rows.map { row in
+            let listener = EntityListener(viewContext: viewContext, readOnlyEntity: row.order)
+            listener.onUpsert = { [weak self] storedOrder in
+                guard let self else { return }
+                guard storedOrder.status != row.order.status ||
+                        LastOrderDashboardRowViewModel(order: storedOrder, siteStatuses: siteStatuses).rowData != row.rowData else {
+                    return
+                }
+                displayedOrderChanged.send()
+            }
+            return listener
+        }
     }
 
     @MainActor

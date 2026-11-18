@@ -157,8 +157,9 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
         configureStatusResultsController()
 
-        // Posted after an order's status changes or the order is trashed, for example in order details, and for new
-        // order notifications. Unlike `observeStoredOrders`, this also covers orders the card doesn't show yet.
+        // Use `displayedOrderChanged` with `ordersBadgeReloadRequired` to cover what one alone would miss. The listeners in
+        // `observeStoredOrders` catch edits saved to the orders the card shows, even ones that don't post the notification.
+        // The notification catches trashed orders and orders the card doesn't show yet, which the listeners can't see.
         notificationCenter.publisher(for: .ordersBadgeReloadRequired)
             .map { _ in () }
             .merge(with: displayedOrderChanged)

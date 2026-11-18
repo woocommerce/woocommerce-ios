@@ -127,7 +127,7 @@ extension AddCustomAmountView {
     enum Localization {
         static let editAmount = NSLocalizedString(
             "pos.customAmount.details.editAmount", value: "Edit amount",
-            comment: "Accessibility label for the amount card in POS custom amount details.")
+            comment: "Title of the POS custom amount editor and accessibility label for the Amount card that opens it.")
         static let editName = NSLocalizedString(
             "pos.customAmount.details.editName", value: "Edit name",
             comment: "Accessibility label for the name card in POS custom amount details.")

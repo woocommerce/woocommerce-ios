@@ -246,7 +246,8 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = { handler.cancel() }
@@ -268,7 +269,8 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
 
         // When
@@ -458,7 +460,8 @@ struct POSSecuritySettingsControllerTests {
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                               rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         if wasProtected { #expect(await save("1234", for: .admin, using: controller)) }
         let before = storage.values
@@ -488,7 +491,8 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         session.onManagerApproval = {
@@ -512,7 +516,8 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let (handler, approval) = await removalRequest(for: controller)
         var replacement: Task<POSManagerOverrideHandler.ApprovalResult, Never>?
@@ -697,7 +702,8 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         try store.setPIN("1234", for: .admin)
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let controller = POSSecuritySettingsController(store: store, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let before = storage.values
         let (handler, approval) = await changeRequest(for: controller)
@@ -784,7 +790,8 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("1234", for: .admin, using: original))
         #expect(await save("5678", for: .cashier, using: original))
         let blocking = MockBlockingPOSPINStore(store: store)
-        let controller = POSSecuritySettingsController(store: blocking, session: session, lockSettings: makeLockSettings(), flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: blocking, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let setup: POSPINSetupFlow
         if role == .admin {
@@ -848,7 +855,8 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("1234", for: .admin, using: original))
         #expect(await save("5678", for: .cashier, using: original))
         let blocking = MockBlockingPOSPINStore(store: store, fails: true, blocksValidation: stage == .validation)
-        let controller = POSSecuritySettingsController(store: blocking, session: session, flowSleep: { _ in })
+        let controller = POSSecuritySettingsController(store: blocking, session: session,
+                                                       lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
         let setup = controller.makePINSetupController(for: .cashier)
         if stage == .preparation {
@@ -932,7 +940,9 @@ struct POSSecuritySettingsControllerTests {
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
-        return (POSSecuritySettingsController(store: store, session: session, lockSettings: lockSettings ?? makeLockSettings(), flowSleep: { _ in }), session, store)
+        let controller = POSSecuritySettingsController(store: store, session: session,
+                                                       lockSettings: lockSettings ?? makeLockSettings(), flowSleep: { _ in })
+        return (controller, session, store)
     }
 
     private func makeLockSettings() -> POSLockSettings {

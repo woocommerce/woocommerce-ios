@@ -111,11 +111,11 @@ private extension POSPINSetupFlow {
         guard request == generation else {
             return false
         }
-        isProcessing = false
         guard result == .confirmationRequired else {
-            feedback = .failure(setup.error ?? .storageFailure)
+            showEntryFeedback(.failure(setup.error ?? .storageFailure), request: request)
             return false
         }
+        isProcessing = false
         show(.confirm, feedback: nil)
         return true
     }
@@ -123,7 +123,7 @@ private extension POSPINSetupFlow {
     func confirm(_ pin: String, request: Int) async -> Bool {
         guard setup.confirms(pin) else {
             setup.discardDraft()
-            showMismatch(request: request)
+            showEntryFeedback(.mismatch, request: request)
             return false
         }
         async let presentation: Void = presentSaving(request: request)
@@ -150,21 +150,23 @@ private extension POSPINSetupFlow {
         await pause(Constants.minimumSavingDuration)
     }
 
-    /// The entry reports the mismatch at once so the dots shake, then slides back to Choose and explains it.
-    func showMismatch(request: Int) {
+    /// A failed submission starts the entry's shake. Feedback waits until that shake finishes.
+    func showEntryFeedback(_ feedback: Feedback, request: Int) {
         Task { @MainActor in
-            await pause(Constants.mismatchShake)
+            await pause(Constants.failedEntryPause)
             guard request == generation else {
                 return
             }
             isProcessing = false
-            show(.choose, feedback: nil)
-            let shown = generation
-            await pause(Constants.mismatchMessageDelay)
-            guard shown == generation, !isProcessing else {
-                return
+            if feedback == .mismatch {
+                show(.choose, feedback: nil)
+                let shown = generation
+                await pause(Constants.mismatchMessageDelay)
+                guard shown == generation, !isProcessing else {
+                    return
+                }
             }
-            feedback = .mismatch
+            self.feedback = feedback
         }
     }
 
@@ -182,7 +184,7 @@ private extension POSPINSetupFlow {
     enum Constants {
         static let filledDotsHold: Duration = .milliseconds(500)
         static let minimumSavingDuration: Duration = .seconds(1)
-        static let mismatchShake: Duration = .milliseconds(550)
+        static let failedEntryPause: Duration = .milliseconds(550)
         static let mismatchMessageDelay: Duration = .milliseconds(500)
     }
 }

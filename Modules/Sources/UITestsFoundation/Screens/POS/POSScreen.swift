@@ -203,8 +203,6 @@ public final class POSScreen: ScreenObject {
         }
 
         XCTAssertTrue(compactCartButton.waitForIsHittable(timeout: 10), "POS cart should be visible or available from the compact cart button.")
-        // Right after the keyboard closes, the button can still sit above the bottom edge for a moment, and XCUITest
-        // taps the frame it read at that time. That tap landed on a product row instead of the button.
         XCTAssertTrue(waitForStableFrame(of: compactCartButton, timeout: 5), "POS compact cart button should stop moving before it is tapped.")
         compactCartButton.tap()
         XCTAssertTrue(waitForVisibleElement(cartViewGetter(app), timeout: 10), "POS cart should be visible after tapping the compact cart button.")

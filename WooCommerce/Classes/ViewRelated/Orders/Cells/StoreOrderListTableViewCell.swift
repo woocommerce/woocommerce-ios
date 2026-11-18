@@ -77,7 +77,7 @@ private struct StoreOrderListPlaceholderContent: View {
                 }
                 .frame(height: StoreSpacing.s6)
 
-                Capsule().fill(.storeSurfaceContainerHighest)
+                Capsule().fill(.storeStateLayerOnSurfaceOpacity16)
                     .frame(width: StoreSpacing.s12 + StoreSpacing.s4, height: StoreSize.badgeHeight)
             }
             .padding(.horizontal, StorePadding.p5).padding(.top, StorePadding.p4)
@@ -90,7 +90,7 @@ private struct StoreOrderListPlaceholderContent: View {
     }
 
     private var bar: some View {
-        RoundedRectangle(cornerRadius: StoreRadius.small).fill(.storeSurfaceContainerHighest)
+        RoundedRectangle(cornerRadius: StoreRadius.small).fill(.storeStateLayerOnSurfaceOpacity16)
     }
 }
 

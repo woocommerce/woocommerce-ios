@@ -104,15 +104,18 @@ struct POSSecuritySettingsControllerTests {
         #expect(!controller.isPINProtectionEnabled)
     }
 
-    @Test func test_change_when_admin_matches_cashier_then_preserves_both_pins() async {
+    @Test func test_change_when_admin_matches_cashier_then_preserves_both_pins() async throws {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
         #expect(await save("1234", for: .admin, using: controller))
         #expect(await save("5678", for: .cashier, using: controller))
 
+        let (handler, approval) = await changeRequest(for: controller)
+        #expect(await handler.submit(pin: "1234"))
+        let setup = try #require(await approval.value)
+
         // When
-        let setup = controller.makePINSetupController(for: .admin)
         let result = await setup.submit("5678")
 
         // Then
@@ -129,8 +132,13 @@ struct POSSecuritySettingsControllerTests {
         controller.load()
         #expect(await save("1234", for: .admin, using: controller))
 
+        let (handler, approval) = await changeRequest(for: controller)
+        #expect(await handler.submit(pin: "1234"))
+        let setup = try #require(await approval.value)
+
         // When
-        #expect(await save("2468", for: .admin, using: controller))
+        #expect(await setup.submit("2468") == .confirmationRequired)
+        #expect(await setup.submit("2468") == .saved)
         session.lock()
 
         // Then

@@ -84,7 +84,7 @@ struct POSAdminPINOnboardingView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .posModalFlowHeaderTitle(title, centersTitle: true)
+        .posModalFlowHeaderTitle(title, alignment: .center)
         .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
         .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
         .posModalFullScreen(usesAccessibilityFullScreen)

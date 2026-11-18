@@ -44,6 +44,11 @@ struct POSPageHeaderItem: Identifiable {
     }
 }
 
+enum POSPageHeaderTitleAlignment: Equatable, Sendable {
+    case leading
+    case center
+}
+
 /// A header view for POS pages.
 /// Compact headers keep the back button, title, and actions in one navigation row.
 /// Use `subtitle` or `bottomContent` for information below that row; callers need no row-height adjustments.
@@ -51,7 +56,7 @@ struct POSPageHeaderItem: Identifiable {
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
-    private let centersTitle: Bool
+    private let titleAlignment: POSPageHeaderTitleAlignment
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
@@ -92,14 +97,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        centersTitle: Bool = false,
+        titleAlignment: POSPageHeaderTitleAlignment = .leading,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
-        self.centersTitle = centersTitle
+        self.titleAlignment = titleAlignment
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -114,7 +119,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
-        self.centersTitle = false
+        self.titleAlignment = .leading
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -134,7 +139,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     @ViewBuilder
     private var navigationRow: some View {
-        if centersTitle {
+        switch titleAlignment {
+        case .center:
             ZStack {
                 itemsContent
                     .multilineTextAlignment(.center)
@@ -147,7 +153,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                         .frame(minHeight: navigationRowMinHeight)
                 }
             }
-        } else {
+        case .leading:
             HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 leadingContent
 

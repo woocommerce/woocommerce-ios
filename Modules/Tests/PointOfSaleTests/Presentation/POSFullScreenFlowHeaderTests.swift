@@ -39,25 +39,27 @@ struct POSFullScreenFlowHeaderTests {
 
     @Test func test_buttons_when_centered_flow_only_offers_close_then_close_stays_trailing() {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: closeAction, placesCloseOnTrailingEdge: true)
+        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: closeAction, titleAlignment: .center)
 
         // Then
         #expect(buttons.leading == nil)
         #expect(buttons.trailingClose == closeAction)
     }
 
-    @Test func test_buttons_when_back_and_close_are_offered_then_back_is_leading_and_close_is_trailing() {
+    @Test(arguments: [POSPageHeaderTitleAlignment.leading, .center])
+    func test_buttons_when_back_and_close_are_offered_then_back_is_leading_and_close_is_trailing(titleAlignment: POSPageHeaderTitleAlignment) {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: closeAction)
+        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: closeAction, titleAlignment: titleAlignment)
 
         // Then
         #expect(buttons.leading == .back(backAction))
         #expect(buttons.trailingClose == closeAction)
     }
 
-    @Test func test_buttons_when_only_back_is_offered_then_back_is_leading_without_close() {
+    @Test(arguments: [POSPageHeaderTitleAlignment.leading, .center])
+    func test_buttons_when_only_back_is_offered_then_back_is_leading_without_close(titleAlignment: POSPageHeaderTitleAlignment) {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: nil)
+        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: nil, titleAlignment: titleAlignment)
 
         // Then
         #expect(buttons.leading == .back(backAction))

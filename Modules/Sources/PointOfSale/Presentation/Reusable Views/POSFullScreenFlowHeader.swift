@@ -17,9 +17,9 @@ extension View {
                                                                        action: action))
     }
 
-    func posModalFlowHeaderTitle(_ title: String?, centersTitle: Bool = false) -> some View {
+    func posModalFlowHeaderTitle(_ title: String?, alignment: POSPageHeaderTitleAlignment = .leading) -> some View {
         preference(key: POSModalFlowHeaderTitleKey.self, value: title)
-            .preference(key: POSModalFlowCenteredTitleKey.self, value: centersTitle)
+            .preference(key: POSModalFlowHeaderTitleAlignmentKey.self, value: alignment)
     }
 }
 
@@ -30,7 +30,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @State private var dismissHandler = POSModalFlowAction.Handler()
     @State private var backAction: POSModalFlowAction?
     @State private var contentTitle: String?
-    @State private var centersTitle = false
+    @State private var titleAlignment = POSPageHeaderTitleAlignment.leading
     @State private var closeAccessibilityIdentifier: String?
 
     @ViewBuilder
@@ -40,13 +40,13 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                 .environment(\.posModalCompactStyle, style)
                 .onPreferenceChange(POSModalFlowBackActionKey.self) { backAction = $0 }
                 .onPreferenceChange(POSModalFlowHeaderTitleKey.self) { contentTitle = $0 }
-                .onPreferenceChange(POSModalFlowCenteredTitleKey.self) { centersTitle = $0 }
+                .onPreferenceChange(POSModalFlowHeaderTitleAlignmentKey.self) { titleAlignment = $0 }
                 .onPreferenceChange(POSModalFlowCloseAccessibilityIdentifierKey.self) { closeAccessibilityIdentifier = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
                     POSFullScreenFlowHeader(title: contentTitle ?? title,
-                                            centersTitle: centersTitle,
+                                            titleAlignment: titleAlignment,
                                             buttons: .init(backAction: backAction, closeAction: closeAction,
-                                                           placesCloseOnTrailingEdge: centersTitle))
+                                                           titleAlignment: titleAlignment))
                 }
         } else {
             content
@@ -88,8 +88,8 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
     let leading: Leading?
     let trailingClose: POSModalFlowAction?
 
-    init(backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?, placesCloseOnTrailingEdge: Bool = false) {
-        if placesCloseOnTrailingEdge || backAction != nil {
+    init(backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?, titleAlignment: POSPageHeaderTitleAlignment = .leading) {
+        if titleAlignment == .center || backAction != nil {
             leading = backAction.map { .back($0) }
             trailingClose = closeAction
         } else {
@@ -101,12 +101,12 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 
 private struct POSFullScreenFlowHeader: View {
     let title: String
-    let centersTitle: Bool
+    let titleAlignment: POSPageHeaderTitleAlignment
     let buttons: POSFullScreenFlowHeaderButtons
 
     var body: some View {
         POSPageHeaderView(title: title,
-                          centersTitle: centersTitle,
+                          titleAlignment: titleAlignment,
                           leadingContent: {
             // Both leading buttons share one slot, so the title stays in place while they crossfade.
             ZStack {
@@ -243,10 +243,12 @@ private struct POSModalFlowHeaderTitleKey: PreferenceKey {
     }
 }
 
-private struct POSModalFlowCenteredTitleKey: PreferenceKey {
-    static let defaultValue = false
+private struct POSModalFlowHeaderTitleAlignmentKey: PreferenceKey {
+    static let defaultValue = POSPageHeaderTitleAlignment.leading
 
-    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-        value = value || nextValue()
+    static func reduce(value: inout POSPageHeaderTitleAlignment, nextValue: () -> POSPageHeaderTitleAlignment) {
+        if nextValue() == .center {
+            value = .center
+        }
     }
 }

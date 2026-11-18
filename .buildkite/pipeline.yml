@@ -86,6 +86,12 @@ steps:
   #################
   # Run Unit Tests
   #################
+  - label: ":arrow_down: Parallel NAS downloads"
+    key: parallel-downloads
+    command: .buildkite/commands/parallel-downloads.sh
+    depends_on: build
+    plugins: [$CI_TOOLKIT]
+
   - label: ":microscope: Unit Tests"
     key: unit-tests
     command: .buildkite/commands/run-unit-tests.sh

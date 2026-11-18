@@ -7,6 +7,7 @@ struct POSSecuritySettingsView: View {
     @State private var editing: POSPINSetupFlow?
     @State private var approval = POSManagerOverrideHandler()
     @State private var approvalTask: Task<Void, Never>?
+    @State private var isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
@@ -25,26 +26,10 @@ struct POSSecuritySettingsView: View {
                 POSPageHeaderView(title: Localization.title)
                 ScrollView {
                     VStack(alignment: .leading, spacing: metrics.spacing.medium) {
-                        if let roles = controller.roles {
-                            if controller.isPINProtectionEnabled {
-                                POSInformationCard {
-                                    POSInformationCardFieldRowWithToggle(label: Localization.pinProtection,
-                                                                         value: Localization.protectionOn,
-                                                                         showSeparator: false,
-                                                                         isOn: protectionBinding)
-                                }
-                            } else {
-                                Text(Localization.protectionOff).font(.posBodyMediumRegular())
-                            }
-                            POSInformationCard {
-                                ViewThatFits(in: .horizontal) {
-                                    pinRows(roles, stacked: false)
-                                    pinRows(roles, stacked: true)
-                                }
-                            }
-                            if controller.hasOnlyAdminPIN {
-                                Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular())
-                            }
+                        if controller.roles != nil {
+                            pinProtectionCard
+                            lockSettingsCard(controller.lockPreferences)
+                            deviceSecurityCard
                         } else {
                             Button(Localization.retry) { controller.load() }
                                 .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
@@ -55,11 +40,12 @@ struct POSSecuritySettingsView: View {
                         }
                     }
                     .posContentPadding(.horizontal, metrics.padding.medium)
-                    .posPadding(.vertical, \.medium)
+                    .posPadding(.bottom, \.medium)
                 }
             }
         }
         .background(Color.posSurface)
+        .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
         .onDisappear(perform: endEditing)
@@ -67,6 +53,9 @@ struct POSSecuritySettingsView: View {
             if !isVisible {
                 endEditing()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.guidedAccessStatusDidChangeNotification)) { _ in
+            isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
         }
         .posModal(item: presentationBinding,
                   compactStyle: presentation?.compactStyle ?? .fullScreen(title: Localization.title)) { presentation in
@@ -127,6 +116,155 @@ struct POSSecuritySettingsView: View {
         controller.load()
     }
 
+    private var pinProtectionCard: some View {
+        securityCard(title: Localization.pinProtection) {
+            POSSecuritySettingRow(title: Localization.enableProtection, subtitle: Localization.enableProtectionDetail) { _ in
+                toggle(Localization.enableProtection, isOn: protectionBinding)
+            }
+            Divider()
+            pinRow(.admin)
+            if controller.offersCashierPINSetup {
+                Divider()
+                pinRow(.cashier)
+            }
+            // WOOMOB-4591 links the roles documentation.
+            Button(Localization.learnMore) {}
+                .buttonStyle(.plain)
+                .font(.posBodyMediumRegular(underline: true))
+                .foregroundStyle(Color.posPrimary)
+        }
+    }
+
+    private func lockSettingsCard(_ preferences: POSLockPreferences) -> some View {
+        securityCard(title: Localization.lockSettings) {
+            lockToggleRow(Localization.lockWhenPOSOpens, \.locksWhenPOSOpens, in: preferences)
+            Divider()
+            lockToggleRow(Localization.lockInBackground, \.locksInBackground, in: preferences)
+            Divider()
+            lockToggleRow(Localization.lockAfterSale, \.locksAfterSale, in: preferences)
+            Divider()
+            POSSecuritySettingRow(title: Localization.lockAfterInactivity) { _ in
+                inactivityMenu(selected: preferences.inactivityTimeout)
+            }
+        }
+    }
+
+    private var deviceSecurityCard: some View {
+        securityCard(title: Localization.deviceSecurity) {
+            POSSecuritySettingRow(title: Localization.guidedAccess, subtitle: Localization.guidedAccessDetail) { _ in
+                if isGuidedAccessActive {
+                    Label(Localization.active, systemImage: "checkmark")
+                        .labelStyle(POSTrailingIconLabelStyle())
+                        .font(.posCaptionRegular)
+                        .foregroundStyle(Color.posOnDefault)
+                        .posPadding(.horizontal, \.small)
+                        .posPadding(.vertical, \.xSmall)
+                        .background(Color.posDefault)
+                        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                } else {
+                    // WOOMOB-4595 connects the Guided Access guide.
+                    Button(Localization.setUpGuidedAccessButton) {}
+                        .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary))
+                        .accessibilityLabel(Localization.setUpGuidedAccess)
+                }
+            }
+        }
+    }
+
+    private func securityCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
+        POSInformationCard {
+            VStack(alignment: .leading, spacing: metrics.spacing.medium) {
+                Text(title)
+                    .font(.posBodyLargeBold)
+                    .accessibilityAddTraits(.isHeader)
+                content()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private func pinRow(_ role: POSLocalRole) -> some View {
+        let actions = controller.pinActions(for: role)
+        POSSecuritySettingRow(title: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
+                              subtitle: role == .admin ? Localization.adminDetail : Localization.cashierDetail) { isStacked in
+            if actions.count > 1, !isStacked {
+                POSMenu {
+                    ForEach(actions, id: \.self) { action in
+                        POSMenuButton(role: action == .delete ? .destructive : nil, action: { perform(action, for: role) }) {
+                            Label(title(for: action), systemImage: action == .delete ? "trash" : "square.and.pencil")
+                        }
+                        .accessibilityLabel(accessibilityLabel(for: action, role: role))
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                        .posPadding(\.small)
+                }
+                .accessibilityLabel(String.localizedStringWithFormat(Localization.roleActions, role.displayName))
+            } else {
+                HStack(spacing: metrics.spacing.small) {
+                    ForEach(actions, id: \.self) { action in
+                        pinButton(action, for: role)
+                    }
+                }
+            }
+        }
+    }
+
+    private func pinButton(_ action: POSPINAction, for role: POSLocalRole) -> some View {
+        Button(role: action == .delete ? .destructive : nil, action: { perform(action, for: role) }) {
+            Text(title(for: action))
+                .if(action == .delete) { $0.foregroundStyle(Color.posError) }
+        }
+        .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: action == .setUp ? .primary : .default))
+        .accessibilityLabel(accessibilityLabel(for: action, role: role))
+    }
+
+    private func inactivityMenu(selected: POSInactivityLockTimeout) -> some View {
+        let rowSpacing = metrics.spacing.medium
+        let controller = controller
+        return POSMenu {
+            ForEach(POSInactivityLockTimeout.allCases, id: \.self) { timeout in
+                POSMenuButton(action: { controller.updateLockPreferences { $0.inactivityTimeout = timeout } }) {
+                    HStack(spacing: rowSpacing) {
+                        Text(Self.title(for: timeout))
+                        Spacer()
+                        if timeout == selected {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+                .accessibilityAddTraits(timeout == selected ? .isSelected : [])
+            }
+        } label: {
+            Label(Self.title(for: selected), systemImage: "chevron.up.chevron.down")
+                .labelStyle(POSTrailingIconLabelStyle())
+                .font(.posBodyMediumBold)
+                .foregroundStyle(Color.posOnSurface)
+        }
+        .accessibilityLabel(Localization.lockAfterInactivity)
+        .accessibilityValue(Self.title(for: selected))
+    }
+
+    private func lockToggleRow(_ title: String,
+                               _ keyPath: WritableKeyPath<POSLockPreferences, Bool>,
+                               in preferences: POSLockPreferences) -> some View {
+        POSSecuritySettingRow(title: title) { _ in
+            toggle(title, isOn: Binding(get: { preferences[keyPath: keyPath] }, set: { value in
+                controller.updateLockPreferences { $0[keyPath: keyPath] = value }
+            }))
+        }
+    }
+
+    private func toggle(_ title: String, isOn: Binding<Bool>) -> some View {
+        Toggle(title, isOn: isOn)
+            .labelsHidden()
+            .toggleStyle(SwitchToggleStyle())
+            .tint(Color.posPrimaryContainer)
+    }
+
     private var protectionBinding: Binding<Bool> {
         Binding(get: { controller.isPINProtectionEnabled }, set: { isEnabled in
             if !isEnabled {
@@ -158,75 +296,98 @@ struct POSSecuritySettingsView: View {
         }
     }
 
-    private func pinRows(_ roles: Set<POSLocalRole>, stacked: Bool) -> some View {
-        VStack(spacing: metrics.spacing.medium) {
-            pinRow(.admin, roles: roles, stacked: stacked)
-            if controller.offersCashierPINSetup {
-                Divider().padding(.top, metrics.padding.small)
-                pinRow(.cashier, roles: roles, stacked: stacked)
-            }
+    private func perform(_ action: POSPINAction, for role: POSLocalRole) {
+        switch action {
+        case .setUp, .change:
+            editPIN(for: role)
+        case .delete:
+            Task { await controller.requestRemoval(for: role) }
         }
     }
 
-    @ViewBuilder
-    private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>, stacked: Bool) -> some View {
-        let details = POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
-                                                 value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
-                                                 showSeparator: false)
-        let actions = HStack(spacing: metrics.spacing.medium) {
-            Button(roles.contains(role) ? Localization.change : Localization.setPIN) {
-                editPIN(for: role)
-            }
-            .accessibilityLabel(String.localizedStringWithFormat(
-                roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
-            if role != .admin, roles.contains(role) {
-                Button(Localization.remove, role: .destructive) {
-                    Task { await controller.requestRemoval(for: role) }
-                }
-                .accessibilityLabel(String.localizedStringWithFormat(Localization.removeRolePIN, role.displayName))
-            }
+    private func title(for action: POSPINAction) -> String {
+        switch action {
+        case .setUp: Localization.setPIN
+        case .change: Localization.change
+        case .delete: Localization.delete
         }
-        .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-        .fixedSize(horizontal: true, vertical: false)
-        if stacked {
-            VStack(alignment: .leading, spacing: metrics.spacing.medium) {
-                details
-                actions
-            }
-        } else {
-            HStack(spacing: metrics.spacing.medium) {
-                details.fixedSize()
-                Spacer()
-                actions
-            }
+    }
+
+    private func accessibilityLabel(for action: POSPINAction, role: POSLocalRole) -> String {
+        let format = switch action {
+        case .setUp: Localization.setRolePIN
+        case .change: Localization.changeRolePIN
+        case .delete: Localization.deleteRolePIN
+        }
+        return String.localizedStringWithFormat(format, role.displayName)
+    }
+
+    static func title(for timeout: POSInactivityLockTimeout) -> String {
+        switch timeout {
+        case .never: Localization.never
+        case .oneMinute: Localization.oneMinute
+        default: String.localizedStringWithFormat(Localization.minutes, timeout.rawValue)
         }
     }
 
     enum Localization {
         static let title = NSLocalizedString("pos.security.title", value: "Security", comment: "POS Security settings title.")
         static let pinProtection = NSLocalizedString("pos.security.pinProtection", value: "PIN protection",
-                                                     comment: "Label of the switch that turns off PIN protection.")
-        static let subtitle = NSLocalizedString("pos.security.pinManagementSubtitle", value: "Manage PINs", comment: "Security settings subtitle.")
-        static let protectionOff = NSLocalizedString("pos.security.protectionOff", value: "PIN protection is off. Set an Admin PIN to enable it.",
-                                                    comment: "Protection status before a PIN has been set.")
-        static let protectionOn = NSLocalizedString("pos.security.protectionOn", value: "PIN protection is on.",
-                                                   comment: "Status shown when PIN protection is enabled.")
-        static let adminOnlyExplanation = NSLocalizedString("pos.security.adminOnlyExplanation",
-                                                           value: "With only an Admin PIN, every unlock has full access. Add a Cashier PIN to limit access.",
-                                                           comment: "Explains the optional Cashier PIN.")
+                                                     comment: "Title of the Security card with the PIN protection switch and PINs.")
+        static let subtitle = NSLocalizedString("pos.security.pinsAndLockSubtitle", value: "Manage PINs and lock settings",
+                                                comment: "Security settings subtitle.")
+        static let enableProtection = NSLocalizedString("pos.security.enableProtection", value: "Enable PIN protection",
+                                                        comment: "Label of the switch that turns off PIN protection.")
+        static let enableProtectionDetail = NSLocalizedString("pos.security.enableProtection.detail",
+                                                              value: "Require a PIN to unlock POS and access protected settings.",
+                                                              comment: "Explains the PIN protection switch.")
         static let rolePIN = NSLocalizedString("pos.security.rolePIN", value: "%1$@ PIN", comment: "PIN label. %1$@ is the Admin or Cashier role.")
-        static let pinSet = NSLocalizedString("pos.security.pinSet", value: "PIN set", comment: "Status shown when a PIN has been set.")
-        static let noPIN = NSLocalizedString("pos.security.noPIN", value: "No PIN", comment: "Status shown before a PIN has been set.")
+        static let adminDetail = NSLocalizedString("pos.security.adminPIN.detail", value: "Full access to POS and its settings.",
+                                                   comment: "Explains what the Admin PIN allows.")
+        static let cashierDetail = NSLocalizedString("pos.security.cashierPIN.detail", value: "Unlock POS without access to protected settings.",
+                                                     comment: "Explains what the Cashier PIN allows.")
+        static let learnMore = NSLocalizedString("pos.security.learnMoreAboutRoles", value: "Learn more about roles",
+                                                 comment: "Link to more information about POS roles.")
         static let setPIN = NSLocalizedString("pos.security.setUpPIN", value: "Set up", comment: "Button to create a PIN.")
         static let setRolePIN = NSLocalizedString("pos.security.setRolePIN", value: "Set %1$@ PIN",
                                                   comment: "Set PIN accessibility label. %1$@ is the Admin or Cashier role.")
         static let changeRolePIN = NSLocalizedString("pos.security.changeRolePIN", value: "Change %1$@ PIN",
                                                      comment: "Change PIN accessibility label. %1$@ is the Admin or Cashier role.")
         static let change = NSLocalizedString("pos.security.change", value: "Change", comment: "Button to change an existing PIN.")
-        static let remove = NSLocalizedString("pos.security.removePINAction", value: "Remove", comment: "Button to remove a PIN.")
-        static let removeRolePIN = NSLocalizedString("pos.security.removeRolePIN", value: "Remove %1$@ PIN",
-                                                     comment: "Remove PIN accessibility label. %1$@ is the Admin or Cashier role.")
+        static let delete = NSLocalizedString("pos.security.deletePINAction", value: "Delete", comment: "Menu action that deletes a PIN.")
+        static let deleteRolePIN = NSLocalizedString("pos.security.deleteRolePIN", value: "Delete %1$@ PIN",
+                                                     comment: "Delete PIN accessibility label. %1$@ is the Cashier role.")
+        static let roleActions = NSLocalizedString("pos.security.rolePINActions", value: "%1$@ PIN actions",
+                                                   comment: "Accessibility label of the menu with PIN actions. %1$@ is the Cashier role.")
+        static let lockSettings = NSLocalizedString("pos.security.lockSettings", value: "Lock settings",
+                                                    comment: "Title of the Security card with automatic lock settings.")
+        static let lockWhenPOSOpens = NSLocalizedString("pos.security.lockWhenPOSOpens", value: "Require PIN to launch POS",
+                                                        comment: "Switch that locks POS whenever it opens.")
+        static let lockInBackground = NSLocalizedString("pos.security.lockInBackground", value: "Lock POS when app goes to background",
+                                                        comment: "Switch that locks POS when the app goes to the background.")
+        static let lockAfterSale = NSLocalizedString("pos.security.lockAfterSale", value: "Lock POS after each sale",
+                                                     comment: "Switch that locks POS when a new order starts after a completed sale.")
+        static let lockAfterInactivity = NSLocalizedString("pos.security.lockAfterInactivity", value: "Lock POS after",
+                                                           comment: "Label of the menu that selects how long POS can be inactive before it locks.")
+        static let never = NSLocalizedString("pos.security.inactivity.never", value: "Never",
+                                             comment: "Inactivity lock option that never locks POS after inactivity.")
+        static let oneMinute = NSLocalizedString("pos.security.inactivity.oneMinute", value: "1 minute",
+                                                 comment: "Inactivity lock option of one minute.")
+        static let minutes = NSLocalizedString("pos.security.inactivity.minutes", value: "%1$d minutes",
+                                               comment: "Inactivity lock option. %1$d is a number of minutes greater than one.")
+        static let deviceSecurity = NSLocalizedString("pos.security.deviceSecurity", value: "Device security",
+                                                      comment: "Title of the Security card with device-level protections.")
+        static let guidedAccess = NSLocalizedString("pos.security.guidedAccess", value: "Guided Access",
+                                                    comment: "Name of the iOS Guided Access feature.")
+        static let guidedAccessDetail = NSLocalizedString("pos.security.guidedAccess.detail",
+                                                          value: "Prevent users from leaving POS or switching to other apps.",
+                                                          comment: "Explains what Guided Access does.")
+        static let setUpGuidedAccessButton = NSLocalizedString("pos.security.setUpGuidedAccess.button", value: "Set up",
+                                                               comment: "Label of the Guided Access setup button in POS Security.")
+        static let setUpGuidedAccess = NSLocalizedString("pos.security.setUpGuidedAccess", value: "Set up Guided Access",
+                                                         comment: "Accessibility label of the button that sets up Guided Access.")
+        static let active = NSLocalizedString("pos.security.guidedAccess.active", value: "Active",
+                                              comment: "Badge shown while a Guided Access session is running.")
         static let mismatch = NSLocalizedString("pos.security.pinMismatchRetry", value: "The PINs didn’t match. Try again.",
                                                comment: "PIN confirmation mismatch.")
         static let distinctPINs = NSLocalizedString("pos.security.distinctPINs", value: "Admin and Cashier PINs must be different.",
@@ -243,10 +404,65 @@ struct POSSecuritySettingsView: View {
     }
 }
 
+private struct POSSecuritySettingRow<Accessory: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posMetrics) private var metrics
+    let title: String
+    var subtitle: String?
+    @ViewBuilder let accessory: (_ isStacked: Bool) -> Accessory
+
+    var body: some View {
+        Group {
+            if isStacked {
+                VStack(alignment: .leading, spacing: metrics.spacing.small) {
+                    text
+                    accessory(isStacked)
+                }
+            } else {
+                HStack(spacing: metrics.spacing.medium) {
+                    text
+                    Spacer(minLength: metrics.spacing.none)
+                    accessory(isStacked).fixedSize()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var isStacked: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
+
+    private var text: some View {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            Text(title)
+                .font(.posBodyMediumRegular())
+            if let subtitle {
+                Text(subtitle)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+private struct POSTrailingIconLabelStyle: LabelStyle {
+    @Environment(\.posMetrics) private var metrics
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: metrics.spacing.xSmall) {
+            configuration.title
+            configuration.icon
+        }
+    }
+}
+
 #if DEBUG
 #Preview("Security on iPad") {
     POSSecuritySettingsView(controller: POSSecuritySettingsController(store: POSLocalPINStore(siteID: 0),
-                                                                     session: UnrestrictedPOSAccessSession()))
+                                                                     session: UnrestrictedPOSAccessSession(),
+                                                                     lockSettings: POSLockSettings(siteID: 0)))
         .disabled(true)
 }
 #endif

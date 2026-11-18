@@ -14,7 +14,16 @@ import protocol Yosemite.PaymentCaptureCelebrationProtocol
 @Observable
 final class POSPaymentModel {
     // MARK: - State (read by views)
-    private(set) var paymentState: PointOfSalePaymentState
+    private(set) var paymentState: PointOfSalePaymentState {
+        didSet {
+            guard oldValue != paymentState else { return }
+            paymentStateChangesSubject.send((oldState: oldValue, newState: paymentState))
+        }
+    }
+    private let paymentStateChangesSubject = PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>()
+    var paymentStateChanges: AnyPublisher<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never> {
+        paymentStateChangesSubject.eraseToAnyPublisher()
+    }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected

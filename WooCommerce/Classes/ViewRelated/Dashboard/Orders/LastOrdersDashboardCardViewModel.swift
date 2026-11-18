@@ -171,7 +171,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                         hasPendingReload = true
                         return
                     }
-                    await reloadData()
+                    await reloadData(showsLoadingState: false)
                 }
             }
             .store(in: &subscriptions)
@@ -180,21 +180,26 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self, hasPendingReload, application.applicationState != .background else { return }
-                    await reloadData()
+                    await reloadData(showsLoadingState: false)
                 }
             }
             .store(in: &subscriptions)
     }
 
+    /// - Parameter showsLoadingState: Whether to clear the rows and show the loading state while fetching. Refreshes after
+    ///   order changes keep the current rows on screen until the new ones arrive.
+    ///
     @MainActor
-    func reloadData() async {
+    func reloadData(showsLoadingState: Bool = true) async {
         hasPendingReload = false
         reloadCount += 1
         let reloadNumber = reloadCount
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .lastOrders))
-        syncingData = true
-        syncingError = nil
-        rows = []
+        if showsLoadingState {
+            syncingData = true
+            syncingError = nil
+            rows = []
+        }
 
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
@@ -206,6 +211,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             guard reloadNumber == reloadCount else {
                 return
             }
+            syncingError = nil
             rows = fetchedOrders
                 .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
             observeStoredOrders(for: rows)

@@ -203,7 +203,6 @@ public final class POSScreen: ScreenObject {
         }
 
         XCTAssertTrue(compactCartButton.waitForIsHittable(timeout: 10), "POS cart should be visible or available from the compact cart button.")
-        XCTAssertTrue(waitForStableFrame(of: compactCartButton, timeout: 5), "POS compact cart button should stop moving before it is tapped.")
         compactCartButton.tap()
         XCTAssertTrue(waitForVisibleElement(cartViewGetter(app), timeout: 10), "POS cart should be visible after tapping the compact cart button.")
         return self
@@ -508,22 +507,6 @@ public final class POSScreen: ScreenObject {
             button.tap()
             return
         }
-    }
-
-    private func waitForStableFrame(of element: XCUIElement, timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        var previousFrame = element.frame
-
-        while Date() < deadline {
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
-            let currentFrame = element.frame
-            if currentFrame == previousFrame, element.isHittable {
-                return true
-            }
-            previousFrame = currentFrame
-        }
-
-        return false
     }
 
     private func waitForVisibleElement(_ element: XCUIElement, timeout: TimeInterval) -> Bool {

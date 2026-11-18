@@ -7,13 +7,13 @@ extension View {
         session: any POSAccessSession,
         paymentModel: POSPaymentModel,
         aggregateModel: PointOfSaleAggregateModel,
-        preferences: POSLockPreferences
+        settings: POSLockSettings
     ) -> some View {
         modifier(POSAutoLockActivityTracker(
             session: session,
             paymentModel: paymentModel,
             aggregateModel: aggregateModel,
-            preferences: preferences
+            settings: settings
         ))
     }
 }
@@ -22,19 +22,20 @@ struct POSAutoLockActivityTracker: ViewModifier {
     let session: any POSAccessSession
     let paymentModel: POSPaymentModel
     let aggregateModel: PointOfSaleAggregateModel
-    let preferences: POSLockPreferences
+    let settings: POSLockSettings
 
     @State private var controller: POSAutoLockActivityController?
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: paymentModel.paymentState) { oldState, newState in
-                controller?.handlePaymentStateChange(from: oldState, to: newState, locksAfterSale: preferences.locksAfterSale)
+            .onReceive(paymentModel.paymentStateChanges) { change in
+                controller?.handlePaymentStateChange(from: change.oldState, to: change.newState,
+                                                     locksAfterSale: settings.preferences.locksAfterSale)
             }
             .onChange(of: aggregateModel.cart.totalItemCount) { _, _ in
                 controller?.noteActivity()
             }
-            .onChange(of: preferences.inactivityTimeout) { _, timeout in
+            .onChange(of: settings.preferences.inactivityTimeout) { _, timeout in
                 controller?.updateTimeout(timeout.interval)
             }
             .onChange(of: session.isLocked) { _, isLocked in
@@ -52,7 +53,7 @@ struct POSAutoLockActivityTracker: ViewModifier {
                     controller = POSAutoLockActivityController(
                         session: session,
                         paymentStateProvider: { paymentModel.paymentState },
-                        timeout: preferences.inactivityTimeout.interval
+                        timeout: settings.preferences.inactivityTimeout.interval
                     )
                 }
                 controller?.noteActivity()

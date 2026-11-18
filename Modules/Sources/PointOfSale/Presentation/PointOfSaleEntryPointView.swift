@@ -212,7 +212,7 @@ public struct PointOfSaleEntryPointView: View {
                         session: accessSession,
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel,
-                        preferences: lockSettings.preferences
+                        settings: lockSettings
                     )
                     .posLockScreenOverlay()
             } else {

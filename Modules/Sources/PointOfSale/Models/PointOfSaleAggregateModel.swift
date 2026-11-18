@@ -261,6 +261,12 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func startAddingCustomAmount() {
+        guard customAmountFlow == nil else { return }
+        analytics.track(.pointOfSaleCustomAmountEntryRowTapped)
+        customAmountFlow = .add
+    }
+
     func upsertCustomAmount(_ customAmount: POSCustomAmount, mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode) {
         analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
         trackCustomerInteractionStarted()

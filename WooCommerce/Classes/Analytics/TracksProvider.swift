@@ -306,6 +306,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleItemsPullToRefresh,
             WooAnalyticsStat.pointOfSaleAddItemToCart,
             WooAnalyticsStat.pointOfSaleItemRemovedFromCart,
+            WooAnalyticsStat.pointOfSaleCustomAmountEntryRowTapped,
+            WooAnalyticsStat.pointOfSaleCustomAmountSubmitted,
             WooAnalyticsStat.pointOfSaleCheckoutTapped,
             WooAnalyticsStat.pointOfSaleBackToCartTapped,
             WooAnalyticsStat.pointOfSaleBackToCheckoutFromCashTapped,

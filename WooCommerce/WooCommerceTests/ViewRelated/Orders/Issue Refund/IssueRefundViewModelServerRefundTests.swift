@@ -67,7 +67,7 @@ struct IssueRefundViewModelServerRefundTests {
 
     // MARK: - Confirmation
 
-    @Test func createRefundConfirmationViewModel_when_preview_succeeds_then_shows_preview_total_and_creates_computed_refund_with_pinned_amount() async throws {
+    @Test func createRefundConfirmationViewModel_when_preview_succeeds_then_shows_preview_total_and_creates_computed_refund_without_amount() async throws {
         // Given
         let service = MockRefundService()
         service.previewRefundResult = .success(preview(total: 36.3))
@@ -83,7 +83,7 @@ struct IssueRefundViewModelServerRefundTests {
         // Then
         #expect(confirmation.refundAmount == "$36.30")
         #expect(service.previewRefundCallCount == 1)
-        #expect(try #require(service.spyCreateRefundAmount) == "36.3")
+        #expect(try #require(service.spyCreateRefundAmount) == nil)
         #expect(!stores.receivedActions.contains { action in
             guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
                 return false

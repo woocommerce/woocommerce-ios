@@ -16,6 +16,7 @@ final class StoreOrderListHeaderView: UIView {
 
     func configure(state: StoreOrderListHeaderState,
                    onFilter: @escaping () -> Void,
+                   onToggleBanner: @escaping () -> Void,
                    onTroubleshoot: @escaping () -> Void,
                    onContactSupport: @escaping () -> Void,
                    onRetryCurrency: @escaping () -> Void) {
@@ -23,6 +24,7 @@ final class StoreOrderListHeaderView: UIView {
         let configuration = UIHostingConfiguration {
             StoreOrderListHeader(state: state,
                                  onFilter: onFilter,
+                                 onToggleBanner: onToggleBanner,
                                  onTroubleshoot: onTroubleshoot,
                                  onContactSupport: onContactSupport,
                                  onRetryCurrency: onRetryCurrency)

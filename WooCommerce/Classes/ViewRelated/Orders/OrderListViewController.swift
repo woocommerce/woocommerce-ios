@@ -135,6 +135,8 @@ final class OrderListViewController: UIViewController {
 
     lazy var storeHeaderView = StoreOrderListHeaderView(frame: .zero)
 
+    private var isStoreBannerExpanded = true
+
     /// Current top banner that is displayed.
     ///
     private var topBannerView: UIView?
@@ -597,11 +599,23 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         storeHeaderView.configure(state: makeStoreHeaderState(topBanner: topBanner ?? viewModel.topBanner),
                                   onFilter: { [weak self] in self?.requestFilters() },
+                                  onToggleBanner: { [weak self] in self?.toggleStoreBannerExpansion() },
                                   onTroubleshoot: { [weak self] in self?.troubleshootTopBannerError() },
                                   onContactSupport: { [weak self] in self?.showTopBannerSupport() },
                                   onRetryCurrency: { [weak self] in self?.viewModel.retryStoreCurrencySync() })
         delegate?.orderListViewControllerHeaderDidChange(self)
         updateEmptyStateHeight()
+    }
+
+    func toggleStoreBannerExpansion() {
+        guard usesStoreDesignSystem,
+              let state = storeHeaderView.state,
+              case .error = state.banner else {
+            return
+        }
+
+        isStoreBannerExpanded.toggle()
+        updateStoreHeader()
     }
 
     func makeStoreHeaderState(topBanner: OrderListViewModel.TopBanner) -> StoreOrderListHeaderState {
@@ -624,7 +638,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         return StoreOrderListHeaderState(activeFilterCount: viewModel.filters?.numberOfActiveFilters ?? 0,
                                          lastUpdatedText: lastUpdatedText,
-                                         banner: banner)
+                                         banner: banner,
+                                         isBannerExpanded: isStoreBannerExpanded)
     }
 }
 
@@ -1092,6 +1107,10 @@ private extension OrderListViewController {
 private extension OrderListViewController {
     func renderTopBanner(_ topBanner: OrderListViewModel.TopBanner) {
         if usesStoreDesignSystem {
+            let nextBanner = makeStoreHeaderState(topBanner: topBanner).banner
+            if storeHeaderView.state?.banner != nextBanner {
+                isStoreBannerExpanded = true
+            }
             updateStoreHeader(topBanner: topBanner)
             return
         }

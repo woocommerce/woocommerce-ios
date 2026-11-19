@@ -99,6 +99,36 @@ struct OrderListViewControllerTests {
     }
 
     @Test
+    func test_store_error_banner_when_toggled_then_collapses_and_expands() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = OrderListViewModel(siteID: 123,
+                                           stores: stores,
+                                           storageManager: MockStorageManager(),
+                                           filters: nil)
+        let viewController = OrderListViewController(siteID: 123,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     usesStoreDesignSystem: true,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { _, _, _, _ in })
+        viewController.loadViewIfNeeded()
+        viewModel.dataLoadingError = URLError(.notConnectedToInternet)
+
+        // When: the banner is tapped
+        viewController.toggleStoreBannerExpansion()
+
+        // Then: the banner is collapsed
+        #expect(viewController.storeHeaderView.state?.isBannerExpanded == false)
+
+        // When: the banner is tapped again
+        viewController.toggleStoreBannerExpansion()
+
+        // Then: the banner is expanded
+        #expect(viewController.storeHeaderView.state?.isBannerExpanded == true)
+    }
+
+    @Test
     func test_store_order_cell_when_selected_or_highlighted_then_uses_selected_appearance() {
         // Given
         let order = MockOrders().empty().copy(orderID: 1, status: .processing, dateCreated: .now)

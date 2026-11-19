@@ -2,6 +2,7 @@ struct StoreOrderListHeaderState: Equatable {
     let activeFilterCount: Int
     let lastUpdatedText: String?
     let banner: Banner
+    let isBannerExpanded: Bool
 
     var title: String {
         activeFilterCount == 0 ? OrderListLocalization.allOrdersHeaderTitle : OrderListLocalization.filteredOrdersHeaderTitle

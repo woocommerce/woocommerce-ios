@@ -6,6 +6,7 @@ struct StoreOrderListHeader: View {
 
     let state: StoreOrderListHeaderState
     let onFilter: () -> Void
+    let onToggleBanner: () -> Void
     let onTroubleshoot: () -> Void
     let onContactSupport: () -> Void
     let onRetryCurrency: () -> Void
@@ -36,14 +37,16 @@ struct StoreOrderListHeader: View {
                 EmptyView()
             case let .error(title, message):
                 StoreNoticeBanner(title,
-                                  description: message,
+                                  description: state.isBannerExpanded ? message : nil,
                                   tone: .error,
                                   icon: StoreIcon.CircleInfo.regular,
-                                  actionTitle: ErrorTopBannerFactory.Localization.contactSupport,
-                                  action: onContactSupport,
-                                  prominentActionTitle: ErrorTopBannerFactory.Localization.troubleshoot,
-                                  prominentAction: onTroubleshoot,
+                                  actionTitle: state.isBannerExpanded ? ErrorTopBannerFactory.Localization.contactSupport : nil,
+                                  action: state.isBannerExpanded ? onContactSupport : nil,
+                                  prominentActionTitle: state.isBannerExpanded ? ErrorTopBannerFactory.Localization.troubleshoot : nil,
+                                  prominentAction: state.isBannerExpanded ? onTroubleshoot : nil,
                                   accessibilityStatus: OrderListLocalization.errorAccessibilityStatus)
+                    .contentShape(Rectangle())
+                    .onTapGesture(perform: onToggleBanner)
             case .currencyUnavailable:
                 StoreNoticeBanner(OrderListLocalization.currencyUnavailableTitle,
                                   description: OrderListLocalization.currencyUnavailableInfo,
@@ -70,8 +73,10 @@ struct StoreOrderListHeader: View {
 #Preview("All orders") {
     StoreOrderListHeader(state: .init(activeFilterCount: 0,
                                       lastUpdatedText: "Last Updated: 10:30 AM",
-                                      banner: .none),
+                                      banner: .none,
+                                      isBannerExpanded: true),
                              onFilter: {},
+                             onToggleBanner: {},
                              onTroubleshoot: {},
                              onContactSupport: {},
                              onRetryCurrency: {})
@@ -81,8 +86,10 @@ struct StoreOrderListHeader: View {
     StoreOrderListHeader(state: .init(activeFilterCount: 3,
                                       lastUpdatedText: "Last Updated: Nov 18, 10:30 AM",
                                       banner: .error(title: "We couldn't load your data",
-                                                     message: "Please try again later.")),
+                                                     message: "Please try again later."),
+                                      isBannerExpanded: true),
                              onFilter: {},
+                             onToggleBanner: {},
                              onTroubleshoot: {},
                              onContactSupport: {},
                              onRetryCurrency: {})

@@ -172,7 +172,9 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
-    private var isAddingHardwareScannedProduct = false
+    /// A scanner lookup never touches the order synchronizer, so checkout has to wait for it separately:
+    /// committing mid-lookup would create or charge the order without the scanned product.
+    @Published private var isAddingHardwareScannedProduct = false
 
     @Published private(set) var collectPaymentDisabled: Bool = false
 
@@ -1342,9 +1344,9 @@ private extension EditableOrderViewModel {
     }
 
     func configureCollectPaymentDisabledState() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $disabled)
-            .map { [weak self] order, viewDisabled -> Bool in
-                guard !viewDisabled else {
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, $disabled, $isAddingHardwareScannedProduct)
+            .map { [weak self] order, viewDisabled, isAddingHardwareScannedProduct -> Bool in
+                guard !viewDisabled, !isAddingHardwareScannedProduct else {
                     return true
                 }
                 let orderTotal = self?.currencyFormatter.convertToDecimal(order.total) as? Decimal ?? .zero
@@ -1364,12 +1366,12 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
-            .map { syncState, performingNetworkRequest in
+        let requestInProgress = Publishers.CombineLatest3(orderSynchronizer.statePublisher, $performingNetworkRequest, $isAddingHardwareScannedProduct)
+            .map { syncState, performingNetworkRequest, isAddingHardwareScannedProduct in
                 if case .syncing = syncState {
                     return true
                 } else {
-                    return performingNetworkRequest
+                    return performingNetworkRequest || isAddingHardwareScannedProduct
                 }
             }
 
@@ -1396,12 +1398,12 @@ private extension EditableOrderViewModel {
     /// Calculates what Call to Action button should be shown depending on our internal state.
     ///
     func configureDoneButton() {
-        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
-            .map { syncState, performingNetworkRequest in
+        let requestInProgress = Publishers.CombineLatest3(orderSynchronizer.statePublisher, $performingNetworkRequest, $isAddingHardwareScannedProduct)
+            .map { syncState, performingNetworkRequest, isAddingHardwareScannedProduct in
                 if case .syncing = syncState {
                     return true
                 } else {
-                    return performingNetworkRequest
+                    return performingNetworkRequest || isAddingHardwareScannedProduct
                 }
             }
 

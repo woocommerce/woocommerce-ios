@@ -958,7 +958,8 @@ private extension OrderListViewController {
     func updateTableContent() {
         guard let dataSource else { return }
 
-        let existingItems = Set(dataSource.snapshot().itemIdentifiers)
+        let previousSnapshot = dataSource.snapshot()
+        let existingItems = Set(previousSnapshot.itemIdentifiers)
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         if state == .placeholder {
             snapshot.appendSections([.placeholder])
@@ -969,7 +970,11 @@ private extension OrderListViewController {
                 snapshot.appendItems(ordersSnapshot.itemIdentifiers(inSection: section).map(Item.order), toSection: .orders(section))
             }
             let updatedItems = ordersSnapshot.reloadedItemIdentifiers + ordersSnapshot.reconfiguredItemIdentifiers
-            snapshot.reconfigureItems(Array(Set(updatedItems.map(Item.order)).intersection(existingItems)))
+            var itemsToReconfigure = Set(updatedItems.map(Item.order)).intersection(existingItems)
+            if usesStoreDesignSystem {
+                itemsToReconfigure.formUnion(Self.itemsWithChangedSectionBoundaries(from: previousSnapshot, to: snapshot))
+            }
+            snapshot.reconfigureItems(Array(itemsToReconfigure))
         }
 
         let hadOrders = existingItems.contains { $0.objectID != nil }
@@ -1017,6 +1022,28 @@ private extension OrderListViewController {
         if updateSnapshot, isViewLoaded, view.window != nil,
            splitViewController?.isCollapsed == false {
             checkSelectedItem()
+        }
+    }
+}
+
+extension OrderListViewController {
+    static func itemsWithChangedSectionBoundaries<SectionIdentifier: Hashable, ItemIdentifier: Hashable>(
+        from previousSnapshot: NSDiffableDataSourceSnapshot<SectionIdentifier, ItemIdentifier>,
+        to snapshot: NSDiffableDataSourceSnapshot<SectionIdentifier, ItemIdentifier>
+    ) -> Set<ItemIdentifier> {
+        let previousItems = Set(previousSnapshot.itemIdentifiers)
+        let currentItems = Set(snapshot.itemIdentifiers)
+        let survivingItems = previousItems.intersection(currentItems)
+
+        let previousFirstItems = Set(previousSnapshot.sectionIdentifiers.compactMap { previousSnapshot.itemIdentifiers(inSection: $0).first })
+        let previousLastItems = Set(previousSnapshot.sectionIdentifiers.compactMap { previousSnapshot.itemIdentifiers(inSection: $0).last })
+        let currentFirstItems = Set(snapshot.sectionIdentifiers.compactMap { snapshot.itemIdentifiers(inSection: $0).first })
+        let currentLastItems = Set(snapshot.sectionIdentifiers.compactMap { snapshot.itemIdentifiers(inSection: $0).last })
+        let boundaryItems = previousFirstItems.union(previousLastItems).union(currentFirstItems).union(currentLastItems)
+
+        return boundaryItems.intersection(survivingItems).filter { item in
+            previousFirstItems.contains(item) != currentFirstItems.contains(item) ||
+                previousLastItems.contains(item) != currentLastItems.contains(item)
         }
     }
 }

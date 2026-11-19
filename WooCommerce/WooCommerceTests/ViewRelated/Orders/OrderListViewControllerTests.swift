@@ -80,6 +80,31 @@ struct OrderListViewControllerTests {
     }
 
     @Test
+    func test_itemsWithChangedSectionBoundaries_when_section_edges_change_then_returns_surviving_changed_items() {
+        // Given
+        let singleItemSnapshot = makeSnapshot(sections: [[1]])
+        let appendedItemSnapshot = makeSnapshot(sections: [[1, 2]])
+        let prependedItemSnapshot = makeSnapshot(sections: [[2, 1]])
+        let insertedMiddleItemSnapshot = makeSnapshot(sections: [[1, 3, 2]])
+
+        // When
+        let changedAfterAppend = OrderListViewController.itemsWithChangedSectionBoundaries(from: singleItemSnapshot,
+                                                                                            to: appendedItemSnapshot)
+        let changedAfterPrepend = OrderListViewController.itemsWithChangedSectionBoundaries(from: singleItemSnapshot,
+                                                                                             to: prependedItemSnapshot)
+        let changedAfterRemoval = OrderListViewController.itemsWithChangedSectionBoundaries(from: appendedItemSnapshot,
+                                                                                             to: singleItemSnapshot)
+        let changedAfterMiddleInsertion = OrderListViewController.itemsWithChangedSectionBoundaries(from: appendedItemSnapshot,
+                                                                                                     to: insertedMiddleItemSnapshot)
+
+        // Then
+        #expect(changedAfterAppend == [1])
+        #expect(changedAfterPrepend == [1])
+        #expect(changedAfterRemoval == [1])
+        #expect(changedAfterMiddleInsertion.isEmpty)
+    }
+
+    @Test
     func test_restoreSelectedOrderDetails_when_second_order_is_selected_then_recreates_its_detail() async throws {
         // Given
         let siteID: Int64 = 3932
@@ -302,6 +327,15 @@ struct OrderListViewControllerTests {
 }
 
 private extension OrderListViewControllerTests {
+    func makeSnapshot(sections: [[Int]]) -> NSDiffableDataSourceSnapshot<Int, Int> {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Int>()
+        for (section, items) in sections.enumerated() {
+            snapshot.appendSections([section])
+            snapshot.appendItems(items, toSection: section)
+        }
+        return snapshot
+    }
+
     func insert(_ orders: [Yosemite.Order], into storageManager: MockStorageManager) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             storageManager.performAndSave({ storage in

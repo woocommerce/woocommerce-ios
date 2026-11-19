@@ -601,7 +601,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             credentials.authenticationEndpoints,
             false
         )
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _, _ in
+        useCase.setupHandlers(onLoginSuccess: { _ in onSuccess() }, onLoginFailure: { [weak self] error, _, _ in
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
@@ -672,15 +672,16 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
                 finishRetry(true)
             }
         }
-        useCase.setupHandlers(onLoginSuccess: { [weak self] in
+        useCase.setupHandlers(onLoginSuccess: { [weak self] provenEndpoints in
             guard self?.credentialAttemptID == attemptID else {
                 return
             }
+            finishRetry(true)
             // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
             // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
             // password, role eligibility and WooCommerce installation checks, and the form has to stay
             // disabled until one of those navigates away.
-            onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
+            onSuccess(credentials.replacingAuthenticationEndpoints(with: provenEndpoints))
         }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
             guard let self, credentialAttemptID == attemptID else {
                 return

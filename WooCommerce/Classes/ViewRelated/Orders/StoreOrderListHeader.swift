@@ -35,19 +35,15 @@ struct StoreOrderListHeader: View {
             case .none:
                 EmptyView()
             case let .error(title, message):
-                VStack(spacing: StoreSpacing.s4) {
-                    StoreNoticeBanner(title,
-                                      description: message,
-                                      tone: .error,
-                                      icon: StoreIcon.CircleInfo.regular,
-                                      actionTitle: ErrorTopBannerFactory.Localization.troubleshoot,
-                                      action: onTroubleshoot,
-                                      accessibilityStatus: OrderListLocalization.errorAccessibilityStatus)
-                    StoreButton(ErrorTopBannerFactory.Localization.contactSupport,
-                                variant: .outlined,
-                                isFullWidth: true,
-                                action: onContactSupport)
-                }
+                StoreNoticeBanner(title,
+                                  description: message,
+                                  tone: .error,
+                                  icon: StoreIcon.CircleInfo.regular,
+                                  actionTitle: ErrorTopBannerFactory.Localization.contactSupport,
+                                  action: onContactSupport,
+                                  prominentActionTitle: ErrorTopBannerFactory.Localization.troubleshoot,
+                                  prominentAction: onTroubleshoot,
+                                  accessibilityStatus: OrderListLocalization.errorAccessibilityStatus)
             case .currencyUnavailable:
                 StoreNoticeBanner(OrderListLocalization.currencyUnavailableTitle,
                                   description: OrderListLocalization.currencyUnavailableInfo,

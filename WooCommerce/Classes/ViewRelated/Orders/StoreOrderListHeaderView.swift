@@ -31,6 +31,7 @@ final class StoreOrderListHeaderView: UIView {
 
         if let hostedView {
             hostedView.configuration = configuration
+            hostedView.setNeedsLayout()
             superview?.setNeedsLayout()
             return
         }
@@ -45,5 +46,16 @@ final class StoreOrderListHeaderView: UIView {
             hostedView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         self.hostedView = hostedView
+    }
+
+    func fittingHeight(for width: CGFloat) -> CGFloat {
+        guard let hostedView, width > 0 else {
+            return 0
+        }
+
+        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
+        return hostedView.systemLayoutSizeFitting(targetSize,
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel).height
     }
 }

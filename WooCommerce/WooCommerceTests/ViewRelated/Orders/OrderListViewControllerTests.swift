@@ -120,12 +120,16 @@ struct OrderListViewControllerTests {
 
         // Then: the banner is collapsed
         #expect(viewController.storeHeaderView.state?.isBannerExpanded == false)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityValue == OrderListLocalization.collapsedAccessibilityValue)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityHint == OrderListLocalization.expandAccessibilityHint)
 
         // When: the banner is tapped again
         viewController.toggleStoreBannerExpansion()
 
         // Then: the banner is expanded
         #expect(viewController.storeHeaderView.state?.isBannerExpanded == true)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityValue == OrderListLocalization.expandedAccessibilityValue)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityHint == OrderListLocalization.collapseAccessibilityHint)
     }
 
     @Test

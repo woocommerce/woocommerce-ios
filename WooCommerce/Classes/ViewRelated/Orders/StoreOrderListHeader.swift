@@ -47,6 +47,12 @@ struct StoreOrderListHeader: View {
                                   accessibilityStatus: OrderListLocalization.errorAccessibilityStatus)
                     .contentShape(Rectangle())
                     .onTapGesture(perform: onToggleBanner)
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityValue(state.bannerAccessibilityValue)
+                    .accessibilityHint(state.bannerAccessibilityHint)
+                    .accessibilityAction {
+                        onToggleBanner()
+                    }
             case .currencyUnavailable:
                 StoreNoticeBanner(OrderListLocalization.currencyUnavailableTitle,
                                   description: OrderListLocalization.currencyUnavailableInfo,

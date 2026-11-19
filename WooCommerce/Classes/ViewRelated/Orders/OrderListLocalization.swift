@@ -61,6 +61,30 @@ enum OrderListLocalization {
         comment: "Accessibility status announced for a warning banner on the Orders list."
     )
 
+    static let expandedAccessibilityValue = NSLocalizedString(
+        "Expanded",
+        value: "Expanded",
+        comment: "Accessibility value when a banner is expanded"
+    )
+
+    static let collapsedAccessibilityValue = NSLocalizedString(
+        "Collapsed",
+        value: "Collapsed",
+        comment: "Accessibility value when a banner is collapsed"
+    )
+
+    static let expandAccessibilityHint = NSLocalizedString(
+        "Double-tap for more information",
+        value: "Double-tap for more information",
+        comment: "Accessibility hint to expand a banner"
+    )
+
+    static let collapseAccessibilityHint = NSLocalizedString(
+        "Double-tap to collapse",
+        value: "Double-tap to collapse",
+        comment: "Accessibility hint to collapse a banner"
+    )
+
     static func filterButtonTitle(activeFilterCount: Int) -> String {
         guard activeFilterCount > 0 else {
             return filterButtonTitle

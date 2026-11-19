@@ -88,7 +88,7 @@ struct HardwareBarcodeScannerTests {
         // Given
         let sut = makeScanner()
         let token = sut.startListening(source: .productList) { _ in }
-        weak var observer = observerFactory.lastObserver
+        weak let observer = observerFactory.lastObserver
         #expect(observer != nil)
 
         // When

@@ -29,14 +29,14 @@ final class HardwareBarcodeScanner {
 
     private let analytics: Analytics
     private let noticePresenter: () -> NoticePresenter
-    private let isTextInputActive: () -> Bool
+    private let isTextInputActive: @MainActor () -> Bool
     private let makeObserver: ObserverFactory
     private var listeners: [Listener] = []
     private var observer: AnyObject?
 
     init(analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: @escaping () -> NoticePresenter = { ServiceLocator.noticePresenter },
-         isTextInputActive: @escaping () -> Bool = { UIResponder.isTextInputFirstResponder },
+         isTextInputActive: @escaping @MainActor () -> Bool = { UIResponder.isTextInputFirstResponder },
          makeObserver: @escaping ObserverFactory = HardwareBarcodeScanner.makeGameControllerObserver) {
         self.analytics = analytics
         self.noticePresenter = noticePresenter

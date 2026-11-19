@@ -147,6 +147,9 @@ struct HardwareBarcodeScannerTests {
         ("1234567890128", ScannedBarcode.BarcodeSymbologyName.ean13),
         ("036000291452", .ean13),
         ("96385074", .ean8),
+        ("04252614", .upce),
+        ("01234565", .upce),
+        ("04252615", .code128),
         ("1234567890123", .code128),
         ("SKU-123", .code128),
         ("12345", .code128)
@@ -165,12 +168,13 @@ struct HardwareBarcodeScannerTests {
 extension ScannedBarcode {
     /// `BarcodeSymbology` isn't `Sendable`, so test arguments name it instead.
     enum BarcodeSymbologyName: Sendable {
-        case ean13, ean8, code128
+        case ean13, ean8, upce, code128
 
         var symbology: BarcodeSymbology {
             switch self {
             case .ean13: return .ean13
             case .ean8: return .ean8
+            case .upce: return .upce
             case .code128: return .code128
             }
         }

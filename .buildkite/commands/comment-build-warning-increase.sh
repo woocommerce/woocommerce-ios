@@ -84,10 +84,6 @@ if ! is_pull_request; then
   exit 0
 fi
 
-if "$COMMANDS_DIR/should-skip-job.sh" --job-type build; then
-  exit 0
-fi
-
 if ! download_report "$REPORT_PATH"; then
   comment_body="$(unavailable_comment 'The current build warning report is missing.')"
 elif ! download_report "$BASELINE_REPORT_PATH"; then

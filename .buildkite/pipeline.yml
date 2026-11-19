@@ -1,6 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
 ---
 
+# Steps that can be skipped have `skip: "$SKIP_…"`, decided at upload time by `commands/should-skip-job.sh` (`false` runs the step) and exported by `shared-pipeline-vars`.
+# Buildkite doesn't notify for skipped steps, but if you need it to do so anyway, you can use the custom `even-if-skipped: true` attribute on a `notify:`. That custom attribute is picked up by the `notify_skipped_steps` script of the `a8c-ci-toolkit` plugin, which the pipeline upload step (defined in `buildkite-ci`) runs on this file. It takes care of detecting those and emitting a success status to GitHub when the step is skipped, so the checks of skipped jobs don't wait forever.
+
 agents:
   queue: mac
 
@@ -15,15 +18,18 @@ steps:
   - label: ":pipeline: Build"
     key: build
     command: .buildkite/commands/build-for-testing.sh
+    skip: "$SKIP_BUILD"
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
           context: Build
+        even-if-skipped: true
 
   - label: ":warning: Build Warning Baseline"
     key: build-warning-baseline
     command: .buildkite/commands/build-warning-baseline.sh
     if: build.pull_request.id != null
+    skip: "$SKIP_BUILD"
     # Advisory-only: if the baseline can't be produced, the comparison step
     # reports it as unavailable instead of the PR build going red.
     soft_fail: true
@@ -32,6 +38,7 @@ steps:
   - label: ":warning: Build Warning Count"
     key: build-warning-count
     command: .buildkite/commands/comment-build-warning-increase.sh
+    skip: "$SKIP_BUILD"
     depends_on:
       - build
       - build-warning-baseline
@@ -55,12 +62,14 @@ steps:
     key: strict_concurrency
     soft_fail: true
     command: .buildkite/commands/strict-concurrency-guard.sh
+    skip: "$SKIP_VALIDATION"
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - strict-concurrency-current.json
     notify:
       - github_commit_status:
           context: Strict Concurrency Baseline Guard
+        even-if-skipped: true
 
   #################
   # Create Prototype Build
@@ -78,6 +87,7 @@ steps:
       - label: ":firebase: Prototype Build"
         depends_on: prototype_build_triggered
         command: .buildkite/commands/prototype-build.sh
+        skip: "$SKIP_BUILD"
         plugins: [$CI_TOOLKIT]
 
   #################
@@ -86,6 +96,7 @@ steps:
   - label: ":microscope: Unit Tests"
     key: unit-tests
     command: .buildkite/commands/run-unit-tests.sh
+    skip: "$SKIP_VALIDATION"
     depends_on: build
     plugins:
       - $CI_TOOLKIT
@@ -99,6 +110,7 @@ steps:
     notify:
       - github_commit_status:
           context: Unit Tests
+        even-if-skipped: true
 
   #################
   # Ruby Automation Tests (Fastlane helpers)
@@ -152,10 +164,12 @@ steps:
 
       - label: ":sleuth_or_spy: Lint Localized Strings Format"
         command: .buildkite/commands/lint-localized-strings-format.sh
+        skip: "$SKIP_LOCALIZATION"
         plugins: [$CI_TOOLKIT]
         notify:
           - github_commit_status:
               context: Lint Localized Strings Format
+            even-if-skipped: true
 
       - label: ":swift: Ensure single Package.resolved"
         command: .buildkite/commands/check-package-resolved.sh
@@ -171,6 +185,7 @@ steps:
   - label: ":microscope: UI Tests (iPhone)"
     key: ui-tests-iphone
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
+    skip: "$SKIP_VALIDATION"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
@@ -187,10 +202,12 @@ steps:
     notify:
       - github_commit_status:
           context: UI Tests (iPhone)
+        even-if-skipped: true
 
   - label: ":microscope: UI Tests (iPad)"
     key: ui-tests-ipad
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
+    skip: "$SKIP_VALIDATION"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
@@ -207,6 +224,7 @@ steps:
     notify:
       - github_commit_status:
           context: UI Tests (iPad)
+        even-if-skipped: true
 
   #################
   # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the steps it depends on

@@ -550,10 +550,7 @@ private extension ItemListView {
     }
 
     private func dismissSearchKeyboardIfNeeded() {
-        guard POSSearchViewHelper.dismissesKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact) else {
-            return
-        }
-        UIApplication.shared.posDismissKeyboard()
+        UIApplication.shared.posDismissSearchKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact)
     }
 }
 

@@ -354,11 +354,10 @@ private extension POSOrderListView {
     }
 
     func dismissSearchKeyboardIfNeeded() {
-        guard isSearching,
-              POSSearchViewHelper.dismissesKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact) else {
+        guard isSearching else {
             return
         }
-        UIApplication.shared.posDismissKeyboard()
+        UIApplication.shared.posDismissSearchKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact)
     }
 }
 

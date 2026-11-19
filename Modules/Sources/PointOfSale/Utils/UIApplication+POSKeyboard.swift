@@ -9,4 +9,11 @@ extension UIApplication {
     func posDismissKeyboard() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
+
+    func posDismissSearchKeyboardOnResultSelection(isCompactLayout: Bool) {
+        guard POSSearchViewHelper.dismissesKeyboardOnResultSelection(isCompactLayout: isCompactLayout) else {
+            return
+        }
+        posDismissKeyboard()
+    }
 }

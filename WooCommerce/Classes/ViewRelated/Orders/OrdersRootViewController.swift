@@ -470,10 +470,15 @@ private extension OrdersRootViewController {
         }
 
         let headerView = featureFlagService.usesStoreDesignSystem ? ordersViewController.storeHeaderView : filtersBar
-        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
-        let height = headerView.systemLayoutSizeFitting(targetSize,
+        let height: CGFloat
+        if featureFlagService.usesStoreDesignSystem {
+            height = ordersViewController.storeHeaderView.fittingHeight(for: view.bounds.width)
+        } else {
+            let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+            height = headerView.systemLayoutSizeFitting(targetSize,
                                                         withHorizontalFittingPriority: .required,
                                                         verticalFittingPriority: .fittingSizeLevel).height
+        }
 
         guard height > 0 else {
             return
@@ -485,15 +490,16 @@ private extension OrdersRootViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
-            let previousContentOffset = tableView.contentOffset
+            let previousTopPosition = tableView.contentOffset.y + tableView.adjustedContentInset.top
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
             if !tableView.isTracking,
                !tableView.isDragging,
                !tableView.isDecelerating {
-                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
-                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
+                // Include changes to UIKit's navigation-bar inset when preserving the list's position.
+                tableView.layoutIfNeeded()
+                tableView.contentOffset.y = previousTopPosition - tableView.adjustedContentInset.top
             }
         }
 

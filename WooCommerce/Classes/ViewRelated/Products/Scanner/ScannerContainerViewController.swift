@@ -32,12 +32,12 @@ final class ScannerContainerViewController: UIViewController {
     init(navigationTitle: String,
          instructionText: String,
          offersHardwareScanner: Bool = false,
-         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared,
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil,
          onBarcodeScanned: @escaping (ScannedBarcode) -> Void) {
         self.navigationTitle = navigationTitle
         self.instructionText = instructionText
         self.offersHardwareScanner = offersHardwareScanner
-        self.hardwareBarcodeScanner = hardwareBarcodeScanner
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }

@@ -13,6 +13,229 @@ import enum WooFoundationCore.WooAnalyticsStat
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
+    // MARK: - Payment starts that end without a payment
+
+    @Test @MainActor
+    func test_start_card_payment_when_tap_to_pay_order_total_is_zero_then_session_ends_and_card_reader_can_start() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "0.00")
+        provider.totalDecimalToReturn = 0
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!service.collectPaymentWasCalled)
+        #expect(sut.paymentState.card == .idle)
+
+        // When
+        await sut.startCardPayment(with: .bluetoothReader)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(service.connectReaderCallCount == 2)
+    }
+
+    @Test @MainActor
+    func test_start_card_payment_when_tap_to_pay_connect_fails_then_session_ends_and_next_tap_connects_again() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        service.connectReaderOverride = { throw NSError(domain: "test", code: 1) }
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+        #expect(sut.isCardPaymentStartPending)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+
+        // When
+        service.connectReaderOverride = nil
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            Task { await sut.startCardPayment(with: .tapToPay) }
+        }
+
+        // Then
+        #expect(service.connectReaderCallCount == 2)
+        #expect(service.spyCollectPaymentMethods == [.tapToPay])
+    }
+
+    @Test @MainActor
+    func test_start_card_payment_when_tap_to_pay_connect_is_canceled_then_session_ends() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectReaderResult = .canceled
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(sut.lastConnectedMethod == nil)
+    }
+
+    @Test(arguments: [POSCardPaymentSelectionMode.compact, .large]) @MainActor
+    func test_start_card_payment_when_tap_to_pay_reader_is_disconnecting_then_tap_ends_and_next_tap_starts(
+        mode: POSCardPaymentSelectionMode) async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        service.connectionStatus = .disconnecting
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: mode)
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!sut.isCardPaymentStartPending)
+
+        // When
+        service.connectionStatus = .disconnected
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            Task { await sut.startCardPayment(with: .tapToPay) }
+        }
+
+        // Then
+        #expect(service.spyCollectPaymentMethods == [.tapToPay])
+    }
+
+    @Test @MainActor
+    func test_start_card_payment_when_large_layout_tap_to_pay_reader_drops_during_cancel_then_session_ends() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .large)
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!service.collectPaymentWasCalled)
+    }
+
+    @Test @MainActor
+    func test_isCardPaymentStartPending_when_card_reader_connect_is_running_then_true_until_it_ends() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        var finishConnect: CheckedContinuation<Void, Never>?
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        await fireOnce { fire in
+            service.connectReaderOverride = {
+                await withCheckedContinuation { continuation in
+                    finishConnect = continuation
+                    fire()
+                }
+                return .canceled
+            }
+            Task { await sut.startCardPayment(with: .bluetoothReader) }
+        }
+
+        // Then
+        #expect(sut.isCardPaymentStartPending)
+
+        // When
+        finishConnect?.resume()
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+    }
+
+    @Test @MainActor
+    func test_isCardPaymentStartPending_when_bluetooth_reader_is_awaited_on_checkout_entry_then_false() async {
+        // Given
+        let sut = makePaymentController(preferredConnectionMethod: .bluetooth, cardPaymentSelectionMode: .large)
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(sut.isPaymentSessionActive)
+        #expect(!sut.isCardPaymentStartPending)
+    }
+
+    @Test @MainActor
+    func test_deactivate_when_tap_to_pay_start_is_waiting_for_reader_then_session_ends() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        var finishConnect: CheckedContinuation<Void, Never>?
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        await fireOnce { fire in
+            service.connectReaderOverride = {
+                await withCheckedContinuation { continuation in
+                    finishConnect = continuation
+                    fire()
+                }
+                return .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1))
+            }
+            Task { await sut.startCardPayment(with: .tapToPay) }
+        }
+        #expect(sut.isCardPaymentStartPending)
+        let deactivatedConnectTask = sut.paymentStartConnectTask
+
+        // When
+        sut.deactivate()
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!sut.isCardPaymentStartPending)
+
+        // When a Bluetooth reader connects, and only then the connect of the deactivated start finishes
+        service.connectReaderOverride = nil
+        await sut.startCardPayment(with: .bluetoothReader)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+        finishConnect?.resume()
+        await deactivatedConnectTask?.value
+
+        // Then
+        #expect(sut.lastConnectedMethod == .bluetooth)
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+    }
+
     @Test @MainActor
     func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {
         // Given
@@ -3343,4 +3566,20 @@ private func updateReaderConnectionStatus(observedBy sut: POSPaymentModel,
     // `observeReaderReconnection` handles publisher values in a MainActor task.
     // Yield once so that observer can either restart card collection or return.
     await Task.yield()
+}
+
+/// Waits until an `@Observable` value read by `value` equals `expected`.
+@MainActor
+private func waitUntil<Value: Equatable>(_ expected: Value, _ value: @escaping @MainActor () -> Value) async {
+    while value() != expected {
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = value()
+            } onChange: {
+                Task { @MainActor in
+                    continuation.resume()
+                }
+            }
+        }
+    }
 }

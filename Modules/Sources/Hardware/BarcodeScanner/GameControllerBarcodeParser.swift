@@ -247,7 +247,7 @@ public final class GameControllerBarcodeParser {
 }
 
 /// Configuration options for the HID barcode parser
-public struct HIDBarcodeParserConfiguration {
+public struct HIDBarcodeParserConfiguration: Sendable {
     /// Strings that indicate the end of a barcode scan
     public let terminatingStrings: Set<String>
 

@@ -1,4 +1,4 @@
-public enum HIDBarcodeParserError: Error {
+public enum HIDBarcodeParserError: Error, Sendable {
     case scanTooShort(barcode: String)
     case timedOut(barcode: String)
 
@@ -19,7 +19,7 @@ public enum HIDBarcodeParserError: Error {
     }
 }
 
-public enum HIDBarcodeParserResult {
+public enum HIDBarcodeParserResult: Sendable {
     case success(barcode: String, scanDurationMs: Int)
     case failure(error: HIDBarcodeParserError, scanDurationMs: Int)
 

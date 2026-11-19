@@ -19,7 +19,7 @@ struct StoreOrderListEmptyView: View {
                     let prefix = Text(verbatim: String(title[..<range.lowerBound]))
                     let emphasis = Text(verbatim: emphasizedTitle).bold()
                     let suffix = Text(verbatim: String(title[range.upperBound...]))
-                    Text("\(prefix)\(emphasis)\(suffix)")
+                    prefix + emphasis + suffix
                 } else {
                     Text(verbatim: title)
                 }

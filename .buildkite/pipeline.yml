@@ -87,7 +87,7 @@ steps:
       - label: ":firebase: Prototype Build"
         depends_on: prototype_build_triggered
         command: .buildkite/commands/prototype-build.sh
-        skip: "$SKIP_BUILD"
+        skip: "$SKIP_PROTOTYPE_BUILD"
         plugins: [$CI_TOOLKIT]
 
   #################

@@ -12,7 +12,8 @@ if [[ ! -s "$XCODE_VERSION_FILE" ]]; then
 fi
 XCODE_VERSION=$(sed -E 's/^~> *//' "$XCODE_VERSION_FILE")
 
-CI_TOOLKIT_PLUGIN_VERSION="7.3.0"
+# commit_changed_files: Automattic/a8c-ci-toolkit-buildkite-plugin#243; replace with its release before merging.
+CI_TOOLKIT_PLUGIN_VERSION="bbe3bcfbdf9cbf3965567769e9b853b9db2860d1"
 TEST_COLLECTOR_PLUGIN_VERSION="1.11.0"
 
 export IMAGE_ID="xcode-$XCODE_VERSION"
@@ -24,7 +25,7 @@ export CLAUDE_PLUGIN="iangmaia/claude-summarize#ce99c67dd57cdf236c3daca82b86a335
 # One variable per job type: `false` runs the step, anything else is the reason to skip it. The pipeline uses them as `skip: "$SKIP_…"`.
 # Only where `pr_changed_files` (from the a8c-ci-toolkit plugin) is available, like the pipeline upload step: other steps that source this file don't need them.
 if command -v pr_changed_files >/dev/null 2>&1; then
-    for job_type in build validation localization; do
+    for job_type in build prototype-build validation localization; do
         skip_var="SKIP_$(echo "$job_type" | tr 'a-z-' 'A-Z_')"
         export "$skip_var=$("$SCRIPT_DIR/commands/should-skip-job.sh" --job-type "$job_type")"
         echo "$skip_var=${!skip_var}"

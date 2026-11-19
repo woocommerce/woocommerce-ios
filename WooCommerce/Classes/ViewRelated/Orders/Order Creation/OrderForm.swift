@@ -12,9 +12,9 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
     private let hardwareBarcodeScanner: HardwareBarcodeScanner
     private var hardwareBarcodeScannerToken: HardwareBarcodeScanner.ListenerToken?
 
-    init(viewModel: EditableOrderViewModel, hardwareBarcodeScanner: HardwareBarcodeScanner = .shared) {
+    init(viewModel: EditableOrderViewModel, hardwareBarcodeScanner: HardwareBarcodeScanner? = nil) {
         self.viewModel = viewModel
-        self.hardwareBarcodeScanner = hardwareBarcodeScanner
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         let flow: WooAnalyticsEvent.Orders.Flow = {
             switch viewModel.flow {
                 case .creation:

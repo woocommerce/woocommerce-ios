@@ -127,6 +127,36 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
     }
 
     @MainActor
+    func test_findProduct_when_hardware_scanner_sends_UPC_E_then_it_tries_without_check_digit_and_returns_product() async {
+        // Given
+        let returningProduct = Product.fake()
+        let productSKU = "0425261"
+        let scannedBarcode = ScannedBarcode(hardwareScannerInput: productSKU + "4")
+
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
+                if givenSKU == productSKU {
+                    onCompletion(.success((.product(returningProduct), .SKU)))
+                } else {
+                    onCompletion(.failure(ProductLoadError.notFound))
+                }
+            default:
+                break
+            }
+        })
+
+        // When
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
+
+        // Then
+        guard case let .product(retrievedProduct) = result else {
+            return XCTFail("It didn't provide a product as expected")
+        }
+        XCTAssertEqual(retrievedProduct, returningProduct)
+    }
+
+    @MainActor
     func test_findProduct_when_barcode_is_ean13_and_has_country_code_retries_without_it_and_without_check_digit_and_returns_product() async {
         let returningProduct = Product.fake()
         let productSKU = "72527273070"

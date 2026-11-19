@@ -26,12 +26,12 @@ final class HardwareBarcodeScannerInfoViewModel {
 
     init(source: WooAnalyticsEvent.BarcodeScanning.Source,
          analytics: Analytics = ServiceLocator.analytics,
-         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared,
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil,
          sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
          onDismiss: @escaping () -> Void) {
         self.source = source
         self.analytics = analytics
-        self.hardwareBarcodeScanner = hardwareBarcodeScanner
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.sleep = sleep
         self.onDismiss = onDismiss
     }

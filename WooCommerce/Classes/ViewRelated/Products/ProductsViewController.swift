@@ -208,9 +208,9 @@ final class ProductsViewController: UIViewController {
          selectedProduct: AnyPublisher<Product?, Never>,
          navigateToContent: @escaping (NavigationContentType) -> Void,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared) {
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil) {
         self.siteID = siteID
-        self.hardwareBarcodeScanner = hardwareBarcodeScanner
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.providedResultsController = resultsController
         self.pushNotesManager = pushNotesManager
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)

@@ -96,14 +96,14 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared,
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil,
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
-        self.hardwareBarcodeScanner = hardwareBarcodeScanner
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 

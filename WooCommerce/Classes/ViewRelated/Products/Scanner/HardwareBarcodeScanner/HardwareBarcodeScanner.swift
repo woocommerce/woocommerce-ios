@@ -29,14 +29,14 @@ final class HardwareBarcodeScanner {
 
     private let analytics: Analytics
     private let noticePresenter: () -> NoticePresenter
-    private let isTextInputActive: () -> Bool
+    private let isTextInputActive: @MainActor () -> Bool
     private let makeObserver: ObserverFactory
     private var listeners: [Listener] = []
     private var observer: AnyObject?
 
     init(analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: @escaping () -> NoticePresenter = { ServiceLocator.noticePresenter },
-         isTextInputActive: @escaping () -> Bool = { UIResponder.isTextInputFirstResponder },
+         isTextInputActive: @escaping @MainActor () -> Bool = { UIResponder.isTextInputFirstResponder },
          makeObserver: @escaping ObserverFactory = HardwareBarcodeScanner.makeGameControllerObserver) {
         self.analytics = analytics
         self.noticePresenter = noticePresenter
@@ -140,7 +140,13 @@ extension ScannedBarcode {
 
     private static func symbology(forHardwareScannerInput barcode: String) -> BarcodeSymbology {
         let digits = barcode.compactMap { $0.wholeNumberValue }
-        guard digits.count == barcode.count, hasValidGS1CheckDigit(digits) else {
+        guard digits.count == barcode.count else {
+            return .code128
+        }
+        if isUPCE(digits) {
+            return .upce
+        }
+        guard hasValidGS1CheckDigit(digits) else {
             return .code128
         }
         switch digits.count {
@@ -160,6 +166,24 @@ extension ScannedBarcode {
             sum + element.element * (element.offset.isMultiple(of: 2) ? 3 : 1)
         }
         return (10 - weightedSum % 10) % 10 == checkDigit
+    }
+
+    /// A UPC-E check digit belongs to the expanded UPC-A code, so it's validated after expansion.
+    private static func isUPCE(_ digits: [Int]) -> Bool {
+        guard digits.count == 8, digits[0] <= 1 else { return false }
+        let payload = Array(digits[1...6])
+        let manufacturerAndProduct: [Int]
+        switch payload[5] {
+        case 0...2:
+            manufacturerAndProduct = payload[0...1] + [payload[5], 0, 0, 0, 0] + payload[2...4]
+        case 3:
+            manufacturerAndProduct = payload[0...2] + [0, 0, 0, 0, 0] + payload[3...4]
+        case 4:
+            manufacturerAndProduct = payload[0...3] + [0, 0, 0, 0, 0] + [payload[4]]
+        default:
+            manufacturerAndProduct = payload[0...4] + [0, 0, 0, 0] + [payload[5]]
+        }
+        return hasValidGS1CheckDigit([digits[0]] + manufacturerAndProduct + [digits[7]])
     }
 }
 

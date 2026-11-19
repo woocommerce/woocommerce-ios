@@ -56,6 +56,7 @@ final class POSPaymentStartGate {
     }
 
     /// The observation callback can still fire after the wait ended because nothing was pending.
+    @MainActor
     private final class Waiter {
         private var continuation: CheckedContinuation<Bool, Never>?
 

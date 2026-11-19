@@ -116,10 +116,11 @@ enum SiteCredentialLoginError: LocalizedError {
             return presentationError.offersBrowserAlternative(at: stage)
         case .invalidCredentials, .invalidLoginResponse, .loginFailed:
             return true
+        case .unacceptableStatusCode(let code):
+            return code == 401
         case .basicAuthenticationRequired,
              .inaccessibleLoginPage,
              .inaccessibleAdminPage,
-             .unacceptableStatusCode,
              .genericFailure:
             return false
         }

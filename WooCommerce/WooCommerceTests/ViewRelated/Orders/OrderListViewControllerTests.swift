@@ -40,6 +40,96 @@ struct OrderListViewControllerTests {
         let header = viewController.tableView(viewController.tableView, viewForHeaderInSection: 0)
         #expect((header is StoreOrderListSectionHeaderView) == usesStoreDesignSystem)
         #expect((header is TwoColumnSectionHeaderView) != usesStoreDesignSystem)
+        #expect((viewController.tableView.tableHeaderView is StoreOrderListHeaderView) == false)
+        #expect((viewController.storeHeaderView.state != nil) == usesStoreDesignSystem)
+    }
+
+    @Test
+    func test_store_header_when_filters_timestamp_and_banner_change_then_updates_state() throws {
+        // Given
+        let originalSyncDate = OrderListSyncBackgroundTask.latestSyncDate
+        defer { OrderListSyncBackgroundTask.latestSyncDate = originalSyncDate }
+        let syncDate = Date(timeIntervalSinceReferenceDate: 700_000_000)
+        OrderListSyncBackgroundTask.latestSyncDate = syncDate
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: MockStorageManager(),
+                                           filters: nil)
+        let viewController = OrderListViewController(siteID: siteID,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     usesStoreDesignSystem: true,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { _, _, _, _ in })
+        viewController.loadViewIfNeeded()
+        let header = viewController.storeHeaderView
+        let dateFormatter = syncDate.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        let expectedLastUpdatedText = OrderListLocalization.lastUpdatedText(time: dateFormatter.string(from: syncDate))
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: .pointOfSale,
+                                                       numberOfActiveFilters: 2)
+
+        // When: filters change
+        viewController.updateFilters(filters)
+
+        // Then: filter and timestamp content are refreshed in the existing hosted header
+        #expect(viewModel.filters == filters)
+        #expect(header.state?.activeFilterCount == 2)
+        #expect(header.state?.title == OrderListLocalization.filteredOrdersHeaderTitle)
+        #expect(header.state?.filterButtonTitle == OrderListLocalization.filterButtonTitle(activeFilterCount: 2))
+        #expect(header.state?.lastUpdatedText == expectedLastUpdatedText)
+
+        // When: an error banner appears
+        viewModel.dataLoadingError = URLError(.notConnectedToInternet)
+
+        // Then: the same header reflects the banner state
+        let banner = try #require(header.state?.banner)
+        guard case let .error(title, message) = banner else {
+            Issue.record("Expected an error notice in the hosted order-list header")
+            return
+        }
+        let expectedError = ErrorTopBannerFactory.ErrorType(error: URLError(.notConnectedToInternet))
+        #expect(title == expectedError.title)
+        #expect(message == expectedError.info)
+    }
+
+    @Test
+    func test_store_error_banner_when_toggled_then_collapses_and_expands() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = OrderListViewModel(siteID: 123,
+                                           stores: stores,
+                                           storageManager: MockStorageManager(),
+                                           filters: nil)
+        let viewController = OrderListViewController(siteID: 123,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     usesStoreDesignSystem: true,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { _, _, _, _ in })
+        viewController.loadViewIfNeeded()
+        viewModel.dataLoadingError = URLError(.notConnectedToInternet)
+
+        // When: the banner is tapped
+        viewController.toggleStoreBannerExpansion()
+
+        // Then: the banner is collapsed
+        #expect(viewController.storeHeaderView.state?.isBannerExpanded == false)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityValue == OrderListLocalization.collapsedAccessibilityValue)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityHint == OrderListLocalization.expandAccessibilityHint)
+
+        // When: the banner is tapped again
+        viewController.toggleStoreBannerExpansion()
+
+        // Then: the banner is expanded
+        #expect(viewController.storeHeaderView.state?.isBannerExpanded == true)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityValue == OrderListLocalization.expandedAccessibilityValue)
+        #expect(viewController.storeHeaderView.state?.bannerAccessibilityHint == OrderListLocalization.collapseAccessibilityHint)
     }
 
     @Test
@@ -246,7 +336,15 @@ struct OrderListViewControllerTests {
 
         // Then: the error and empty content belong to that table
         #expect(failedSyncSucceeded == false)
-        #expect(tableView.tableHeaderView?.subviews.contains { $0 is TopBannerView } == true)
+        if usesStoreDesignSystem {
+            let banner = try #require(viewController.storeHeaderView.state?.banner)
+            guard case .error = banner else {
+                Issue.record("Expected an error notice in the hosted order-list header")
+                return
+            }
+        } else {
+            #expect(tableView.tableHeaderView?.subviews.contains { $0 is TopBannerView } == true)
+        }
         #expect((tableView.tableFooterView is StoreOrderListFooterView) == usesStoreDesignSystem)
         #expect((tableView.tableFooterView is ListEmptyView) != usesStoreDesignSystem)
         #expect(viewController.children.isEmpty)

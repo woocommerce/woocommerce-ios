@@ -7,6 +7,8 @@ public struct StoreNoticeBanner: View {
     private let icon: StoreIconImage?
     private let actionTitle: String?
     private let action: (() -> Void)?
+    private let prominentActionTitle: String?
+    private let prominentAction: (() -> Void)?
     private let dismissAccessibilityLabel: String?
     private let onDismiss: (() -> Void)?
     private let accessibility: StoreNoticeBannerAccessibility
@@ -17,6 +19,8 @@ public struct StoreNoticeBanner: View {
                 icon: StoreIconImage? = nil,
                 actionTitle: String? = nil,
                 action: (() -> Void)? = nil,
+                prominentActionTitle: String? = nil,
+                prominentAction: (() -> Void)? = nil,
                 dismissAccessibilityLabel: String? = nil,
                 onDismiss: (() -> Void)? = nil,
                 accessibilityStatus: String? = nil) {
@@ -26,12 +30,14 @@ public struct StoreNoticeBanner: View {
         self.icon = icon
         self.actionTitle = actionTitle
         self.action = action
+        self.prominentActionTitle = prominentActionTitle
+        self.prominentAction = prominentAction
         self.dismissAccessibilityLabel = dismissAccessibilityLabel
         self.onDismiss = onDismiss
         self.accessibility = StoreNoticeBannerAccessibility(title: title,
                                                             description: description,
                                                             status: accessibilityStatus,
-                                                            hasControls: action != nil || onDismiss != nil)
+                                                            hasControls: action != nil || prominentAction != nil || onDismiss != nil)
     }
 
     public var body: some View {
@@ -41,21 +47,24 @@ public struct StoreNoticeBanner: View {
             VStack(alignment: .leading, spacing: StoreSpacing.s4) {
                 // One element that doesn't overlap the buttons, so VoiceOver touch focus can still reach them.
                 VStack(alignment: .leading, spacing: StoreSpacing.s4) {
-                    Text(title).storeTextStyle(.bodyMedium.emphasized)
+                    Text(title)
+                        .storeTextStyle(.bodyMedium.emphasized)
+                        .fixedSize(horizontal: false, vertical: true)
                     if let description {
-                        Text(description).storeTextStyle(.bodyMedium)
+                        Text(description)
+                            .storeTextStyle(.bodyMedium)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(accessibility.label)
                 .accessibilityValue(accessibility.status ?? "")
-                if let actionTitle, let action {
-                    Button(actionTitle, action: action)
-                        .buttonStyle(.plain)
-                        .storeTextStyle(.bodyMedium.emphasized)
-                        .underline()
-                }
+                StoreNoticeBannerActions(actionTitle: actionTitle,
+                                         action: action,
+                                         prominentActionTitle: prominentActionTitle,
+                                         prominentAction: prominentAction,
+                                         tone: tone)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             if let onDismiss {

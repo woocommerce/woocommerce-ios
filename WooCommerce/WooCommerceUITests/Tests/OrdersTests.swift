@@ -33,6 +33,21 @@ final class OrdersTests: XCTestCase {
             .verifyOrdersScreenLoaded()
     }
 
+    func test_order_list_header_remains_visible_when_scrolling() throws {
+        // Given
+        try TabNavComponent().goToOrdersScreen()
+            .verifyOrdersScreenLoaded()
+        let app = XCUIApplication()
+        let tableView = app.tables["orders-table-view"]
+        let filterButton = app.buttons["orders-filter-button"]
+
+        // When
+        tableView.swipeUp()
+
+        // Then
+        XCTAssertTrue(filterButton.isHittable, "The order-list header should remain fixed above the scrolling table.")
+    }
+
     func test_create_new_order() throws {
         /// Tracked in WOOMOB-1904
         /// Temporarily skipping until resolved

@@ -188,6 +188,7 @@ steps:
     skip: "$SKIP_VALIDATION"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    # No `even-if-skipped`: the upload step can't evaluate `if:`, so it would report this status on PRs where the step doesn't run.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
@@ -202,7 +203,6 @@ steps:
     notify:
       - github_commit_status:
           context: UI Tests (iPhone)
-        even-if-skipped: true
 
   - label: ":microscope: UI Tests (iPad)"
     key: ui-tests-ipad
@@ -210,6 +210,7 @@ steps:
     skip: "$SKIP_VALIDATION"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    # No `even-if-skipped`: the upload step can't evaluate `if:`, so it would report this status on PRs where the step doesn't run.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
@@ -224,7 +225,6 @@ steps:
     notify:
       - github_commit_status:
           context: UI Tests (iPad)
-        even-if-skipped: true
 
   #################
   # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the steps it depends on

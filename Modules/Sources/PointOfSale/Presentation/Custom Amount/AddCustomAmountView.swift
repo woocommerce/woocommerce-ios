@@ -48,7 +48,7 @@ struct AddCustomAmountView: View {
                     .background(Color.posSurfaceContainerLowest)
                     .posItemCardBorderStyles()
                 }
-                .padding(.horizontal, metrics.padding.xLarge)
+                .padding(.horizontal, metrics.padding.medium)
                 .padding(.bottom, metrics.padding.small)
             }
 
@@ -60,7 +60,7 @@ struct AddCustomAmountView: View {
             .disabled(!viewModel.isAddEnabled || hasSubmitted)
             .allowsHitTesting(isReadyToSubmit)
             .accessibilityIdentifier("pos-add-custom-amount-submit-button")
-            .padding(metrics.padding.xLarge)
+            .padding(metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .posIgnoresHiddenKeyboardSafeArea()

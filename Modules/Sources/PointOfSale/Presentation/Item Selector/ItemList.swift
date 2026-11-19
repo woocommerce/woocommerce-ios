@@ -23,16 +23,20 @@ struct ItemList<HeaderView: View>: View {
     private let node: ItemListBaseItem
     private let headerView: HeaderView
     private let itemActionHandler: POSItemActionHandler
+    private let onItemSelected: (() -> Void)?
     private let willLoadMore: (() -> Void)?
 
+    /// - Parameter onItemSelected: Called when a tap adds an item to the cart or removes it, before the tap is handled.
     init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
          itemActionHandler: POSItemActionHandler,
+         onItemSelected: (() -> Void)? = nil,
          willLoadMore: (() -> Void)? = nil,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.itemsController = itemsController
         self.node = node
         self.itemActionHandler = itemActionHandler
+        self.onItemSelected = onItemSelected
         self.willLoadMore = willLoadMore
         self.headerView = headerView()
     }
@@ -55,7 +59,7 @@ struct ItemList<HeaderView: View>: View {
 
                     if let state {
                         ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
-                            ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler)
+                            ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler, onItemSelected: onItemSelected)
                         }
                     }
 
@@ -106,6 +110,7 @@ struct ItemListRow: View {
     let item: POSItem
     let position: Int
     let itemActionHandler: POSItemActionHandler
+    var onItemSelected: (() -> Void)?
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posLayoutScale) private var layoutScale
@@ -114,6 +119,7 @@ struct ItemListRow: View {
         switch item {
         case let .simpleProduct(product):
             Button(action: {
+                onItemSelected?()
                 itemActionHandler.handleTap(item, position: position)
             }, label: {
                 SimpleProductCardView(product: product)
@@ -127,10 +133,11 @@ struct ItemListRow: View {
             }
             .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
             .simultaneousGesture(TapGesture().onEnded {
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                UIApplication.shared.posDismissKeyboard()
             })
         case let .variation(variation):
             Button(action: {
+                onItemSelected?()
                 itemActionHandler.handleTap(item, position: position)
             }, label: {
                 VariationCardView(variation: variation)
@@ -138,6 +145,7 @@ struct ItemListRow: View {
             .accessibilityIdentifier("pos-variation-card-\(variation.productVariationID)")
         case let .searchResultVariation(variation, parentProduct):
             Button(action: {
+                onItemSelected?()
                 itemActionHandler.handleTap(item, position: position)
             }, label: {
                 SearchResultVariationCardView(variation: variation, parentProduct: parentProduct)
@@ -147,8 +155,10 @@ struct ItemListRow: View {
             Button(action: {
                 // Only compact layouts show the applied state on the card, so only there a tap unselects it.
                 if isApplied(coupon) {
+                    onItemSelected?()
                     itemActionHandler.handleTapOnAppliedCoupon(item)
                 } else if !coupon.isExpired {
+                    onItemSelected?()
                     itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {

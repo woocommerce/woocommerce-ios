@@ -82,6 +82,7 @@ case "$job_type" in
     ;;
   "localization")
     # We should skip if NO localization files have changed. Errors run the job.
+    "${changed_files[@]}" || run_job
     localization_changed=$("${changed_files[@]}" --stdout --any-match "${LOCALIZATION_PATTERNS[@]}") || run_job
     [[ "$localization_changed" == false ]] || run_job
     echo "No localization files changed"

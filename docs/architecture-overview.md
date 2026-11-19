@@ -377,3 +377,5 @@ While we shouldn't avoid using the `ServiceLocator` on demand, dependencies shou
 - Dependencies will exist along the object's lifecycle
 - It guarantees that all necessary dependencies are available to our components at compile time
 - For dependencies that don't change, injecting them into the constructor enforces type safety ands avoid inconsistent behavior later at runtime
+
+<!-- CI probe: documentation-only change, do not merge. -->

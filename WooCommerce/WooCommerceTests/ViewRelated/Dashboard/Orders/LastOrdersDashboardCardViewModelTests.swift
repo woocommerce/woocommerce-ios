@@ -18,6 +18,13 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
 
+    private var application: MockApplicationAdapter!
+    private var notificationCenter: NotificationCenter!
+
+    private var orderFetchCount = 0
+    /// Orders returned by `mockFetchFilteredOrders()`.
+    private lazy var remoteOrders = sampleOrders
+
     /// View storage for tests
     private var storage: StorageType {
         storageManager.viewStorage
@@ -27,11 +34,25 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         super.setUp()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        application = MockApplicationAdapter()
+        application.applicationState = .active
+        notificationCenter = NotificationCenter()
     }
 
     override func tearDown() {
+        // Releases the view models so they don't react to notifications posted by later tests: their start-up task waits
+        // for the last selected status, answered only now so it can't replace a status a test selected, and some order
+        // handlers capture them.
+        stores.receivedActions.forEach { action in
+            if case let AppSettingsAction.loadLastSelectedOrderStatus(_, onCompletion) = action {
+                onCompletion(nil)
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { _ in }
         stores = nil
         storageManager = nil
+        application = nil
+        notificationCenter = nil
         super.tearDown()
     }
 
@@ -268,6 +289,301 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         }
         await viewModel.reloadData()
     }
+
+    @MainActor
+    func test_saving_shown_order_when_status_changes_then_shows_reloaded_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        let completedOrder = sampleOrders[0].copy(status: .completed)
+        remoteOrders = [completedOrder] + sampleOrders.dropFirst()
+        await saveOrder(completedOrder)
+
+        // Then
+        try await waitUntilOnMainActor { viewModel.rows.first?.order.status == .completed }
+    }
+
+    @MainActor
+    func test_saving_shown_order_when_billing_name_changes_then_shows_reloaded_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        let renamedOrder = sampleOrders[0].copy(billingAddress: Address.fake().copy(firstName: "Alma", lastName: "Reyes"))
+        remoteOrders = [renamedOrder] + sampleOrders.dropFirst()
+        await saveOrder(renamedOrder)
+
+        // Then
+        try await waitUntilOnMainActor { viewModel.rows.first?.customerName == renamedOrder.billingAddress?.fullName }
+    }
+
+    @MainActor
+    func test_saving_shown_order_when_displayed_details_are_unchanged_then_does_not_reload_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        await saveOrder(sampleOrders[0].copy(customerNote: "Leave at the door"))
+        try await Task.sleep(for: .milliseconds(500)) // Longer than the reload debounce
+
+        // Then
+        XCTAssertEqual(orderFetchCount, 1)
+    }
+
+    @MainActor
+    func test_ordersBadgeReloadRequired_when_card_has_loaded_then_reloads_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
+
+        // Then
+        try await waitUntilOnMainActor { self.orderFetchCount == 2 }
+    }
+
+    @MainActor
+    func test_ordersBadgeReloadRequired_when_card_has_not_loaded_then_does_not_fetch_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+
+        // When
+        notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
+        try await Task.sleep(for: .milliseconds(500)) // Longer than the reload debounce
+
+        // Then
+        withExtendedLifetime(viewModel) {
+            XCTAssertEqual(orderFetchCount, 0)
+        }
+    }
+
+    @MainActor
+    func test_ordersBadgeReloadRequired_when_app_is_in_background_then_reloads_orders_once_app_is_active() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+        application.applicationState = .background
+
+        // When
+        notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
+        try await Task.sleep(for: .milliseconds(500)) // Longer than the reload debounce
+        // Handled after the app went back to the background.
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        try await Task.sleep(for: .milliseconds(300))
+        let fetchCountInBackground = orderFetchCount
+        application.applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(fetchCountInBackground, 1)
+        try await waitUntilOnMainActor { self.orderFetchCount == 2 }
+    }
+
+    @MainActor
+    func test_didBecomeActive_when_no_orders_changed_in_background_then_does_not_reload_orders() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        try await Task.sleep(for: .milliseconds(300))
+
+        // Then
+        XCTAssertEqual(orderFetchCount, 1)
+    }
+
+    @MainActor
+    func test_ordersBadgeReloadRequired_when_refreshing_then_keeps_current_rows_on_screen() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        var completeRefresh: ((TimeInterval, Result<[Order], Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion) = action else {
+                return
+            }
+            self.orderFetchCount += 1
+            if self.orderFetchCount == 1 {
+                completion(1, .success(self.sampleOrders))
+            } else {
+                completeRefresh = completion
+            }
+        }
+        mockOrderStatuses()
+        await viewModel.reloadData()
+
+        // When
+        notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
+        try await waitUntilOnMainActor { completeRefresh != nil }
+        let finishRefresh = try XCTUnwrap(completeRefresh)
+        let rowsDuringRefresh = viewModel.rows.map(\.id)
+        let syncingDataDuringRefresh = viewModel.syncingData
+        let completedOrder = sampleOrders[0].copy(status: .completed)
+        finishRefresh(1, .success([completedOrder] + sampleOrders.dropFirst()))
+
+        // Then
+        XCTAssertEqual(rowsDuringRefresh, sampleOrders.map(\.orderID))
+        XCTAssertFalse(syncingDataDuringRefresh)
+        try await waitUntilOnMainActor { viewModel.rows.first?.order.status == .completed }
+    }
+
+    @MainActor
+    func test_ordersBadgeReloadRequired_when_last_load_failed_then_shows_orders_without_error() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         application: application,
+                                                         notificationCenter: notificationCenter)
+        var fetchResult: Result<[Order], Error> = .failure(NSError(domain: "test", code: 500))
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion) = action {
+                completion(1, fetchResult)
+            }
+        }
+        mockOrderStatuses()
+        await viewModel.reloadData()
+        XCTAssertNotNil(viewModel.syncingError)
+        fetchResult = .success(sampleOrders)
+
+        // When
+        notificationCenter.post(name: .ordersBadgeReloadRequired, object: nil)
+
+        // Then
+        try await waitUntilOnMainActor { viewModel.syncingError == nil && viewModel.rows.count == self.sampleOrders.count }
+    }
+
+    @MainActor
+    func test_reloadData_when_earlier_reload_finishes_last_then_shows_orders_of_latest_reload() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let completedOrder = sampleOrders[1]
+        var completeFirstFetch: ((TimeInterval, Result<[Order], Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(_, statuses, _, _, _, _, _, _, _, _, completion) = action else {
+                return
+            }
+            if statuses == [OrderStatusEnum.completed.rawValue] {
+                completion(1, .success([completedOrder]))
+            } else {
+                completeFirstFetch = completion
+            }
+        }
+        mockOrderStatuses()
+        let firstReload = Task {
+            await viewModel.reloadData()
+        }
+        try await waitUntilOnMainActor { completeFirstFetch != nil }
+        let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
+
+        // When
+        await viewModel.updateOrderStatus(.completed)
+        finishFirstFetch(1, .success(sampleOrders))
+        await firstReload.value
+
+        // Then
+        XCTAssertEqual(viewModel.rows.map(\.id), [completedOrder.orderID])
+        XCTAssertFalse(viewModel.syncingData)
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0.hasPrefix("dynamic_dashboard_card_data_loading") },
+                       ["dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_completed",
+                        "dynamic_dashboard_card_data_loading_completed"])
+    }
+
+    @MainActor
+    func test_reloadData_when_earlier_reload_fails_last_then_shows_orders_of_latest_reload_without_error() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let completedOrder = sampleOrders[1]
+        var completeFirstFetch: ((TimeInterval, Result<[Order], Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(_, statuses, _, _, _, _, _, _, _, _, completion) = action else {
+                return
+            }
+            if statuses == [OrderStatusEnum.completed.rawValue] {
+                completion(1, .success([completedOrder]))
+            } else {
+                completeFirstFetch = completion
+            }
+        }
+        mockOrderStatuses()
+        let firstReload = Task {
+            await viewModel.reloadData()
+        }
+        try await waitUntilOnMainActor { completeFirstFetch != nil }
+        let finishFirstFetch = try XCTUnwrap(completeFirstFetch)
+
+        // When
+        await viewModel.updateOrderStatus(.completed)
+        finishFirstFetch(1, .failure(NSError(domain: "test", code: 500)))
+        await firstReload.value
+
+        // Then
+        XCTAssertNil(viewModel.syncingError)
+        XCTAssertEqual(viewModel.rows.map(\.id), [completedOrder.orderID])
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0.hasPrefix("dynamic_dashboard_card_data_loading") },
+                       ["dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_started",
+                        "dynamic_dashboard_card_data_loading_completed",
+                        "dynamic_dashboard_card_data_loading_failed"])
+    }
 }
 
 private extension LastOrdersDashboardCardViewModelTests {
@@ -283,7 +599,8 @@ private extension LastOrdersDashboardCardViewModelTests {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(1, .success(self.sampleOrders))
+                self.orderFetchCount += 1
+                completion(1, .success(self.remoteOrders))
             default:
                 break
             }
@@ -298,6 +615,31 @@ private extension LastOrdersDashboardCardViewModelTests {
             default:
                 break
             }
+        }
+    }
+
+    /// Checks `condition` on the main actor, like the tests and the view model. TestKit's `until` checks it outside the main
+    /// actor, which sends the test case and the closure across actors.
+    @MainActor
+    func waitUntilOnMainActor(timeout: Duration = .seconds(5), _ condition: () -> Bool) async throws {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() {
+            guard ContinuousClock.now < deadline else {
+                return XCTFail("The condition wasn't met within \(timeout)")
+            }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+    }
+
+    @MainActor
+    func saveOrder(_ order: Order) async {
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+                storageOrder.update(with: order)
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

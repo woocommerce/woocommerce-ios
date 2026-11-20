@@ -18,6 +18,7 @@ RUNNER=~/Developer/git-worktrees/wcios/self-heal-runner
 CRASHES="$SELF_HEAL/Scripts/sentry-crashes"
 CLAIMS="$SELF_HEAL/Scripts/claim-check"
 CAP="$SELF_HEAL/Scripts/cap"
+SYNC="$SELF_HEAL/Scripts/trunk-sync"
 LOG=~/.self-heal/runs.log
 ```
 
@@ -70,6 +71,18 @@ For each PR with a finished Buildkite build on its head commit:
 - Fix PR, build failed → fix it on the branch.
 
 Soft-failed steps count only if the PR caused them: compare with the same step on the latest trunk build, by total and by file.
+
+Then keep every open PR on trunk, so its test and fix stay valid against today's code.
+Run `$SYNC $RUNNER` and, for each `sync` line:
+
+1. Merge trunk in with `gh pr update-branch <n>`. Never rebase or force-push.
+   On `conflict` that fails: in `$RUNNER`, switch to the branch, `git merge origin/trunk`, resolve it keeping both trunk's change and the PR's intent, run the affected tests, and push.
+2. On `overlap` or `conflict` for a fix PR, check the test still proves the crash: in `$RUNNER`, on the merged branch, undo the fix but not the test (`git revert --no-commit` the fix commits) and run the test.
+   - It fails for the crash's reason: the proof holds. Restore the branch (`git revert --abort`).
+   - It passes: trunk fixed the crash itself. Find the trunk commit, comment it on the PR and the issue, close both, and log `fixed-on-trunk`.
+   - It fails for another reason, or no longer compiles: rewrite the test so it reproduces the crash on today's code, confirm it red with the fix undone and green with it, and push.
+3. Log `sync #<n> <reason>`. The merge starts a new Buildkite build, which a later run reads by the rules above: a validation PR must still go red on its test, a fix PR must still go green.
+   A validation PR whose test passes after a sync goes through the trunk check in step 2 before it counts as a wrong proof.
 
 Then answer the conversation on every open self-heal PR and issue, including bot comments such as Danger's, which are edited in place:
 

@@ -10,6 +10,7 @@ struct POSTotalsSectionView: View {
     let sectionTitle: String
     let subtotalLabel: String
     let subtotalAmount: String
+    var customAmountsAmount: String? = nil
     let discountAmount: String?
     let taxAmount: String
     let totalAmount: String
@@ -30,6 +31,10 @@ struct POSTotalsSectionView: View {
 
             VStack(spacing: metrics.spacing.small) {
                 totalsRow(title: subtotalLabel, amount: subtotalAmount)
+
+                if let customAmountsAmount {
+                    totalsRow(title: TotalsView.SharedLocalization.customAmountsTotal, amount: customAmountsAmount)
+                }
 
                 totalsRow(title: Localization.taxesLabel, amount: taxAmount)
 

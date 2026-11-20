@@ -48,7 +48,7 @@ struct AddCustomAmountView: View {
                     .background(Color.posSurfaceContainerLowest)
                     .posItemCardBorderStyles()
                 }
-                .padding(.horizontal, metrics.padding.xLarge)
+                .padding(.horizontal, metrics.padding.medium)
                 .padding(.bottom, metrics.padding.small)
             }
 
@@ -60,7 +60,7 @@ struct AddCustomAmountView: View {
             .disabled(!viewModel.isAddEnabled || hasSubmitted)
             .allowsHitTesting(isReadyToSubmit)
             .accessibilityIdentifier("pos-add-custom-amount-submit-button")
-            .padding(metrics.padding.xLarge)
+            .padding(metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .posIgnoresHiddenKeyboardSafeArea()
@@ -81,7 +81,7 @@ struct AddCustomAmountView: View {
     private func detailCard(label: String, value: String, isPlaceholder: Bool,
                             accessibilityLabel: String, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: metrics.spacing.medium) {
+            HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.medium) {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: metrics.spacing.medium) {
                         cardLabel(label)
@@ -95,8 +95,8 @@ struct AddCustomAmountView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Image(systemName: "square.and.pencil")
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .accessibilityHidden(true)
             }
             .padding(metrics.padding.xLarge)

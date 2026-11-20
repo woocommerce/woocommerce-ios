@@ -703,8 +703,9 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             case .unexpectedResponse(let failure) where failure.kind == .unexpectedContent && endpointUnderVerification == .admin &&
                 loginEntryVerified && failure.step == .dashboardVerification:
                 _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL, draftURL: normalizedAdminURL, error: .notFound))
-            case .unexpectedResponse:
-                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, false)
+            case .unexpectedResponse(let failure):
+                let offersBrowserRecovery = failure.statusCode == 401 && offersBrowserAlternative
+                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, offersBrowserRecovery)
                 trackSiteCredentialLoginFailure(error)
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
@@ -747,7 +748,8 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
                                            for siteURL: String,
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
-        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
+        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError,
+           offersBrowserAlternative == false {
             unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
             return
         }

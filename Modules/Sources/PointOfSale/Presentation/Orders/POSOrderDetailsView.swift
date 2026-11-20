@@ -113,6 +113,7 @@ struct POSOrderDetailsView: View {
                         sectionTitle: Localization.totalsTitle,
                         subtotalLabel: Localization.itemsLabel,
                         subtotalAmount: order.formattedSubtotal,
+                        customAmountsAmount: order.formattedCustomAmountsTotal,
                         discountAmount: order.formattedDiscountTotal,
                         taxAmount: order.formattedTotalTax,
                         totalAmount: order.formattedTotal,

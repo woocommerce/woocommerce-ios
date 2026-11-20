@@ -4,6 +4,7 @@ import Yosemite
 /// Protocol for configuring a list selector with different entity types.
 /// Provides all necessary configuration for fetching, displaying, and syncing list items.
 protocol ListSyncable {
+    typealias Completion = @MainActor @Sendable (Result<Bool, Error>) -> Void
     associatedtype StorageType: ResultsControllerMutableType
     associatedtype ModelType: Equatable, Hashable where ModelType == StorageType.ReadOnlyType
     associatedtype ListFilterType: FilterType, Equatable
@@ -25,10 +26,10 @@ protocol ListSyncable {
     // MARK: - Sync Configuration
 
     /// Creates the action to sync items from remote
-    func createSyncAction(pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action
+    func createSyncAction(pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action
 
     /// Creates the action to search items with keyword
-    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action
 
     /// Creates the predicate for filtering search results
     /// - Parameter keyword: The search keyword

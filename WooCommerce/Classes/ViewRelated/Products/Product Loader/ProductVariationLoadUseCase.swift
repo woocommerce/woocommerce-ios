@@ -24,6 +24,7 @@ final class ProductVariationLoadUseCase {
     ///   - productID: variation's parent product ID.
     ///   - variationID: variation ID.
     ///   - onCompletion: called when loading for `ProductVariation` and its parent `Product` completes.
+    @MainActor
     func loadProductVariation(productID: Int64, variationID: Int64, onCompletion: @escaping Completion) {
         let group = DispatchGroup()
 

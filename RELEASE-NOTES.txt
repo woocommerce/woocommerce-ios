@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Login: Site-credential login now completes only once if Retry is tapped again while sign-in is still in progress. [https://github.com/woocommerce/woocommerce-ios/pull/18429]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]

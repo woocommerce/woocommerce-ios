@@ -298,12 +298,15 @@ private extension Analytics {
         guard let error else {
             return nil
         }
+        let dotcomError = error as? DotcomError
+        // The NSError bridge would use `DotcomError.debugDescription`, which adds the raw code.
+        // That code has its own property, so keep the description value as it was.
         var properties: [AnyHashable: Any] = [
             Constants.errorKeyCode: error.errorCode.description,
             Constants.errorKeyDomain: error.errorDomain,
-            Constants.errorKeyDescription: (error as NSError).description
+            Constants.errorKeyDescription: dotcomError?.description ?? (error as NSError).description
         ]
-        if let rawCode = (error as? DotcomError)?.rawCode {
+        if let rawCode = dotcomError?.rawCode {
             properties[Constants.errorKeyRawCode] = rawCode
         }
         return properties

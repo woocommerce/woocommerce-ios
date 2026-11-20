@@ -194,6 +194,20 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(properties[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyCode] as? String, "5")
     }
 
+    func test_track_with_error_when_DotcomError_has_raw_code_then_description_omits_raw_code() throws {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "unknown_token")
+
+        // When
+        analytics.track(.applicationOpened, withError: error)
+
+        // Then
+        let properties = try XCTUnwrap(testingProvider?.receivedProperties.first)
+        let description = try XCTUnwrap(properties[Constants.testErrorDescriptionKey] as? String)
+        XCTAssertEqual(description, error.description)
+        XCTAssertFalse(description.contains("(code:"))
+    }
+
     func test_track_with_error_when_error_is_not_DotcomError_then_omits_raw_code() throws {
         // Given
         let error = NSError(domain: Constants.testErrorDomain, code: Constants.testErrorCode)

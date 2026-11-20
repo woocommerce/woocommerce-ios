@@ -2,66 +2,18 @@ import Foundation
 import Networking
 import Storage
 
-/// CouponStoreMethods extracts functionality of CouponStore that needs be reused within Yosemite
-/// CouponStoreMethods is intentionally internal not to be exposed outside the module
-///
+/// The coupon requests shared by the app store and the POS fetch strategies.
 internal protocol CouponStoreMethodsProtocol {
     nonisolated(nonsending) func synchronizeCoupons(siteID: Int64,
-                            pageNumber: Int,
-                            pageSize: Int) async throws -> Bool
-    func synchronizeCoupons(siteID: Int64,
-                            pageNumber: Int,
-                            pageSize: Int,
-                            onCompletion: @escaping (Result<Bool, any Error>) -> Void)
-
-    func deleteCoupon(siteID: Int64,
-                      couponID: Int64,
-                      onCompletion: @escaping (Result<Void, Error>) -> Void)
-
-    func updateCoupon(_ coupon: Coupon,
-                      siteTimezone: TimeZone?,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void)
-
-    func createCoupon(_ coupon: Coupon,
-                      siteTimezone: TimeZone?,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void)
-
-    func loadCouponReport(siteID: Int64,
-                          couponID: Int64,
-                          startDate: Date,
-                          onCompletion: @escaping (Result<CouponReport, Error>) -> Void)
-
-    func loadMostActiveCoupons(siteID: Int64,
-                               numberOfCouponsToLoad: Int,
-                               timeRange: StatsTimeRangeV4,
-                               siteTimezone: TimeZone,
-                               onCompletion: @escaping (Result<[CouponReport], Error>) -> Void)
-
+                                                   pageNumber: Int,
+                                                   pageSize: Int) async throws -> Bool
     nonisolated(nonsending) func searchCoupons(siteID: Int64,
-                       keyword: String,
-                       pageNumber: Int,
-                       pageSize: Int) async throws
-
-    func searchCoupons(siteID: Int64,
-                       keyword: String,
-                       pageNumber: Int,
-                       pageSize: Int,
-                       onCompletion: @escaping (Result<Void, any Error>) -> Void)
-
-    func retrieveCoupon(siteID: Int64,
-                        couponID: Int64,
-                        onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void)
-
-    func loadCoupons(siteID: Int64,
-                     couponIDs: [Int64],
-                     onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void)
-
-    func validateCouponCode(code: String,
-                           siteID: Int64,
-                           onCompletion: @escaping (Result<Bool, Error>) -> Void)
+                                               keyword: String,
+                                               pageNumber: Int,
+                                               pageSize: Int) async throws
 }
 
-internal class CouponStoreMethods: CouponStoreMethodsProtocol {
+internal final class CouponStoreMethods: CouponStoreMethodsProtocol, Sendable {
     private let remote: CouponsRemoteProtocol
     private let storageManager: StorageManagerType
 
@@ -84,8 +36,8 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - result: `hasNextPage: Bool` or `error: Error`
     ///
     nonisolated(nonsending) func synchronizeCoupons(siteID: Int64,
-                            pageNumber: Int,
-                            pageSize: Int) async throws -> Bool {
+                                                   pageNumber: Int,
+                                                   pageSize: Int) async throws -> Bool {
         let coupons = try await remote.loadAllCoupons(for: siteID,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize)
@@ -101,10 +53,11 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     }
 
 
+    @MainActor
     func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int,
-                            onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
+                            onCompletion: @escaping @MainActor @Sendable (Result<Bool, any Error>) -> Void) {
 
         Task { @MainActor in
             do {
@@ -125,7 +78,8 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - couponID: The ID of the coupon to be deleted.
     ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
     ///
-    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    @MainActor
+    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -153,9 +107,10 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
     ///
+    @MainActor
     func updateCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone? = nil,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+                      onCompletion: @escaping @MainActor @Sendable (Result<Coupon, Error>) -> Void) {
         remote.updateCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -176,9 +131,10 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.
     ///
+    @MainActor
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone? = nil,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+                      onCompletion: @escaping @MainActor @Sendable (Result<Coupon, Error>) -> Void) {
         remote.createCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -200,8 +156,9 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///     - startDate: the start of the date range to load the analytics report for.
     ///     - onCompletion: invoked when the creation finishes.
     ///
-    func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
-        remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
+    @MainActor
+    func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping @MainActor @Sendable (Result<CouponReport, Error>) -> Void) {
+        remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: { onCompletion($0) })
     }
 
     /// Loads top 3 most active coupons report within the specified time range and site ID.
@@ -212,18 +169,19 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     /// - `siteTimezone`: site's timezone
     /// - `onCompletion`: invoked when the reports are fetched.
     ///
+    @MainActor
     func loadMostActiveCoupons(siteID: Int64,
                                numberOfCouponsToLoad: Int,
                                timeRange: StatsTimeRangeV4,
                                siteTimezone: TimeZone,
-                               onCompletion: @escaping (Result<[CouponReport], Error>) -> Void) {
+                               onCompletion: @escaping @MainActor @Sendable (Result<[CouponReport], Error>) -> Void) {
         let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
         let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
         remote.loadMostActiveCoupons(for: siteID,
                                      numberOfCouponsToLoad: numberOfCouponsToLoad,
                                      from: from,
                                      to: to,
-                                     completion: onCompletion)
+                                     completion: { onCompletion($0) })
     }
 
     /// Search coupons from a Site that match a specified keyword.
@@ -237,13 +195,13 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///
     nonisolated(nonsending) func searchCoupons(siteID: Int64,
-                       keyword: String,
-                       pageNumber: Int,
-                       pageSize: Int) async throws {
-       let coupons = try await remote.searchCoupons(for: siteID,
-                             keyword: keyword,
-                             pageNumber: pageNumber,
-                             pageSize: pageSize)
+                                              keyword: String,
+                                              pageNumber: Int,
+                                              pageSize: Int) async throws {
+        let coupons = try await remote.searchCoupons(for: siteID,
+                                                     keyword: keyword,
+                                                     pageNumber: pageNumber,
+                                                     pageSize: pageSize)
 
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
             upsertSearchResultsInBackground(siteID: siteID,
@@ -254,11 +212,12 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
         }
     }
 
+    @MainActor
     func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
-                       onCompletion: @escaping (Result<Void, any Error>) -> Void) {
+                       onCompletion: @escaping @MainActor @Sendable (Result<Void, any Error>) -> Void) {
         Task { @MainActor in
             do {
                 try await searchCoupons(siteID: siteID,
@@ -280,9 +239,10 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - couponID: ID of the coupon to be retrieved.
     ///   - onCompletion: Closure to call upon completion. Called on the main thread.
     ///
+    @MainActor
     func retrieveCoupon(siteID: Int64,
                         couponID: Int64,
-                        onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void) {
+                        onCompletion: @escaping @MainActor @Sendable (_ result: Result<Coupon, Error>) -> Void) {
         remote.retrieveCoupon(for: siteID,
                               couponID: couponID) { [weak self] result in
             guard let self else { return }
@@ -302,9 +262,10 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     /// - `couponIDs`: IDs of the coupons to be retrieved.
     /// - `onCompletion`: invoked upon completion.
     ///
+    @MainActor
     func loadCoupons(siteID: Int64,
                      couponIDs: [Int64],
-                     onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
+                     onCompletion: @escaping @MainActor @Sendable (_ result: Result<[Coupon], Error>) -> Void) {
         remote.loadCoupons(for: siteID, by: couponIDs) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -318,16 +279,16 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
         }
     }
 
-    func validateCouponCode(code: String, siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        Task {
+    func validateCouponCode(code: String, siteID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
+        Task { [remote] in
             do {
                 let coupons = try await remote.searchCoupons(for: siteID,
                                                              keyword: code,
                                                              pageNumber: Remote.Default.firstPageNumber,
                                                              pageSize: 25)
-                onCompletion(.success(coupons.contains(where: { $0.code == code })))
+                await onCompletion(.success(coupons.contains(where: { $0.code == code })))
             } catch {
-                onCompletion(.failure(error))
+                await onCompletion(.failure(error))
             }
         }
     }
@@ -336,14 +297,22 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
 // MARK: - Persistence
 
 private extension CouponStoreMethods {
+    func performAndSaveOnMain(_ operation: @escaping @Sendable (StorageType) -> Void,
+                              completion: @escaping @MainActor @Sendable () -> Void) {
+        storageManager.performAndSave(operation, completion: {
+            // StorageManager delivers this completion on the queue specified below.
+            MainActor.assumeIsolated { completion() }
+        }, on: .main)
+    }
+
     /// Updates or Inserts specified Coupon Entities in a background thread
     /// `onCompletion` will be called on the main thread.
     ///
     func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
                                          siteID: Int64,
                                          shouldClearExistingCoupons: Bool = false,
-                                         onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
+                                         onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ [weak self] storage in
             guard let self else { return }
             if shouldClearExistingCoupons {
                 storage.deleteCoupons(siteID: siteID)
@@ -351,15 +320,15 @@ private extension CouponStoreMethods {
             upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
                                 in: storage,
                                 siteID: siteID)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Updates or Inserts the specified Coupon entities
     ///
-    func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
+    func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ storage in
             storage.deleteCoupon(siteID: siteID, couponID: couponID)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
@@ -383,12 +352,15 @@ private extension CouponStoreMethods {
 
     /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
     ///
-    func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
+    func upsertSearchResultsInBackground(siteID: Int64,
+                                         keyword: String,
+                                         readOnlyCoupons: [Networking.Coupon],
+                                         onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ [weak self] storage in
             guard let self else { return }
             upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: storage, siteID: siteID)
             upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: storage)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)

@@ -5,7 +5,6 @@ import enum Networking.NetworkError
 import YosemiteTestHelpers
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
-import protocol Storage.StorageType
 
 final class MostActiveCouponsCardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
@@ -25,11 +24,6 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
-
-    /// View storage for tests
-    private var storage: StorageType {
-        storageManager.viewStorage
-    }
 
     override func setUp() {
         super.setUp()
@@ -285,19 +279,21 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
 
 extension MostActiveCouponsCardViewModelTests {
     func insertCoupons(_ readOnlyCoupons: [Coupon]) {
-        readOnlyCoupons.forEach { coupon in
-            let newCoupon = storage.insertNewObject(ofType: StorageCoupon.self)
-            newCoupon.update(with: coupon)
-        }
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            for coupon in readOnlyCoupons {
+                let newCoupon = storage.insertNewObject(ofType: StorageCoupon.self)
+                newCoupon.update(with: coupon)
+            }
+        }, completion: nil, on: .main)
     }
 
     func deleteCoupons(_ readOnlyCoupons: [Coupon]) {
-        readOnlyCoupons.forEach { coupon in
-            if let storageCoupon = storage.loadCoupon(siteID: coupon.siteID, couponID: coupon.couponID) {
-                storage.deleteObject(storageCoupon)
+        storageManager.performAndSave({ storage in
+            for coupon in readOnlyCoupons {
+                if let storageCoupon = storage.loadCoupon(siteID: coupon.siteID, couponID: coupon.couponID) {
+                    storage.deleteObject(storageCoupon)
+                }
             }
-        }
-        storage.saveIfNeeded()
+        }, completion: nil, on: .main)
     }
 }

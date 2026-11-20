@@ -236,16 +236,24 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
+        let pinsCardReaderRefundAmount: Bool
+
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             serverLineItems: [ComputedRefundLineItem]? = nil) {
+             serverLineItems: [ComputedRefundLineItem]? = nil,
+             pinsCardReaderRefundAmount: Bool = false) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
             self.serverLineItems = serverLineItems
+            self.pinsCardReaderRefundAmount = pinsCardReaderRefundAmount
+        }
+
+        var calculationFlow: RefundFlow {
+            serverLineItems != nil ? .serverComputed : .localComputed
         }
     }
 }
@@ -472,13 +480,14 @@ private extension RefundSubmissionUseCase {
                                             refundService: RefundServiceProtocol,
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
+        let pinsAmount = details.pinsCardReaderRefundAmount && shouldRefundWithCardReader(details: details)
         do {
             _ = try await refundService.createRefund(siteID: details.order.siteID,
                                                      orderID: details.order.orderID,
                                                      reason: refund.reason,
                                                      automaticRefund: refund.createAutomated ?? false,
                                                      restockItems: true,
-                                                     amountOverride: nil,
+                                                     amountOverride: pinsAmount ? details.amount : nil,
                                                      lineItems: lineItems)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()
@@ -503,17 +512,20 @@ private extension RefundSubmissionUseCase {
                                                                           fullyRefunded: details.amount == details.order.total,
                                                                           method: .items,
                                                                           gateway: details.order.paymentMethodID,
-                                                                          amount: details.amount))
+                                                                          amount: details.amount,
+                                                                          flow: details.calculationFlow))
     }
 
     /// Tracks when the create refund request succeeds.
     func trackCreateRefundRequestSuccess() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID, flow: details.calculationFlow))
     }
 
     /// Tracks when the create refund request fails.
     func trackCreateRefundRequestFailed(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID,
+                                                                                error: error,
+                                                                                flow: details.calculationFlow))
     }
 
     /// Tracks when the refund request succeeds on the client-side before submitting to the site.

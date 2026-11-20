@@ -16,6 +16,10 @@ struct POSMetrics: Equatable {
     let productCardSize: CGFloat
     let cartRowSize: CGFloat
 
+    var menuRowMinHeight: CGFloat {
+        self == .compact ? 48 : 64
+    }
+
     static let regular = POSMetrics(spacing: .regular, padding: .regular, productCardSize: 112, cartRowSize: 96)
     static let compact = POSMetrics(spacing: .compact, padding: .compact, productCardSize: 96, cartRowSize: 80)
 

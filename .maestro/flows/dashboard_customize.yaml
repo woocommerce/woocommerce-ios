@@ -20,6 +20,7 @@ onFlowComplete:
             clearKeychain: true
             arguments:
               "-ui_testing": true
+              "-AppleLocale": "en_US"
         - stopApp
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml
@@ -136,6 +137,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - runFlow:
@@ -246,6 +248,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - runFlow:
@@ -315,6 +318,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 
 # Prepare two selected adjacent anchors, persist an inverse order, prove it
@@ -353,6 +357,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
@@ -409,6 +414,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
@@ -435,6 +441,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
@@ -471,6 +478,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
@@ -509,6 +517,7 @@ onFlowComplete:
 - launchApp:
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../subflows/navigate_to_dashboard.yaml
 - takeScreenshot: dashboard_customize_restored

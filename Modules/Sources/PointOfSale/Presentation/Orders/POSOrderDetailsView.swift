@@ -113,6 +113,7 @@ struct POSOrderDetailsView: View {
                         sectionTitle: Localization.totalsTitle,
                         subtotalLabel: Localization.itemsLabel,
                         subtotalAmount: order.formattedSubtotal,
+                        customAmountsAmount: order.formattedCustomAmountsTotal,
                         discountAmount: order.formattedDiscountTotal,
                         taxAmount: order.formattedTotalTax,
                         totalAmount: order.formattedTotal,
@@ -132,12 +133,11 @@ struct POSOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posModal(item: $selectedRefundForDetail) { refund in
-            let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
-            let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
+        .posModal(item: $selectedRefundForDetail,
+                  compactStyle: .fullScreen(title: refundTitle(for: selectedRefundForDetail, in: order))) { refund in
             POSRefundDetailView(
                 refund: refund,
-                title: Localization.refundTitle(index),
+                title: refundTitle(for: refund, in: order),
                 paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
                 onClose: { selectedRefundForDetail = nil }
             )
@@ -234,6 +234,13 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 // MARK: - Main Sections
 
 private extension POSOrderDetailsView {
+    /// "Refund #N", where N is the refund's position by ID among the order's refunds.
+    func refundTitle(for refund: POSOrderRefund?, in order: POSOrder) -> String {
+        let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
+        let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund?.refundID }) ?? 0) + 1
+        return Localization.refundTitle(index)
+    }
+
     @ViewBuilder
     func itemsSection(products: [POSOrderItem], customAmounts: [POSOrderCustomAmount]) -> some View {
         VStack(alignment: .leading, spacing: metrics.spacing.medium) {
@@ -585,9 +592,9 @@ private extension POSOrderDetailsView {
         }
 
         if !setup.secondary.isEmpty {
-            Menu {
+            POSMenu {
                 ForEach(setup.secondary) { action in
-                    Button(action.title, action: handler(for: action))
+                    POSMenuButton(action.title, action: handler(for: action))
                         .accessibilityHint(action.accessibilityHint)
                 }
             } label: {
@@ -597,7 +604,7 @@ private extension POSOrderDetailsView {
                     .foregroundColor(.posOnSurface)
                     .padding(metrics.padding.small)
             }
-            .menuIndicator(.hidden)
+            .accessibilityLabel(POSMenuAccessibility.moreActions)
         }
     }
 }

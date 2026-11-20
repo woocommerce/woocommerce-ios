@@ -106,13 +106,13 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }, content: { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }, content: { viewContainer in
             paymentsOnboardingView(from: viewContainer)
@@ -121,7 +121,7 @@ struct POSSettingsHardwareDetailView: View {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .posModal(isPresented: $showBarcodeScanningSetupModal) {
+        .posModal(isPresented: $showBarcodeScanningSetupModal, compactStyle: .barcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
@@ -192,8 +192,8 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var reconnectingMenuButton: some View {
-        Menu {
-            Button(Localization.cancelReconnectionTitle) {
+        POSMenu {
+            POSMenuButton(Localization.cancelReconnectionTitle) {
                 isCancellingReconnection = true
                 posModel.cancelReconnection()
             }
@@ -214,6 +214,7 @@ private extension POSSettingsHardwareDetailView {
                     .strokeBorder(Color.posOnSurface, lineWidth: 2)
             )
         }
+        .accessibilityLabel(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
         .disabled(isCancellingReconnection)
         .onChange(of: posModel.cardReaderConnectionStatus) {
             isCancellingReconnection = false
@@ -323,7 +324,7 @@ private extension POSSettingsHardwareDetailView {
                                 action: { showPrinterSetupModal = true })
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
             POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .settings)
         }
     }

@@ -38,10 +38,14 @@ final class POSSettingsLocalCatalogViewModel {
 
     var allowFullSyncOnCellular: Bool {
         get {
-            siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+            access(keyPath: \.allowFullSyncOnCellular)
+            return siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         }
         set {
-            siteSettings.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: newValue)
+            // Approval finishes after the binding setter returns, so notify the toggle when the saved value changes.
+            withMutation(keyPath: \.allowFullSyncOnCellular) {
+                siteSettings.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: newValue)
+            }
         }
     }
 
@@ -61,6 +65,14 @@ final class POSSettingsLocalCatalogViewModel {
 
     deinit {
         syncStateObservationTask?.cancel()
+    }
+
+    @MainActor
+    func setAllowFullSyncOnCellular(_ allowed: Bool, approvalHandler: POSManagerOverrideHandler) {
+        guard allowed != allowFullSyncOnCellular else { return }
+        approvalHandler.gate(.manageStoreSettings, reason: Localization.cellularSyncApprovalReason) { _ in
+            self.allowFullSyncOnCellular = allowed
+        }
     }
 
     @MainActor
@@ -172,6 +184,12 @@ private extension POSSettingsLocalCatalogViewModel {
 
 private extension POSSettingsLocalCatalogViewModel {
     enum Localization {
+        static let cellularSyncApprovalReason = NSLocalizedString(
+            "posSettingsLocalCatalogViewModel.cellularSync.approvalReason",
+            value: "Changing cellular data usage requires approval",
+            comment: "Message in the PIN approval prompt when changing whether POS can sync the catalog using cellular data."
+        )
+
         static let catalogSizeFormat = NSLocalizedString(
             "posSettingsLocalCatalogViewModel.catalogSizeFormat",
             value: "%1$d products and %2$ld variations",

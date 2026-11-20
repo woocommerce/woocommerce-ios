@@ -11,10 +11,13 @@ struct POSRefundDetailView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            headerView
+            if !isFullScreenFlow {
+                headerView
+            }
             ScrollView {
                 VStack(spacing: metrics.spacing.medium) {
                     if !refund.items.isEmpty {

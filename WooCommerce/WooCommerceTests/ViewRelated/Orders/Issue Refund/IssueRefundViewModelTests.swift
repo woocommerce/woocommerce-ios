@@ -432,6 +432,7 @@ final class IssueRefundViewModelTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_fetch_when_refund_was_deleted_then_removes_stale_id_and_updates_confirmation() throws {
         // Given
         let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, taxes: [], total: "100", totalTax: "0")

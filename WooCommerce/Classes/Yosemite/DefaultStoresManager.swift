@@ -10,6 +10,7 @@ import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
 import enum PointOfSale.POSRolesPersistence
+import enum PointOfSale.POSCustomAmountTaxPersistence
 
 // MARK: - DefaultStoresManager
 //
@@ -484,6 +485,8 @@ class DefaultStoresManager: StoresManager {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+
+        POSCustomAmountTaxPersistence.clearAll(userDefaults: defaults)
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()

@@ -3,13 +3,9 @@ import SwiftUI
 struct POSSettingsPaymentsDetailView: View {
     @Environment(\.posMetrics) private var metrics
     private let viewModel: POSSettingsPaymentsViewModel
-    /// Gates an edit action on `manageStoreSettings`. Defaults to running it directly (previews / no host gate).
-    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsPaymentsViewModel,
-         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
+    init(viewModel: POSSettingsPaymentsViewModel) {
         self.viewModel = viewModel
-        self.requestEditPermission = requestEditPermission
     }
 
     var body: some View {
@@ -34,13 +30,11 @@ struct POSSettingsPaymentsDetailView: View {
         .background(Color.posSurface)
     }
 
-    /// Toggling the sound is an edit, so route changes through `manageStoreSettings`:
-    /// the value only flips once the operator holds the cap or a manager approves the override.
     private var paymentSuccessSoundBinding: Binding<Bool> {
         Binding(
             get: { viewModel.isPaymentSuccessSoundEnabled },
             set: { newValue in
-                requestEditPermission { viewModel.setPaymentSuccessSoundEnabled(newValue) }
+                viewModel.setPaymentSuccessSoundEnabled(newValue)
             }
         )
     }

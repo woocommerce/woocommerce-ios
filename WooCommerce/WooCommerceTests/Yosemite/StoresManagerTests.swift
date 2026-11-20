@@ -5,6 +5,7 @@ import Networking
 import Storage
 import TestKit
 @testable import WooCommerce
+@testable import PointOfSale
 import Yosemite
 
 /// StoresManager Unit Tests
@@ -234,6 +235,29 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
+    /// A site-credentials login that fails a later check keeps the manager authenticated with no store
+    /// while the login screens stay up, and the merchant can start a QR login from them.
+    ///
+    func test_dispatch_QR_login_scan_when_authenticated_with_site_credentials_and_no_store_then_completion_is_called() throws {
+        // Given
+        let manager = DefaultStoresManager.testingInstance
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+        XCTAssertTrue(manager.needsDefaultStore)
+
+        // URLSession rejects this scheme without a network request, so the scan fails right away.
+        let siteURL = try XCTUnwrap(URL(string: "unsupported-scheme://shop.example"))
+        let device = QRLoginScanDevice(os: "iOS", osVersion: "26.0", model: "iPhone", brand: "Apple", appVersion: "26.0")
+        let completionCalled = expectation(description: "QR login scan completion is called")
+
+        // When
+        manager.dispatch(QRLoginAction.selfHostedScan(siteURL: siteURL, token: "token", device: device) { _ in
+            completionCalled.fulfill()
+        })
+
+        // Then
+        wait(for: [completionCalled], timeout: 5)
+    }
+
 
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
@@ -260,6 +284,44 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(mockAuthenticationManager.authenticationUIInvoked)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
+
+    @MainActor
+    func test_deauthenticate_when_custom_amount_tax_choices_exist_then_clears_all_stores() throws {
+        // Given
+        let suiteName = "StoresManagerTests.customAmountTax.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSCustomAmountTaxPreferences(userDefaults: defaults)
+        preferences.setTaxable(true, for: 123)
+        preferences.setTaxable(true, for: 456)
+
+        // When
+        manager.deauthenticate()
+
+        // Then
+        XCTAssertNil(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 123)))
+        XCTAssertNil(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)))
+    }
+
+    @MainActor
+    func test_removeDefaultStore_when_custom_amount_tax_choices_exist_then_preserves_them() throws {
+        // Given
+        let suiteName = "StoresManagerTests.customAmountTax.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSCustomAmountTaxPreferences(userDefaults: defaults)
+        preferences.setTaxable(true, for: 123)
+        preferences.setTaxable(false, for: 456)
+
+        // When
+        manager.removeDefaultStore()
+
+        // Then
+        XCTAssertTrue(preferences.isTaxable(for: 123))
+        XCTAssertEqual(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)) as? Bool, false)
     }
 
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.

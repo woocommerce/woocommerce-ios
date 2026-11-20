@@ -14,7 +14,17 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
         .posModalCloseButton(action: viewModel.cancelOnboarding,
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
+    }
+}
+
+extension POSModalCompactStyle {
+    static var cardPaymentsOnboarding: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.cardPaymentsOnboarding.modal.title",
+            value: "Card payments",
+            comment: "Title in the header of the full-screen card payments onboarding flow on phone."
+        ))
     }
 }
 

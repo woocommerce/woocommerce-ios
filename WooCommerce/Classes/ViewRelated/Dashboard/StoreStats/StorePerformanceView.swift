@@ -38,44 +38,43 @@ struct StorePerformanceView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.loadingError != nil {
-                errorStateView
-                    .padding(.horizontal, Layout.padding)
-            } else if viewModel.analyticsEnabled {
-                timeRangeBar
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+            if viewModel.analyticsEnabled {
+                DashboardCardRangedContent(cardType: .performance,
+                                           hasError: viewModel.loadingError != nil,
+                                           reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                    timeRangeBar
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
+                } content: {
+                    revenueTypeSelector
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                Divider()
+                    statsView
+                        .padding(.vertical, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                revenueTypeSelector
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    timestampView
+                        .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                statsView
-                    .padding(.vertical, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    chartView
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                timestampView
-                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    Divider()
+                        .padding(.leading, Layout.padding)
 
-                chartView
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
-
-                Divider()
-                    .padding(.leading, Layout.padding)
-
-                viewAllAnalyticsButton
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    viewAllAnalyticsButton
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                        .shimmering(active: viewModel.syncingData)
+                }
             } else {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
@@ -382,15 +381,6 @@ private extension StorePerformanceView {
             }
         }
         .disabled(viewModel.syncingData)
-    }
-
-    var errorStateView: some View {
-        DashboardCardErrorView(onRetry: {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
-            Task {
-                await viewModel.reloadDataIfNeeded(forceRefresh: true)
-            }
-        })
     }
 }
 

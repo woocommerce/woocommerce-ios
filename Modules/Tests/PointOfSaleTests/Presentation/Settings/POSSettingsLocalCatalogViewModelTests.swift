@@ -1,8 +1,11 @@
 import Testing
 import Foundation
+import Observation
 @testable import PointOfSale
 @testable import Yosemite
 
+@MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct POSSettingsLocalCatalogViewModelTests {
     private let sampleSiteID: Int64 = 12345
     private let sut: POSSettingsLocalCatalogViewModel
@@ -259,6 +262,124 @@ struct POSSettingsLocalCatalogViewModelTests {
     }
 
     // MARK: - allowFullSyncOnCellular Tests
+
+    @Test func test_setAllowFullSyncOnCellular_when_approved_then_notifies_observers() async {
+        // Given
+        let handler = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff))
+
+        await confirmation { changed in
+            withObservationTracking {
+                _ = sut.allowFullSyncOnCellular
+            } onChange: {
+                changed()
+            }
+
+            // When
+            sut.setAllowFullSyncOnCellular(true, approvalHandler: handler)
+            #expect(await handler.submit(pin: "1234"))
+        }
+
+        // Then
+        #expect(sut.allowFullSyncOnCellular)
+    }
+
+    @Test(arguments: [true, false])
+    func test_setAllowFullSyncOnCellular_when_operator_has_capability_then_updates_without_approval(_ allowed: Bool) {
+        // Given
+        siteSettings.mockPOSLocalCatalogCellularDataAllowed = !allowed
+        let session = MockPOSAccessSession(currentStaff: POSStaff(displayName: "Staff", capabilities: [.manageStoreSettings]))
+        let handler = POSManagerOverrideHandler(session: session)
+
+        // When
+        sut.setAllowFullSyncOnCellular(allowed, approvalHandler: handler)
+
+        // Then
+        #expect(sut.allowFullSyncOnCellular == allowed)
+        #expect(handler.request == nil)
+    }
+
+    @Test(arguments: [true, false])
+    func test_setAllowFullSyncOnCellular_when_cashier_cancels_then_preserves_setting(_ allowed: Bool) {
+        // Given
+        siteSettings.mockPOSLocalCatalogCellularDataAllowed = !allowed
+        let handler = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff))
+
+        // When
+        sut.setAllowFullSyncOnCellular(allowed, approvalHandler: handler)
+
+        // Then
+        #expect(handler.request?.capability == .manageStoreSettings)
+        #expect(sut.allowFullSyncOnCellular == !allowed)
+        handler.cancel()
+        #expect(sut.allowFullSyncOnCellular == !allowed)
+        #expect(!siteSettings.setPOSLocalCatalogCellularDataAllowedCalled)
+    }
+
+    @Test(arguments: [true, false])
+    func test_setAllowFullSyncOnCellular_when_approved_then_changes_once_and_keeps_cashier_session(_ allowed: Bool) async {
+        // Given
+        siteSettings.mockPOSLocalCatalogCellularDataAllowed = !allowed
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let handler = POSManagerOverrideHandler(session: session)
+        sut.setAllowFullSyncOnCellular(allowed, approvalHandler: handler)
+
+        // When
+        #expect(await handler.submit(pin: "1234"))
+
+        // Then
+        #expect(sut.allowFullSyncOnCellular == allowed)
+        #expect(session.managerApprovalCapabilities == [.manageStoreSettings])
+        #expect(session.currentStaff == POSLocalRole.cashier.staff)
+        #expect(!session.allows(.manageStoreSettings))
+        sut.setAllowFullSyncOnCellular(!allowed, approvalHandler: handler)
+        #expect(handler.request?.capability == .manageStoreSettings)
+        #expect(sut.allowFullSyncOnCellular == allowed)
+        handler.cancel()
+    }
+
+    @Test func test_setAllowFullSyncOnCellular_when_pin_is_rejected_then_preserves_setting() async {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff, managerApprovalResult: .failure(.invalidPIN))
+        let handler = POSManagerOverrideHandler(session: session)
+        sut.setAllowFullSyncOnCellular(true, approvalHandler: handler)
+
+        // When
+        #expect(await handler.submit(pin: "1234") == false)
+
+        // Then
+        #expect(!sut.allowFullSyncOnCellular)
+        #expect(!siteSettings.setPOSLocalCatalogCellularDataAllowedCalled)
+        #expect(handler.request?.capability == .manageStoreSettings)
+        handler.cancel()
+    }
+
+    @Test func test_setAllowFullSyncOnCellular_when_session_changes_during_approval_then_preserves_setting() async {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let handler = POSManagerOverrideHandler(session: session)
+        session.onManagerApproval = { session.endSession() }
+        sut.setAllowFullSyncOnCellular(true, approvalHandler: handler)
+
+        // When
+        _ = await handler.submit(pin: "1234")
+
+        // Then
+        #expect(!sut.allowFullSyncOnCellular)
+        #expect(!siteSettings.setPOSLocalCatalogCellularDataAllowedCalled)
+        handler.cancel()
+    }
+
+    @Test func test_setAllowFullSyncOnCellular_when_protection_is_off_then_updates_without_approval() {
+        // Given
+        let handler = POSManagerOverrideHandler(session: UnrestrictedPOSAccessSession())
+
+        // When
+        sut.setAllowFullSyncOnCellular(true, approvalHandler: handler)
+
+        // Then
+        #expect(sut.allowFullSyncOnCellular)
+        #expect(handler.request == nil)
+    }
 
     @Test func allowFullSyncOnCellular_returns_default_value_from_site_settings() async throws {
         // Given

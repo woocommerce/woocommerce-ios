@@ -1,9 +1,41 @@
 import Foundation
+import Dispatch
+import Synchronization
 import Testing
 @testable import PointOfSale
 
 struct POSLocalPINStoreTests {
     private let storage = InMemoryPOSSecureStorage()
+
+    @Test func test_validatePIN_when_new_or_existing_role_is_valid_then_does_not_write() throws {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        try sut.validatePIN("1234", for: .admin)
+
+        // Then
+        #expect(storage.values.isEmpty)
+        try sut.setPIN("1234", for: .admin)
+        let original = storage.values
+        try sut.validatePIN("1234", for: .admin)
+        try sut.validatePIN("5678", for: .cashier)
+        #expect(storage.values == original)
+    }
+
+    @Test(arguments: [POSLocalRole.admin, .cashier])
+    func test_validatePIN_when_matching_other_role_then_rejects_without_writing(role: POSLocalRole) throws {
+        // Given
+        let sut = makeSUT()
+        try sut.setPIN("1234", for: .admin)
+        try sut.setPIN("5678", for: .cashier)
+        let original = storage.values
+        let duplicate = role == .admin ? "5678" : "1234"
+
+        // When / Then
+        #expect(throws: POSPINStoreError.pinMatchesOtherRole) { try sut.validatePIN(duplicate, for: role) }
+        #expect(storage.values == original)
+    }
 
     @Test func test_credentials_when_nothing_is_stored_then_returns_empty_list() throws {
         // Given
@@ -207,7 +239,90 @@ struct POSLocalPINStoreTests {
         #expect(try makeSUT(siteID: 123).credentials().isEmpty)
         #expect(try makeSUT(siteID: 456).credentials().isEmpty)
     }
+
+    @Test(arguments: ["set", "removeAdmin", "removeCashier"])
+    func test_retired_store_when_logout_has_completed_then_cannot_change_new_credentials(operation: String) throws {
+        // Given
+        let retired = makeSUT()
+        try retired.setPIN("1234", for: .admin)
+        try storage.removeAll()
+        let current = POSLocalPINStore(siteID: 123, storage: storage.reopened(), iterations: 1)
+        try current.setPIN("2468", for: .admin)
+        let before = storage.values
+
+        // When / Then
+        #expect(throws: POSPINStoreError.storageFailure) {
+            switch operation {
+            case "set": try retired.setPIN("1357", for: .admin)
+            case "removeAdmin": try retired.removePIN(for: .admin)
+            default: try retired.removePIN(for: .cashier)
+            }
+        }
+        #expect(storage.values == before)
+        #expect(try current.credentials().first?.pinHash.matches("2468") == true)
+    }
+
+    @Test func test_logout_when_pin_write_is_in_progress_then_clear_waits_and_completes_last() async throws {
+        // Given
+        let storage = BlockingPINWriteStorage()
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        let write = Task.detached { try store.setPIN("1234", for: .admin) }
+        defer { storage.releaseWrite() }
+        try #require(await storage.waitUntilWriteEntered())
+
+        // When
+        let clear = Task.detached { try storage.removeAll() }
+        try await Task.sleep(for: .milliseconds(50))
+        storage.releaseWrite()
+        try await write.value
+        try await clear.value
+
+        // Then
+        #expect(try storage.data(forKey: "pins.123") == nil)
+        #expect(storage.isStale)
+    }
 }
+
+private final class BlockingPINWriteStorage: POSSecureStorage, Sendable {
+    private let service = UUID().uuidString
+    private let generation: UUID
+    private let values = Mutex<[String: Data]>([:])
+    private let entered = DispatchSemaphore(value: 0)
+    private let release = DispatchSemaphore(value: 0)
+
+    init() {
+        generation = POSSecureStorageFence.currentGeneration(of: service)
+    }
+
+    var isStale: Bool { !POSSecureStorageFence.isCurrent(generation, of: service) }
+
+    func data(forKey key: String) throws -> Data? { values.withLock { $0[key] } }
+
+    func removeAll() throws {
+        try POSSecureStorageFence.clear(service) {
+            values.withLock { $0 = [:] }
+        }
+    }
+
+    func setData(_ data: Data?, forKey key: String) throws {
+        try POSSecureStorageFence.write(generation, to: service) {
+            entered.signal()
+            guard release.wait(timeout: .now() + 30) == .success else { throw POSPINStoreError.storageFailure }
+            values.withLock { $0[key] = data }
+        }
+    }
+
+    func waitUntilWriteEntered() async -> Bool {
+        await Task.detached { self.blockUntilWriteEntered() }.value
+    }
+
+    private func blockUntilWriteEntered() -> Bool {
+        entered.wait(timeout: .now() + 30) == .success
+    }
+
+    func releaseWrite() { release.signal() }
+}
+
 
 private extension POSLocalPINStoreTests {
     func makeSUT(siteID: Int64 = 123) -> POSLocalPINStore {

@@ -104,13 +104,20 @@ final class CodeScannerViewController: UIViewController {
         accessoryView.translatesAutoresizingMaskIntoConstraints = false
         accessoryView.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
         bottomDimmingView.addSubview(accessoryView)
-        // A landscape iPhone has no room below a 200pt scan area for the accessory, so the scan area gives way to it.
+        // A landscape iPhone has no room below a centered 200pt scan area for the instruction and the accessory.
+        // Like on Android, the top dimmed area gives way first, then the scan area.
+        instructionLabel.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
         scanAreaView.constraints
             .filter { $0.firstAttribute == .height && $0.relation == .greaterThanOrEqual }
             .forEach { $0.priority = Constants.scanAreaMinimumHeightPriorityWithBottomAccessory }
+        view.constraints
+            .filter { $0.firstItem === scanAreaView && $0.firstAttribute == .centerY }
+            .forEach { $0.priority = .defaultLow }
         let bottomToSafeArea = accessoryView.bottomAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.bottomAnchor)
         bottomToSafeArea.priority = .defaultHigh
         NSLayoutConstraint.activate([
+            topDimmingView.bottomAnchor.constraint(greaterThanOrEqualTo: cancelButton.bottomAnchor, constant: Constants.topButtonsBottomInset),
+            topDimmingView.bottomAnchor.constraint(greaterThanOrEqualTo: swapCameraButton.bottomAnchor, constant: Constants.topButtonsBottomInset),
             accessoryView.topAnchor.constraint(equalTo: bottomDimmingView.topAnchor),
             accessoryView.leadingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.leadingAnchor),
             accessoryView.trailingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.trailingAnchor),
@@ -411,6 +418,8 @@ private extension CodeScannerViewController {
         /// An iPad form sheet has no bottom safe area, so without this the accessory sits on its rounded bottom corners.
         static let bottomAccessoryMinimumBottomInset: CGFloat = 8
         static let bottomAccessoryPriorityAboveScanAreaHeight = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue + 1)
+        /// Matches the buttons' top inset in the XIB.
+        static let topButtonsBottomInset: CGFloat = 20
         static let scanAreaMinimumHeightPriorityWithBottomAccessory = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue - 1)
     }
 

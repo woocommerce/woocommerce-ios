@@ -236,21 +236,20 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
-        /// Pins the confirmed preview total: the store rejects the create if the lines now total more.
-        let pinsServerAmount: Bool
+        let pinsCardReaderRefundAmount: Bool
 
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
              serverLineItems: [ComputedRefundLineItem]? = nil,
-             pinsServerAmount: Bool = false) {
+             pinsCardReaderRefundAmount: Bool = false) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
             self.serverLineItems = serverLineItems
-            self.pinsServerAmount = pinsServerAmount
+            self.pinsCardReaderRefundAmount = pinsCardReaderRefundAmount
         }
 
         var calculationFlow: RefundFlow {
@@ -481,13 +480,14 @@ private extension RefundSubmissionUseCase {
                                             refundService: RefundServiceProtocol,
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
+        let pinsAmount = details.pinsCardReaderRefundAmount && shouldRefundWithCardReader(details: details)
         do {
             _ = try await refundService.createRefund(siteID: details.order.siteID,
                                                      orderID: details.order.orderID,
                                                      reason: refund.reason,
                                                      automaticRefund: refund.createAutomated ?? false,
                                                      restockItems: true,
-                                                     amountOverride: details.pinsServerAmount ? details.amount : nil,
+                                                     amountOverride: pinsAmount ? details.amount : nil,
                                                      lineItems: lineItems)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()

@@ -2,8 +2,9 @@ import SwiftUI
 
 extension View {
     /// Sets the frame size and applies a padding to a modal in POS.
-    func posModalSizing(fitsContentHeight: Bool = false) -> some View {
-        self.modifier(POSModalSizing(fitsContentHeight: fitsContentHeight))
+    /// Full-screen flows can fill their current container instead of using the card's window-based size.
+    func posModalSizing(fitsContentHeight: Bool = false, fillsAvailableSpace: Bool = false) -> some View {
+        self.modifier(POSModalSizing(fitsContentHeight: fitsContentHeight, fillsAvailableSpace: fillsAvailableSpace))
     }
 }
 
@@ -16,10 +17,15 @@ struct POSModalSizing: ViewModifier {
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let fitsContentHeight: Bool
+    let fillsAvailableSpace: Bool
 
     @ViewBuilder
     func body(content: Content) -> some View {
-        if isFullScreenFlow {
+        if fillsAvailableSpace {
+            content
+                .padding(metrics.padding.xxLarge)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if isFullScreenFlow {
             // The flow header brings its own top spacing.
             content
                 .padding(.horizontal, metrics.padding.xxLarge)

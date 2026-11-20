@@ -40,6 +40,7 @@ struct CartView: View {
             ZStack {
                 VStack(spacing: 0) {
                     CartHeaderView(
+                        orderStage: displayedOrderStage,
                         shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
                         shouldShowClearCartButton: shouldShowClearCartButton,
                         itemCount: posModel.cart.totalItemCount,
@@ -50,6 +51,7 @@ struct CartView: View {
 
                     if posModel.cart.isNotEmpty {
                         CartScrollViewContent(
+                            orderStage: displayedOrderStage,
                             offSetPosition: $offSetPosition,
                             cartContentHeight: $cartContentHeight,
                             scrollViewHeight: $scrollViewHeight
@@ -58,7 +60,7 @@ struct CartView: View {
                         Spacer()
                     }
 
-                    if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
+                    if viewHelper.shouldShowCheckout(orderStage: displayedOrderStage, cart: posModel.cart) {
                         checkoutButton
                             .padding(.horizontal, metrics.padding.medium)
                             .padding(.top, metrics.padding.medium)
@@ -77,6 +79,9 @@ struct CartView: View {
                     POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
                 }
                 .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
+                // The compact cart keeps its building look while its sheet slides away at checkout,
+                // so its buttons must not act on an order that is already finalizing.
+                .allowsHitTesting(displayedOrderStage == posModel.orderStage)
                 .frame(maxWidth: .infinity)
                 .background(content: {
                     if posModel.cart.isEmpty {
@@ -99,6 +104,7 @@ private struct CartHeaderView: View {
     @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
 
+    let orderStage: PointOfSaleOrderStage
     let shouldApplyHeaderBottomShadow: Bool
     let shouldShowClearCartButton: Bool
     let itemCount: Int
@@ -109,7 +115,7 @@ private struct CartHeaderView: View {
     }
 
     private var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
-        switch posModel.orderStage {
+        switch orderStage {
         case .building:
             return nil
         case .finalizing:
@@ -194,7 +200,11 @@ private extension CartView {
     var shouldShowClearCartButton: Bool {
         viewHelper.shouldShowClearCartButton(
             cart: posModel.cart,
-            orderStage: posModel.orderStage)
+            orderStage: displayedOrderStage)
+    }
+
+    var displayedOrderStage: PointOfSaleOrderStage {
+        viewHelper.displayedOrderStage(orderStage: posModel.orderStage, isCompact: horizontalSizeClass == .compact)
     }
 }
 
@@ -321,6 +331,7 @@ private struct CartScrollViewContent: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    let orderStage: PointOfSaleOrderStage
     @Binding var offSetPosition: CGFloat
     @Binding var cartContentHeight: CGFloat
     @Binding var scrollViewHeight: CGFloat
@@ -336,14 +347,14 @@ private struct CartScrollViewContent: View {
             ScrollView {
                 VStack(spacing: metrics.spacing.medium) {
                     if posModel.cart.customAmounts.isNotEmpty {
-                        CustomAmountsCartSection()
+                        CustomAmountsCartSection(orderStage: orderStage)
                     }
 
                     if posModel.cart.coupons.isNotEmpty {
-                        CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                        CouponsCartSection(orderStage: orderStage, shouldShowItemImages: $shouldShowItemImages)
                     }
 
-                    PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    PurchasableItemsCartSection(orderStage: orderStage, shouldShowItemImages: $shouldShowItemImages)
                 }
                 .padding(.bottom, metrics.padding.large)
                 .background(GeometryReader { geometry in
@@ -369,7 +380,7 @@ private struct CartScrollViewContent: View {
 
                 Spacer()
                     .frame(height: floatingControlAreaSize.height)
-                    .renderedIf(posModel.orderStage == .finalizing)
+                    .renderedIf(orderStage == .finalizing)
             }
             .background {
                 GeometryReader() { proxy in
@@ -381,7 +392,7 @@ private struct CartScrollViewContent: View {
             }
             .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
             .onChange(of: posModel.cart.purchasableItems.first?.id) { _, itemToScrollTo in
-                if posModel.orderStage == .building {
+                if orderStage == .building {
                     withAnimation {
                         proxy.scrollTo(itemToScrollTo)
                     }
@@ -436,15 +447,17 @@ private struct CustomAmountsCartSection: View {
 
     private let viewHelper = CartViewHelper()
 
+    let orderStage: PointOfSaleOrderStage
+
     var body: some View {
         let showsDiscountNotAppliedNote = viewHelper.shouldShowCustomAmountDiscountNotAppliedNote(
-            orderStage: posModel.orderStage,
+            orderStage: orderStage,
             orderState: posModel.orderState,
             cart: posModel.cart
         )
         LazyVStack(spacing: metrics.spacing.medium) {
             ForEach(posModel.cart.customAmounts, id: \.id) { customAmount in
-                let isInteractive = posModel.orderStage == .building
+                let isInteractive = orderStage == .building
                 CustomAmountRowView(
                     customAmount: customAmount,
                     showsDiscountNotAppliedNote: showsDiscountNotAppliedNote,
@@ -471,6 +484,7 @@ private struct CouponsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
 
+    let orderStage: PointOfSaleOrderStage
     @Binding var shouldShowItemImages: Bool
 
     private let viewHelper = CartViewHelper()
@@ -481,12 +495,12 @@ private struct CouponsCartSection: View {
                 CouponRowView(
                     couponItem: couponItem,
                     couponRowState: viewHelper.couponRowState(
-                        orderStage: posModel.orderStage,
+                        orderStage: orderStage,
                         orderState: posModel.orderState,
                         couponItem: couponItem
                     ),
                     showImage: $shouldShowItemImages,
-                    onItemRemoveTapped: posModel.orderStage == .building ? {
+                    onItemRemoveTapped: orderStage == .building ? {
                         analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(
                                 sourceView: .cart,
@@ -507,6 +521,7 @@ private struct PurchasableItemsCartSection: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    let orderStage: PointOfSaleOrderStage
     @Binding var shouldShowItemImages: Bool
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
@@ -518,7 +533,7 @@ private struct PurchasableItemsCartSection: View {
                 ItemRowView(
                     cartItem: cartItem,
                     showsDiscountedNote: viewHelper.shouldShowItemDiscountedNote(
-                        orderStage: posModel.orderStage,
+                        orderStage: orderStage,
                         orderState: posModel.orderState,
                         cartItem: cartItem
                     ),
@@ -541,7 +556,7 @@ private struct PurchasableItemsCartSection: View {
     }
 
     private func itemRemoveCallback(for cartItem: Cart.PurchasableItem) -> (() -> Void)? {
-        guard posModel.orderStage == .building else { return nil }
+        guard orderStage == .building else { return nil }
 
         return {
             analytics.track(

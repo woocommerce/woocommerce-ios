@@ -1,4 +1,7 @@
 import SwiftUI
+import class Hardware.GameControllerBarcodeObserver
+import struct Hardware.HIDBarcodeParserConfiguration
+import enum Hardware.HIDBarcodeParserError
 
 /// A SwiftUI view that provides barcode scanning functionality by capturing keyboard input.
 /// This container is designed to be invisible and non-interactive, serving as a bridge between
@@ -133,11 +136,14 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
                 onScan: onScan
             )
         } else {
+            let analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
             gameControllerObserver = GameControllerBarcodeObserver(
                 configuration: configuration,
-                analytics: analytics,
                 isScanningEnabled: { [weak self] in self?.isScanningEnabled() ?? false },
-                onScan: onScan
+                onScan: { [onScan] result in
+                    analyticsTracker.track(result: result)
+                    onScan(result.asResult)
+                }
             )
         }
     }

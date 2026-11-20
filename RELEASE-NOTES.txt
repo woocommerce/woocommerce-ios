@@ -4,6 +4,7 @@
 26.2
 -----
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
+- [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]

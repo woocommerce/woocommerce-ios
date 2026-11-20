@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 
+@MainActor
 final class MockCouponsRemote: CouponsRemoteProtocol {
 
     // MARK: - Spy properties
@@ -50,7 +51,8 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var resultForSearchCoupons: Result<[Coupon], Error>?
 
     // MARK: - CouponsRemoteProtocol conformance
-    nonisolated(nonsending) func loadAllCoupons(for siteID: Int64,
+    @MainActor
+    func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [Coupon] {
         didCallLoadAllCoupons = true
@@ -82,7 +84,8 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         completion(result)
     }
 
-    nonisolated(nonsending) func searchCoupons(for siteID: Int64,
+    @MainActor
+    func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws -> [Coupon] {

@@ -5,6 +5,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 import Fakes
 
+@MainActor
 final class CouponStoreTests: XCTestCase {
     /// Mock network to inject responses
     ///
@@ -60,8 +61,8 @@ final class CouponStoreTests: XCTestCase {
 
     // MARK: - Set up and Tear down
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         store = CouponStore(dispatcher: Dispatcher(),

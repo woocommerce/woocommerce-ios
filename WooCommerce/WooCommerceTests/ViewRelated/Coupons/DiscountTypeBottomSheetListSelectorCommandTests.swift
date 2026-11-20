@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class DiscountTypeBottomSheetListSelectorCommandTests: XCTestCase {
     func test_callback_is_called_on_selection() {
         // Given

@@ -4,11 +4,12 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol CouponsRemoteProtocol {
+public protocol CouponsRemoteProtocol: Sendable {
     nonisolated(nonsending) func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [Coupon]
 
+    @MainActor
     func loadCoupons(for siteID: Int64,
                      by couponIDs: [Int64],
                      pageNumber: Int,
@@ -20,27 +21,33 @@ public protocol CouponsRemoteProtocol {
                        pageNumber: Int,
                        pageSize: Int) async throws -> [Coupon]
 
+    @MainActor
     func retrieveCoupon(for siteID: Int64,
                         couponID: Int64,
                         completion: @escaping (Result<Coupon, Error>) -> Void)
 
+    @MainActor
     func deleteCoupon(for siteID: Int64,
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
+    @MainActor
     func updateCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
+    @MainActor
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
+    @MainActor
     func loadCouponReport(for siteID: Int64,
                           couponID: Int64,
                           from startDate: Date,
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
 
+    @MainActor
     func loadMostActiveCoupons(for siteID: Int64,
                                numberOfCouponsToLoad: Int,
                                from startDate: Date,
@@ -49,6 +56,7 @@ public protocol CouponsRemoteProtocol {
 }
 
 extension CouponsRemoteProtocol {
+    @MainActor
     public func loadCoupons(for siteID: Int64, by couponsIDs: [Int64], completion: @escaping (Result<[Coupon], Error>) -> Void) {
         loadCoupons(for: siteID,
                     by: couponsIDs,
@@ -103,7 +111,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - pageSize: Number of coupons to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadCoupons(for siteID: Int64,
+    nonisolated public func loadCoupons(for siteID: Int64,
                             by couponIDs: [Int64],
                             pageNumber: Int = Default.pageNumber,
                             pageSize: Int = Default.pageSize,
@@ -162,7 +170,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - couponID: ID of the Coupon that will be retrieved.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func retrieveCoupon(for siteID: Int64,
+    nonisolated public func retrieveCoupon(for siteID: Int64,
                                couponID: Int64,
                                completion: @escaping (Result<Coupon, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -185,7 +193,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - couponID: ID of the Coupon that will be deleted.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func deleteCoupon(for siteID: Int64,
+    nonisolated public func deleteCoupon(for siteID: Int64,
                              couponID: Int64,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -209,7 +217,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateCoupon(_ coupon: Coupon,
+    nonisolated public func updateCoupon(_ coupon: Coupon,
                              siteTimezone: TimeZone? = nil,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
@@ -245,7 +253,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createCoupon(_ coupon: Coupon,
+    nonisolated public func createCoupon(_ coupon: Coupon,
                              siteTimezone: TimeZone? = nil,
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
@@ -280,7 +288,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - startDate: The start of the date range for which we'll fetch the analytics report.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadCouponReport(for siteID: Int64,
+    nonisolated public func loadCouponReport(for siteID: Int64,
                                  couponID: Int64,
                                  from startDate: Date,
                                  completion: @escaping (Result<CouponReport, Error>) -> Void) {
@@ -326,7 +334,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Send
     ///     - to: The end of the date range until which we'll fetch the coupons report.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadMostActiveCoupons(for siteID: Int64,
+    nonisolated public func loadMostActiveCoupons(for siteID: Int64,
                                       numberOfCouponsToLoad: Int,
                                       from startDate: Date,
                                       to endDate: Date,

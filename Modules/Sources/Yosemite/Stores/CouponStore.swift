@@ -48,6 +48,12 @@ public final class CouponStore: Store {
             return
         }
 
+        // Dispatcher calls action processors on the main thread.
+        MainActor.assumeIsolated { [methods] in Self.handle(action, using: methods) }
+    }
+
+    @MainActor
+    private static func handle(_ action: CouponAction, using methods: CouponStoreMethods) {
         switch action {
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
             methods.synchronizeCoupons(siteID: siteID,

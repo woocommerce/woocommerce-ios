@@ -4,14 +4,15 @@ import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class CouponLineDetailsViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 120934
     private let initialCode = "COUPON"
     private var stores: MockStoresManager!
     private var viewModel: CouponLineDetailsViewModel!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         viewModel = CouponLineDetailsViewModel(code: initialCode,
                                                siteID: sampleSiteID,
@@ -19,8 +20,8 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
                                                didSelectSave: { _ in })
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         stores = nil
         viewModel = nil
     }

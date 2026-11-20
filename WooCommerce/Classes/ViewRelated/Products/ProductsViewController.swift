@@ -385,7 +385,7 @@ private extension ProductsViewController {
                                                                                                                              reason: reason))
         }, onSettingsOpened: {
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .productList))
-        })
+        }, offersHardwareScanner: true)
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
     }

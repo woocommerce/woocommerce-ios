@@ -306,7 +306,7 @@ final class OrdersRootViewController: UIViewController {
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderList, reason: reason))
         }, onSettingsOpened: { [weak self] in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
-        })
+        }, offersHardwareScanner: true)
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
     }

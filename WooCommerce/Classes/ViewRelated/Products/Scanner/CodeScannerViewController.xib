@@ -57,7 +57,7 @@
                             <rect key="frame" x="0.0" y="269" width="414" height="358"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="boX-U8-l3Q"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" priority="999" id="boX-U8-l3Q"/>
                             </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WDY-yE-Pa7" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
@@ -84,7 +84,7 @@
                 <constraint firstAttribute="bottom" secondItem="kZd-Wy-O48" secondAttribute="bottom" id="XZw-mF-pcz"/>
                 <constraint firstItem="kZd-Wy-O48" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="YQI-IY-IlJ"/>
                 <constraint firstItem="kZd-Wy-O48" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="oZR-mV-4Kw"/>
-                <constraint firstItem="h26-0r-6H1" firstAttribute="centerY" secondItem="kZd-Wy-O48" secondAttribute="centerY" id="sH5-Lm-Y2x"/>
+                <constraint firstItem="h26-0r-6H1" firstAttribute="centerY" secondItem="kZd-Wy-O48" secondAttribute="centerY" priority="999" id="sH5-Lm-Y2x"/>
                 <constraint firstItem="kZd-Wy-O48" firstAttribute="bottom" secondItem="4Gw-bp-bFj" secondAttribute="bottom" id="yRR-o3-ZeE"/>
                 <constraint firstItem="4Gw-bp-bFj" firstAttribute="top" secondItem="kZd-Wy-O48" secondAttribute="top" id="yhi-AP-SmP"/>
                 <constraint firstAttribute="trailing" secondItem="kZd-Wy-O48" secondAttribute="trailing" id="zby-bX-rpe"/>

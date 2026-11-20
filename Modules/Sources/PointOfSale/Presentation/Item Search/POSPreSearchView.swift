@@ -53,8 +53,7 @@ struct POSPreSearchView: View {
             }
             .padding(.horizontal, metrics.padding.medium)
         } else {
-            POSListEmptyView(viewModel: POSCouponPreSearchEmptyViewModel(),
-                             showsIconAboveKeyboardOnPhone: true)
+            POSListEmptyView(viewModel: POSCouponPreSearchEmptyViewModel())
         }
     }
 

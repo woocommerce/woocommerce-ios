@@ -16,34 +16,21 @@ extension POSListEmptyViewModelProtocol {
 struct POSListEmptyView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
     private let viewModel: any POSListEmptyViewModelProtocol
-    private let showsIconAboveKeyboardOnPhone: Bool
 
     private let onAction: (() -> Void)?
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(viewModel: any POSListEmptyViewModelProtocol,
-         showsIconAboveKeyboardOnPhone: Bool = false,
-         onAction: (() -> Void)? = nil) {
+    init(viewModel: any POSListEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
-        self.showsIconAboveKeyboardOnPhone = showsIconAboveKeyboardOnPhone
         self.onAction = onAction
     }
 
     var body: some View {
         POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
-                let shouldShowIcon = POSListEmptyViewHelper.showsIcon(
-                    isAccessibilitySize: dynamicTypeSize.isAccessibilitySize,
-                    isFullSizeKeyboardVisible: keyboard.isFullSizeKeyboardVisible,
-                    showsIconAboveKeyboardOnPhone: showsIconAboveKeyboardOnPhone,
-                    isCompactWidthAndRegularHeight: horizontalSizeClass == .compact && verticalSizeClass == .regular
-                )
-
-                if shouldShowIcon {
+                if !dynamicTypeSize.isAccessibilitySize {
                     icon
 
                     Spacer().frame(height: metrics.spacing.medium)

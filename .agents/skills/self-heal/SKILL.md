@@ -78,6 +78,7 @@ Run `$SYNC $RUNNER` and, for each `sync` line:
 1. Merge trunk in with `gh pr update-branch <n>`. Never rebase or force-push.
    On `conflict` that fails: in `$RUNNER`, switch to the branch, `git merge origin/trunk`, resolve it keeping both trunk's change and the PR's intent, run the affected tests, and push.
 2. On `overlap` or `conflict` for a fix PR, check the test still proves the crash: in `$RUNNER`, on the merged branch, undo the fix but not the test (`git revert --no-commit` the fix commits) and run the test.
+   Run it even when trunk's change looks unrelated: reading the diff is not a proof. Log `recheck #<n>` with the outcome.
    - It fails for the crash's reason: the proof holds. Restore the branch (`git revert --abort`).
    - It passes: trunk fixed the crash itself. Find the trunk commit, comment it on the PR and the issue, close both, and log `fixed-on-trunk`.
    - It fails for another reason, or no longer compiles: rewrite the test so it reproduces the crash on today's code, confirm it red with the fix undone and green with it, and push.

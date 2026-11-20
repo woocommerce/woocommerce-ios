@@ -220,15 +220,18 @@ struct POSSearchContentView<Content: View>: View {
     private let searchable: any POSSearchable
     private let itemListType: ItemListType
     @Binding private var searchTerm: String
+    private let onItemSelected: () -> Void
     private let content: (Bool) -> Content
 
     init(searchable: any POSSearchable,
          itemListType: ItemListType,
          searchTerm: Binding<String>,
+         onItemSelected: @escaping () -> Void,
          @ViewBuilder content: @escaping (Bool) -> Content) {
         self.searchable = searchable
         self.itemListType = itemListType
         self._searchTerm = searchTerm
+        self.onItemSelected = onItemSelected
         self.content = content
     }
 
@@ -249,6 +252,7 @@ struct POSSearchContentView<Content: View>: View {
             searchTerm = selectedSearchTerm
             analytics.track(event: .PointOfSale.preSearchRecentTermTapped(itemListType: itemListType))
         },
+                         onItemSelected: onItemSelected,
                          itemListType: itemListType
         )
     }

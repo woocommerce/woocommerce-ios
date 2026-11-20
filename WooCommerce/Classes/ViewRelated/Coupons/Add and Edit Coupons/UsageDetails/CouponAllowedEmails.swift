@@ -11,22 +11,18 @@ struct CouponAllowedEmails: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             VStack(alignment: .leading) {
                 TextField("", text: $viewModel.emailPatterns)
                     .labelsHidden()
                     .padding(.horizontal, Constants.margin)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                 Divider()
                     .padding(.leading, Constants.margin)
-                    .padding(.leading, insets: geometry.safeAreaInsets)
                 Text(Localization.description)
                     .footnoteStyle()
                     .padding(.horizontal, Constants.margin)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
             }
             .padding(.top, Constants.topSpacing)
-            .ignoresSafeArea(.container, edges: [.horizontal])
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)

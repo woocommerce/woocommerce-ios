@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -13,11 +14,11 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .accessibilityAddTraits(.isHeader)
@@ -33,7 +34,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
-            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+            Spacer(minLength: metrics.spacing.large)
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)

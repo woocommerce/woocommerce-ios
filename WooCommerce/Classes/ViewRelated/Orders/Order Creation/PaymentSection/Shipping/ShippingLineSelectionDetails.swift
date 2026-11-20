@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View to add/edit a single shipping line in an order, including shipping method selection, with the option to remove it.
 ///
@@ -7,6 +8,7 @@ struct ShippingLineSelectionDetails: View {
     /// View model to drive the view content
     ///
     @StateObject var viewModel: ShippingLineSelectionDetailsViewModel
+    @State private var keyboardObserver = KeyboardObserver()
 
     @Environment(\.dismiss) var dismiss
 
@@ -15,87 +17,91 @@ struct ShippingLineSelectionDetails: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                // MARK: Shipping Method
-                Button {
-                    // Dismissing the keyboard before the push keeps SwiftUI's keyboard avoidance working
-                    // when this screen returns: pushing while the keyboard is visible permanently breaks
-                    // the keyboard safe area for the rest of the sheet's lifetime.
-                    endEditing()
-                    isMethodPickerPresented = true
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(Localization.methodTitle)
-                                .font(.title3)
-                                .foregroundColor(Color(.textSubtle))
-                            Text(viewModel.selectedMethod.title)
-                                .font(.title2.bold())
-                                .foregroundColor(viewModel.selectedMethodColor)
+            GeometryReader { geometry in
+                List {
+                    // MARK: Shipping Method
+                    Button {
+                        // Dismissing the keyboard before the push keeps SwiftUI's keyboard avoidance working
+                        // when this screen returns: pushing while the keyboard is visible permanently breaks
+                        // the keyboard safe area for the rest of the sheet's lifetime.
+                        endEditing()
+                        isMethodPickerPresented = true
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(Localization.methodTitle)
+                                    .font(.title3)
+                                    .foregroundColor(Color(.textSubtle))
+                                Text(viewModel.selectedMethod.title)
+                                    .font(.title2.bold())
+                                    .foregroundColor(viewModel.selectedMethodColor)
+                            }
+                            Spacer()
+                            DisclosureIndicator()
                         }
-                        Spacer()
-                        DisclosureIndicator()
+                    }
+
+                    // MARK: Amount
+                    VStack(alignment: .leading) {
+                        Text(Localization.amountTitle)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
+                        FormattableAmountTextField(viewModel: viewModel.formattableAmountViewModel)
+                    }
+
+                    // MARK: Name
+                    VStack(alignment: .leading) {
+                        Text(Localization.nameTitle)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
+                        TextField(Localization.namePlaceholder, text: $viewModel.methodTitle)
+                            .secondaryTitleStyle()
+                            .focused($isNameFieldFocused)
+                            .accessibilityIdentifier(Accessibility.nameField)
+                    }
+
+                    // MARK: Delete Shipping Button
+                    Button(Localization.deleteShippingButton) {
+                        viewModel.removeShippingLine()
+                        dismiss()
+                    }
+                    .foregroundColor(.init(uiColor: .error))
+                    .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                    .renderedIf(viewModel.isExistingShippingLine)
+                    .listRowSeparator(.hidden, edges: .bottom)
+                }
+                .listStyle(.plain)
+                .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
+                .safeAreaInset(edge: .bottom, spacing: .zero, content: {
+                    // MARK: Add Shipping Button
+                    Button(Localization.doneButton(isEditing: viewModel.isExistingShippingLine)) {
+                        viewModel.saveData()
+                        dismiss()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(!viewModel.enableDoneButton)
+                    .accessibilityIdentifier(Accessibility.doneButton)
+                    .padding([.top, .horizontal])
+                    .padding(.bottom, keyboardObserver.isKeyboardVisible || geometry.safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
+                    .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
+                })
+                .navigationDestination(isPresented: $isMethodPickerPresented) {
+                    SingleSelectionList(title: Localization.methodTitle,
+                                        items: viewModel.shippingMethods,
+                                        contentKeyPath: \.title,
+                                        selected: $viewModel.selectedMethod,
+                                        showDoneButton: false,
+                                        backgroundColor: nil) { method in
+                        viewModel.trackShippingMethodSelected(method)
                     }
                 }
-
-                // MARK: Amount
-                VStack(alignment: .leading) {
-                    Text(Localization.amountTitle)
-                        .font(.title3)
-                        .foregroundColor(Color(.textSubtle))
-                    FormattableAmountTextField(viewModel: viewModel.formattableAmountViewModel)
-                }
-
-                // MARK: Name
-                VStack(alignment: .leading) {
-                    Text(Localization.nameTitle)
-                        .font(.title3)
-                        .foregroundColor(Color(.textSubtle))
-                    TextField(Localization.namePlaceholder, text: $viewModel.methodTitle)
-                        .secondaryTitleStyle()
-                        .focused($isNameFieldFocused)
-                        .accessibilityIdentifier(Accessibility.nameField)
-                }
-
-                // MARK: Delete Shipping Button
-                Button(Localization.deleteShippingButton) {
-                    viewModel.removeShippingLine()
-                    dismiss()
-                }
-                .foregroundColor(.init(uiColor: .error))
-                .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
-                .renderedIf(viewModel.isExistingShippingLine)
-                .listRowSeparator(.hidden, edges: .bottom)
-            }
-            .listStyle(.plain)
-            .safeAreaInset(edge: .bottom, content: {
-                // MARK: Add Shipping Button
-                Button(Localization.doneButton(isEditing: viewModel.isExistingShippingLine)) {
-                    viewModel.saveData()
-                    dismiss()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(!viewModel.enableDoneButton)
-                .accessibilityIdentifier(Accessibility.doneButton)
-                .padding()
-                .background(Color(.systemBackground))
-            })
-            .navigationDestination(isPresented: $isMethodPickerPresented) {
-                SingleSelectionList(title: Localization.methodTitle,
-                                    items: viewModel.shippingMethods,
-                                    contentKeyPath: \.title,
-                                    selected: $viewModel.selectedMethod,
-                                    showDoneButton: false,
-                                    backgroundColor: nil) { method in
-                    viewModel.trackShippingMethodSelected(method)
-                }
-            }
-            .navigationTitle(Localization.shipping)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        dismiss()
+                .navigationTitle(Localization.shipping)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancel) {
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -115,6 +121,10 @@ private extension ShippingLineSelectionDetails {
 }
 
 private extension ShippingLineSelectionDetails {
+    enum Layout {
+        static let footerBottomPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let shipping = NSLocalizedString("order.shippingLineDetails.shippingTitle",
                                                 value: "Shipping",

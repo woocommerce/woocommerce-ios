@@ -146,13 +146,37 @@ struct ReceiptPrinterServiceTests {
                                                        refundReturnsPolicy: nil)
 
         // When — the order-based path assembles the receipt content from the order internally.
-        try await sut.printReceipt(order: order, storeInformation: storeInformation)
+        try await sut.printReceipt(order: order, storeInformation: storeInformation, cardDetails: nil)
 
         // Then — finished text (store header, order number, amount paid) reaches the backend.
         let printedText = try #require(printerDiscoveryService.printedText)
         #expect(printedText.contains("My Store"))
         #expect(printedText.contains("42"))
         #expect(printedText.contains("10.00"))
+    }
+
+    @Test func test_printReceipt_with_order_when_card_details_present_then_prints_brand_and_last4() async throws {
+        // Given
+        let sut = makeService()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "10.00")
+        let cardDetails = CardPresentTransactionDetails(last4: "4242",
+                                                        expMonth: 12,
+                                                        expYear: 2030,
+                                                        cardholderName: nil,
+                                                        brand: .visa,
+                                                        generatedCard: nil,
+                                                        receipt: nil,
+                                                        emvAuthData: nil,
+                                                        wallet: nil,
+                                                        network: nil)
+
+        // When
+        try await sut.printReceipt(order: order, storeInformation: .empty, cardDetails: cardDetails)
+
+        // Then
+        let printedText = try #require(printerDiscoveryService.printedText)
+        #expect(printedText.contains(CardBrand.visa.displayName))
+        #expect(printedText.contains("4242"))
     }
 
     @Test func test_printReceipt_with_order_when_service_throws_then_propagates_error() async {
@@ -163,7 +187,7 @@ struct ReceiptPrinterServiceTests {
 
         // When / Then
         await #expect(throws: SampleError.connectionFailed) {
-            try await sut.printReceipt(order: order, storeInformation: .empty)
+            try await sut.printReceipt(order: order, storeInformation: .empty, cardDetails: nil)
         }
     }
 }

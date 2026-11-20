@@ -136,7 +136,9 @@ private extension BlazeCampaignItemView {
     enum Constants {
         static let centsToUnit: Double = 100
     }
+}
 
+extension BlazeCampaignItemView {
     enum Localization {
         static let clickthroughs = NSLocalizedString(
             "blazeCampaignItemView.clickthroughs",

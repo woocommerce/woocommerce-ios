@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let message: String
     let retryHandler: () -> Void
     @State private var attributedMessage: AttributedString = ""
@@ -10,49 +11,38 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(alignment: .center) {
-                Spacer()
-                VStack(alignment: .center, spacing: POSSpacing.none) {
-                    Spacer()
-                    POSErrorXMark()
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
-                    VStack(alignment: .center, spacing: PointOfSaleEmptyErrorStateViewLayout.textSpacing) {
-                        Text(Localization.title)
-                            .foregroundStyle(Color.posOnSurface)
-                            .font(.posHeadingBold)
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                Spacer().frame(height: metrics.spacing.medium)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(Localization.title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
 
-                        Text(attributedMessage)
-                            .padding([.leading, .trailing])
-                    }
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
-
-                    VStack(spacing: PointOfSaleEmptyErrorStateViewLayout.buttonSpacing) {
-                        Button(Localization.editOrderTitle, action: {
-                            posModel.addMoreToCart()
-                        })
-                        .buttonStyle(POSFilledButtonStyle(size: .normal))
-
-                        Button(retryActionTitle, action: {
-                            analytics.track(event: .PointOfSale.itemRemovedFromCart(
-                                    sourceView: .error,
-                                    itemType: .coupon
-                                ))
-                            posModel.removeAllItemsFromCart(types: [.coupon])
-                            retryHandler()
-                        })
-                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                    }
-                    .frame(width: geometry.size.width / 2)
-                    .padding([.leading, .trailing], Constants.buttonSidePadding)
-                    .padding([.bottom], Constants.buttonBottomPadding)
-
-                    Spacer()
+                    Text(attributedMessage)
+                        .posPadding(.horizontal, \.medium)
                 }
-                .multilineTextAlignment(.center)
-                Spacer()
+            }
+        } buttons: {
+            VStack(spacing: metrics.spacing.medium) {
+                Button(Localization.editOrderTitle, action: {
+                    posModel.addMoreToCart()
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                Button(retryActionTitle, action: {
+                    analytics.track(event: .PointOfSale.itemRemovedFromCart(
+                            sourceView: .error,
+                            itemType: .coupon
+                        ))
+                    posModel.removeAllItemsFromCart(types: [.coupon])
+                    retryHandler()
+                })
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
+        .multilineTextAlignment(.center)
         .onAppear {
             // Setting attributed string once in onAppear to prevent a SwiftUI crash
             // Building attributed HTML string within SwiftUI body causes never-ending redraw cycles
@@ -66,13 +56,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
         } else {
             Localization.retryActionTitlePlural
         }
-    }
-}
-
-private extension PointOfSaleOrderSyncCouponsErrorMessageView {
-    enum Constants {
-        static let buttonSidePadding: CGFloat = POSPadding.xxLarge
-        static let buttonBottomPadding: CGFloat = POSPadding.medium
     }
 }
 

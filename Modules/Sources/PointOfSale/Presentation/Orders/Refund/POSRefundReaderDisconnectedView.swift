@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReaderDisconnectedView: View {
+    @Environment(\.posMetrics) private var metrics
     let onConnect: () -> Void
     let onCancel: () -> Void
     let onBack: () -> Void
@@ -11,9 +12,7 @@ struct POSRefundReaderDisconnectedView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            VStack(spacing: POSSpacing.none) {
-                Spacer(minLength: POSSpacing.large)
-
+            POSStatusScreenLayout(buttonsWidth: .capped) {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
                     viewModel: .init(
                         title: Localization.title,
@@ -22,9 +21,7 @@ struct POSRefundReaderDisconnectedView: View {
                     ),
                     animation: .init(namespace: paymentMessageNamespace)
                 )
-
-                Spacer(minLength: POSSpacing.large)
-
+            } buttons: {
                 buttonsSection
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -59,19 +56,17 @@ private extension POSRefundReaderDisconnectedView {
             Spacer()
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.connectButton, action: onConnect)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
             Button(Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .frame(maxWidth: .infinity)
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

@@ -30,7 +30,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
-    @State private var accessSession: POSAccessSession
+    @State private var accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -42,7 +42,7 @@ public struct PointOfSaleEntryPointView: View {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let settingsController: POSSettingsControllerProtocol
+    @State private var settingsController: PointOfSaleSettingsController
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -87,20 +87,13 @@ public struct PointOfSaleEntryPointView: View {
          receiptSettingsAdminURL: String,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
-         staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
-         staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
          registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
         self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
-            siteID: siteID,
-            featureFlags: services.featureFlags,
-            fetcher: staffFetcher
-        ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -147,6 +140,7 @@ public struct PointOfSaleEntryPointView: View {
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
                                                           analytics: services.analytics)
+        let printerConnectionController = receiptPrinter.map { POSPrinterConnectionController(service: $0, analytics: services.analytics) }
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -158,8 +152,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
                                                                 analytics: services.analytics,
-                                                                printerConnectionController: receiptPrinter.map { POSPrinterConnectionController(service: $0) },
-                                                                staffSettingsService: staffSettingsService)
+                                                                printerConnectionController: printerConnectionController)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -201,7 +194,7 @@ public struct PointOfSaleEntryPointView: View {
             // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
             let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
             content(isCompactLayout: isCompactLayout)
-                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? POSPadding.none : nil)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
     }
@@ -212,11 +205,13 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+                    // Lock modifiers capture their session once; keep this branch gated on the model created after accessSession is set.
                     .posAutoLockActivityTracking(
                         session: accessSession,
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel
                     )
+                    .posLockScreenOverlay()
             } else {
                 PointOfSaleLoadingView()
             }
@@ -227,6 +222,22 @@ public struct PointOfSaleEntryPointView: View {
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
+            // Session initialization persists lock state, so it must run once, before content is exposed.
+            let session: POSAccessSession
+            do {
+                session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
+                                                                 shouldCreate: { posModel == nil })
+            } catch {
+                return
+            }
+            guard !Task.isCancelled, posModel == nil else {
+                session.endSession()
+                return
+            }
+            accessSession = session
+            if services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) {
+                settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session)
+            }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
                 itemsController: itemsController,
@@ -254,7 +265,8 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
+            let cleanup = { [posModel, posModalManager, session, onPointOfSaleModeActiveStateChange] in
+                session.endSession()
                 onPointOfSaleModeActiveStateChange(false)
                 posModalManager.onDisappear()
                 posModel?.pointOfSaleClosed()
@@ -281,20 +293,20 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
-        .posLockScreenOverlay()
+        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .environment(\.posAccessSession, accessSession)
         .onChange(of: isCompactLayout) { _, isCompactLayout in
             posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
         }
-        .task {
-            await accessSession.refreshPINStatus()
-        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            let session = accessSession
+            Task { await session.saveElapsedTime() }
         }
     }
 
@@ -306,8 +318,6 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-import struct Yosemite.POSStaffMember
-
 #Preview {
     PointOfSaleEntryPointView(
         siteID: 1,
@@ -334,13 +344,8 @@ import struct Yosemite.POSStaffMember
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
-        staffFetcher: POSPreviewStaffFetcher(),
         services: POSPreviewServices()
     )
-}
-
-private struct POSPreviewStaffFetcher: POSStaffFetching {
-    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] { [] }
 }
 
 #endif

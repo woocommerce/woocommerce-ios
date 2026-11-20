@@ -101,38 +101,34 @@ public final class POSScreen: ScreenObject {
         XCTAssertTrue(customAmountEntryRow.waitForIsHittable(timeout: 10), "Custom amount entry row should be tappable.")
         customAmountEntryRow.tap()
 
-        let amountField = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-amount-field").firstMatch
-        if amountField.waitForIsHittable(timeout: 5) {
-            amountField.tap()
-        } else {
-            XCTAssertTrue(waitForVisibleElement(amountField, timeout: 5), "Custom amount amount field should be visible.")
-            amountField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
+        // The amount step focuses its field on open. Its digits fill from the right, so "12.34" types as 12.34.
         if let firstDigit = amount.first {
             XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
         }
         app.typeText(amount)
 
-        let nameField = app.textFields["pos-custom-amount-name-field"]
-        XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
-        let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
-        for _ in 0..<4 where !nameField.isHittable {
-            form.swipeUp()
-        }
-        XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
-        nameField.tap()
+        let continueButton = app.buttons["pos-custom-amount-continue-button"]
+        XCTAssertTrue(continueButton.waitForIsHittable(timeout: 5), "Custom amount Continue button should be tappable.")
+        continueButton.tap()
+
         if let name {
+            let nameCard = app.buttons["pos-custom-amount-name-card"]
+            XCTAssertTrue(nameCard.waitForIsHittable(timeout: 10), "Custom amount Name card should be tappable.")
+            nameCard.tap()
+            let nameField = app.textFields["pos-custom-amount-name-field"]
+            XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
+            nameField.tap()
             nameField.typeText(name)
+            let saveNameButton = app.buttons["pos-custom-amount-name-save-button"]
+            XCTAssertTrue(saveNameButton.waitForIsHittable(timeout: 5), "Custom amount name Save button should be tappable.")
+            saveNameButton.tap()
         }
 
         let submitButton = app.buttons["pos-add-custom-amount-submit-button"]
-        if submitButton.waitForIsHittable(timeout: 2) {
-            submitButton.tap()
-        } else {
-            XCTAssertTrue(waitForVisibleElement(submitButton, timeout: 5), "Custom amount submit button should be visible.")
-            submitButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
+        XCTAssertTrue(waitFor(element: submitButton, predicate: "exists == true AND isEnabled == true AND isHittable == true", timeout: 5),
+                      "Custom amount submit button should be enabled and tappable.")
+        submitButton.tap()
 
         showCompactCartIfNeeded()
         XCTAssertTrue(app.descendants(matching: .any)["pos-custom-amount-row"].waitForExistence(timeout: 10),
@@ -191,7 +187,9 @@ public final class POSScreen: ScreenObject {
         showCompactCartIfNeeded()
         let customAmountRow = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-row").firstMatch
         XCTAssertTrue(waitForVisibleElement(customAmountRow, timeout: 10), "Custom amount row should be visible.")
-        tapTrailingRemoveAffordance(in: customAmountRow)
+        let removeButton = app.buttons["pos-custom-amount-remove-button"]
+        XCTAssertTrue(waitForVisibleElement(removeButton, timeout: 10), "Custom amount remove button should be visible.")
+        removeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         customAmountRow.waitForElementToNotExist(element: customAmountRow, timeout: 10)
         return self
     }
@@ -320,12 +318,8 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func waitForReaderConnected() -> Self {
-        // Wait for the reader connection status to show "Reader connected"
-        let connectedStatus = app.otherElements["pos-reader-connected"]
-
-        guard connectedStatus.waitForExistence(timeout: 3) else {
-            return self
-        }
+        let connectedStatus = app.buttons["pos-reader-connected"]
+        XCTAssertTrue(connectedStatus.waitForExistence(timeout: 3), "Reader should be connected.")
 
         return self
     }

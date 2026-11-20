@@ -29,6 +29,11 @@ final class OrderStatusListViewController: UIViewController {
         selectStatusIfPossible()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     /// Select the row corresponding to the current order status if we can.
     ///
     private func selectStatusIfPossible() {

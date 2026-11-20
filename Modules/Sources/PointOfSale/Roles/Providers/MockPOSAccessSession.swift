@@ -1,14 +1,14 @@
 #if DEBUG
 
 import Observation
-import struct Yosemite.POSStaffMember
 
 @Observable
 @MainActor
 final class MockPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff?
     var isLocked: Bool
-    var hasAnyPINs: Bool
+    var isPINProtectionEnabled: Bool
+    var accessScope = POSPINSessionTokens.Token()
     var signInResult: Result<POSStaff, POSAuthError>
     var managerApprovalResult: Result<Void, POSAuthError>
     var checkLockoutResult: Result<Void, POSAuthError>
@@ -16,28 +16,28 @@ final class MockPOSAccessSession: POSAccessSession {
     var managerApprovalPINs: [String] = []
     var managerApprovalCapabilities: [POSCapability] = []
     var onSignIn: (() -> Void)?
-    var onManagerApproval: (() -> Void)?
+    var onManagerApproval: (() async -> Void)?
     private(set) var lockCallCount: Int = 0
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
-         hasAnyPINs: Bool = true,
-         signInResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(userID: 1, displayName: "Maya",
-                     preset: .manager, capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-         ),
+         isPINProtectionEnabled: Bool = true,
+         signInResult: Result<POSStaff, POSAuthError> = .success(POSLocalRole.admin.staff),
          managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
         self.isLocked = isLocked
-        self.hasAnyPINs = hasAnyPINs
+        self.isPINProtectionEnabled = isPINProtectionEnabled
         self.signInResult = signInResult
         self.managerApprovalResult = managerApprovalResult
         self.checkLockoutResult = checkLockoutResult
     }
 
+    func refreshPINProtection() throws(POSPINStoreError) {}
+    func beginPINChange() -> POSPINChangeRegistration { POSPINChangeRegistration {} }
+
     func allows(_ capability: POSCapability) -> Bool {
-        currentStaff?.hasCapability(capability) == true
+        !isPINProtectionEnabled || currentStaff?.hasCapability(capability) == true
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {
@@ -46,6 +46,7 @@ final class MockPOSAccessSession: POSAccessSession {
 
         switch signInResult {
         case .success(let signedInStaff):
+            accessScope = POSPINSessionTokens.Token()
             currentStaff = signedInStaff
             isLocked = false
         case .failure(let error):
@@ -53,10 +54,10 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+    func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError) {
         managerApprovalPINs.append(pin)
-        managerApprovalCapabilities.append(capability)
-        onManagerApproval?()
+        managerApprovalCapabilities.append(requiredCapability)
+        await onManagerApproval?()
 
         switch managerApprovalResult {
         case .success:
@@ -68,10 +69,17 @@ final class MockPOSAccessSession: POSAccessSession {
 
     func lock() {
         isLocked = true
+        accessScope = POSPINSessionTokens.Token()
         lockCallCount += 1
     }
 
-    func checkLockoutState() throws(POSAuthError) {
+    func endSession() {
+        accessScope = POSPINSessionTokens.Token()
+    }
+
+    func saveElapsedTime() async {}
+
+    func checkLockoutState() async throws(POSAuthError) {
         switch checkLockoutResult {
         case .success:
             break
@@ -79,10 +87,6 @@ final class MockPOSAccessSession: POSAccessSession {
             throw error
         }
     }
-
-    func refreshPINStatus() async {}
-    func refreshPINStatus(using staff: [POSStaffMember]) async {}
-    func clearStaffCache() {}
 }
 
 #endif

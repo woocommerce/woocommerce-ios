@@ -3,6 +3,7 @@ import enum Yosemite.POSCatalogSyncProgress
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct PointOfSaleLoadingView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
 
     private let catalogSyncState: POSCatalogSyncViewState?
@@ -22,17 +23,17 @@ struct PointOfSaleLoadingView: View {
                     .progressViewStyle(POSProgressViewStyle())
 
                 if isCatalogSyncing {
-                    Spacer().frame(height: POSSpacing.xLarge)
+                    Spacer().frame(height: POSMetrics.regular.spacing.xxLarge)
                     Text(Localization.syncingCatalogTitle)
                         .font(.posHeadingBold)
                     if let progressText {
                         Text(progressText)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(Color.posOnSurfaceVariantLowest)
-                            .padding(.top, POSSpacing.small)
+                            .padding(.top, metrics.spacing.small)
                     }
                     Spacer()
-                    VStack(spacing: POSSpacing.medium) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Button {
                             analytics.track(event: WooAnalyticsEvent.LocalCatalog.downloadingScreenExitPosTapped())
                             onExit?()
@@ -44,7 +45,7 @@ struct PointOfSaleLoadingView: View {
 
                         syncingCatalogHintView
                     }
-                    .padding(.bottom, POSPadding.xLarge)
+                    .padding(.bottom, metrics.padding.xLarge)
                 } else {
                     Spacer()
                 }
@@ -93,13 +94,13 @@ private extension PointOfSaleLoadingView {
     }
 
     var syncingCatalogHintView: some View {
-        VStack(spacing: POSSpacing.xSmall) {
+        VStack(spacing: metrics.spacing.xSmall) {
             Text(Localization.syncingCatalogHint)
             Text(Localization.syncingCatalogSubtitle)
         }
         .font(.posBodyMediumRegular())
         .foregroundStyle(Color.posOnSurfaceVariantLowest)
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
     }
 
     struct Localization {

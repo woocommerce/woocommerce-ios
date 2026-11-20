@@ -37,20 +37,20 @@ struct CustomAmountAvatar: View {
     CustomAmountAvatar(name: "Service fee")
         .frame(width: 96, height: 96)
         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
-        .padding()
+        .posPadding(\.medium)
 }
 
 #Preview("56pt — refund row size", traits: .sizeThatFitsLayout) {
     CustomAmountAvatar(name: "Tip")
         .frame(width: 56, height: 56)
         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-        .padding()
+        .posPadding(\.medium)
 }
 
 #Preview("Empty name fallback", traits: .sizeThatFitsLayout) {
     CustomAmountAvatar(name: "")
         .frame(width: 96, height: 96)
         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
-        .padding()
+        .posPadding(\.medium)
 }
 #endif

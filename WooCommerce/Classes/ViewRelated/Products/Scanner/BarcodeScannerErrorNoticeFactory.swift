@@ -4,17 +4,17 @@ import Yosemite
 /// Provides the relevant notice given an error after the Identifier scanned fails to provide an order item
 ///
 struct BarcodeScannerErrorNoticeFactory {
-    static func notice(for error: Error, code: ScannedBarcode, actionHandler: @escaping ((() -> Void))) -> Notice {
-        Notice(title: Localization.defaultTitle,
-               message: noticeMessage(for: error, code: code),
+    static func notice(for error: Error, code: ScannedBarcode, title: String = Localization.defaultTitle, actionHandler: @escaping ((() -> Void))) -> Notice {
+        Notice(title: title,
+               message: noticeMessage(for: error, code: code, fallbackMessage: title),
                feedbackType: .error,
                actionTitle: Localization.retryActionTitle,
                actionHandler: actionHandler)
     }
 
-    private static func noticeMessage(for error: Error, code: ScannedBarcode) -> String {
+    private static func noticeMessage(for error: Error, code: ScannedBarcode, fallbackMessage: String) -> String {
         guard let productLoadError = error as? ProductLoadError else {
-            return Localization.defaultTitle
+            return fallbackMessage
         }
 
         switch productLoadError {
@@ -25,7 +25,7 @@ struct BarcodeScannerErrorNoticeFactory {
         case .emptyIdentifier:
             return Localization.invalidIdentifier
         default:
-            return Localization.defaultTitle
+            return fallbackMessage
         }
     }
 }

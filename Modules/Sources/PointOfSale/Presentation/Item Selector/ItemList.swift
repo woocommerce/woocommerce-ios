@@ -7,6 +7,7 @@ import struct Yosemite.POSCoupon
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posMetrics) private var metrics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     var state: ItemListState? {
@@ -47,7 +48,7 @@ struct ItemList<HeaderView: View>: View {
                 await itemsController.loadNextItems(base: node)
             },
             content: {
-                LazyVStack(spacing: Constants.itemSpacing) {
+                LazyVStack(spacing: metrics.spacing.medium) {
                     headerView
 
                     headerRows
@@ -61,8 +62,8 @@ struct ItemList<HeaderView: View>: View {
                     footerRows
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.horizontal, Constants.itemListPadding)
-                .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? Constants.itemListPadding : floatingControlAreaSize.height)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? metrics.padding.medium : floatingControlAreaSize.height)
                 .animation(.default, value: state?.items)
             }
         )
@@ -99,11 +100,6 @@ struct ItemList<HeaderView: View>: View {
             EmptyView()
         }
     }
-}
-
-private enum Constants {
-    static let itemListPadding: CGFloat = POSPadding.medium
-    static let itemSpacing: CGFloat = POSSpacing.medium
 }
 
 struct ItemListRow: View {

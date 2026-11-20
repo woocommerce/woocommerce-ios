@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-20 09:57:46+0000 */
+/* Translation-Revision-Date: 2026-11-04 09:57:55+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -12,12 +12,6 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
-
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld オプション)";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@ (%2$ld オプション)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (プライベート)";
@@ -7745,9 +7739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "バリエーション";
 
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "バリエーション属性";
-
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "バリエーションが正常に作成されました";
 
@@ -8282,6 +8273,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "キャンセル";
+
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "使用を停止";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "既存のバリエーションはこの属性に一致しなくなります。";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "バリエーションの使用を停止しますか？";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "バリエーションのために使用";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "商品ページ上に表示";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "カスタム金額を削除";
@@ -9800,6 +9806,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
 "cardPresentPayment.tapToPay.paymentCancelled.title" = "支払いをキャンセル済み";
 
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "再読み込み";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "再読み込み";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "再読み込み";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "再読み込み";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "支払い設定を開く";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "再読み込み";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "再読み込み";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "ストア管理";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "1つ以上の期限切れの要件があります。 スキップして支払いを受け取り続けることはできますが、要件がアカウントをブロックしている場合、解決するまで一部の取引が拒否される場合があります。";
 
@@ -9811,6 +9841,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.title" = "アカウントの期限切れ要件";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "再試行";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "ストア管理画面でプラグインを更新";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "注文に戻る";
@@ -9901,6 +9937,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue.1" = "おつり: %1$@";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "応答の抜粋: %1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "ストアにログインできませんでした。 この予期しない応答のトラブルシューティングにご協力ください。\n\nサイト: %1$@\nログインステップ: %2$@\nログインフロー: %3$@\n失敗の種類: %4$@\nHTTP ステータス: %5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "リクエスト: %1$@\nコンテンツタイプ: %2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "不明";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "閉じる";
@@ -10385,6 +10433,45 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "このユーザーはゲストです。ゲストは注文の絞り込みに使用できません。";
 
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "再試行";
+
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "顧客リストには WooCommerce Analytics が必要ですが、このストアではオフになっています。 こちらで有効にするか、ストア管理画面の「WooCommerce」 ›「設定」›「詳細設定」›「機能」で「再試行」をタップします。";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "顧客リストには WooCommerce Analytics が必要ですが、このストアでは利用できません。 「WooCommerce」›「設定」›「詳細設定」›「機能」でオンにするようストア管理者に依頼します。";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "顧客リストには WooCommerce Analytics が必要ですが、現在このストアでは利用できません。 ストアの管理者に、オンになっていることを確認してください。";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "キャンセル";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "有効化";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "この操作により、ストア全体の設定が変更されます。 「WooCommerce」 ›「設定」›「詳細設定」›「機能」で誰かがオフにするまでオンのままになります。 Analytics がオフだったときの顧客は、「WooCommerce」 ›「Analytics」 ›「設定」で履歴データをインポートした後にのみ表示されます。";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "WooCommerce Analytics を有効にしますか？";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "Analytics を有効化";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "WooCommerce Analytics を有効にできませんでした。 もう一度お試しください。";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "顧客データの取得に失敗しました。 しばらくしてからもう一度お試しください。";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "再試行";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "顧客を読み込めません";
+
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "メールアドレスなし";
 
@@ -10505,6 +10592,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "日";
 
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@ × %2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "属性";
+
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "商品のカスタムフィールドを表示および編集";
 
@@ -10540,6 +10633,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "端末上のメディア";
+
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "非表示";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "バリエーションのために使用";
 
 /* Button to open map address picker. */
 "editOrderAddressForm.pickOnMap" = "地図で検索";
@@ -10977,6 +11076,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "レビュー";
 
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "新機能";
+
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
 
@@ -11076,6 +11178,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.OpenPaymentsAction.Title" = "支払い";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "以前の返金を読み込めませんでした。";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "Jetpack を連携";
@@ -13084,6 +13189,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "%1$d個のアイテム";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "%1$d個のアイテム";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "商品をタップして\n お買い物カゴに追加するか ";
 
@@ -13693,10 +13804,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "閉じる";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "商品小計 (%1$d個)";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "商品小計 (%1$d個)";
 
 /* Label for refund total row in refund detail */
@@ -13837,9 +13948,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "理由を編集";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "商品小計 (%d個)";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "注文返金の理由";
@@ -14404,6 +14512,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "数量ルールなし";
+
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "商品ページに素材やサイズなどの詳細を追加";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "属性";
 
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "カスタムフィールドを表示および編集";
@@ -15345,6 +15459,9 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "連携するストアを選択 (非表示: %1$d)";
 
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "消去";
+
 /* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
 "storeSegmentedControl.accessibilityValue.position" = "%1$d\/%2$d";
 
@@ -15365,6 +15482,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "ストア";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "%1$d\/%2$d";
 
 /* VoiceOver label of the back control in a top app bar. */
 "storeTopAppBar.navigation.back" = "戻る";
@@ -16021,6 +16141,24 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "すべてのストアアナリティクスを表示";
 
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "代わりにバックアップコードを使用";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "バックアップコードを入力して続行します。";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "WordPress.com からの認証コードをメールで確認し、入力して続行します。";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "SMS でコードを再送信";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "続行するにはセキュリティキーを入力してください。";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "テキストメッセージを送信しました。 メッセージに記載されている認証コードを入力します。";
+
 /* Button title to contact support to get help with unavailable Analytics module */
 "unavailableAnalyticsView.buttonTitle" = "さらにサポートが必要ですか ? お問い合わせ";
 
@@ -16498,6 +16636,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "再試行";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "配送業者側の問題のため、配送ラベルを購入できません。%1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "配送ラベルの購入時にエラーが発生しました。";
 
@@ -16617,6 +16758,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "再試行";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "次の通知を非表示: %1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "エラー";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "情報";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "警告";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "ステータスページを見る";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "配送 %1$d";
@@ -17145,6 +17301,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "代わりに SMS でコードを送信";
+
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "代わりにバックアップコードを使用";
 
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "認証コード";

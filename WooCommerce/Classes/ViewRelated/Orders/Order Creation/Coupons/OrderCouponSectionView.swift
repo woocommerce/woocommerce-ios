@@ -54,22 +54,44 @@ struct OrderCouponSectionView: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .padding()
         .renderedIf(couponViewModel.couponLineRows.isNotEmpty)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .sheet(isPresented: $shouldShowCouponList) {
-            CouponListView(siteID: viewModel.siteID,
-                           emptyStateActionTitle: "",
-                           emptyStateAction: { },
-                           onCouponSelected: { coupon in
-                addCouponLine(with: coupon.code)
-                shouldShowCouponList = false
-            })
+            NavigationStack {
+                CouponListView(siteID: viewModel.siteID,
+                               emptyStateActionTitle: "",
+                               emptyStateAction: { },
+                               onCouponSelected: { coupon in
+                    addCouponLine(with: coupon.code)
+                    shouldShowCouponList = false
+                })
+                .ignoresSafeArea(.container, edges: .bottom)
+                .navigationTitle(Localization.addCoupon)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancelButton) {
+                            shouldShowCouponList = false
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 private extension OrderCouponSectionView {
     enum Localization {
+        static let addCoupon = NSLocalizedString(
+            "order.form.coupon.add.button.title",
+            value: "Add Coupon",
+            comment: "Title for the Coupon screen during order creation")
+
+        static let cancelButton = NSLocalizedString(
+            "order.form.coupon.cancel.button.title",
+            value: "Cancel",
+            comment: "Cancel button title when showing the coupon list selector")
+
         static let couponsSectionTitle = NSLocalizedString(
             "OrderCouponSectionView.header.coupons",
             value: "Coupons",

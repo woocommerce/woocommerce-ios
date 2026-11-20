@@ -535,6 +535,44 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
+    func test_flagSiteAsUnsupportedForAppPasswordIfNeeded_when_another_tunneled_mutation_succeeds_then_keeps_the_retried_delete() {
+        // Given
+        let siteID: Int64 = 123
+        let delete = createTunneledRequest(siteID: siteID, method: .delete, path: "orders/1")
+        let update = createTunneledRequest(siteID: siteID, method: .put, path: "products/2")
+        _ = errorHandler.shouldRetryJetpackRequest(
+            originalRequest: delete,
+            convertedRequest: createRESTRequest(),
+            failure: NetworkError.unacceptableStatusCode(statusCode: 403, response: Data())
+        )
+
+        // When
+        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: update, failure: nil)
+
+        // Then
+        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
+        XCTAssertTrue(errorHandler.isRequestRetried(delete))
+    }
+
+    func test_isRequestRetried_when_only_another_tunneled_mutation_was_retried_then_returns_false() {
+        // Given
+        let retriedDelete = createTunneledRequest(siteID: 123, method: .delete, path: "orders/1")
+        let otherDelete = createTunneledRequest(siteID: 123, method: .delete, path: "orders/2")
+        let update = createTunneledRequest(siteID: 123, method: .put, path: "orders/1")
+
+        // When
+        _ = errorHandler.shouldRetryJetpackRequest(
+            originalRequest: retriedDelete,
+            convertedRequest: createRESTRequest(),
+            failure: createNetworkError()
+        )
+
+        // Then
+        XCTAssertTrue(errorHandler.isRequestRetried(retriedDelete))
+        XCTAssertFalse(errorHandler.isRequestRetried(otherDelete))
+        XCTAssertFalse(errorHandler.isRequestRetried(update))
+    }
+
     func test_flagSiteAsUnsupportedForAppPasswordIfNeeded_handles_disabled_error_codes() {
         // Given
         let siteID: Int64 = 456
@@ -733,6 +771,15 @@ private extension AlamofireNetworkErrorHandlerTests {
             path: "test",
             availableAsRESTRequest: true
         )
+    }
+
+    func createTunneledRequest(siteID: Int64, method: HTTPMethod, path: String) -> JetpackRequest {
+        JetpackRequest(wooApiVersion: .mark3,
+                       method: method,
+                       siteID: siteID,
+                       path: path,
+                       parameters: ["force": "true", "status": "any", "_fields": "id,name"],
+                       availableAsRESTRequest: true)
     }
 
     func createRESTRequest() -> RESTRequest {

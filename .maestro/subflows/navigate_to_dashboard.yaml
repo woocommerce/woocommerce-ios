@@ -4,5 +4,5 @@ appId: ${APP_ID}
     id: "tab-bar-my-store-item"
 - extendedWaitUntil:
     visible:
-      text: "Edit"
+      id: "my-store-title"
     timeout: 30000

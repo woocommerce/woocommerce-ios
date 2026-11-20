@@ -8,6 +8,7 @@ appId: ${APP_ID}
     clearKeychain: true
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
     # Maestro answers the notification prompt the app shows once signed in.
     # Flows turn notifications down so no banner can take a tap.
     permissions:

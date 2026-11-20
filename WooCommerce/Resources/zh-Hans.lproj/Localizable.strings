@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-20 11:54:16+0000 */
+/* Translation-Revision-Date: 2026-11-03 10:55:08+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -12,12 +12,6 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
-
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@（%2$ld 个 选项）";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@（%2$ld 个选项）";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@（私密）";
@@ -7745,9 +7739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "变体";
 
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "变体属性";
-
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "变体已成功创建";
 
@@ -8282,6 +8273,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "取消";
+
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "停止使用";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "现有变体将不再匹配此属性。";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "停止用于变体？";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "用于变体";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "在产品页面上可见";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "删除自定义金额";
@@ -9800,6 +9806,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
 "cardPresentPayment.tapToPay.paymentCancelled.title" = "付款已取消";
 
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "刷新";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "刷新";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "刷新";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "刷新";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "打开付款设置";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "刷新";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "刷新";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "商店管理页面";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "您至少有一项逾期未完成的要求。 您可以跳过此项并继续收款，但如果该要求导致您的账户受阻，则在您解决之前，部分交易可能会被拒绝。";
 
@@ -9811,6 +9841,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.title" = "您账户上有逾期未完成的要求";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "重试";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "在商店管理页面中更新插件";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "返回订单";
@@ -9901,6 +9937,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue.1" = "找零：%1$@";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "响应摘要：%1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "我无法登录我的商店。 请帮我排查此意外响应的问题。\n\n站点：%1$@\n登录步骤：%2$@\n登录流程：%3$@\n失败类型：%4$@\nHTTP 状态：%5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "请求：%1$@\n内容类型：%2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "未知";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "忽略";
@@ -10385,6 +10433,45 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "该用户是访客，而访客不能用于筛选订单。";
 
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "重试";
+
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "客户列表需要使用 WooCommerce Analytics，但此商店已关闭该功能。 您可以在此处启用该功能，也可以在商店管理页面中的“WooCommerce › 设置 › 高级 › 功能”下启用，然后点击“重试”。";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "客户列表需要使用 WooCommerce Analytics，但此商店尚不提供该功能。 请让商店管理员在“WooCommerce › 设置 › 高级 › 功能”中将其启用。";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "客户列表需要使用 WooCommerce Analytics，但此商店目前尚不提供该功能。 请让商店管理员确认该功能是否已开启。";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "取消";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "启用";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "这将更改您整个商店的设置。 该功能将保持启用状态，直至有人在“WooCommerce › 设置 › 高级 › 功能”中将其关闭。 在 Analytics 关闭期间产生的客户数据，可能只有在您通过“WooCommerce › Analytics › 设置”导入历史数据后才会显示。";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "启用 WooCommerce Analytics？";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "启用 Analytics";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "无法启用 WooCommerce Analytics。 请重试。";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "获取客户数据失败。 请稍后重试。";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "重试";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "无法加载客户数据";
+
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "无电子邮件地址";
 
@@ -10505,6 +10592,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "天";
 
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@：%2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "属性";
+
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "查看并编辑产品的自定义字段";
 
@@ -10540,6 +10633,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "设备上的媒体";
+
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "已隐藏";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "用于变体";
 
 /* Button to open map address picker. */
 "editOrderAddressForm.pickOnMap" = "在地图上查找";
@@ -10977,6 +11076,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "评论";
 
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "新功能";
+
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
 
@@ -11076,6 +11178,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.OpenPaymentsAction.Title" = "付款";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "无法加载之前的退款记录。";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "连接 Jetpack";
@@ -13084,6 +13189,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 设置";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "%1$d 件商品";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "%1$d 件商品";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "点击产品以 \n 将其添加到购物车，或者 ";
 
@@ -13693,10 +13804,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "关闭";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "商品小计（%1$d 件商品）";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "商品小计（%1$d 件商品）";
 
 /* Label for refund total row in refund detail */
@@ -13837,9 +13948,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "编辑原因";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "商品小计（共 %d 件商品）";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "订单退款原因";
@@ -14404,6 +14512,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "无数量规则";
+
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "在产品页面中添加材质或尺寸等详细信息";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "属性";
 
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "查看并编辑自定义字段";
@@ -15345,6 +15459,9 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "选择要关联的商店（%1$d 个已隐藏）";
 
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "晴朗";
+
 /* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
 "storeSegmentedControl.accessibilityValue.position" = "%1$d\/%2$d";
 
@@ -15365,6 +15482,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "商店";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "%1$d\/%2$d";
 
 /* VoiceOver label of the back control in a top app bar. */
 "storeTopAppBar.navigation.back" = "返回";
@@ -16021,6 +16141,24 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "查看所有商店分析数据";
 
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "请改用备份代码";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "请输入备份代码以继续。";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "请查看您的电子邮箱，获取来自 WordPress.com 的验证码，然后输入该验证码以继续。";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "通过短信重新发送验证码";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "请提供您的安全密钥以继续。";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "我们发送了一条短信。 请输入短信中的验证码。";
+
 /* Button title to contact support to get help with unavailable Analytics module */
 "unavailableAnalyticsView.buttonTitle" = "仍需帮助？ 联系我们";
 
@@ -16498,6 +16636,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "重试";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "由于承运商服务问题，我们无法购买配送标签：%1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "购买配送标签时出错。";
 
@@ -16617,6 +16758,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "重试";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "忽略通知：%1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "错误";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "信息";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "警告";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "查看状态页";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "包裹 %1$d";
@@ -17145,6 +17301,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "给我发个代码";
+
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "请改用备份代码";
 
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "验证码";

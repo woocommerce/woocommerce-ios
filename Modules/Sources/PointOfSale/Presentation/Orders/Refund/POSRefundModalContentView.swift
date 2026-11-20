@@ -115,14 +115,15 @@ struct POSRefundModalContentView: View {
 
             content
                 .environment(\.posRefundPresentationStyle, .fullScreen)
+                .environment(\.floatingControlAreaSize, .zero)
         }
-            .posModal(item: $cardPresentAlertItem, onDismiss: {
+            .posModal(item: $cardPresentAlertItem, compactStyle: .cardReaderConnection, onDismiss: {
                 cardPresentAlertItem?.alertType.onDismiss?()
             }) { item in
                 PointOfSaleCardPresentPaymentAlert(alertType: item.alertType)
                     .posInteractiveDismissDisabled(item.alertType.isDismissDisabled)
             }
-            .posModal(item: $cardPresentOnboardingItem, onDismiss: {
+            .posModal(item: $cardPresentOnboardingItem, compactStyle: .cardPaymentsOnboarding, onDismiss: {
                 cardPresentOnboardingItem?.onCancel()
             }) { item in
                 PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(

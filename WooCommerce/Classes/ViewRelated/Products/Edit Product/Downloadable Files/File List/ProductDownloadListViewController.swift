@@ -112,6 +112,11 @@ final class ProductDownloadListViewController: UIViewController {
         handleSwipeBackGesture()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     deinit {
         cancellable?.cancel()
     }

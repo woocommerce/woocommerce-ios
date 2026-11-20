@@ -1,16 +1,17 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             Image(decorative: viewModel.imageName, bundle: .module)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+            VStack(spacing: metrics.spacing.medium) {
                 Text(viewModel.title)
                     .font(POSFontStyle.posHeadingBold)
                     .fixedSize(horizontal: false, vertical: true)

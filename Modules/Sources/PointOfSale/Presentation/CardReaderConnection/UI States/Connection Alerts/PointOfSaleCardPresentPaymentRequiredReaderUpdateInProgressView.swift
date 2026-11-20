@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -12,9 +13,9 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             Spacer()
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 PointOfSaleCardPresentPaymentReaderUpdateProgressView(
                     progress: CGFloat(viewModel.progress),
                     isComplete: viewModel.isComplete
@@ -22,7 +23,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                 .accessibilityHidden(true)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
@@ -30,7 +31,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                         .accessibilityFocused($isTitleFocused)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                    VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Text(viewModel.progressTitle)
                             .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)

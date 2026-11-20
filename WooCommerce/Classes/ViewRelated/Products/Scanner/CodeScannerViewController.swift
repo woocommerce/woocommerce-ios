@@ -98,6 +98,39 @@ final class CodeScannerViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    /// The scan area shrinks when the accessory needs more height than the dimmed area has.
+    func addBottomAccessoryView(_ accessoryView: UIView) {
+        loadViewIfNeeded()
+        accessoryView.translatesAutoresizingMaskIntoConstraints = false
+        accessoryView.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
+        // Below the scan area centering, so the accessory stretches to keep the scan area centered when there is room.
+        accessoryView.setContentHuggingPriority(Constants.bottomAccessoryHuggingPriority, for: .vertical)
+        bottomDimmingView.addSubview(accessoryView)
+        // A landscape iPhone has no room below a centered 200pt scan area for the instruction and the accessory.
+        // Like on Android, the top dimmed area gives way first, then the scan area.
+        instructionLabel.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
+        scanAreaView.constraints
+            .filter { $0.firstAttribute == .height && $0.relation == .greaterThanOrEqual }
+            .forEach { $0.priority = Constants.scanAreaMinimumHeightPriorityWithBottomAccessory }
+        view.constraints
+            .filter { $0.firstItem === scanAreaView && $0.firstAttribute == .centerY }
+            .forEach { $0.priority = .defaultLow }
+        // The top dimmed area is held open by its buttons, so they must not be squeezed in its place.
+        [cancelButton, swapCameraButton].forEach { $0?.setContentCompressionResistancePriority(.required, for: .vertical) }
+        let bottomToSafeArea = accessoryView.bottomAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.bottomAnchor)
+        bottomToSafeArea.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            topDimmingView.bottomAnchor.constraint(greaterThanOrEqualTo: cancelButton.bottomAnchor, constant: Constants.topButtonsBottomInset),
+            topDimmingView.bottomAnchor.constraint(greaterThanOrEqualTo: swapCameraButton.bottomAnchor, constant: Constants.topButtonsBottomInset),
+            accessoryView.topAnchor.constraint(equalTo: bottomDimmingView.topAnchor),
+            accessoryView.leadingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.leadingAnchor),
+            accessoryView.trailingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.trailingAnchor),
+            accessoryView.bottomAnchor.constraint(lessThanOrEqualTo: bottomDimmingView.bottomAnchor,
+                                                  constant: -Constants.bottomAccessoryMinimumBottomInset),
+            bottomToSafeArea
+        ])
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -386,6 +419,13 @@ private extension CodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
         static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
+        /// An iPad form sheet has no bottom safe area, so without this the accessory sits on its rounded bottom corners.
+        static let bottomAccessoryMinimumBottomInset: CGFloat = 8
+        static let bottomAccessoryPriorityAboveScanAreaHeight = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue + 1)
+        /// Matches the buttons' top inset in the XIB.
+        static let topButtonsBottomInset: CGFloat = 20
+        static let bottomAccessoryHuggingPriority = UILayoutPriority(UILayoutPriority.defaultLow.rawValue - 1)
+        static let scanAreaMinimumHeightPriorityWithBottomAccessory = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue - 1)
     }
 
     enum Localization {

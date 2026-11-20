@@ -36,6 +36,18 @@ struct CartViewHelperTests {
         #expect(sut.itemsInCartLabel(for: count) == expected)
     }
 
+    @Test(arguments: [PointOfSaleOrderStage.building, .finalizing])
+    func displayedOrderStage_when_compact_then_returns_building(orderStage: PointOfSaleOrderStage) {
+        // When, Then
+        #expect(sut.displayedOrderStage(orderStage: orderStage, isCompact: true) == .building)
+    }
+
+    @Test(arguments: [PointOfSaleOrderStage.building, .finalizing])
+    func displayedOrderStage_when_not_compact_then_returns_the_order_stage(orderStage: PointOfSaleOrderStage) {
+        // When, Then
+        #expect(sut.displayedOrderStage(orderStage: orderStage, isCompact: false) == orderStage)
+    }
+
     @Test func shouldShowClearCartButton_empty_cart_false() async throws {
         #expect(sut.shouldShowClearCartButton(cart: .init(), orderStage: .building) == false)
         #expect(sut.shouldShowClearCartButton(cart: .init(), orderStage: .finalizing) == false)

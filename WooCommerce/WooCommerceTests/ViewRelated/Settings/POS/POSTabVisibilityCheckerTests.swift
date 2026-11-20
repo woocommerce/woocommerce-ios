@@ -35,7 +35,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -56,7 +55,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -82,7 +80,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -101,7 +98,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -119,7 +115,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .nl, currency: .EUR)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -137,7 +132,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .es, currency: .EUR)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -155,7 +149,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .au, currency: .AUD)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -173,62 +166,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .nl, currency: .EUR)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
-                                              siteSettings: siteSettings,
-                                              stores: stores,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == true)
-    }
-
-    @Test(arguments: phoneSupportedCountries)
-    fileprivate func is_visible_on_phone_for_phone_supported_country(country: Country, currency: CurrencyCode) async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: country, currency: currency)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .phone,
-                                              siteSettings: siteSettings,
-                                              stores: stores,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == true)
-    }
-
-    @Test func is_invisible_on_phone_for_country_supported_only_on_tablet() async throws {
-        // Given - NL opens on phone together with Tap to Pay later.
-        let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .nl, currency: .EUR)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .phone,
-                                              siteSettings: siteSettings,
-                                              stores: stores,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    @Test func is_visible_on_tablet_for_country_supported_only_on_tablet() async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .nl, currency: .EUR)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -246,7 +183,6 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -281,7 +217,6 @@ struct POSTabVisibilityCheckerTests {
 
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -305,7 +240,6 @@ struct POSTabVisibilityCheckerTests {
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -333,7 +267,6 @@ struct POSTabVisibilityCheckerTests {
         connectivityObserver.setStatus(.notReachable)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               eligibilityService: eligibilityService,
                                               stores: stores,
                                               connectivityObserver: connectivityObserver)
@@ -352,7 +285,6 @@ struct POSTabVisibilityCheckerTests {
         connectivityObserver.setStatus(.notReachable)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               eligibilityService: eligibilityService,
                                               stores: stores,
                                               connectivityObserver: connectivityObserver)
@@ -372,7 +304,6 @@ struct POSTabVisibilityCheckerTests {
         accountWhitelistedInBackend(true)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               eligibilityService: eligibilityService,
                                               stores: stores,
@@ -391,7 +322,6 @@ struct POSTabVisibilityCheckerTests {
     @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
         // Given
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               eligibilityService: eligibilityService,
                                               stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
@@ -406,7 +336,6 @@ struct POSTabVisibilityCheckerTests {
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
         // Given
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               eligibilityService: eligibilityService,
                                               stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
@@ -421,7 +350,6 @@ struct POSTabVisibilityCheckerTests {
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
         // Given
         let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
                                               eligibilityService: eligibilityService,
                                               stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: nil)
@@ -453,14 +381,11 @@ extension POSTabVisibilityCheckerTests {
         (country: .ca, currency: .CAD),
         (country: .gb, currency: .GBP),
         (country: .nl, currency: .EUR),
-        (country: .au, currency: .AUD)
-    ]
-
-    nonisolated static let phoneSupportedCountries: [(country: Country, currency: CurrencyCode)] = [
-        (country: .us, currency: .USD),
-        (country: .pr, currency: .USD),
-        (country: .ca, currency: .CAD),
-        (country: .gb, currency: .GBP),
+        (country: .ie, currency: .EUR),
+        (country: .fi, currency: .EUR),
+        (country: .lu, currency: .EUR),
+        (country: .nz, currency: .NZD),
+        (country: .sg, currency: .SGD),
         (country: .au, currency: .AUD)
     ]
 
@@ -504,6 +429,11 @@ extension POSTabVisibilityCheckerTests {
         case gb = "GB"
         case es = "ES"
         case nl = "NL"
+        case ie = "IE"
+        case fi = "FI"
+        case lu = "LU"
+        case nz = "NZ"
+        case sg = "SG"
         case au = "AU"
 
         var countryCode: CountryCode {
@@ -520,6 +450,16 @@ extension POSTabVisibilityCheckerTests {
                 return .ES
             case .nl:
                 return .NL
+            case .ie:
+                return .IE
+            case .fi:
+                return .FI
+            case .lu:
+                return .LU
+            case .nz:
+                return .NZ
+            case .sg:
+                return .SG
             case .au:
                 return .AU
             }

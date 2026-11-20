@@ -10,10 +10,7 @@ struct InPersonPaymentsMenu: View {
             ScrollView {
                 VStack(spacing: 0) {
                     payoutSummary
-                        .background {
-                            Color(UIColor.systemBackground)
-                                .ignoresSafeArea()
-                        }
+                        .background(Color(UIColor.systemBackground), ignoresSafeAreaEdges: [])
 
                     if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
                         ScrollViewSection {

@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// Bottom sheet shown when the merchant taps "Other payment methods" on phone POS checkout.
 /// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalDismissAction) private var dismissModal
     var isTapToPayAvailable: Bool = false
     var isTapToPayEnabled: Bool = true
     var onTapToPay: (() -> Void)?
@@ -15,17 +17,36 @@ struct POSOtherPaymentMethodsSheet: View {
     var isMarkOrderAsPaidAvailable: Bool = false
     var onMarkOrderAsPaid: (() -> Void)?
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .foregroundStyle(Color.posOnSurface)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.top, POSPadding.large)
-                .padding(.bottom, POSPadding.medium)
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
+            HStack(alignment: .top, spacing: metrics.spacing.medium) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
 
+                // The phone bottom sheet closes with the grabber instead.
+                if horizontalSizeClass != .compact {
+                    POSModalCloseButton(closeAction: dismiss)
+                }
+            }
+            .padding(.bottom, metrics.padding.medium)
+
+            ViewThatFits(in: .vertical) {
+                rows
+                ScrollView {
+                    rows
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .if(horizontalSizeClass != .compact) {
+            $0.posModalSizing(fitsContentHeight: true)
+        }
+    }
+
+    private var rows: some View {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if isTapToPayAvailable, let onTapToPay {
                 row(systemImage: "wave.3.right.circle",
                     title: Localization.tapToPayTitle,
@@ -67,11 +88,11 @@ struct POSOtherPaymentMethodsSheet: View {
                     onMarkOrderAsPaid()
                 }
             }
-
-            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.posSurface)
+    }
+
+    private func dismiss() {
+        dismissModal?()
     }
 
     @ViewBuilder
@@ -82,13 +103,13 @@ struct POSOtherPaymentMethodsSheet: View {
                      isEnabled: Bool = true,
                      action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
+            HStack(alignment: .center, spacing: metrics.spacing.medium) {
                 Image(systemName: systemImage)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(isEnabled ? Color.posPrimary : Color.posOnSurfaceVariantLowest)
                     .frame(width: Constants.iconFrameWidth)
 
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                     Text(title)
                         .font(.posBodyMediumBold)
                         .foregroundStyle(isEnabled ? Color.posOnSurface : Color.posOnSurfaceVariantLowest)
@@ -98,9 +119,9 @@ struct POSOtherPaymentMethodsSheet: View {
                         .multilineTextAlignment(.leading)
                 }
 
-                Spacer(minLength: POSSpacing.small)
+                Spacer(minLength: metrics.spacing.small)
             }
-            .padding(POSPadding.medium)
+            .padding(.vertical, metrics.padding.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
@@ -115,7 +136,7 @@ struct POSOtherPaymentMethodsSheet: View {
 private extension POSOtherPaymentMethodsSheet {
     enum Constants {
         /// Fixed width for the leading icon in each payment method row. Not a
-        /// POSSpacing token — it sizes the icon column, not a semantic gap.
+        /// POSMetrics token — it sizes the icon column, not a semantic gap.
         static let iconFrameWidth: CGFloat = 28
     }
 

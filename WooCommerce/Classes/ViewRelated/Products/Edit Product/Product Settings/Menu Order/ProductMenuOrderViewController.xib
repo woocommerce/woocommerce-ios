@@ -28,8 +28,8 @@
             <constraints>
                 <constraint firstItem="lyj-b5-wwJ" firstAttribute="trailing" secondItem="JYX-ph-feD" secondAttribute="trailing" id="OP9-yX-CJq"/>
                 <constraint firstItem="JYX-ph-feD" firstAttribute="top" secondItem="1WG-jm-qSJ" secondAttribute="top" id="OqY-do-8zE"/>
-                <constraint firstItem="lyj-b5-wwJ" firstAttribute="bottom" secondItem="JYX-ph-feD" secondAttribute="bottom" id="VIY-IS-Xpc"/>
-                <constraint firstItem="JYX-ph-feD" firstAttribute="leading" secondItem="1WG-jm-qSJ" secondAttribute="leading" id="ttm-uH-pnW"/>
+                <constraint firstItem="1WG-jm-qSJ" firstAttribute="bottom" secondItem="JYX-ph-feD" secondAttribute="bottom" id="VIY-IS-Xpc"/>
+                <constraint firstItem="JYX-ph-feD" firstAttribute="leading" secondItem="lyj-b5-wwJ" secondAttribute="leading" id="ttm-uH-pnW"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="lyj-b5-wwJ"/>
             <point key="canvasLocation" x="404" y="129"/>

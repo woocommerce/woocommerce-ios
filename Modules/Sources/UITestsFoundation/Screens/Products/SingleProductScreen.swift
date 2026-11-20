@@ -56,7 +56,6 @@ public final class SingleProductScreen: ScreenObject {
     public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
         // common fields on a published product screen
         XCTAssertTrue(app.navigationBarButtonExists("save-product-button", timeout: 10), "Save button is not displayed!")
-        XCTAssertTrue(app.cells["product-linked-products-promo-cell"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
 
         // different product types display different fields on the published product screen

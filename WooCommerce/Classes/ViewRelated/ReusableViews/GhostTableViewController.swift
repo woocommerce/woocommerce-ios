@@ -72,6 +72,11 @@ final class GhostTableViewController: UITableViewController {
         configureSectionHeaderHeight()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     private func registerCellClass() {
         options.cellClass.nibExistsInMainBundle() ? tableView.registerNib(for: options.cellClass) : tableView.register(options.cellClass)
     }

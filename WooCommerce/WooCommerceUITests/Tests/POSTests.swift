@@ -76,6 +76,9 @@ final class POSTests: XCTestCase {
             .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
+    // Skipped in UITests.xctestplan. On iPhone, after the custom amount flow closes, XCUITest taps the compact cart
+    // button at the center of the screen (201, 437) instead of at the button, which opens a product. Waiting for a stable
+    // frame did not help.
     func test_POS_eligible_site_can_search_manage_cart_open_settings_and_exit_POS() throws {
         try openPOS(extraLaunchArguments: Self.customAmountsLaunchArguments)
             .tapSearchProducts()

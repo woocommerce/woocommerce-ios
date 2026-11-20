@@ -1,23 +1,20 @@
 import SwiftUI
 
 struct POSSettingsPaymentsDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: POSSettingsPaymentsViewModel
-    /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
-    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsPaymentsViewModel,
-         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
+    init(viewModel: POSSettingsPaymentsViewModel) {
         self.viewModel = viewModel
-        self.requestEditPermission = requestEditPermission
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.paymentsTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     POSInformationCard {
                         POSInformationCardFieldRowWithToggle(
                             label: Localization.paymentSuccessSoundTitle,
@@ -27,19 +24,17 @@ struct POSSettingsPaymentsDetailView: View {
                         )
                     }
                 }
-                .posContentPadding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)
     }
 
-    /// Toggling the sound is an edit, so route changes through `editPOSSettings`:
-    /// the value only flips once the operator holds the cap or a manager approves the override.
     private var paymentSuccessSoundBinding: Binding<Bool> {
         Binding(
             get: { viewModel.isPaymentSuccessSoundEnabled },
             set: { newValue in
-                requestEditPermission { viewModel.setPaymentSuccessSoundEnabled(newValue) }
+                viewModel.setPaymentSuccessSoundEnabled(newValue)
             }
         )
     }

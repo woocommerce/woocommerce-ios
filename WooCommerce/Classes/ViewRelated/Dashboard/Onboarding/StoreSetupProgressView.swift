@@ -77,7 +77,9 @@ private extension StoreSetupProgressView {
             static let widthExpanded: CGFloat = 205.8
         }
     }
+}
 
+extension StoreSetupProgressView {
     enum Localization {
 
         enum TasksCompleted {

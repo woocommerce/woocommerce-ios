@@ -27,10 +27,10 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="nub-3J-oyN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="OAZ-zF-Tlf"/>
+                <constraint firstItem="nub-3J-oyN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="OAZ-zF-Tlf"/>
                 <constraint firstAttribute="bottom" secondItem="nub-3J-oyN" secondAttribute="bottom" id="ZGZ-77-ugQ"/>
                 <constraint firstItem="nub-3J-oyN" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="b4z-FV-WgC"/>
-                <constraint firstAttribute="trailing" secondItem="nub-3J-oyN" secondAttribute="trailing" id="fAh-9n-PAY"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="nub-3J-oyN" secondAttribute="trailing" id="fAh-9n-PAY"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <point key="canvasLocation" x="53.600000000000001" y="66.11694152923539"/>

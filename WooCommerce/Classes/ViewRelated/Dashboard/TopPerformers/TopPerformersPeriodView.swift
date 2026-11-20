@@ -24,6 +24,12 @@ struct TopPerformersPeriodView: View {
 }
 
 private extension TopPerformersPeriodView {
+    enum Layout {
+        static let padding = EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16)
+    }
+}
+
+extension TopPerformersPeriodView {
     enum Localization {
         static let productsTitle = NSLocalizedString(
             "Products",
@@ -33,10 +39,6 @@ private extension TopPerformersPeriodView {
             "Items Sold",
             comment: "Title for the products card at the top of the top performers section in dashboard stats."
         )
-    }
-
-    enum Layout {
-        static let padding = EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16)
     }
 }
 

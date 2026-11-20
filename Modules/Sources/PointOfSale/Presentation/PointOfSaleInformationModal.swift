@@ -3,6 +3,7 @@ import SwiftUI
 // Container view for displaying information modals in the POS.
 //
 struct PointOfSaleInformationModal<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalParentSize) private var parentSize
@@ -32,7 +33,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
     }
 
     private var regularBody: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: metrics.spacing.xxLarge) {
             header
 
             ScrollView {
@@ -53,33 +54,26 @@ struct PointOfSaleInformationModal<Content: View>: View {
         .frame(width: modalFrameWidth)
     }
 
+    /// The phone bottom sheet adds the padding.
     private var compactBody: some View {
-        VStack(spacing: POSSpacing.none) {
-            header
+        VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
+            Text(title)
+                .font(.posHeadingBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
 
-            Spacer(minLength: POSSpacing.none)
-
-            VStack(spacing: POSSpacing.xxLarge) {
+            ViewThatFits(in: .vertical) {
+                modalContent
                 ScrollView {
                     modalContent
-                        .measureHeight { height in
-                            // Workaround for ScrollView not updating its height immediately on iOS 17
-                            withAnimation(.easeIn(duration: 0)) {
-                                contentHeight = height
-                            }
-                        }
                 }
-                .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
-                .frame(maxHeight: contentHeight)
-
-                okButton
             }
 
-            Spacer(minLength: POSSpacing.none)
+            okButton
         }
-        .padding(contentPadding)
-        .background(Color.posSurfaceBright)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity)
     }
 
     private var header: some View {
@@ -103,6 +97,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
 }
 
 struct PointOfSaleInformationModalParagraphView<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     enum Style {
         case `default`
         case outlined
@@ -110,16 +105,16 @@ struct PointOfSaleInformationModalParagraphView<Content: View>: View {
 
     let content: Content
     let style: Style
-    let spacing: CGFloat
+    let spacing: KeyPath<POSMetrics.Scale, CGFloat>
 
-    init(style: Style = .default, spacing: CGFloat = POSSpacing.small, @ViewBuilder content: () -> Content) {
+    init(style: Style = .default, spacing: KeyPath<POSMetrics.Scale, CGFloat> = \.small, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.style = style
         self.spacing = spacing
     }
 
     var body: some View {
-        VStack(alignment: style == .default ? .leading : .center, spacing: spacing) {
+        VStack(alignment: style == .default ? .leading : .center, spacing: metrics.spacing[keyPath: spacing]) {
             content
         }
         .if(style == .default, transform: { view in
@@ -143,12 +138,13 @@ private struct PointOfSaleInformationModalDefaultParagraphStyle: ViewModifier {
 }
 
 private struct PointOfSaleInformationModalOutlinedParagraphStyle: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     func body(content: Content) -> some View {
         content
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.posBodySmallRegular())
             .foregroundStyle(Color.posOnSurface)
-            .padding(POSPadding.medium)
+            .padding(metrics.padding.medium)
             .background(Color.posSurfaceDim)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
             .multilineTextAlignment(.center)
@@ -162,7 +158,7 @@ private extension PointOfSaleInformationModal {
     }
 
     var contentPadding: CGFloat {
-        isCompactWidth ? POSPadding.xLarge : POSPadding.xxLarge
+        metrics.padding.xxLarge
     }
 
     var modalFrameWidth: CGFloat {
@@ -170,12 +166,11 @@ private extension PointOfSaleInformationModal {
     }
 
     var maxAvailableRegularWidth: CGFloat {
-        max(parentSize.width - (Constants.regularHorizontalMargin * 2), 0)
+        max(parentSize.width - (metrics.padding.medium * 2), 0)
     }
 
     enum Constants {
         static var modalFrameWidth: CGFloat { 896 }
-        static var regularHorizontalMargin: CGFloat { POSPadding.medium }
     }
 }
 

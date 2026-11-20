@@ -86,7 +86,7 @@ struct OrderCustomAmountsSection: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .if(viewModel.customAmountRows.isEmpty, transform: { $0.padding([.leading, .trailing]) })
         .if(!viewModel.customAmountRows.isEmpty, transform: { $0.padding() })
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .popover(isPresented: isCustomAmountOptionsPopoverPresented) {
             optionsPopoverContent
         }

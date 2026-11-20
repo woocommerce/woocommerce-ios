@@ -42,7 +42,7 @@ struct CustomersListView: View {
                                         DisclosureIndicator()
                                     }
                                     .padding()
-                                    .background(Color(.listForeground(modal: false)))
+                                    .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
                                 })
 
                                 Divider().padding(.leading)

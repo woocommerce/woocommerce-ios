@@ -66,11 +66,7 @@ public final class TwoFAScreen {
         XCTAssertTrue(twoFAField.waitForExistence(timeout: 10), "2FA field should be visible before typing.")
 
         focusTwoFAFieldIfNeeded()
-        if tapTwoFACodeKeyboardKeys(twoFACode) {
-            return
-        }
-
-        twoFAField.typeText(twoFACode)
+        enterTwoFACodeUsingFocusedField(twoFACode)
     }
 
     private func focusTwoFAFieldIfNeeded() {
@@ -81,18 +77,39 @@ public final class TwoFAScreen {
         }
     }
 
-    private func tapTwoFACodeKeyboardKeys(_ twoFACode: String) -> Bool {
-        guard app.keyboards.firstMatch.waitForExistence(timeout: 2) else {
-            return false
+    private func enterTwoFACodeUsingFocusedField(_ twoFACode: String) {
+        for (index, digit) in twoFACode.enumerated() {
+            let expectedCode = String(twoFACode.prefix(index + 1))
+            app.typeText(String(digit))
+            guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
+                // A delayed system prompt can interrupt text entry after the 2FA screen appeared.
+                app.dismissSavePasswordPromptIfNeeded(timeout: 2)
+                if waitForTwoFACode(expectedCode, timeout: Constants.promptRecoveryWaitTimeout) {
+                    continue
+                }
+                focusTwoFAFieldIfNeeded()
+                app.typeText(String(digit))
+                guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
+                    XCTFail("2FA field should contain the complete authentication code after typing.")
+                    return
+                }
+                continue
+            }
+        }
+    }
+
+    private func waitForTwoFACode(_ expectedCode: String, timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if twoFAField.value as? String == expectedCode {
+                return true
+            }
+
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         }
 
-        let codeKeys = twoFACode.map { app.keyboards.keys[String($0)].firstMatch }
-        guard codeKeys.allSatisfy({ $0.waitForIsHittable(timeout: 2) }) else {
-            return false
-        }
-
-        codeKeys.forEach { $0.tap() }
-        return true
+        return twoFAField.value as? String == expectedCode
     }
 
     private func submitTwoFACode() {
@@ -257,5 +274,10 @@ public final class TwoFAScreen {
 
     private enum TwoFAScreenError: Error {
         case timedOut
+    }
+
+    private enum Constants {
+        static let digitEntryWaitTimeout: TimeInterval = 3
+        static let promptRecoveryWaitTimeout: TimeInterval = 2
     }
 }

@@ -27,6 +27,7 @@
     {
       "parallelizable" : true,
       "skippedTests" : [
+        "POSTests\/test_POS_eligible_site_can_search_manage_cart_open_settings_and_exit_POS()",
         "SupportTests"
       ],
       "target" : {

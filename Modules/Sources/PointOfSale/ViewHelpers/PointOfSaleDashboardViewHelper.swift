@@ -40,6 +40,27 @@ struct PointOfSaleDashboardViewHelper {
     static func shouldAutoOpenCartOnScan(isPhoneLayout: Bool, orderStage: PointOfSaleOrderStage) -> Bool {
         isPhoneLayout && orderStage == .building
     }
+
+    /// Whether the compact-layout cart sheet should close after a cart change.
+    ///
+    /// On phone the products sit behind the cart sheet, so an empty cart left open would make the
+    /// merchant close it by hand before adding anything. The regular layout keeps its empty cart pane.
+    static func shouldDismissCompactCartSheet(isPhoneLayout: Bool, cartIsEmpty: Bool) -> Bool {
+        isPhoneLayout && cartIsEmpty
+    }
+
+    enum ExitDecision: Equatable {
+        case showConfirmation
+        case leave(tracksConfirmation: Bool)
+    }
+
+    /// The approval prompt already confirms the exit, so an approved exit leaves POS without the confirmation.
+    static func exitDecision(confirmingFirst: Bool, approved: Bool) -> ExitDecision {
+        guard confirmingFirst else {
+            return .leave(tracksConfirmation: false)
+        }
+        return approved ? .leave(tracksConfirmation: true) : .showConfirmation
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {

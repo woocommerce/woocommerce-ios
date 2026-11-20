@@ -59,8 +59,8 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
-                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="kTI-Ip-3qK" secondAttribute="leading" id="OUm-VB-DJ3"/>
+                            <constraint firstItem="qMn-MK-zzV" firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="qMn-MK-zzV" secondAttribute="leading" id="OUm-VB-DJ3"/>
                             <constraint firstItem="pYs-VV-dST" firstAttribute="top" secondItem="qMn-MK-zzV" secondAttribute="top" id="nJg-fe-Omp"/>
                             <constraint firstItem="qMn-MK-zzV" firstAttribute="bottom" secondItem="pYs-VV-dST" secondAttribute="bottom" id="o10-zc-2HE"/>
                         </constraints>
@@ -93,10 +93,10 @@
                         <viewLayoutGuide key="safeArea" id="nz7-i3-560"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
+                            <constraint firstItem="nz7-i3-560" firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
                             <constraint firstItem="egg-mo-Y4S" firstAttribute="top" secondItem="nz7-i3-560" secondAttribute="top" id="bz0-ln-OvO"/>
                             <constraint firstItem="nz7-i3-560" firstAttribute="bottom" secondItem="egg-mo-Y4S" secondAttribute="bottom" id="hoc-dS-mst"/>
-                            <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="wie-fQ-LP9" secondAttribute="leading" id="nCX-Yb-zUk"/>
+                            <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="nz7-i3-560" secondAttribute="leading" id="nCX-Yb-zUk"/>
                         </constraints>
                     </view>
                     <connections>

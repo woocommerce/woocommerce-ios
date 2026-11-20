@@ -51,6 +51,11 @@ final class ProductSettingsViewController: UIViewController {
             self?.onPasswordCompletion(passwordRetrieved)
         }
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration

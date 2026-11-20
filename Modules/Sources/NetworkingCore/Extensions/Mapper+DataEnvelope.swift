@@ -17,9 +17,15 @@ public extension Mapper {
 /// Helper struct to attempt parsing some JSON data with a `data` key at the root.
 ///
 private struct ContentEnvelope: Decodable {
-    let content: AnyDecodable
-
     private enum CodingKeys: String, CodingKey {
-        case content = "data"
+        case data
+    }
+
+    // Checks only the key: decoding the value builds a full tree that callers then decode again.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        guard container.contains(.data) else {
+            throw DecodingError.keyNotFound(CodingKeys.data, .init(codingPath: decoder.codingPath, debugDescription: "Missing `data` key"))
+        }
     }
 }

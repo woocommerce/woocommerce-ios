@@ -65,7 +65,7 @@ struct AIAssistantDashboardCard: View {
         .accessibilityHidden(true)
     }
 
-    private enum Localization {
+    enum Localization {
         static let placeholder = NSLocalizedString(
             "dashboardCard.aiAssistant.placeholder",
             value: "Ask about your store…",

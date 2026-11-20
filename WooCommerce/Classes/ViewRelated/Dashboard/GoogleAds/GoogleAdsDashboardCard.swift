@@ -228,7 +228,9 @@ private extension GoogleAdsDashboardCard {
         static let cornerRadius: CGFloat = 8
         static let imageSize: CGFloat = 44
     }
+}
 
+extension GoogleAdsDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "googleAdsDashboardCard.hideCard",

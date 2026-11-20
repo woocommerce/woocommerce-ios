@@ -2,31 +2,46 @@ import SwiftUI
 
 extension View {
     /// Sets the frame size and applies a padding to a modal in POS.
-    func posModalSizing(fullScreenWhenCompact: Bool = false) -> some View {
-        self.modifier(POSModalSizing(fullScreenWhenCompact: fullScreenWhenCompact))
+    /// Full-screen flows can fill their current container instead of using the card's window-based size.
+    func posModalSizing(fitsContentHeight: Bool = false, fillsAvailableSpace: Bool = false) -> some View {
+        self.modifier(POSModalSizing(fitsContentHeight: fitsContentHeight, fillsAvailableSpace: fillsAvailableSpace))
     }
 }
 
 struct POSModalSizing: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let fullScreenWhenCompact: Bool
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
+    let fitsContentHeight: Bool
+    let fillsAvailableSpace: Bool
+
+    @ViewBuilder
     func body(content: Content) -> some View {
-        content
-            .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
-            .frame(width: frameWidth, height: frameHeight)
+        if fillsAvailableSpace {
+            content
+                .padding(metrics.padding.xxLarge)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if isFullScreenFlow {
+            // The flow header brings its own top spacing.
+            content
+                .padding(.horizontal, metrics.padding.xxLarge)
+                .padding(.bottom, metrics.padding.medium)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            content
+                .padding(metrics.padding.xxLarge)
+                .frame(width: frameWidth, height: fitsContentHeight ? nil : frameHeight)
+        }
     }
 }
 
 private extension POSModalSizing {
     var frameWidth: CGFloat {
-        if shouldUseFullScreenFrame {
-            return parentSize.width
-        }
-        return min(preferredFrameWidth, maxAvailableFrameWidth)
+        min(preferredFrameWidth, maxAvailableFrameWidth)
     }
 
     var preferredFrameWidth: CGFloat {
@@ -53,10 +68,7 @@ private extension POSModalSizing {
     }
 
     var frameHeight: CGFloat {
-        if shouldUseFullScreenFrame {
-            return parentSize.height
-        }
-        return min(preferredFrameHeight, maxAvailableFrameHeight)
+        min(preferredFrameHeight, maxAvailableFrameHeight)
     }
 
     var preferredFrameHeight: CGFloat {
@@ -80,7 +92,7 @@ private extension POSModalSizing {
 
     var maxAvailableFrameHeight: CGFloat {
         // Keep the card's existing width and reserve its outer vertical padding only when needed.
-        max(0, parentSize.height - (horizontalSizeClass == .compact ? 0 : 2 * POSPadding.medium))
+        max(0, parentSize.height - (horizontalSizeClass == .compact ? 0 : 2 * metrics.padding.medium))
     }
 
     var windowBounds: CGRect {
@@ -93,9 +105,5 @@ private extension POSModalSizing {
             .connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
             .last
-    }
-
-    var shouldUseFullScreenFrame: Bool {
-        fullScreenWhenCompact && horizontalSizeClass == .compact
     }
 }

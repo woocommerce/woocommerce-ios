@@ -4,6 +4,7 @@ import protocol Yosemite.POSOrderableItem
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
@@ -74,10 +75,6 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            // Also gated on `isAddingCustomAmount` — that form is pushed via NavigationStack
-            // (not a sheet/cover) so none of the manager flags flip, and typing in its text
-            // field would otherwise feed each character to the HID barcode listener and add
-            // bogus rows to the cart.
             get: {
                 // The iPad item list stays mounted off-screen during checkout, where cash
                 // and note fields must not feed the raw keyboard scanner.
@@ -86,7 +83,7 @@ struct ItemListView: View {
                 && !modalManager.isPresented
                 && !sheetManager.isPresented
                 && !coverManager.isPresented
-                && !isAddingCustomAmount
+                && posModel.customAmountFlow == nil
             },
             set: { _ in }
         )
@@ -113,23 +110,8 @@ struct ItemListView: View {
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
 
-    /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
-    ///
-    /// Add lives in local view state because the push is scoped to this view's `NavigationStack`
-    /// (left pane). Edit, by contrast, can be triggered from the cart pane and is a modal cover,
-    /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
-    @State private var isAddingCustomAmount: Bool = false
-
     var body: some View {
         navigationContainer
-            // The phone cart button and the iPad floating control are suppressed while the
-            // add-custom-amount form is pushed. Emit that request from this always-present view,
-            // keyed on the push flag, so it reverts the instant the form is popped: a preference
-            // set inside the pushed navigationDestination can stay stuck at its hidden value after
-            // dismissal, leaving the phone cart button hidden until an unrelated re-render.
-            .posHidesFloatingControl(isAddingCustomAmount)
-            .preference(key: POSItemListBackgroundPreferenceKey.self,
-                        value: isAddingCustomAmount ? .posSurfaceBright : .posSurface)
     }
 
     @ViewBuilder
@@ -159,10 +141,6 @@ struct ItemListView: View {
             childListView(parentItem: item)
                 .posIgnoresHiddenKeyboardSafeArea()
         })
-        .modifier(CustomAmountFormPushModifier(
-            isPresented: $isAddingCustomAmount,
-            destination: { addCustomAmountFormDestination }
-        ))
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
@@ -176,14 +154,6 @@ struct ItemListView: View {
         .posManagerOverrideModal(handler: couponOverrideHandler)
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
-        }
-        // The add-custom-amount form is pushed onto this pane's own NavigationStack. On iPad the pane
-        // doesn't dismiss when checkout starts — the dashboard just slides it off-screen — so a form
-        // left pushed would still be there when the merchant returns to the product list. Pop it as the
-        // order leaves the building stage so returning always lands on the product list.
-        .onChange(of: posModel.orderStage) { _, stage in
-            guard stage != .building else { return }
-            isAddingCustomAmount = false
         }
         // Product drill-down lives in the coordinator: a new cart clears it, while returning to
         // edit the current cart preserves the merchant's place in the selector.
@@ -249,16 +219,16 @@ struct ItemListView: View {
                let httpsConfigurationNotice,
                showsHTTPSConfigurationNotice {
                 httpsConfigurationWarningBanner(httpsConfigurationNotice)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.medium)
+                    .padding(.horizontal, metrics.padding.medium)
+                    .padding(.vertical, metrics.padding.medium)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
+                    .padding(.horizontal, metrics.padding.medium)
+                    .padding(.vertical, metrics.padding.small)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -272,7 +242,7 @@ struct ItemListView: View {
                 headerView: {
                     if shouldShowCustomAmountEntryRow(itemListType) {
                         CustomAmountEntryRow(onTap: {
-                            isAddingCustomAmount = true
+                            posModel.startAddingCustomAmount()
                         })
                     }
                 }
@@ -315,7 +285,7 @@ struct ItemListView: View {
             },
             onTap: notice.onAction
         ) {
-            VStack(alignment: .leading, spacing: POSSpacing.small) {
+            VStack(alignment: .leading, spacing: metrics.spacing.small) {
                 Text(notice.message)
                     .font(.posBodyMediumRegular())
                 Text(notice.actionTitle)
@@ -381,35 +351,6 @@ struct ItemListView: View {
             .posEdgeSwipeBackAction()
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    private var addCustomAmountFormDestination: some View {
-        AddCustomAmountView(
-            currencySettings: currencyProvider.currencySettings,
-            backButtonStyle: .back,
-            onDismiss: { isAddingCustomAmount = false },
-            onSubmit: { customAmount in
-                posModel.upsertCustomAmount(customAmount, mode: .add)
-            }
-        )
-        // Hide the system nav bar so only the form's own POSPageHeaderView is visible
-        // (matches how `ChildItemList` handles the variations push).
-        .toolbar(.hidden, for: .navigationBar)
-        .navigationBarBackButtonHidden(true)
-        .posEdgeSwipeBackAction(onBack: { isAddingCustomAmount = false })
-    }
-}
-
-/// Pushes a destination from a `Bool` flag.
-private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    let destination: () -> Destination
-
-    func body(content: Content) -> some View {
-        content.navigationDestination(isPresented: $isPresented) {
-            destination()
         }
     }
 }

@@ -12,6 +12,9 @@ protocol POSItemActionHandler {
     ///   - item: The item that was tapped
     ///   - position: The position of the item in the list (0-based)
     func handleTap(_ item: POSItem, position: Int)
+
+    /// Handles a tap on a coupon shown as applied in the list, which removes it from the cart.
+    func handleTapOnAppliedCoupon(_ item: POSItem)
 }
 
 extension POSItemActionHandler {
@@ -64,6 +67,18 @@ extension POSItemActionHandler {
         }
     }
 
+    func removeCouponFromCart(_ item: POSItem,
+                              posModel: PointOfSaleAggregateModelProtocol,
+                              sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+                              using analytics: POSAnalyticsProviding) {
+        guard case .coupon = item,
+              let couponItem = posModel.cart.coupons.first(where: { $0.posItemIdentifier == item.id }) else {
+            return
+        }
+        posModel.remove(cartItem: couponItem)
+        analytics.track(event: .PointOfSale.itemRemovedFromCart(sourceView: sourceView, itemType: .coupon))
+    }
+
     func shouldSkipDuplicate(_ item: POSItem, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
         switch item {
         case .coupon:
@@ -105,6 +120,10 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             resultPosition: position,
             using: analytics
         )
+    }
+
+    func handleTapOnAppliedCoupon(_ item: POSItem) {
+        removeCouponFromCart(item, posModel: posModel, sourceView: sourceView, using: analytics)
     }
 }
 
@@ -148,6 +167,10 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
             resultPosition: position,
             using: analytics
         )
+    }
+
+    func handleTapOnAppliedCoupon(_ item: POSItem) {
+        removeCouponFromCart(item, posModel: posModel, sourceView: sourceView, using: analytics)
     }
 }
 

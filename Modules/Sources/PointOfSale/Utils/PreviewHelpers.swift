@@ -163,6 +163,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem, position: Int) { }
+
+    func handleTapOnAppliedCoupon(_ item: Yosemite.POSItem) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -844,18 +846,31 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
                       cardDetails: CardPresentTransactionDetails?) async throws {}
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {}
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
 }
 
 extension POSPreviewHelpers {
     /// iPad landscape space for POS modal content in previews, where no `POSRootModalViewModifier` measures it.
     static let modalParentSize = CGSize(width: 1192, height: 822)
+
+    /// Portrait safe area of the iPhone SE, the smallest phone POS runs on.
+    static let smallestPhoneSize = CGSize(width: 375, height: 647)
 }
 
 extension View {
     /// Gives modal content in a preview the space `POSRootModalViewModifier` measures at runtime.
     func posPreviewModalParentSize() -> some View {
         environment(\.posModalParentSize, POSPreviewHelpers.modalParentSize)
+    }
+
+    /// Lays the preview out as POS does on the smallest phone: compact width, phone type scale,
+    /// and the modal space measured there.
+    func posPreviewSmallestPhone() -> some View {
+        frame(width: POSPreviewHelpers.smallestPhoneSize.width, height: POSPreviewHelpers.smallestPhoneSize.height)
+            .environment(\.posModalParentSize, POSPreviewHelpers.smallestPhoneSize)
+            .environment(\.horizontalSizeClass, .compact)
+            .environment(\.posLayoutScale, .compact)
     }
 }
 

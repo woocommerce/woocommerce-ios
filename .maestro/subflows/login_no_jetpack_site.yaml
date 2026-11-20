@@ -8,6 +8,7 @@ appId: ${APP_ID}
     clearKeychain: true
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow:
     file: open_site_address_login.yaml
 - tapOn:

@@ -66,6 +66,17 @@ final class SiteAPIMapperTests: XCTestCase {
         XCTAssertEqual(apiSettings?.namespaces.sorted(), dummyNamespaces.sorted())
         XCTAssertEqual(apiSettings?.highestWooVersion, WooAPIVersion.mark3)
     }
+
+    func test_routes_when_response_has_no_routes_field_then_is_nil() throws {
+        // Given
+        let responseWithoutRoutes = "site-api-no-woo"
+
+        // When
+        let apiSettings = try XCTUnwrap(mapSiteAPIData(from: responseWithoutRoutes))
+
+        // Then
+        XCTAssertNil(apiSettings.routes)
+    }
 }
 
 

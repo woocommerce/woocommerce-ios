@@ -9,5 +9,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func addToCart(_ item: POSItem) { }
 
+    func remove(cartItem: CartItem) { }
+
     func saveSearchTerm(_ term: String, for itemType: POSItemType) { }
 }

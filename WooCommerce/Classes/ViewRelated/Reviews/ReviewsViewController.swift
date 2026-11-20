@@ -147,6 +147,11 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
         syncingCoordinator.resynchronize()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -166,7 +171,7 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
             self.removeGhostContent()
-            self.displayGhostContent()
+            self.displayGhostContent(over: self.tableView)
         }
 
         // Reload last selected row to update highlight state
@@ -431,7 +436,7 @@ private extension ReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayGhostContent()
+            displayGhostContent(over: tableView)
         case .syncing(let pageNumber):
             if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()

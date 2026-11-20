@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundErrorView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let subtitle: String
     let onRetry: (() -> Void)?
@@ -31,12 +32,13 @@ struct POSRefundErrorView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
-            Spacer(minLength: POSSpacing.large)
-            contentView
-            Spacer(minLength: POSSpacing.large)
-            buttonsSection
+            POSStatusScreenLayout(buttonsWidth: .capped) {
+                contentView
+            } buttons: {
+                buttonsSection
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -53,10 +55,10 @@ private extension POSRefundErrorView {
     }
 
     var contentView: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             POSErrorXMark()
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
@@ -71,12 +73,12 @@ private extension POSRefundErrorView {
             }
             .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             if let onRetry {
                 Button(retryButtonTitle ?? Localization.retryButton, action: onRetry)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -85,7 +87,6 @@ private extension POSRefundErrorView {
             Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

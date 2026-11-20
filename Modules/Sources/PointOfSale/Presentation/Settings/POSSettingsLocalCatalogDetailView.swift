@@ -2,40 +2,39 @@ import SwiftUI
 import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
+    @Environment(\.posMetrics) private var metrics
+    @State private var cellularSyncApproval = POSManagerOverrideHandler()
     private let viewModel: POSSettingsLocalCatalogViewModel
-    /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
-    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsLocalCatalogViewModel,
-         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
+    init(viewModel: POSSettingsLocalCatalogViewModel) {
         self.viewModel = viewModel
-        self.requestEditPermission = requestEditPermission
     }
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.localCatalogTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     catalogStatus
                     if viewModel.deviceHasCellularCapability {
                         managingDataUsage
                     }
                     manualCatalogUpdate
                 }
-                .posContentPadding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Style.backgroundColor)
         .task {
             await viewModel.loadCatalogData()
         }
-        .posModal(item: $viewModel.catalogRefreshError) { error in
-            errorView(errorState: error.errorState)
+        .posDialog(item: $viewModel.catalogRefreshError) { error in
+            errorDialog(errorState: error.errorState)
         }
+        .posManagerOverrideModal(handler: cellularSyncApproval)
     }
 }
 
@@ -43,7 +42,7 @@ private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 POSInformationCardFieldRow(
                     label: Localization.catalogSize,
                     value: viewModel.catalogSize
@@ -65,32 +64,24 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRowWithToggle(
                     label: Localization.managingDataUsage,
                     value: Localization.allowSyncOnCellular,
                     showSeparator: false,
-                    isOn: cellularSyncBinding
+                    isOn: Binding(
+                        get: { viewModel.allowFullSyncOnCellular },
+                        set: { viewModel.setAllowFullSyncOnCellular($0, approvalHandler: cellularSyncApproval) }
+                    )
                 )
             }
         }
     }
 
-    /// Toggling the cellular-sync setting is an edit, so route changes through `editPOSSettings`:
-    /// the value only flips once the operator holds the cap or a manager approves the override.
-    private var cellularSyncBinding: Binding<Bool> {
-        Binding(
-            get: { viewModel.allowFullSyncOnCellular },
-            set: { newValue in
-                requestEditPermission { viewModel.allowFullSyncOnCellular = newValue }
-            }
-        )
-    }
-
     @ViewBuilder
     var manualCatalogUpdate: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRow(
                     label: Localization.manualCatalogUpdate,
@@ -99,10 +90,8 @@ private extension POSSettingsLocalCatalogDetailView {
                     labelStyle: .bold,
                     buttonTitle: updateCatalogButtonTitle,
                     buttonAction: {
-                        requestEditPermission {
-                            Task {
-                                await viewModel.refreshCatalog()
-                            }
+                        Task {
+                            await viewModel.refreshCatalog()
                         }
                     },
                     buttonStyle: .primary,
@@ -130,31 +119,21 @@ private extension POSSettingsLocalCatalogDetailView {
         }
     }
 
-    @ViewBuilder
-    func errorView(errorState: PointOfSaleErrorState) -> some View {
-        VStack(spacing: POSSpacing.xxLarge) {
-            POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
-                viewModel.catalogRefreshError = nil
-            }
-
-            POSErrorView(viewModel: errorViewModel(errorState: errorState))
-        }
-        .padding(POSPadding.xLarge)
-        .frame(maxWidth: Constants.errorModalMaxWidth)
-    }
-
-    func errorViewModel(errorState: PointOfSaleErrorState) -> POSErrorViewModel {
-        let retryButton = POSErrorButtonViewModel(title: Localization.errorRetryButtonTitle,
-                                                  buttonStyle: POSFilledButtonStyle(size: .normal)) {
-            Task {
-                await viewModel.refreshCatalog()
-            }
-        }
-        let cancelButton = POSErrorButtonViewModel(title: Localization.errorCancelButtonTitle,
-                                                   buttonStyle: POSOutlinedButtonStyle(size: .normal)) {
-            viewModel.catalogRefreshError = nil
-        }
-        return POSErrorViewModel(error: errorState, primaryButton: retryButton, secondaryButton: cancelButton)
+    func errorDialog(errorState: PointOfSaleErrorState) -> POSDialog {
+        POSDialog(icon: .errorXMark,
+                  title: errorState.title,
+                  message: errorState.subtitle,
+                  primaryAction: .init(title: Localization.errorRetryButtonTitle, action: {
+                      Task {
+                          await viewModel.refreshCatalog()
+                      }
+                  }),
+                  secondaryAction: .init(title: Localization.errorCancelButtonTitle, action: {
+                      viewModel.catalogRefreshError = nil
+                  }),
+                  closeAction: .init(accessibilityLabel: Localization.errorCancelButtonTitle, action: {
+                      viewModel.catalogRefreshError = nil
+                  }))
     }
 }
 
@@ -249,10 +228,6 @@ private extension POSSettingsLocalCatalogDetailView {
             value: "Cancel",
             comment: "Button text for closing an error after a refresh fails"
         )
-    }
-
-    enum Constants {
-        static let errorModalMaxWidth: CGFloat = 832
     }
 }
 

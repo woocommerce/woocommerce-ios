@@ -2,6 +2,7 @@ import SwiftUI
 import struct Yosemite.POSOrder
 
 struct POSOrderBadgeView: View {
+    @Environment(\.posMetrics) private var metrics
     private let order: POSOrder
 
     init(order: POSOrder) {
@@ -12,8 +13,8 @@ struct POSOrderBadgeView: View {
         Text(order.status.localizedName)
             .font(.posCaptionRegular)
             .foregroundStyle(statusTextColor)
-            .padding(.horizontal, POSPadding.small)
-            .padding(.vertical, POSPadding.xSmall)
+            .padding(.horizontal, metrics.padding.small)
+            .padding(.vertical, metrics.padding.xSmall)
             .background(statusBackgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             .accessibilityLabel(Localization.badgeAccessibilityLabel(status: order.status.localizedName))

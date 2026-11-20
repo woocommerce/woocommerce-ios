@@ -117,6 +117,8 @@ final class OrderListViewController: UIViewController {
 
     private let stores: StoresManager
 
+    private let usesStoreDesignSystem: Bool
+
     /// Current top banner that is displayed.
     ///
     private var topBannerView: UIView?
@@ -143,10 +145,12 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
+         usesStoreDesignSystem: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          switchDetailsHandler: @escaping SelectOrderDetails) {
         self.siteID = siteID
         self.viewModel = viewModel
+        self.usesStoreDesignSystem = usesStoreDesignSystem
         self.stores = stores
         self.switchDetailsHandler = switchDetailsHandler
 
@@ -264,8 +268,16 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
-            cell.configureCell(viewModel: item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) })
+            let viewModel = item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) }
+            guard self?.usesStoreDesignSystem == true else {
+                let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
+                cell.configureCell(viewModel: viewModel)
+                cell.layoutIfNeeded()
+                return cell
+            }
+
+            let cell = tableView.dequeueReusableCell(StoreOrderListTableViewCell.self, for: indexPath)
+            cell.configure(viewModel: viewModel)
             cell.layoutIfNeeded()
             return cell
         }
@@ -341,6 +353,7 @@ private extension OrderListViewController {
         view.backgroundColor = .listBackground
         tableView.accessibilityIdentifier = "orders-table-view"
         tableView.backgroundColor = .listBackground
+        tableView.separatorStyle = usesStoreDesignSystem ? .none : .singleLine
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
         tableView.estimatedSectionHeaderHeight = Constants.estimatedHeaderHeight
@@ -365,6 +378,7 @@ private extension OrderListViewController {
     ///
     func registerTableViewHeadersAndCells() {
         tableView.registerNib(for: OrderTableViewCell.self)
+        tableView.register(StoreOrderListTableViewCell.self)
         // Keep loading cells separate so their skeleton layout never inherits an order's content.
         tableView.register(OrderTableViewCell.loadNib(), forCellReuseIdentifier: Constants.loadingCellIdentifier)
 

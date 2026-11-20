@@ -307,6 +307,50 @@ struct POSOrderMapperTests {
         // Then
         #expect(result.customAmounts.first?.name == "Custom amount")
     }
+
+    // MARK: - formattedCustomAmountsTotal
+
+    @Test
+    func formattedCustomAmountsTotal_sums_active_order_fees() throws {
+        // Given
+        let fees = [
+            OrderFeeLine.fake().copy(feeID: 1, name: "Tip", total: "5.00"),
+            OrderFeeLine.fake().copy(feeID: 2, name: "Service", total: "7.34")
+        ]
+        let order = makeOrder(currency: "USD", fees: fees)
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.formattedCustomAmountsTotal == "$12.34")
+    }
+
+    @Test
+    func formattedCustomAmountsTotal_returns_nil_when_order_has_no_fees() throws {
+        // Given
+        let order = makeOrder(currency: "USD", fees: [])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.formattedCustomAmountsTotal == nil)
+    }
+
+    @Test
+    func formattedCustomAmountsTotal_skips_deleted_fee_lines() throws {
+        // Given
+        let liveFee = OrderFeeLine.fake().copy(feeID: 1, name: "Tip", total: "5.00")
+        let deletedFee = OrderFactory.deletedFeeLine(OrderFeeLine.fake().copy(feeID: 2, name: "Removed", total: "8.00"))
+        let order = makeOrder(currency: "USD", fees: [liveFee, deletedFee])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        #expect(result.formattedCustomAmountsTotal == "$5.00")
+    }
 }
 
 // MARK: - Test Helpers

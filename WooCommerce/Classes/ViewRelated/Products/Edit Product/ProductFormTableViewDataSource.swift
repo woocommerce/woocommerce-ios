@@ -1,13 +1,49 @@
 import UIKit
 import Yosemite
 
+private extension ProductFormSection.SettingsRow.Icon {
+    var image: UIImage {
+        switch self {
+        case .add: .addOutlineImage
+        case .calendarClock: .calendarClock
+        case .categories: .categoriesIcon
+        case .cloud: .cloudImage
+        case .customFields: .customFieldsImage
+        case .customize: .customizeImage
+        case .hourglass: .hourglass
+        case .information: .infoOutlineImage
+        case .inventory: .inventoryImage
+        case .link: .linkImage
+        case .linkedProducts: .linkedProductsImage
+        case .price: .priceImage
+        case .product: .productImage
+        case .reviews: .productReviewsImage
+        case .shipping: .shippingImage
+        case .shortDescription: .shortDescriptionImage
+        case .tags: .tagsIcon
+        case .variations: .variationsImage
+        case .visibility: .visibilityImage
+        case .widgets: .widgetsImage
+        }
+    }
+}
+
+private extension ProductFormSection.SettingsRow.Tint {
+    var color: UIColor {
+        switch self {
+        case .warning: .warning
+        }
+    }
+}
+
 private extension ProductFormSection.SettingsRow.ViewModel {
     func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.ViewModel {
+        let tintColor = tint?.color
         return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
                                                            titleTintColor: tintColor,
                                                            text: details,
                                                            textTintColor: tintColor,
-                                                           image: icon,
+                                                           image: icon.image,
                                                            imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForTitle: 0,
                                                            numberOfLinesForText: numberOfLinesForDetails,
@@ -454,7 +490,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
 
-        cell.configure(image: viewModel.icon,
+        cell.configure(image: viewModel.icon.image,
                        title: viewModel.title ?? "",
                        details: viewModel.details ?? "",
                        ratingCount: ratingCount,
@@ -482,7 +518,7 @@ private extension ProductFormTableViewDataSource {
         }
         cell.update(with: .warning,
                     data: .init(title: viewModel.title,
-                                image: viewModel.icon,
+                                image: viewModel.icon.image,
                                 numberOfLinesForTitle: 0,
                                 isActionable: false,
                                 showsSeparator: false))

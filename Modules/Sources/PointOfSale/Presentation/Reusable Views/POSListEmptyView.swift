@@ -182,13 +182,13 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text appearing on screen when a POS product search returns no results."
         )
         static let emptyProductsSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3",
-            value: "We couldn't find any matching products. Try adjusting your search term.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.4",
+            value: "Try a different search.",
             comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
         )
         static let emptyProductsSearchHint = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint",
-            value: "Variation names can't be searched, so use the parent product name.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint.2",
+            value: "To find a variation, search for its parent product.",
             comment: "Text providing additional search tips when no products are found in the POS product search."
         )
         static let emptyVariableParentProductTitle = NSLocalizedString(

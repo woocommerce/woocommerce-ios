@@ -11,7 +11,7 @@ set -euo pipefail
 
 readonly REPO="${SELF_HEAL_REPO:-woocommerce/woocommerce-ios}"
 readonly MARK="${SELF_HEAL_CAP_MARK:-$HOME/.self-heal/cap-reset}"
-readonly MAX_FIX_PRS="${SELF_HEAL_MAX_FIX_PRS:-5}"
+readonly MAX_FIX_PRS="${SELF_HEAL_MAX_FIX_PRS:-10}"
 readonly MAX_BRIEFS="${SELF_HEAL_MAX_BRIEFS:-5}"
 
 die() { echo "error: $*" >&2; exit 1; }

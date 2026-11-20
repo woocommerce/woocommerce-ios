@@ -45,24 +45,24 @@ class CapTests(unittest.TestCase):
                "SELF_HEAL_GH_USER": ME["login"]}
         return subprocess.run([str(SCRIPT), *args], env=env, capture_output=True, text=True, check=True).stdout
 
-    def test_five_open_fix_prs_fill_the_cap(self):
-        output = self.run_cap(prs=[pr(n, f"self-heal/crash-{n}") for n in range(5)])
+    def test_ten_open_fix_prs_fill_the_cap(self):
+        output = self.run_cap(prs=[pr(n, f"self-heal/crash-{n}") for n in range(10)])
         self.assertIn("fix-slot full", output)
 
     def test_validation_and_unrelated_prs_do_not_count(self):
-        prs = [pr(n, f"self-heal/crash-{n}") for n in range(4)]
+        prs = [pr(n, f"self-heal/crash-{n}") for n in range(9)]
         prs += [pr(10, "self-heal/crash-10-red"), pr(11, "mokagio/other-work")]
         self.assertIn("fix-slot free", self.run_cap(prs=prs))
 
     def test_reset_stops_existing_fix_prs_counting(self):
         self.run_cap("reset")
-        output = self.run_cap(prs=[pr(n, f"self-heal/crash-{n}") for n in range(5)])
-        self.assertIn("fix PRs counted: 0/5", output)
+        output = self.run_cap(prs=[pr(n, f"self-heal/crash-{n}") for n in range(10)])
+        self.assertIn("fix PRs counted: 0/10", output)
         self.assertIn("fix-slot free", output)
 
     def test_fix_prs_opened_after_reset_count_again(self):
         self.mark.write_text("2026-11-11T00:00:00Z\n")
-        prs = [pr(n, f"self-heal/crash-{n}", created="2026-11-12T00:00:00Z") for n in range(5)]
+        prs = [pr(n, f"self-heal/crash-{n}", created="2026-11-12T00:00:00Z") for n in range(10)]
         self.assertIn("fix-slot full", self.run_cap(prs=prs))
 
     def test_briefs_exclude_crashes_with_a_fix_pr_or_a_human(self):

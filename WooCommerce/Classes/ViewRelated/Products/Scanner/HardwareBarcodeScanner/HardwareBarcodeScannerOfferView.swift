@@ -36,8 +36,12 @@ struct HardwareBarcodeScannerOfferView: View {
             .accessibilityIdentifier("hardware-barcode-scanner-info-button")
             // On iPad the camera is a form sheet, which reports compact width, and a sheet on top of it looks embedded in it.
             .popover(isPresented: isShowingInfoPopover, arrowEdge: .bottom) {
-                infoView
-                    .frame(width: Layout.popoverWidth)
+                // Unlike `storeSheet`, a popover has no scroll container, so large text sizes would cut the content off.
+                ScrollView {
+                    infoView
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(width: Layout.popoverWidth)
                     .presentationCompactAdaptation(.popover)
                     .presentationBackground(Color.storeSurfaceBright)
             }

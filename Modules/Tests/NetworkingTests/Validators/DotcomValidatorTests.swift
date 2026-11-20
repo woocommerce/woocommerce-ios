@@ -135,6 +135,60 @@ class DotcomValidatorTests: XCTestCase {
         XCTAssertEqual(String(reflecting: error), error.description)
     }
 
+    func test_debugDescription_when_error_has_raw_code_then_appends_code_to_description() {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "unknown_token")
+
+        // Then
+        XCTAssertEqual(String(reflecting: error), "\(error.description) (code: unknown_token)")
+    }
+
+    func test_rawCode_when_error_is_mapped_then_returns_server_identifier() {
+        // Given
+        let expectedCodes: [(DotcomError, String?)] = [
+            (.empty(), nil),
+            (.unauthorized(), "unauthorized"),
+            (.invalidToken(), "invalid_token"),
+            (.requestFailed(), "http_request_failed"),
+            (.noRestRoute(), "rest_no_route"),
+            (.jetpackNotConnected(), nil),
+            (.jetpackNotConnected(code: "unknown_token"), "unknown_token"),
+            (.jetpackNotConnected(code: "invalid_blog"), "invalid_blog"),
+            (.unknownBlog(), "unknown_blog"),
+            (.invalidSignature(), "rest_invalid_signature"),
+            (.unknown(code: "custom_error", message: nil, data: nil), "custom_error"),
+            (.noStatsPermission(), "unauthorized"),
+            (.statsModuleDisabled(), "invalid_blog"),
+            (.resourceDoesNotExist(), "woocommerce_rest_term_invalid")
+        ]
+
+        // Then
+        for (error, expectedCode) in expectedCodes {
+            XCTAssertEqual(error.rawCode, expectedCode, "Unexpected rawCode for \(error)")
+        }
+    }
+
+    func test_rawCode_when_error_is_decoded_then_matches_server_identifier() throws {
+        // Given
+        let payloads: [(String, String)] = [
+            (#"{"error": "unauthorized", "message": "user cannot view stats"}"#, "unauthorized"),
+            (#"{"error": "invalid_blog", "message": "This blog does not have the Stats module enabled"}"#, "invalid_blog"),
+            (#"{"error": "woocommerce_rest_term_invalid", "message": "Resource does not exist."}"#, "woocommerce_rest_term_invalid"),
+            (#"{"error": "some_new_error", "message": "Something went wrong"}"#, "some_new_error"),
+            (#"{"code": "rest_invalid_signature", "message": "Invalid signature"}"#, "rest_invalid_signature")
+        ]
+
+        for (payload, expectedCode) in payloads {
+            let payloadAsData = try XCTUnwrap(payload.data(using: .utf8))
+
+            // When
+            let error = try JSONDecoder().decode(DotcomError.self, from: payloadAsData)
+
+            // Then
+            XCTAssertEqual(error.rawCode, expectedCode, "Unexpected rawCode for \(payload)")
+        }
+    }
+
     func test_raw_body_error_preserves_data_raw_body() throws {
         // Given
         let payloadAsData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error", extension: "json"))

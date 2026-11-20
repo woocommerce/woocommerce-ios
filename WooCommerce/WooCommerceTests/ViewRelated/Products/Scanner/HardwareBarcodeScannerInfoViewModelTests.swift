@@ -1,16 +1,19 @@
 import Foundation
 import Testing
+import enum Hardware.HIDBarcodeParserError
 @testable import WooCommerce
 
 @MainActor
 struct HardwareBarcodeScannerInfoViewModelTests {
     private let analyticsProvider = MockAnalyticsProvider()
+    private let observerFactory = MockHardwareBarcodeObserverFactory()
 
     private func makeViewModel(sleep: @escaping @Sendable (Duration) async throws -> Void = { _ in },
                                onDismiss: @escaping () -> Void = {}) -> HardwareBarcodeScannerInfoViewModel {
         HardwareBarcodeScannerInfoViewModel(source: .barcodeScanner,
                                             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-                                            hardwareBarcodeScanner: HardwareBarcodeScanner(makeObserver: { _, _ in NSObject() }),
+                                            hardwareBarcodeScanner: HardwareBarcodeScanner(analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                                                           makeObserver: observerFactory.make),
                                             sleep: sleep,
                                             onDismiss: onDismiss)
     }
@@ -91,5 +94,47 @@ struct HardwareBarcodeScannerInfoViewModelTests {
 
         // Then
         #expect(dismissCount == 0)
+    }
+
+    @Test
+    func test_onAppear_when_scanner_sends_test_barcode_then_shows_success() {
+        // Given
+        let sut = makeViewModel(sleep: { _ in try await Task.sleep(for: .seconds(60)) })
+        sut.onAppear()
+
+        // When
+        observerFactory.send(.success(barcode: HardwareBarcodeScannerInfoViewModel.testBarcode, scanDurationMs: 50))
+
+        // Then
+        #expect(sut.testScanState == .success)
+        sut.onDisappear()
+    }
+
+    @Test
+    func test_onAppear_when_scanner_times_out_without_Enter_then_shows_missing_Enter_hint() {
+        // Given
+        let sut = makeViewModel()
+        sut.onAppear()
+
+        // When
+        observerFactory.send(.failure(error: .timedOut(barcode: HardwareBarcodeScannerInfoViewModel.testBarcode), scanDurationMs: 50))
+
+        // Then
+        #expect(sut.testScanState == .missingEnterSuffix)
+        sut.onDisappear()
+    }
+
+    @Test
+    func test_onDisappear_when_scanner_sends_barcode_afterwards_then_ignores_it() {
+        // Given
+        let sut = makeViewModel()
+        sut.onAppear()
+
+        // When
+        sut.onDisappear()
+        observerFactory.send(.success(barcode: HardwareBarcodeScannerInfoViewModel.testBarcode, scanDurationMs: 50))
+
+        // Then
+        #expect(sut.testScanState == .waiting)
     }
 }

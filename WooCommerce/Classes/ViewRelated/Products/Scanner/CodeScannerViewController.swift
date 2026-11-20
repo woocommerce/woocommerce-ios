@@ -103,6 +103,8 @@ final class CodeScannerViewController: UIViewController {
         loadViewIfNeeded()
         accessoryView.translatesAutoresizingMaskIntoConstraints = false
         accessoryView.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
+        // Below the scan area centering, so the accessory stretches to keep the scan area centered when there is room.
+        accessoryView.setContentHuggingPriority(Constants.bottomAccessoryHuggingPriority, for: .vertical)
         bottomDimmingView.addSubview(accessoryView)
         // A landscape iPhone has no room below a centered 200pt scan area for the instruction and the accessory.
         // Like on Android, the top dimmed area gives way first, then the scan area.
@@ -113,6 +115,8 @@ final class CodeScannerViewController: UIViewController {
         view.constraints
             .filter { $0.firstItem === scanAreaView && $0.firstAttribute == .centerY }
             .forEach { $0.priority = .defaultLow }
+        // The top dimmed area is held open by its buttons, so they must not be squeezed in its place.
+        [cancelButton, swapCameraButton].forEach { $0?.setContentCompressionResistancePriority(.required, for: .vertical) }
         let bottomToSafeArea = accessoryView.bottomAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.bottomAnchor)
         bottomToSafeArea.priority = .defaultHigh
         NSLayoutConstraint.activate([
@@ -420,6 +424,7 @@ private extension CodeScannerViewController {
         static let bottomAccessoryPriorityAboveScanAreaHeight = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue + 1)
         /// Matches the buttons' top inset in the XIB.
         static let topButtonsBottomInset: CGFloat = 20
+        static let bottomAccessoryHuggingPriority = UILayoutPriority(UILayoutPriority.defaultLow.rawValue - 1)
         static let scanAreaMinimumHeightPriorityWithBottomAccessory = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue - 1)
     }
 

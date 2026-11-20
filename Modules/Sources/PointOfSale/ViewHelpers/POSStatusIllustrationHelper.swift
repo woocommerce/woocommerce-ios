@@ -8,13 +8,13 @@ enum POSStatusIllustrationHelper {
     }
 
     static func errorMarkSize(isFullSizeKeyboardVisible: Bool) -> POSErrorAndAlertIconSize {
-        isFullSizeKeyboardVisible ? .small : .large
+        isFullSizeKeyboardVisible ? .largeCompact : .large
     }
 }
 
 private extension POSStatusIllustrationHelper {
     enum Constants {
         static let regularIllustrationSize: CGFloat = 88
-        static let compactIllustrationSize: CGFloat = 44
+        static let compactIllustrationSize: CGFloat = 66
     }
 }

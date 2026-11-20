@@ -1,8 +1,22 @@
 import SwiftUI
 
 struct POSCheckbox: View {
+    @Environment(\.posMetrics) private var metrics
     let isSelected: Bool
     let onToggle: () -> Void
+
+    private var size: CGFloat {
+        metrics.checkboxSize
+    }
+
+    /// The checkmark font is tuned for the regular box, so it shrinks with the box on phone.
+    private var checkmarkScale: CGFloat {
+        size / POSMetrics.regular.checkboxSize
+    }
+
+    private var tapTargetOutset: CGFloat {
+        max((Constants.minimumTapTargetSize - size) / 2, 0)
+    }
 
     var body: some View {
         Button(action: onToggle) {
@@ -10,26 +24,33 @@ struct POSCheckbox: View {
                 if isSelected {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .fill(Color.posPrimaryContainer)
-                        .frame(width: Self.size, height: Self.size)
+                        .frame(width: size, height: size)
                     Image(systemName: "checkmark")
                         .font(.posButtonSymbolXSmall)
+                        .scaleEffect(checkmarkScale)
                         .foregroundColor(.posOnPrimaryContainer)
                 } else {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .strokeBorder(Color.posOutline, lineWidth: 2)
-                        .frame(width: Self.size, height: Self.size)
+                        .frame(width: size, height: size)
                 }
             }
             .animation(.easeInOut(duration: 0.15), value: isSelected)
+            .frame(width: size + tapTargetOutset * 2, height: size + tapTargetOutset * 2)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // The tap area overflows the box, so rows still lay out around the visible box size.
+        .padding(-tapTargetOutset)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .accessibilityLabel(isSelected ? Localization.selectedLabel : Localization.unselectedLabel)
     }
 }
 
-extension POSCheckbox {
-    static let size: CGFloat = 32
+private extension POSCheckbox {
+    enum Constants {
+        static let minimumTapTargetSize: CGFloat = 44
+    }
 }
 
 private extension POSCheckbox {

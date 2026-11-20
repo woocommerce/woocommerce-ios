@@ -1,5 +1,4 @@
 import SwiftUI
-import class WooFoundation.KeyboardObserver
 
 struct POSErrorView: View {
     @Environment(\.posMetrics) private var metrics
@@ -21,21 +20,19 @@ struct POSErrorView: View {
 
 struct POSErrorMessageView: View {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.keyboardObserver) private var keyboard
 
     let viewModel: POSErrorViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: metrics.spacing.none) {
             if let image = viewModel.imageAsset {
-                let imageSize = POSStatusIllustrationHelper.illustrationSize(isFullSizeKeyboardVisible: keyboard.isFullSizeKeyboardVisible)
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: imageSize, height: imageSize)
+                    .frame(width: metrics.statusIllustrationSize, height: metrics.statusIllustrationSize)
                     .foregroundColor(.posOnSurfaceVariantHighest)
             } else {
-                POSErrorXMark(size: POSStatusIllustrationHelper.errorMarkSize(isFullSizeKeyboardVisible: keyboard.isFullSizeKeyboardVisible))
+                POSErrorXMark(size: metrics.statusErrorMarkSize)
             }
             Spacer().frame(height: metrics.spacing.medium)
 
@@ -54,7 +51,6 @@ struct POSErrorMessageView: View {
         }
         .multilineTextAlignment(.center)
         .dynamicTypeSize(..<DynamicTypeSize.accessibility2)
-        .animation(.default, value: keyboard.isFullSizeKeyboardVisible)
     }
 }
 

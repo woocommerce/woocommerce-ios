@@ -6,7 +6,7 @@ enum POSErrorAndAlertIconSize {
     case small
     case medium
     case large
-    /// Large icon reduced to make room for the keyboard in POS status screens.
+    /// Large icon scaled to 75% for phone layouts.
     case largeCompact
 
     var dimension: CGFloat {

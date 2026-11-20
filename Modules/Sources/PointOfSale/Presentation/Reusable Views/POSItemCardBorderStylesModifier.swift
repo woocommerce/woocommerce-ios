@@ -26,4 +26,9 @@ extension View {
     func posItemCardBorderStyles() -> some View {
         self.modifier(POSItemCardBorderStylesModifier())
     }
+
+    func posItemCardBorderStyles<S: Shape>(shape: S) -> some View {
+        clipShape(shape)
+            .posShadow(.medium, shape: shape)
+    }
 }

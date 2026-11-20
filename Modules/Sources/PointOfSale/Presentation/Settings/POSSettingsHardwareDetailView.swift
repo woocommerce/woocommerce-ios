@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
@@ -61,14 +62,14 @@ struct POSSettingsHardwareDetailView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.hardwareTitle)
                 .foregroundColor(.posSurface)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(hardwareDestinations) { destination in
                     NavigationLink(value: NavigationDestination.hardware(destination)) {
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                        VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeBold)
                                 .foregroundStyle(Color.posOnSurface)
@@ -78,7 +79,7 @@ struct POSSettingsHardwareDetailView: View {
                                 .foregroundStyle(.secondary)
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
-                        .padding()
+                        .posPadding(\.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.posSurfaceContainerLowest)
                         .posItemCardBorderStyles()
@@ -87,7 +88,7 @@ struct POSSettingsHardwareDetailView: View {
                     .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
             }
-            .posContentPadding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, metrics.padding.medium)
 
             Spacer()
         }
@@ -105,13 +106,13 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }, content: { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }, content: { viewContainer in
             paymentsOnboardingView(from: viewContainer)
@@ -120,7 +121,7 @@ struct POSSettingsHardwareDetailView: View {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .posModal(isPresented: $showBarcodeScanningSetupModal) {
+        .posModal(isPresented: $showBarcodeScanningSetupModal, compactStyle: .barcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
@@ -162,9 +163,9 @@ private extension POSSettingsHardwareDetailView {
 
     @ViewBuilder
     var cardReaderNameRow: some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
+        VStack(alignment: .leading, spacing: metrics.padding.small) {
+            HStack(alignment: .center, spacing: metrics.spacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.padding.small) {
                     Text(Localization.readerModelTitle)
                         .font(.posBodyMediumRegular())
                     Text(cardReaderName)
@@ -185,27 +186,27 @@ private extension POSSettingsHardwareDetailView {
             }
 
             Divider()
-                .padding(.top, POSPadding.small)
+                .padding(.top, metrics.padding.small)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     var reconnectingMenuButton: some View {
-        Menu {
-            Button(Localization.cancelReconnectionTitle) {
+        POSMenu {
+            POSMenuButton(Localization.cancelReconnectionTitle) {
                 isCancellingReconnection = true
                 posModel.cancelReconnection()
             }
         } label: {
-            HStack(spacing: POSSpacing.small) {
+            HStack(spacing: metrics.spacing.small) {
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
                 Text(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
             }
             .font(.posBodySmallBold())
             .foregroundColor(.posOnSurface)
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.vertical, metrics.padding.small)
+            .padding(.horizontal, metrics.padding.medium)
             .background(Color.posSurfaceContainerLowest)
             .cornerRadius(POSCornerRadiusStyle.small.value)
             .overlay(
@@ -213,6 +214,7 @@ private extension POSSettingsHardwareDetailView {
                     .strokeBorder(Color.posOnSurface, lineWidth: 2)
             )
         }
+        .accessibilityLabel(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
         .disabled(isCancellingReconnection)
         .onChange(of: posModel.cardReaderConnectionStatus) {
             isCancellingReconnection = false
@@ -224,7 +226,7 @@ private extension POSSettingsHardwareDetailView {
                               backgroundColor: backgroundColor,
                               onBack: { navigationPath.removeLast() }) {
             ScrollView {
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     switch posModel.cardReaderConnectionStatus {
                     case .connected, .reconnecting:
                         if shouldShowUpdateFirmwareButton {
@@ -232,7 +234,7 @@ private extension POSSettingsHardwareDetailView {
                                                     subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
                         POSInformationCard {
-                            VStack(spacing: POSSpacing.small) {
+                            VStack(spacing: metrics.spacing.small) {
                                 cardReaderNameRow
 
                                 POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
@@ -261,7 +263,7 @@ private extension POSSettingsHardwareDetailView {
                                     action: { showCardReaderDocumentationModal = true })
                     .accessibilityAddTraits(.isButton)
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
                 .foregroundColor(.posOnSurface)
             }
         }
@@ -274,7 +276,7 @@ private extension POSSettingsHardwareDetailView {
         POSSettingsDetailPage(title: Localization.scannersTitle,
                               backgroundColor: backgroundColor,
                               onBack: { navigationPath.removeLast() }) {
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(ScannerDestination.allCases) { destination in
                     POSSettingsCard(
                         title: destination.title,
@@ -285,7 +287,7 @@ private extension POSSettingsHardwareDetailView {
                     )
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
 
             Spacer()
         }
@@ -296,12 +298,12 @@ private extension POSSettingsHardwareDetailView {
                               backgroundColor: backgroundColor,
                               onBack: { navigationPath.removeLast() }) {
             ScrollView {
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     if let controller = settingsController.printerConnectionController {
                         printerSection(controller: controller)
                     }
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
                 .foregroundColor(.posOnSurface)
             }
         }
@@ -322,14 +324,14 @@ private extension POSSettingsHardwareDetailView {
                                 action: { showPrinterSetupModal = true })
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
-            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
+            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .settings)
         }
     }
 
     func printerNameRow(controller: POSPrinterConnectionController) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSPadding.small) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
+            VStack(alignment: .leading, spacing: metrics.padding.small) {
                 Text(Localization.printerDeviceNameTitle)
                     .font(.posBodyMediumRegular())
                 Text(controller.connectedPrinterName ?? Localization.printerNotConnected)
@@ -340,6 +342,7 @@ private extension POSSettingsHardwareDetailView {
             Spacer()
 
             Button(Localization.printerDisconnectTitle) {
+                analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
                 Task {
                     await controller.disconnect()
                 }
@@ -355,13 +358,14 @@ private extension POSSettingsHardwareDetailView {
 /// The shared scaffold for a hardware detail sub-page: a page header with a back button above the
 /// page's content, on the settings background. Keeps the per-device pages free of this boilerplate.
 private struct POSSettingsDetailPage<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let backgroundColor: Color
     let onBack: () -> Void
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(
                 title: title,
                 // No `buttonIcon` override: the default is `chevron.backward`, which mirrors itself
@@ -689,6 +693,7 @@ private extension POSSettingsHardwareDetailView {
 
 private extension POSSettingsHardwareDetailView {
     struct POSSettingsCardWithIcon: View {
+        @Environment(\.posMetrics) private var metrics
         let title: String
         let subtitle: String
 
@@ -698,13 +703,13 @@ private extension POSSettingsHardwareDetailView {
         }
 
         var body: some View {
-            HStack(alignment: .center, spacing: POSPadding.medium) {
+            HStack(alignment: .center, spacing: metrics.padding.medium) {
                 Image(systemName: "info.circle")
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                     .frame(width: 36, height: 36)
 
-                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                     Text(title)
                         .font(.posBodyLargeBold)
                         .foregroundStyle(Color.posOnSurface)
@@ -713,7 +718,7 @@ private extension POSSettingsHardwareDetailView {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)

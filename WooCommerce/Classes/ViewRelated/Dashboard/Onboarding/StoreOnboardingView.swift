@@ -212,7 +212,9 @@ private extension StoreOnboardingView {
             static let expandedMode: CGFloat = 40
         }
     }
+}
 
+extension StoreOnboardingView {
     enum Localization {
         static let viewAll = NSLocalizedString(
             "storeOnboardingCardView.viewAll",

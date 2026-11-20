@@ -130,12 +130,12 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            content(safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            content
         }
     }
 
-    private func content(safeAreaInsets: EdgeInsets) -> some View {
+    private var content: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
             await viewModel.updateData()
@@ -143,14 +143,12 @@ struct AnalyticsHubView: View {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
                                        selectionType: $viewModel.timeRangeSelectionType)
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(uiColor: .listForeground(modal: false)))
+                .background(Color(uiColor: .listForeground(modal: false)), ignoresSafeAreaEdges: [])
                 .addingTopAndBottomDividers()
 
                 ForEach(viewModel.enabledCards, id: \.self) { card in
                     analyticsCard(type: card)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
+                        .background(Color(uiColor: .listForeground(modal: false)), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                 }
 
@@ -160,7 +158,6 @@ struct AnalyticsHubView: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))
-        .edgesIgnoringSafeArea(.horizontal)
         .task {
             await viewModel.loadAnalyticsCardSettings()
             await viewModel.updateData()

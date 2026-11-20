@@ -71,6 +71,11 @@ final class AddAttributeOptionsViewController: UIViewController, GhostableViewCo
         observeViewModel()
         renderViewModel()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration
@@ -145,7 +150,7 @@ private extension AddAttributeOptionsViewController {
         tableView.reloadData()
 
         if viewModel.showGhostTableView {
-            displayGhostContent()
+            displayGhostContent(over: tableView)
         } else {
             removeGhostContent()
         }

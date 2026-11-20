@@ -3,7 +3,6 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
-    @State private var overrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -16,35 +15,21 @@ struct POSSettingsView: View {
                              horizontalSizeClass == .compact ?
                                 .init(state: .enabled, action: { self.selection = nil }) : nil)
         } detailPlaceholderView: {
-            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel,
-                                       requestEditPermission: requestEditPermission)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         } setDefaultValue: {
             if selection == nil {
                 selection = .store
             }
         }
-        // No `.posRootModal()` here — `.posFullScreenCover` already provides one for this content, and a
-        // second bound to the same `POSModalManager` would render the override modal twice.
-        .posManagerOverrideModal(handler: overrideHandler)
-    }
-
-    /// Gates an edit to POS settings on `.editPOSSettings`. When the operator holds it the edit runs
-    /// immediately; otherwise the manager-override modal is presented and the edit runs once an
-    /// authorized staff member approves.
-    func requestEditPermission(_ perform: @escaping () -> Void) {
-        overrideHandler.gate(.editPOSSettings, reason: Localization.editOverrideDescription, perform: { _ in perform() })
-    }
-
-    /// Gates opening the wp-admin staff-management web view on `.managePOSStaff`. When the operator
-    /// holds it the view opens immediately; otherwise the override modal is presented and it opens once
-    /// an authorized staff member approves.
-    func requestManageStaffPermission(_ perform: @escaping () -> Void) {
-        overrideHandler.gate(.managePOSStaff, reason: Localization.manageStaffOverrideDescription, perform: { _ in perform() })
+        .onChange(of: settingsController.securityController?.isVisible) { _, isVisible in
+            if isVisible != true && selection == .security { selection = .store }
+        }
     }
 }
 
 extension POSSettingsView {
     private struct POSSettingsListView: View {
+        @Environment(\.posMetrics) private var metrics
         @Environment(\.dismiss) private var dismiss
         @Environment(\.posAnalytics) private var analytics
         @Binding var selection: SidebarNavigation?
@@ -52,7 +37,7 @@ extension POSSettingsView {
         let settingsController: POSSettingsControllerProtocol
 
         var body: some View {
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
+            VStack(alignment: .leading, spacing: metrics.spacing.none) {
                 POSPageHeaderView(
                     title: Localization.navigationTitle,
                     backButtonConfiguration: .init(state: .enabled,
@@ -64,29 +49,25 @@ extension POSSettingsView {
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
 
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     categoryCard(.store)
                     categoryCard(.hardware)
                     categoryCard(.payments)
+                    if settingsController.securityController?.isVisible == true {
+                        categoryCard(.security)
+                    }
                     if settingsController.isLocalCatalogEligible {
                         categoryCard(.localCatalog)
-                    }
-                    if isStaffSectionVisible {
-                        categoryCard(.staff)
                     }
                     Spacer()
 
                     helpView
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
             }
-            .background(Color.posSurfaceBright)
+            .background(Color.posSurfaceBright.ignoresSafeArea())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
-        }
-
-        private var isStaffSectionVisible: Bool {
-            settingsController.staffSettingsService != nil
         }
 
         private func categoryCard(_ category: SidebarNavigation) -> some View {
@@ -105,7 +86,7 @@ extension POSSettingsView {
                 SidebarNavigation.help.trackSelection(with: analytics)
                 selection = .help
             } label: {
-                HStack(spacing: POSSpacing.small) {
+                HStack(spacing: metrics.spacing.small) {
                     if let icon = SidebarNavigation.help.icon {
                         Image(systemName: icon)
                             .font(.posBodyMediumBold)
@@ -115,7 +96,7 @@ extension POSSettingsView {
                         .font(.posBodyMediumBold)
                         .foregroundStyle(Color.posOnSurface)
                 }
-                .padding()
+                .posPadding(\.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .contentShape(Rectangle())
@@ -130,26 +111,20 @@ extension POSSettingsView {
     private func detailView(for selection: SidebarNavigation, navigationPath: Binding<NavigationPath>) -> some View {
         switch selection {
         case .store:
-            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel,
-                                       requestEditPermission: requestEditPermission)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             POSSettingsHardwareDetailView(settingsController: settingsController, navigationPath: navigationPath)
         case .payments:
-            POSSettingsPaymentsDetailView(viewModel: settingsController.paymentsViewModel,
-                                          requestEditPermission: requestEditPermission)
+            POSSettingsPaymentsDetailView(viewModel: settingsController.paymentsViewModel)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
-                POSSettingsLocalCatalogDetailView(viewModel: viewModel,
-                                                  requestEditPermission: requestEditPermission)
+                POSSettingsLocalCatalogDetailView(viewModel: viewModel)
             } else {
                 EmptyView()
             }
-        case .staff:
-            if let staffSettingsService = settingsController.staffSettingsService {
-                POSStaffSettingsView(service: staffSettingsService,
-                                     requestManageStaffPermission: requestManageStaffPermission)
-            } else {
-                EmptyView()
+        case .security:
+            if let controller = settingsController.securityController, controller.isVisible {
+                POSSecuritySettingsView(controller: controller)
             }
         case .help:
             POSSettingsHelpDetailView()
@@ -163,8 +138,8 @@ extension POSSettingsView {
         case hardware
         case payments
         case localCatalog
-        case staff
         case help
+        case security
 
         var id: Self { self }
 
@@ -174,7 +149,7 @@ extension POSSettingsView {
             case .hardware: return Localization.sidebarNavigationHardwareTitle
             case .payments: return Localization.sidebarNavigationPaymentsTitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogTitle
-            case .staff: return Localization.sidebarNavigationStaffTitle
+            case .security: return POSSecuritySettingsView.Localization.title
             case .help: return Localization.sidebarNavigationHelpTitle
             }
         }
@@ -185,14 +160,14 @@ extension POSSettingsView {
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
             case .payments: return Localization.sidebarNavigationPaymentsSubtitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
-            case .staff: return Localization.sidebarNavigationStaffSubtitle
+            case .security: return POSSecuritySettingsView.Localization.subtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
             }
         }
 
         var icon: String? {
             switch self {
-            case .store, .hardware, .payments, .localCatalog, .staff:
+            case .store, .hardware, .payments, .localCatalog, .security:
                 return nil
             case .help:
                 return "questionmark.circle"
@@ -205,7 +180,7 @@ extension POSSettingsView {
             case .hardware: analytics.track(.pointOfSaleSettingsHardwareTapped)
             case .payments: analytics.track(.pointOfSaleSettingsPaymentsTapped)
             case .help: analytics.track(.pointOfSaleSettingsHelpTapped)
-            case .localCatalog, .staff: break
+            case .localCatalog, .security: break
             }
         }
     }
@@ -215,20 +190,6 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.navigationTitle",
             value: "Settings",
             comment: "Title of the Point of Sale settings view."
-        )
-
-        static let editOverrideDescription = NSLocalizedString(
-            "pointOfSaleSettingsView.editOverrideReason",
-            value: "Changing settings requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "edit-settings permission tries to change a Point of Sale setting."
-        )
-
-        static let manageStaffOverrideDescription = NSLocalizedString(
-            "pointOfSaleSettingsView.manageStaffOverrideReason",
-            value: "Managing staff requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "manage-staff permission tries to open staff management."
         )
 
         static let sidebarNavigationStoreTitle = NSLocalizedString(
@@ -283,18 +244,6 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle",
             value: "Manage catalog settings",
             comment: "Description of the settings to be found within the Local catalog section."
-        )
-
-        static let sidebarNavigationStaffTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.sidebarNavigationStaffTitle",
-            value: "Staff",
-            comment: "Title of the Staff section within Point of Sale settings."
-        )
-
-        static let sidebarNavigationStaffSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1",
-            value: "View staff and PIN access",
-            comment: "Description of the settings to be found within the Staff section."
         )
 
         static let sidebarNavigationHelpSubtitle = NSLocalizedString(

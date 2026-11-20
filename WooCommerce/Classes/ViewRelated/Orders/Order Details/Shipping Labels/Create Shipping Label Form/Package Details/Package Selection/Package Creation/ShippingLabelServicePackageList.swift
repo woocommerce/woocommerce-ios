@@ -29,14 +29,12 @@ struct ShippingLabelServicePackageList: View {
     private var populatedList: some View {
         LazyVStack(spacing: 0) {
             ListHeaderView(text: Localization.servicePackageHeader, alignment: .left)
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
 
             /// Packages
             ///
             ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                 ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                 Divider()
                 ForEach(option.predefinedPackages) { package in
                     let selected = package == viewModel.selectedPackage
@@ -46,15 +44,12 @@ struct ShippingLabelServicePackageList: View {
                         .onTapGesture {
                             viewModel.selectedPackage = package
                         }
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        .background(Color(.systemBackground))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     Divider()
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .padding(.leading, Constants.dividerPadding)
                 }
             }
         }
-        .ignoresSafeArea(.container, edges: .horizontal)
     }
 }
 

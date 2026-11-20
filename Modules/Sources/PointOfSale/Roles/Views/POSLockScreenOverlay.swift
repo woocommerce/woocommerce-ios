@@ -2,24 +2,28 @@ import SwiftUI
 
 struct POSLockScreenOverlay<Content: View>: View {
     private let content: Content
-    @State private var model: POSLockScreenModel
+    private let session: POSAccessSession
 
     init(session: POSAccessSession, @ViewBuilder content: () -> Content) {
         self.content = content()
-        self._model = State(initialValue: POSLockScreenModel(session: session))
+        self.session = session
     }
 
     var body: some View {
         content
-            .disabled(model.isLocked)
-            .accessibilityHidden(model.isLocked)
+            .disabled(session.isLocked)
+            .accessibilityHidden(session.isLocked)
+            // Keep POS mounted; hide its covered rendering without animating the lock-state change.
+            .opacity(session.isLocked ? 0 : 1)
+            .animation(nil, value: session.isLocked)
+            .background(POSLockPresentationHost(session: session,
+                                                 lockContent: POSLockScreenView(session: session).id(ObjectIdentifier(session))))
             .overlay {
-                if model.isLocked {
-                    POSLockScreenView(model: model)
-                        .transition(.opacity)
+                if session.isLocked {
+                    // Keep the source opaque before its scene window is attached.
+                    Color.posSurfaceContainerLow.ignoresSafeArea()
                 }
             }
-            .animation(.easeInOut(duration: POSLockScreenOverlayConstants.animationDuration), value: model.isLocked)
     }
 }
 
@@ -37,10 +41,6 @@ extension View {
     func posLockScreenOverlay() -> some View {
         modifier(POSLockScreenOverlayModifier())
     }
-}
-
-private enum POSLockScreenOverlayConstants {
-    static let animationDuration: TimeInterval = 0.2
 }
 
 #if DEBUG

@@ -54,7 +54,9 @@ private extension ConnectWPComCard {
         static let iconHeight: CGFloat = 35
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
     }
+}
 
+extension ConnectWPComCard {
     enum Localization {
         static let title = NSLocalizedString(
             "connectWPComCard.title",

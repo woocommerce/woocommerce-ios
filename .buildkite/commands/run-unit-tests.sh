@@ -8,11 +8,14 @@ echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
+echo "--- :rubygems: Setting up Gems"
+install_gems
 
 echo "--- 🧪 Testing"
 set +e
-bundle exec fastlane test_without_building name:UnitTests
+# Without a device, fastlane picks `iPhone 17 Pro`, which on the `xcode-27.2` image exists only
+# on the iOS 26.5 runtime. `iPhone 18 Pro` is on iOS 27.2.
+bundle exec fastlane test_without_building name:UnitTests device:"iPhone 18 Pro"
 TESTS_EXIT_STATUS=$?
 set -e
 

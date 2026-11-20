@@ -59,10 +59,10 @@
                 <constraint firstItem="qiC-rL-M9o" firstAttribute="top" secondItem="JgB-I2-Oin" secondAttribute="bottom" id="5ZL-hN-TvX"/>
                 <constraint firstItem="JgB-I2-Oin" firstAttribute="top" secondItem="BpX-ee-mWz" secondAttribute="top" id="OTM-FB-x7A"/>
                 <constraint firstItem="qiC-rL-M9o" firstAttribute="bottom" secondItem="VM8-dE-9OM" secondAttribute="bottom" id="WrM-dg-Cjb"/>
-                <constraint firstItem="JgB-I2-Oin" firstAttribute="leading" secondItem="VM8-dE-9OM" secondAttribute="leading" id="auf-RJ-d2u"/>
+                <constraint firstItem="JgB-I2-Oin" firstAttribute="leading" secondItem="BpX-ee-mWz" secondAttribute="leading" id="auf-RJ-d2u"/>
                 <constraint firstItem="JgB-I2-Oin" firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="ccN-yL-kyf"/>
-                <constraint firstItem="qiC-rL-M9o" firstAttribute="leading" secondItem="VM8-dE-9OM" secondAttribute="leading" id="n3S-eE-wek"/>
-                <constraint firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="pi6-3T-cyB"/>
+                <constraint firstItem="qiC-rL-M9o" firstAttribute="leading" secondItem="BpX-ee-mWz" secondAttribute="leading" id="n3S-eE-wek"/>
+                <constraint firstItem="BpX-ee-mWz" firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="pi6-3T-cyB"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>
         </view>

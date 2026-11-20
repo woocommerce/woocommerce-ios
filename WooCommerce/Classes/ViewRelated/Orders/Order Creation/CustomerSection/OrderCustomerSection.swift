@@ -36,6 +36,7 @@ struct OrderCustomerSection: View {
                             addressFormViewModel: addressFormViewModel) { customer in
                             viewModel.addCustomerAddressToOrder(customer: customer)
                         }
+                        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
                     }
                 }
                 .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,
@@ -102,7 +103,7 @@ private struct OrderCustomerSectionContent: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
     }
 
     private var createCustomerView: some View {

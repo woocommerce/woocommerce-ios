@@ -43,7 +43,7 @@ struct NewTaxRateSelectorView: View {
 
                                     Divider()
                                 }
-                                .background(Color(.listForeground(modal: false)))
+                                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                                 resultsListFooter
                                     .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
@@ -87,7 +87,7 @@ struct NewTaxRateSelectorView: View {
                                 }
                             }
                         }
-                        .background(Color(.listForeground(modal: false)))
+                        .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
                     }
                 }
             }

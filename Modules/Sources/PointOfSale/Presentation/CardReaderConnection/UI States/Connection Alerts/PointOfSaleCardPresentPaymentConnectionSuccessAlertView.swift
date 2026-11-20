@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -12,7 +13,7 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             Image(decorative: viewModel.imageName, bundle: .module)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 

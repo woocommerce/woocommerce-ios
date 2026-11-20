@@ -1,22 +1,24 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.posModalCompactStyle) private var compactStyle
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorExclamationMark(size: .large)
                 .accessibilityAddTraits(.isHeader)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
                     Text(Localization.message)
                     Text(Localization.nextSteps)
                 }
@@ -25,7 +27,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
             }
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: metrics.spacing.xxLarge)
 
             Button(Localization.understandButtonTitle,
                    action: {
@@ -34,7 +36,8 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
             .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .multilineTextAlignment(.center)
-        .padding(Layout.contentPadding)
+        // The phone bottom sheet pads its content itself.
+        .padding(compactStyle == .bottomSheet ? metrics.padding.none : metrics.padding.xxLarge)
         .frame(maxWidth: Layout.maxWidth)
     }
 }
@@ -42,7 +45,6 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 private extension PointOfSaleCardPresentPaymentCaptureFailedView {
     enum Layout {
         static let maxWidth: CGFloat = 896
-        static let contentPadding: CGFloat = POSPadding.xxLarge
     }
 
     enum Localization {

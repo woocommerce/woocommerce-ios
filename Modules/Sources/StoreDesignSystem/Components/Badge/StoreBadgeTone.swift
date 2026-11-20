@@ -2,9 +2,8 @@ import SwiftUI
 
 /// The color-coded tone of a ``StoreBadge``.
 ///
-/// - Note: A closed type holding the color roles per tone; `background` and `border` are optional
-///   (`nil` means no fill / no border). Caution and Warning map to their like-named container
-///   tokens, matching the Android `WooBadge`.
+/// `background` and `border` are optional (`nil` means no fill / no border). Caution and Warning
+/// map to their like-named container tokens, matching the Android `WooBadge`.
 public struct StoreBadgeTone: Sendable {
     struct Appearance {
         let background: Color?
@@ -51,4 +50,12 @@ public struct StoreBadgeTone: Sendable {
     public static let neutralOutlined = StoreBadgeTone(
         appearance: Appearance(background: nil, foreground: .storeOnSurface, border: .storeStateLayerOnSurfaceOpacity10)
     )
+
+    public static func custom(background: Color,
+                              foreground: Color,
+                              border: Color? = nil) -> StoreBadgeTone {
+        StoreBadgeTone(
+            appearance: Appearance(background: background, foreground: foreground, border: border)
+        )
+    }
 }

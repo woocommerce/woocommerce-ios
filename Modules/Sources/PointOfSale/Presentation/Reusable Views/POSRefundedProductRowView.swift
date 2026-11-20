@@ -3,11 +3,12 @@ import struct Yosemite.POSRefundItem
 
 /// A reusable row displaying a refunded product with image, name, quantity × price, and refund total.
 struct POSRefundedProductRowView: View {
+    @Environment(\.posMetrics) private var metrics
     let item: POSRefundItem
     var accessibilityLabel: String?
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             if item.isLumpSum {
                 CustomAmountAvatar(name: item.name)
                     .frame(width: Constants.imageSize, height: Constants.imageSize)
@@ -18,7 +19,7 @@ struct POSRefundedProductRowView: View {
                     .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             }
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(item.name)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)

@@ -14,16 +14,18 @@ struct TopPerformersEmptyView: View {
 }
 
 private extension TopPerformersEmptyView {
+    enum Layout {
+        static let spacing: CGFloat = 24
+        static let padding: EdgeInsets = .init(top: 0, leading: 10, bottom: 10, trailing: 10)
+    }
+}
+
+extension TopPerformersEmptyView {
     enum Localization {
         static let text = NSLocalizedString(
             "No activity this period",
             comment: "Default text for Top Performers section when no data exists for a given period."
         )
-    }
-
-    enum Layout {
-        static let spacing: CGFloat = 24
-        static let padding: EdgeInsets = .init(top: 0, leading: 10, bottom: 10, trailing: 10)
     }
 }
 

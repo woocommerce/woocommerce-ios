@@ -111,7 +111,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
                                   showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
-                                  safeAreaInsets: safeAreaInsets)
+                                  safeAreaInsets: .zero)
                          .accessibilityElement(children: .contain)
                          .accessibilityIdentifier("order-address-form")
 
@@ -119,8 +119,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                 }
 
@@ -128,8 +127,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $viewModel.showDifferentAddressForm)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                         .accessibilityIdentifier("order-creation-customer-details-shipping-address-toggle")
                 }
@@ -143,7 +141,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector,
-                                      safeAreaInsets: safeAreaInsets)
+                                      safeAreaInsets: .zero)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
                 }
@@ -152,7 +150,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             }
             .disableAutocorrection(true)
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .navigationTitle(viewModel.viewTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -309,7 +307,7 @@ struct SingleAddressForm: View {
                                  keyboardType: .phonePad)
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.systemBackground))
+        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
 
         ListHeaderView(text: sectionTitle, alignment: .left)
@@ -397,7 +395,7 @@ struct SingleAddressForm: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.systemBackground))
+        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .onChange(of: showStateSelector) {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)

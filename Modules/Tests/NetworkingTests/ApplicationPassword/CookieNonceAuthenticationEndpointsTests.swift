@@ -310,6 +310,44 @@ struct CookieNonceAuthenticationEndpointsTests {
         #expect(isExpected == false)
     }
 
+    @Test func test_admin_candidate_when_redirect_is_nonce_under_another_admin_then_keeps_site_and_login_entry() throws {
+        // Given
+        let loginEntryURL = try url("https://example.com/custom-login")
+        let submissionURL = try url("https://example.com/custom-submit")
+        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: url("https://example.com"), loginEntryURL: loginEntryURL)
+
+        // When
+        let candidate = endpoints.adminCandidate(
+            fromCredentialRedirect: "/ghost-admin/admin-ajax.php?action=rest-nonce",
+            from: submissionURL,
+            afterLoginAt: submissionURL
+        )
+
+        // Then
+        #expect(candidate?.siteURL == endpoints.siteURL)
+        #expect(candidate?.loginEntryURL == loginEntryURL)
+        #expect(candidate?.adminBaseURL.absoluteString == "https://example.com/ghost-admin/")
+    }
+
+    @Test(arguments: [
+        "https://example.com/wp-admin/admin-ajax.php?action=rest-nonce",
+        "https://example.com/ghost-admin/",
+        "https://example.com/ghost-admin/admin-ajax.php?action=rest-nonce&extra=1",
+        "https://example.com/ghost-admin/index.php/admin-ajax.php?action=rest-nonce",
+        "https://other.example/ghost-admin/admin-ajax.php?action=rest-nonce"
+    ])
+    func test_admin_candidate_when_redirect_is_not_an_exact_nonce_under_another_admin_then_returns_nil(location: String) throws {
+        // Given
+        let submissionURL = try url("https://example.com/custom-submit")
+        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: url("https://example.com"))
+
+        // When
+        let candidate = endpoints.adminCandidate(fromCredentialRedirect: location, from: submissionURL, afterLoginAt: submissionURL)
+
+        // Then
+        #expect(candidate == nil)
+    }
+
     @Test func test_form_action_is_transaction_local_and_does_not_replace_the_login_entry() throws {
         // Given
         let entryURL = try url("https://example.com/custom-entry?durable=1")

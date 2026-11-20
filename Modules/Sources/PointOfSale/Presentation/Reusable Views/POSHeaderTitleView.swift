@@ -12,19 +12,11 @@ struct POSHeaderTitleView: View {
     var body: some View {
         Text(title)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Constants.padding)
+            .posPadding(.vertical, \.large)
+            .posPadding(.horizontal, \.medium)
             .font(.posHeadingBold)
             .foregroundColor(foregroundColor)
             .accessibilityAddTraits(.isHeader)
-    }
-}
-
-private extension POSHeaderTitleView {
-    enum Constants {
-        static let padding: EdgeInsets = .init(top: POSHeaderLayoutConstants.sectionVerticalPadding,
-                                               leading: POSHeaderLayoutConstants.sectionHorizontalPadding,
-                                               bottom: POSHeaderLayoutConstants.sectionVerticalPadding,
-                                               trailing: POSHeaderLayoutConstants.sectionHorizontalPadding)
     }
 }
 

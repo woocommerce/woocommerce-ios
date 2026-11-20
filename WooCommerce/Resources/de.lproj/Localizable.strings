@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-20 11:54:09+0000 */
+/* Translation-Revision-Date: 2026-11-03 13:56:15+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -12,12 +12,6 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
-
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld Option)";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@ (%2$ld Optionen)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (privat)";
@@ -7745,9 +7739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variationen";
 
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variantenattribute";
-
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "Varianten erfolgreich erstellt";
 
@@ -8282,6 +8273,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Abbrechen";
+
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "Nicht mehr verwenden";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "Bestehende Variationen stimmen für dieses Attribut nicht mehr überein.";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "Für Varianten nicht mehr verwenden?";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "Für Varianten verwendet";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "Sichtbar auf der Produktseite";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Individuellen Betrag löschen";
@@ -9800,6 +9806,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
 "cardPresentPayment.tapToPay.paymentCancelled.title" = "Zahlung storniert";
 
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "Aktualisieren";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "Aktualisieren";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "Aktualisieren";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "Aktualisieren";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "Zahlungseinstellungen öffnen";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "Aktualisieren";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "Aktualisieren";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "Shop-Administration";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "Du hast mindestens eine überfällige Anforderung. Du kannst sie überspringen und weiterhin Zahlungen empfangen, aber wenn die Anforderung dein Konto blockiert, können Transaktionen abgelehnt werden, bis du sie löst.";
 
@@ -9811,6 +9841,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.title" = "Überfällige Anforderungen für dein Konto";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "Erneut versuchen";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "Plugin in der Shop-Administration aktualisieren";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Zurück zur Bestellung";
@@ -9901,6 +9937,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue.1" = "Fälliges Wechselgeld: %1$@";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "Antwortauszug: %1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "Ich konnte mich nicht bei meinem Shop anmelden. Bitte hilf mir, diese unerwartete Antwort zu beheben.\n\nWebsite: %1$@\nAnmeldeschritt: %2$@\nAnmeldeablauf: %3$@\nFehlertyp: %4$@\nHTTP-Status: %5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "Anfrage: %1$@\nInhaltstyp: %2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "Unbekannt";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "Schließen";
@@ -10385,6 +10433,45 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "Dieser Benutzer ist ein Gast und Gäste können nicht zum Filtern von Bestellungen verwendet werden.";
 
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "Erneut versuchen";
+
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "Für Kundenlisten benötigst du WooCommerce-Analysen. Diese Funktion ist für diesen Shop deaktiviert Du kannst sie hier oder in deiner Shop-Administration unter „WooCommerce › Einstellungen › Erweitert › Funktionen“ aktivieren und dann auf „Erneut versuchen“ tippen.";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "Für Kundenlisten benötigst du WooCommerce-Analysen. Diese Funktion ist in diesem Shop nicht verfügbar. Bitte einen Shop-Administrator, sie in „WooCommerce › Einstellungen › Erweitert › Funktionen“ zu aktivieren.";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "Für Kundenlisten benötigst du WooCommerce-Analysen. Diese Funktion ist derzeit in diesem Shop nicht verfügbar. Bitte einen Shop-Administrator, sie zu aktivieren.";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "Abbrechen";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "Aktivieren";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "Dadurch wird eine Einstellung für deinen gesamten Shop geändert. Sie bleibt aktiviert, bis sie in „WooCommerce › Einstellungen › Erweitert › Funktionen“ deaktiviert wird. Kunden, die du vor der Aktivierung von Analysen hattest, werden möglicherweise erst angezeigt, nachdem du historische Daten in „WooCommerce › Analysen › Einstellungen“ importiert hast.";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "WooCommerce-Analysen aktivieren?";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "Analysen aktivieren";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "WooCommerce-Analysen konnten nicht aktiviert werden. Bitte versuche es erneut.";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "Kundendaten konnten nicht abgerufen werden. Bitte versuche es später erneut.";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "Erneut versuchen";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "Kunden können nicht geladen werden";
+
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "Keine E-Mail-Adresse";
 
@@ -10505,6 +10592,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "Tage";
 
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@: %2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "Attribute";
+
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "Individuelle Produktfelder anzeigen und bearbeiten";
 
@@ -10540,6 +10633,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Medien auf Gerät";
+
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "Verborgen";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "Für Varianten verwendet";
 
 /* Button to open map address picker. */
 "editOrderAddressForm.pickOnMap" = "Auf der Karte suchen";
@@ -10977,6 +11076,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Bewertungen";
 
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "Neue Funktion";
+
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google für WooCommerce";
 
@@ -11076,6 +11178,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.OpenPaymentsAction.Title" = "Zahlungen";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "Vorherige Rückerstattungen konnten nicht geladen werden.";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "Jetpack verbinden";
@@ -13084,6 +13189,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce-Einstellungen";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "%1$d Artikel";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "%1$d Artikel";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tippe auf ein Produkt, um \n es dem Warenkorb hinzuzufügen oder den ";
 
@@ -13693,10 +13804,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "Schließen";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "Teilsumme der Artikel (%1$d Artikel)";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "Teilsumme der Artikel (%1$d Artikel)";
 
 /* Label for refund total row in refund detail */
@@ -13837,9 +13948,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Grund bearbeiten";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "Teilsumme Artikel (%d Artikel)";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "Grund für die Rückerstattung der Bestellung";
@@ -14404,6 +14512,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "Keine Mengenregeln";
+
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "Füge Details wie Material oder Größe zur Produktseite hinzu";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "Attribute";
 
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "Individuelle Felder anzeigen und bearbeiten";
@@ -15345,6 +15459,9 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Shop zum Verbinden auswählen (%1$d ausgeblendet)";
 
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "Löschen";
+
 /* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
 "storeSegmentedControl.accessibilityValue.position" = "%1$d von %2$d";
 
@@ -15365,6 +15482,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "Shop";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "%1$d von %2$d";
 
 /* VoiceOver label of the back control in a top app bar. */
 "storeTopAppBar.navigation.back" = "Zurück";
@@ -16009,6 +16129,24 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Alle Shop-Analysen anzeigen";
 
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "Stattdessen einen Backup-Code verwenden";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "Gib zum Fortfahren einen Backup-Code ein.";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "Suche in deinem Posteingang einen Verifizierungscode von WordPress.com und gib ihn dann ein, um fortzufahren.";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "Code erneut per SMS senden";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "Bitte gib deinen Sicherheitsschlüssel ein, um fortzufahren.";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "Wir haben eine Textnachricht gesendet. Gib den Verifizierungscode aus der Nachricht ein.";
+
 /* Button title to contact support to get help with unavailable Analytics module */
 "unavailableAnalyticsView.buttonTitle" = "Du benötigst dennoch Hilfe? Kontaktiere uns";
 
@@ -16486,6 +16624,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "Erneut versuchen";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "Das Versandetikett kann aufgrund eines Problems mit dem Versanddienstleister nicht gekauft werden: %1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "Fehler beim Kauf des Versandetiketts.";
 
@@ -16605,6 +16746,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Erneut versuchen";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "Hinweis verwerfen: %1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "Fehler";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "Informationen";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "Warnung";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "Statusseite anzeigen";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Sendung %1$d";
@@ -17133,6 +17289,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "Stattdessen Code per SMS senden";
+
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "Stattdessen einen Backup-Code verwenden";
 
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "Verifizierungscode";

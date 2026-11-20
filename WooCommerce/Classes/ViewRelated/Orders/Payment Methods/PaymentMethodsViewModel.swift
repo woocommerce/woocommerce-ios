@@ -312,7 +312,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
-            onPaymentCompletion: {
+            onPaymentCompletion: { _ in
                 // No tracking required at present because it's handled internally.
             },
             onCompleted: { [weak self] in

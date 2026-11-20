@@ -130,7 +130,7 @@ struct InboxNoteRow: View {
     }
 }
 
-private extension InboxNoteRow {
+extension InboxNoteRow {
     enum Localization {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss button in inbox note row.")
         static let inboxWebViewTitle = NSLocalizedString(
@@ -142,7 +142,9 @@ private extension InboxNoteRow {
         static let surveyCompleted = NSLocalizedString("Thank you for your feedback!",
                                                        comment: "Confirmation message in Inbox Notes after responding to a survey.")
     }
+}
 
+private extension InboxNoteRow {
     enum Constants {
         static let spacingBetweenActions: CGFloat = 16
         static let spacingBetweenTopViewAndContentVStack: CGFloat = 8

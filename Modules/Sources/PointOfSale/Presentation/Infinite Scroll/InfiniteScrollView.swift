@@ -89,7 +89,7 @@ private struct PreviewWrapper: View {
                             .font(.title)
                         Spacer()
                     }
-                    .padding()
+                    .posPadding(\.medium)
                 }
             })
         .frame(height: 400)

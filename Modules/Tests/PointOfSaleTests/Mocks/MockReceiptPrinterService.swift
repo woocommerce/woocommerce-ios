@@ -38,6 +38,23 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// once the connect is genuinely in flight.
     var onConnectSubscribed: (() -> Void)?
 
+    /// When `true`, `connect(to:)` waits, ignoring cancellation like the SDK's connect, until
+    /// `finishHeldConnect()` lets it succeed. Fires `onConnectSubscribed` once it is waiting.
+    var holdsConnect = false
+    private var heldConnect: CheckedContinuation<Void, Never>?
+
+    /// When `true`, `discover()` keeps its stream open after emitting `discoveredDevices`, like a
+    /// scan still running, until the consumer cancels it.
+    var keepsDiscoveryOpen = false
+
+    /// Emits each time a `discover()` stream terminates, whether it finished or its consumer cancelled it.
+    let discoveryTerminations: AsyncStream<Void>
+    private let discoveryTerminationsContinuation: AsyncStream<Void>.Continuation
+
+    init() {
+        (discoveryTerminations, discoveryTerminationsContinuation) = AsyncStream.makeStream()
+    }
+
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
@@ -71,11 +88,18 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         discoverCallCount += 1
         let devices = discoveredDevices
         let error = discoverError
+        let keepsOpen = keepsDiscoveryOpen
+        let terminations = discoveryTerminationsContinuation
         return AsyncThrowingStream { continuation in
+            continuation.onTermination = { _ in
+                terminations.yield()
+            }
             for device in devices {
                 continuation.yield(device)
             }
-            continuation.finish(throwing: error)
+            if !keepsOpen {
+                continuation.finish(throwing: error)
+            }
         }
     }
 
@@ -85,6 +109,17 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     func connect(to printer: PrinterDevice) async throws {
         connectedDevices.append(printer)
+        if connectError == nil {
+            emitConnectionStatus(.connecting)
+        }
+        if holdsConnect {
+            await withCheckedContinuation { continuation in
+                heldConnect = continuation
+                onConnectSubscribed?()
+            }
+            emitConnectionStatus(.connected(printer))
+            return
+        }
         if parkConnect {
             // Hold the call open so a test can release the controller mid-connect; cancellation
             // from the controller's deinit unwinds the sleep.
@@ -96,6 +131,11 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
             throw connectError
         }
         emitConnectionStatus(.connected(printer))
+    }
+
+    func finishHeldConnect() {
+        heldConnect?.resume()
+        heldConnect = nil
     }
 
     func disconnect() async {
@@ -115,9 +155,11 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     }
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {
         printedOrder = order
         printedStoreInformation = storeInformation
+        printedCardDetails = cardDetails
         if let printError {
             throw printError
         }

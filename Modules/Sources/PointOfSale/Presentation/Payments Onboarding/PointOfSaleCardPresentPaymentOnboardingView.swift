@@ -2,10 +2,11 @@ import SwiftUI
 
 /// Displays the WooPayments onboarding UI based on the state.
 struct PointOfSaleCardPresentPaymentOnboardingView: View {
+    @Environment(\.posMetrics) private var metrics
     @ObservedObject var viewModel: PointOfSaleCardPresentPaymentOnboardingViewModel
 
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             AnyView(viewModel.onboardingViewContainer.view)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
                 .toolbar(.hidden)
@@ -13,15 +14,21 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
         .posModalCloseButton(action: viewModel.cancelOnboarding,
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
+    }
+}
+
+extension POSModalCompactStyle {
+    static var cardPaymentsOnboarding: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.cardPaymentsOnboarding.modal.title",
+            value: "Card payments",
+            comment: "Title in the header of the full-screen card payments onboarding flow on phone."
+        ))
     }
 }
 
 private extension PointOfSaleCardPresentPaymentOnboardingView {
-    enum Constants {
-        static let verticalSpacing: CGFloat = POSSpacing.large
-    }
-
     enum Localization {
         static let cancelOnboarding = NSLocalizedString(
             "pointOfSaleDashboard.payments.onboarding.cancel",
@@ -30,7 +37,6 @@ private extension PointOfSaleCardPresentPaymentOnboardingView {
         )
     }
 }
-
 
 #if DEBUG
 

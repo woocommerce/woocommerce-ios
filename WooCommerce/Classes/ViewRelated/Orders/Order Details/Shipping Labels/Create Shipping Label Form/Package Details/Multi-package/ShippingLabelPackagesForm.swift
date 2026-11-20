@@ -14,13 +14,13 @@ struct ShippingLabelPackagesForm: View {
             ScrollView {
                 ForEach(viewModel.itemViewModels) { element in
                     ShippingLabelSinglePackage(isCollapsible: viewModel.foundMultiplePackages,
-                                               safeAreaInsets: geometry.safeAreaInsets,
+                                               safeAreaInsets: .zero,
                                                viewModel: element)
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .navigationTitle(Localization.title)
         .toolbar {

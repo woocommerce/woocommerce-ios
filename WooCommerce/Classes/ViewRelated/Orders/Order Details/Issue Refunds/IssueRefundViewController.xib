@@ -35,8 +35,8 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="Lf6-TH-48I" secondAttribute="bottom" id="0Nd-zr-sv0"/>
-                <constraint firstItem="Lf6-TH-48I" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="3l3-sh-hkW"/>
-                <constraint firstAttribute="trailing" secondItem="Lf6-TH-48I" secondAttribute="trailing" id="ICh-vm-D8Y"/>
+                <constraint firstItem="Lf6-TH-48I" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="3l3-sh-hkW"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Lf6-TH-48I" secondAttribute="trailing" id="ICh-vm-D8Y"/>
                 <constraint firstItem="Lf6-TH-48I" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="zPp-4d-0da"/>
             </constraints>
             <point key="canvasLocation" x="102.89855072463769" y="29.464285714285712"/>

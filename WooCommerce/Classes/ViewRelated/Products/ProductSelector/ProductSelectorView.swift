@@ -236,6 +236,7 @@ struct ProductSelectorView: View {
             } onDismissAction: {
                 // no-op
             }
+            .ignoresSafeArea(.container, edges: .horizontal)
         }
     }
 

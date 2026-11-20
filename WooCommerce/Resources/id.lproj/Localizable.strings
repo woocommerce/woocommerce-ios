@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-20 11:54:21+0000 */
+/* Translation-Revision-Date: 2026-11-03 10:55:52+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -12,12 +12,6 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
-
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld pilihan)";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@ (Pilihan %2$ld)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Pribadi)";
@@ -7745,9 +7739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variasi";
 
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Atribut Variasi";
-
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "Berhasil membuat variasi";
 
@@ -8282,6 +8273,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Batal";
+
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "Hentikan penggunaan";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "Variasi yang ada tidak akan sesuai lagi dengan atribut ini.";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "Hentikan penggunaan untuk variasi?";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "Digunakan untuk variasi";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "Terlihat di halaman produk";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Hapus Jumlah kustom";
@@ -9797,6 +9803,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
 "cardPresentPayment.tapToPay.paymentCancelled.title" = "Pembayaran dibatalkan";
 
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "Segarkan";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "Segarkan";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "Segarkan";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "Segarkan";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "Buka Pengaturan Pembayaran";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "Segarkan";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "Segarkan";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "Admin Toko";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "Anda memiliki setidaknya satu persyaratan yang belum diselesaikan. Anda dapat melewatinya dan tetap menerima pembayaran. Namun, jika akun Anda diblokir karena persyaratan tersebut, beberapa transaksi mungkin akan ditolak sebelum Anda menyelesaikannya.";
 
@@ -9808,6 +9838,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.title" = "Persyaratan yang belum diselesaikan di akun Anda";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "Coba lagi";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "Perbarui Plugin di Admin Toko";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Kembali ke Pesanan";
@@ -9898,6 +9934,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue.1" = "Kembalian terutang: %1$@";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "Kutipan tanggapan: %1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "Saya tidak dapat login ke toko saya. Harap bantu saya mengatasi respons tak terduga ini.\n\nSitus: %1$@\nLangkah login: %2$@\nAlur login: %3$@\nJenis kegagalan: %4$@\nStatus HTTP: %5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "Permintaan: %1$@\nJenis konten: %2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "Tidak diketahui";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "Tutup";
@@ -10382,6 +10430,45 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "Pengguna ini adalah tamu sehingga tidak dapat digunakan untuk menyaring pesanan.";
 
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "Coba lagi";
+
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "Daftar pelanggan memerlukan WooCommerce Analytics yang sedang dimatikan untuk toko ini. Anda dapat mengaktifkannya di sini, atau di admin toko Anda di WooCommerce › Pengaturan › Lanjutan › Fitur lalu ketuk Coba lagi.";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "Daftar pelanggan memerlukan WooCommerce Analytics yang tidak tersedia di toko ini. Minta administrator toko untuk mengaktifkannya di WooCommerce › Pengaturan › Lanjutan › Fitur.";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "Daftar pelanggan memerlukan WooCommerce Analytics yang saat ini tidak tersedia di toko ini. Mintalah administrator toko untuk memeriksa apakah fitur ini sudah diaktifkan.";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "Batalkan";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "Aktifkan";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "Hal ini akan mengubah pengaturan untuk seluruh toko Anda. Fitur ini akan tetap aktif sampai seseorang menonaktifkannya di WooCommerce › Pengaturan › Lanjutan › Fitur. Pelanggan di saat Analytics tidak aktif mungkin baru akan muncul setelah Anda mengimpor data riwayat di WooCommerce › Analytics › Pengaturan.";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "Aktifkan WooCommerce Analytics?";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "Aktifkan Analytics";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "WooCommerce Analytics tidak dapat diaktifkan. Coba lagi.";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "Gagal mengambil data pelanggan. Coba lagi nanti.";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "Coba lagi";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "Pelanggan tidak dapat dimuat";
+
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "Tidak ada alamat email";
 
@@ -10502,6 +10589,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "hari";
 
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@: %2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "Atribut";
+
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "Lihat dan edit kolom khusus produk";
 
@@ -10537,6 +10630,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media di perangkat";
+
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "Tersembunyi";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "Digunakan untuk variasi";
 
 /* Button to open map address picker. */
 "editOrderAddressForm.pickOnMap" = "Temukan di Peta";
@@ -10974,6 +11073,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Ulasan";
 
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "Fitur baru";
+
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google untuk WooCommerce";
 
@@ -11073,6 +11175,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.OpenPaymentsAction.Title" = "Pembayaran";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "Tidak dapat memuat pengembalian dana sebelumnya.";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "Sambungkan ke Jetpack";
@@ -13081,6 +13186,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "Pengaturan WooCommerce";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "%1$d item";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "%1$d item";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
 
@@ -13690,10 +13801,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "Tutup";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "Subtotal item (%1$d item)";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "Subtotal item (%1$d item)";
 
 /* Label for refund total row in refund detail */
@@ -13834,9 +13945,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Edit alasan";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "Subtotal item (%d item)";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "Alasan pengembalian dana pesanan";
@@ -14401,6 +14509,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "Tidak Ada Aturan Jumlah";
+
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "Tambahkan detail seperti bahan atau ukuran ke halaman produk";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "Atribut";
 
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "Lihat dan edit kolom khusus";
@@ -15342,6 +15456,9 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Pilih Toko yang akan Dihubungkan (%1$d disembunyikan)";
 
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "Hapus";
+
 /* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
 "storeSegmentedControl.accessibilityValue.position" = "%1$d dari %2$d";
 
@@ -15362,6 +15479,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "Toko";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "%1$d dari %2$d";
 
 /* VoiceOver label of the back control in a top app bar. */
 "storeTopAppBar.navigation.back" = "Kembali";
@@ -16018,6 +16138,24 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Lihat semua analitik toko";
 
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "Gunakan kode cadangan sebagai gantinya";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "Masukkan kode cadangan untuk melanjutkan.";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "Periksa email Anda untuk melihat kode verifikasi dari WordPress.com, lalu masukkan kode untuk melanjutkan.";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "Kirim ulang kode via SMS";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "Harap berikan kunci keamanan Anda untuk melanjutkan.";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "Kami telah mengirimkan pesan teks. Masukkan kode verifikasi dari pesan.";
+
 /* Button title to contact support to get help with unavailable Analytics module */
 "unavailableAnalyticsView.buttonTitle" = "Masih butuh bantuan? Hubungi kami";
 
@@ -16495,6 +16633,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "Coba lagi";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "Kami tidak dapat membeli label pengiriman karena adanya masalah pada layanan kurir: %1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "Terjadi error saat membeli label pengiriman.";
 
@@ -16614,6 +16755,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Coba lagi";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "Tutup pemberitahuan: %1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "Error";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "Informasi";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "Peringatan";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "Lihat halaman status";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Pengiriman %1$d";
@@ -17142,6 +17298,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "Kirimi saya kode saja";
+
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "Gunakan kode cadangan sebagai gantinya";
 
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "Kode verifikasi";

@@ -6,9 +6,11 @@ import struct Yosemite.POSOrderRefund
 /// Displays subtotal, optional discount, tax, total, paid amount with payment method,
 /// and optional refund rows with net payment.
 struct POSTotalsSectionView: View {
+    @Environment(\.posMetrics) private var metrics
     let sectionTitle: String
     let subtotalLabel: String
     let subtotalAmount: String
+    var customAmountsAmount: String? = nil
     let discountAmount: String?
     let taxAmount: String
     let totalAmount: String
@@ -21,14 +23,18 @@ struct POSTotalsSectionView: View {
     @Binding var selectedRefundForDetail: POSOrderRefund?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(sectionTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 totalsRow(title: subtotalLabel, amount: subtotalAmount)
+
+                if let customAmountsAmount {
+                    totalsRow(title: TotalsView.SharedLocalization.customAmountsTotal, amount: customAmountsAmount)
+                }
 
                 totalsRow(title: Localization.taxesLabel, amount: taxAmount)
 
@@ -56,7 +62,7 @@ struct POSTotalsSectionView: View {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
@@ -64,7 +70,7 @@ struct POSTotalsSectionView: View {
     // MARK: - Paid Row
 
     private var paidAmountRow: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if let paidAmount {
                 totalsRow(
                     title: Localization.paidLabel,
@@ -114,7 +120,7 @@ struct POSTotalsSectionView: View {
         Button {
             selectedRefundForDetail = refund
         } label: {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 HStack {
                     Text(Localization.refundTitle(index + 1))
                         .font(.posBodyLargeBold)

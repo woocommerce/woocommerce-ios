@@ -14,6 +14,7 @@ import WooFoundation
 /// 3. Success — `paymentModel.paymentState.scanToPay == .paymentSuccess` triggers `popToRoot`;
 ///    the totals view takes over with the standard payment-success UI.
 struct PointOfSaleScanToPayView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posNavigationRouter) private var router
     @Environment(POSPaymentModel.self) private var paymentModel
 
@@ -66,7 +67,7 @@ struct PointOfSaleScanToPayView: View {
     private var content: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(alignment: .center, spacing: POSSpacing.medium) {
+                VStack(alignment: .center, spacing: metrics.spacing.medium) {
                     POSPageHeaderView(
                         title: Localization.title,
                         subtitle: String.localizedStringWithFormat(Localization.subtitle, orderTotal),
@@ -84,7 +85,7 @@ struct PointOfSaleScanToPayView: View {
                             .font(.posBodySmallRegular())
                             .foregroundColor(.posError)
                             .multilineTextAlignment(.center)
-                            .padding(.horizontal, POSPadding.medium)
+                            .padding(.horizontal, metrics.padding.medium)
                     }
 
                     Spacer()
@@ -98,7 +99,7 @@ struct PointOfSaleScanToPayView: View {
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                     .disabled(isLoading || paymentModel.isPreparingScanToPay)
-                    .padding([.horizontal, .bottom], POSPadding.medium)
+                    .padding([.horizontal, .bottom], metrics.padding.medium)
                     .frame(maxWidth: .infinity)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 }
@@ -121,7 +122,7 @@ struct PointOfSaleScanToPayView: View {
     @ViewBuilder
     private var qrCodeContent: some View {
         if let qrImage = generatedQRCodeImage() {
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(Localization.scanInstruction)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurface)
@@ -131,16 +132,16 @@ struct PointOfSaleScanToPayView: View {
                     .interpolation(.none)
                     .resizable()
                     .frame(width: Layout.qrCodeSize, height: Layout.qrCodeSize)
-                    .padding(POSPadding.medium)
+                    .padding(metrics.padding.medium)
                     .background(Color.white)
                     .cornerRadius(Layout.cornerRadius)
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
         } else if paymentModel.isPreparingScanToPay {
             // The QR is being generated server-side: still waiting on the autoDraft → pending
             // promotion to populate `paymentURL`. Show a placeholder of the same size so the
             // layout doesn't shift when the QR appears.
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: metrics.spacing.medium) {
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle())
                     .frame(width: Layout.qrCodeSize, height: Layout.qrCodeSize)
@@ -150,13 +151,13 @@ struct PointOfSaleScanToPayView: View {
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
         } else {
             Text(Localization.qrUnavailable)
                 .font(.posBodyLargeRegular())
                 .foregroundColor(.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
         }
     }
 
@@ -171,13 +172,13 @@ struct PointOfSaleScanToPayView: View {
     @ViewBuilder
     private var verificationStatusView: some View {
         if paymentModel.scanToPayURL != nil {
-            HStack(spacing: POSSpacing.small) {
+            HStack(spacing: metrics.spacing.small) {
                 statusIcon
                 Text(verificationStatusMessage)
                     .font(.posBodyMediumRegular())
                     .foregroundColor(verificationStatusColor)
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(verificationStatusMessage)
             .animation(.easeInOut, value: verificationStatus)

@@ -167,7 +167,11 @@ open class Snapshot: NSObject {
                 return
             }
 
-            let screenshot = XCUIScreen.main.screenshot()
+            // Retain this Duo screen selection after `fastlane snapshot update`; the active inner display is not the main screen.
+            let screenshot = XCUIScreen.screens.map { $0.screenshot() }
+                .filter { hasVisibleContent($0.image) }
+                .max { $0.image.size.width * $0.image.size.height < $1.image.size.width * $1.image.size.height }
+                ?? XCUIScreen.main.screenshot()
             #if os(iOS) && !targetEnvironment(macCatalyst)
             let image = XCUIDevice.shared.orientation.isLandscape ?  fixLandscapeOrientation(image: screenshot.image) : screenshot.image
             #else
@@ -193,6 +197,21 @@ open class Snapshot: NSObject {
                 NSLog(error.localizedDescription)
             }
         #endif
+    }
+
+    private class func hasVisibleContent(_ image: UIImage) -> Bool {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let sample = UIGraphicsImageRenderer(size: CGSize(width: 16, height: 16), format: format).image { _ in
+            image.draw(in: CGRect(x: 0, y: 0, width: 16, height: 16))
+        }
+        guard let data = sample.cgImage?.dataProvider?.data, let bytes = CFDataGetBytePtr(data) else {
+            return false
+        }
+        return stride(from: 0, to: CFDataGetLength(data), by: 4).contains {
+            bytes[$0] > 8 || bytes[$0 + 1] > 8 || bytes[$0 + 2] > 8
+        }
     }
 
     class func fixLandscapeOrientation(image: UIImage) -> UIImage {

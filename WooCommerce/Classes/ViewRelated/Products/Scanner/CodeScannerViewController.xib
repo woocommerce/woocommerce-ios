@@ -57,7 +57,7 @@
                             <rect key="frame" x="0.0" y="269" width="414" height="358"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="boX-U8-l3Q"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" priority="999" id="boX-U8-l3Q"/>
                             </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WDY-yE-Pa7" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">

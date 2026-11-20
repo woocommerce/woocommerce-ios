@@ -122,7 +122,9 @@ private extension HardwareBarcodeScanner {
             maximumInterCharacterTime: HIDBarcodeParserConfiguration.default.maximumInterCharacterTime
         )
     }
+}
 
+extension HardwareBarcodeScanner {
     enum Localization {
         static let missingEnterSuffix = NSLocalizedString(
             "hardwareBarcodeScanner.missingEnterSuffix",

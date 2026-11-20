@@ -33,6 +33,11 @@ protocol Authentication {
     @MainActor
     func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) async -> Bool
 
+    /// Whether the QR login screens are on the login navigation stack.
+    ///
+    @MainActor
+    var isShowingQRLogin: Bool { get }
+
     /// Returns authentication UI for display by the caller.
     ///
     @MainActor

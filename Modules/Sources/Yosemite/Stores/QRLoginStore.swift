@@ -3,16 +3,15 @@ import Networking
 
 /// Yosemite store fronting the QR-login Remotes.
 ///
-/// Subclasses `DeauthenticatedStore` because QR-login is a logged-out flow —
-/// the merchant has not yet authenticated, so we run alongside
-/// `AccountCreationStore`, `WordPressSiteStore`, etc. in
-/// `DeauthenticatedState`.
+/// Subclasses `DeauthenticatedStore` because QR-login needs no stored
+/// credentials. It runs in `DeauthenticatedState`, and in `AuthenticatedState`
+/// too: a site-credentials login that fails a later check stays authenticated
+/// while the login screens, and their QR entry, remain on screen.
 ///
 /// Both Remotes are injected so tests can substitute mock implementations
 /// without touching `URLSession`. The default convenience init wires up the
-/// real Remotes with the WP.com OAuth credentials passed from
-/// `DeauthenticatedState` (host app target) — keeping `ApiCredentials` out of
-/// this module.
+/// real Remotes with the WP.com OAuth credentials passed from the host app
+/// target's states — keeping `ApiCredentials` out of this module.
 public final class QRLoginStore: DeauthenticatedStore {
 
     private let selfHostedRemote: SelfHostedQRLoginRemoteProtocol

@@ -14,6 +14,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, Sendable, GeneratedCo
     public let status: OrderStatusEnum
     public let formattedTotal: String
     public let formattedSubtotal: String
+    public let formattedCustomAmountsTotal: String?
     public let customerEmail: String?
     public let paymentMethodID: String
     public let paymentMethodTitle: String
@@ -37,6 +38,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, Sendable, GeneratedCo
                 status: OrderStatusEnum,
                 formattedTotal: String,
                 formattedSubtotal: String,
+                formattedCustomAmountsTotal: String? = nil,
                 customerEmail: String? = nil,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
@@ -55,6 +57,7 @@ public struct POSOrder: Equatable, Hashable, Identifiable, Sendable, GeneratedCo
         self.status = status
         self.formattedTotal = formattedTotal
         self.formattedSubtotal = formattedSubtotal
+        self.formattedCustomAmountsTotal = formattedCustomAmountsTotal
         self.customerEmail = customerEmail
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle

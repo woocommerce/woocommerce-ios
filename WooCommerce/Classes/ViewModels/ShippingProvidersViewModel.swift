@@ -7,7 +7,10 @@ import Yosemite
 /// - A section to add Custom Providers
 /// - The providers corresponding to the store country should be shown first
 final class ShippingProvidersViewModel {
+    typealias ProviderResultsControllerFactory = (String, NSPredicate, [NSSortDescriptor]) -> ResultsController<StorageShipmentTrackingProvider>
+
     let order: Order
+    private let makeResultsController: ProviderResultsControllerFactory
     private let predicateForAllProviders: NSPredicate
 
     /// Title of view displaying all available Shipment Tracking Providers
@@ -23,7 +26,7 @@ final class ShippingProvidersViewModel {
 
     /// Encapsulates the logic to figure out the current store's address
     /// and translate the site country into a readable string
-    private let siteAddress = SiteAddress()
+    private let siteAddress: SiteAddress
 
     /// The name of the current store's country
     private lazy var siteCountryName: String? = {
@@ -59,7 +62,6 @@ final class ShippingProvidersViewModel {
     /// ResultsController to fetch the list of shipment providers,
     /// excluding the store country
     private lazy var providersExcludingStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
         let excludingStoreCountry = predicateExcludingStoreCountry(predicate: predicateForAllProviders)
@@ -69,16 +71,12 @@ final class ShippingProvidersViewModel {
         let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
                                           ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
-                                                                       sectionNameKeyPath: groupNameKeyPath,
-                                                                       matching: excludingStoreCountry,
-                                                                       sortedBy: [providerGroupDescriptor, providerNameDescriptor])
+        return makeResultsController(groupNameKeyPath, excludingStoreCountry, [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Results controller, to fetch the list of shipment providers
     /// correspoding to the store country
     private lazy var providersForStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
 
@@ -89,10 +87,7 @@ final class ShippingProvidersViewModel {
         let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
                                                       ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
-                                                                  sectionNameKeyPath: groupNameKeyPath,
-                                                                  matching: matchingStoreCountry,
-                                                                  sortedBy: [providerGroupDescriptor, providerNameDescriptor])
+        return makeResultsController(groupNameKeyPath, matchingStoreCountry, [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Closure to be executed when the data is ready to be rendered
@@ -102,7 +97,7 @@ final class ShippingProvidersViewModel {
     /// Convenience property to check if the data collection is empty
     ///
     var isListEmpty: Bool {
-        return providersExcludingStoreCountry.fetchedObjects.isEmpty
+        return providersExcludingStoreCountry.fetchedObjects.isEmpty && providersForStoreCountry.fetchedObjects.isEmpty
     }
 
     private var storeCountryHasProviders: Bool {
@@ -111,8 +106,19 @@ final class ShippingProvidersViewModel {
 
     /// Designated initializer
     ///
-    init(order: Order, selectedProvider: ShipmentTrackingProvider?, selectedProviderGroupName: String?) {
+    init(order: Order,
+         selectedProvider: ShipmentTrackingProvider?,
+         selectedProviderGroupName: String?,
+         siteAddress: SiteAddress = SiteAddress(),
+         resultsControllerFactory: @escaping ProviderResultsControllerFactory = { groupKeyPath, predicate, sortDescriptors in
+             ResultsController(storageManager: ServiceLocator.storageManager,
+                               sectionNameKeyPath: groupKeyPath,
+                               matching: predicate,
+                               sortedBy: sortDescriptors)
+         }) {
         self.order = order
+        self.makeResultsController = resultsControllerFactory
+        self.siteAddress = siteAddress
         self.predicateForAllProviders = NSPredicate(format: "siteID == %lld", order.siteID)
         self.selectedProvider = selectedProvider
         self.selectedProviderGroupName = selectedProviderGroupName

@@ -26,6 +26,12 @@ private extension LastOrdersDashboardEmptyView {
         return String.localizedStringWithFormat(Localization.noOrdersWithStatus, statusName.lowercased())
     }
 
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
+    }
+}
+
+extension LastOrdersDashboardEmptyView {
     enum Localization {
         static let noOrders = NSLocalizedString(
             "lastOrdersDashboardEmptyView.noOrders",
@@ -37,10 +43,6 @@ private extension LastOrdersDashboardEmptyView {
             value: "No %@ orders found",
             comment: "Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user."
         )
-    }
-
-    enum Layout {
-        static let defaultSpacing: CGFloat = 16
     }
 }
 

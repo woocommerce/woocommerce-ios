@@ -13,6 +13,7 @@ import class Yosemite.POSCatalogSettingsService
 
 @MainActor
 protocol POSSettingsControllerProtocol {
+    var securityController: POSSecuritySettingsController? { get }
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
     var paymentsViewModel: POSSettingsPaymentsViewModel { get }
@@ -22,8 +23,10 @@ protocol POSSettingsControllerProtocol {
     /// Owns receipt-printer discovery and connection. `nil` when the printer feature flag is off,
     /// which also hides the Receipt printers section in hardware settings.
     var printerConnectionController: POSPrinterConnectionController? { get }
+}
 
-    var staffSettingsService: POSStaffSettingsService? { get }
+extension POSSettingsControllerProtocol {
+    var securityController: POSSecuritySettingsController? { nil }
 }
 
 @MainActor
@@ -31,12 +34,12 @@ protocol POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
+    private(set) var securityController: POSSecuritySettingsController?
     let storeViewModel: POSSettingsStoreViewModel
     let paymentsViewModel: POSSettingsPaymentsViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     let isLocalCatalogEligible: Bool
     let printerConnectionController: POSPrinterConnectionController?
-    let staffSettingsService: POSStaffSettingsService?
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -49,9 +52,7 @@ protocol POSSettingsControllerProtocol {
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
          analytics: POSAnalyticsProviding,
-         printerConnectionController: POSPrinterConnectionController? = nil,
-         staffSettingsService: POSStaffSettingsService? = nil) {
-        self.staffSettingsService = staffSettingsService
+         printerConnectionController: POSPrinterConnectionController? = nil) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -74,6 +75,10 @@ protocol POSSettingsControllerProtocol {
         self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
+    }
+
+    func configureSecurity(store: POSPINManaging, session: POSAccessSession) {
+        securityController = POSSecuritySettingsController(store: store, session: session)
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {
@@ -119,11 +124,9 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
         localCatalogViewModel != nil
     }
 
-    var staffSettingsService: POSStaffSettingsService?
-
     static func withPrinter() -> POSSettingsPreviewController {
         let controller = POSSettingsPreviewController()
-        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService())
+        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService(), analytics: EmptyPOSAnalytics())
         return controller
     }
 }

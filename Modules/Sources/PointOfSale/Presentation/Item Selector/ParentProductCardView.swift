@@ -7,10 +7,11 @@ struct ParentProductCardView: View {
     private let detailText: String
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(name: String, imageSource: String?, detailText: String) {
@@ -20,13 +21,13 @@ struct ParentProductCardView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.cardSpacing) {
+        HStack(spacing: metrics.spacing.none) {
             POSItemImageView(imageSource: imageSource,
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
@@ -37,15 +38,15 @@ struct ParentProductCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
             Spacer()
 
             Image(systemName: "chevron.forward")
                 .accessibilityHidden(true)
                 .font(.posButtonSymbolSmall)
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
-                .padding(.horizontal, POSPadding.medium * (1 / scale))
+                .padding(.horizontal, metrics.padding.medium * (1 / scale))
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)

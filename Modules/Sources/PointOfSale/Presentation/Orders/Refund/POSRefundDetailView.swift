@@ -3,6 +3,7 @@ import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
 
 struct POSRefundDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     let refund: POSOrderRefund
     let title: String
     let paymentMethodDescription: String
@@ -10,12 +11,15 @@ struct POSRefundDetailView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            headerView
+        VStack(spacing: metrics.spacing.none) {
+            if !isFullScreenFlow {
+                headerView
+            }
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     if !refund.items.isEmpty {
                         productRows
                         POSDivider()
@@ -24,8 +28,8 @@ struct POSRefundDetailView: View {
                     POSDivider()
                     refundTotalSection
                 }
-                .padding(.horizontal, POSPadding.xLarge)
-                .padding(.bottom, POSPadding.xLarge)
+                .padding(.horizontal, metrics.padding.xLarge)
+                .padding(.bottom, metrics.padding.xLarge)
             }
         }
         .background(Color.posSurfaceBright)
@@ -55,17 +59,17 @@ private extension POSRefundDetailView {
             .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
     }
 
     var productRows: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             ForEach(refund.items) { item in
                 productRow(item: item)
 
                 if item.id != refund.items.last?.id {
                     POSDivider()
-                        .padding(.vertical, POSSpacing.small)
+                        .padding(.vertical, metrics.spacing.small)
                 }
             }
         }
@@ -76,7 +80,7 @@ private extension POSRefundDetailView {
     }
 
     var summaryRows: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             summaryRow(
                 label: POSRefundSubtotalLabel.make(refund.itemCount),
                 value: refund.formattedItemsSubtotal
@@ -89,7 +93,7 @@ private extension POSRefundDetailView {
     }
 
     var refundTotalSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             HStack {
                 Text(Localization.refundTotalLabel)
                     .font(.posBodyLargeBold)

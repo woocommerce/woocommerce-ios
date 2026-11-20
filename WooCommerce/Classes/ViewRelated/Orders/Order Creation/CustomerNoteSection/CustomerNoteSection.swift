@@ -67,7 +67,7 @@ private struct CustomerNoteSectionContent: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
     }
 
     private func createEditNotesButton() -> some View {

@@ -204,7 +204,9 @@ private extension ProductStockDashboardCard {
         static let hideIconVerticalPadding: CGFloat = 8
         static let timestampSpacing: CGFloat = 4
     }
+}
 
+extension ProductStockDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "productStockDashboardCard.hideCard",

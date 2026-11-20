@@ -12,12 +12,18 @@ struct POSPageHeaderBackButtonConfiguration {
     let action: () -> Void
     let buttonIcon: String?
     let accessibilityIdentifier: String?
+    let accessibilityLabel: String?
 
-    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil, accessibilityIdentifier: String? = nil) {
+    init(state: State,
+         action: @escaping () -> Void,
+         buttonIcon: String? = nil,
+         accessibilityIdentifier: String? = nil,
+         accessibilityLabel: String? = nil) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
         self.accessibilityIdentifier = accessibilityIdentifier
+        self.accessibilityLabel = accessibilityLabel
     }
 }
 
@@ -38,6 +44,11 @@ struct POSPageHeaderItem: Identifiable {
     }
 }
 
+enum POSPageHeaderTitleAlignment: Equatable, Sendable {
+    case leading
+    case center
+}
+
 /// A header view for POS pages.
 /// Compact headers keep the back button, title, and actions in one navigation row.
 /// Use `subtitle` or `bottomContent` for information below that row; callers need no row-height adjustments.
@@ -45,6 +56,7 @@ struct POSPageHeaderItem: Identifiable {
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
+    private let titleAlignment: POSPageHeaderTitleAlignment
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
@@ -52,6 +64,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
     @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
@@ -84,12 +97,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        titleAlignment: POSPageHeaderTitleAlignment = .leading,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
+        self.titleAlignment = titleAlignment
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -104,6 +119,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
+        self.titleAlignment = .leading
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -111,7 +127,34 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            navigationRow
+
+            bottomContent
+        }
+        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
+        .posContentPadding(.horizontal, metrics.padding.medium)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.large))
+        .padding(.bottom, metrics.padding.large)
+    }
+
+    @ViewBuilder
+    private var navigationRow: some View {
+        switch titleAlignment {
+        case .center:
+            ZStack {
+                itemsContent
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, POSHeaderLayoutConstants.compactBackButtonSize)
+                HStack(spacing: metrics.spacing.medium) {
+                    leadingContent
+                    Spacer(minLength: metrics.spacing.none)
+                    trailingContent
+                        .frame(minHeight: navigationRowMinHeight)
+                }
+            }
+        case .leading:
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 leadingContent
 
                 if shouldShowItemsContent {
@@ -125,13 +168,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                 trailingContent
                     .frame(minHeight: navigationRowMinHeight)
             }
-
-            bottomContent
         }
-        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .posContentPadding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding))
-        .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
     /// Try full-size tabs, then smaller tabs, before allowing horizontal scrolling.
@@ -164,15 +201,15 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     private func itemsRow(titleFont: Font? = nil) -> some View {
-        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 if showsBackButton {
                     backButton
                         .frame(minHeight: navigationRowMinHeight)
                 }
                 ForEach(0..<items.count, id: \.self) { index in
-                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        HStack(spacing: POSSpacing.small) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                        HStack(spacing: metrics.spacing.small) {
                             if items[index].title.isNotEmpty {
                                 Button(action: {
                                     items[index].action?()
@@ -248,6 +285,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 }
 
 private struct POSHeaderScrollableTitles<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     @State private var clippedEdges: Edge.Set = []
     @ViewBuilder let content: Content
 
@@ -269,7 +307,7 @@ private struct POSHeaderScrollableTitles<Content: View>: View {
         }
         .mask {
             GeometryReader { geometry in
-                let fade = min(POSSpacing.medium / max(geometry.size.width, 1), 0.5)
+                let fade = min(metrics.spacing.medium / max(geometry.size.width, 1), 0.5)
                 LinearGradient(stops: [
                     .init(color: clippedEdges.contains(.leading) ? .clear : .black, location: 0),
                     .init(color: .black, location: fade),
@@ -282,8 +320,6 @@ private struct POSHeaderScrollableTitles<Content: View>: View {
 }
 
 private enum Constants {
-    static let horizontalSpacing: CGFloat = POSSpacing.medium
-    static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
     static let subtitleLineLimit: Int = 2
 }
 
@@ -297,7 +333,7 @@ struct POSHeaderBackButtonIconKey: EnvironmentKey {
 
 struct POSHeaderBackButtonPaddingKey: EnvironmentKey {
     /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-    static let defaultValue: CGFloat = POSPadding.large / 2
+    static let defaultValue: CGFloat = POSMetrics.regular.padding.large / 2
 }
 
 extension EnvironmentValues {
@@ -340,7 +376,7 @@ extension View {
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         // Header without back button.
         POSPageHeaderView(
             title: "Products",
@@ -369,7 +405,7 @@ extension View {
             title: "Products",
             backButtonConfiguration: .init(state: .enabled, action: {}),
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "info.circle"))
                             .font(.posButtonSymbolLarge)
@@ -428,7 +464,7 @@ extension View {
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ],
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "plus"))
                             .font(.posButtonSymbolLarge)
@@ -452,8 +488,8 @@ extension View {
                 Text("Completed")
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posSuccess)
-                    .padding(.horizontal, POSPadding.small)
-                    .padding(.vertical, POSPadding.xSmall)
+                    .padding(.horizontal, POSMetrics.regular.padding.small)
+                    .padding(.vertical, POSMetrics.regular.padding.xSmall)
                     .background(Color.posSuccess.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             },
@@ -465,8 +501,8 @@ extension View {
                     Button("Refund") {}
                         .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.top, POSSpacing.medium)
+                .padding(.horizontal, POSMetrics.regular.padding.medium)
+                .padding(.top, POSMetrics.regular.spacing.medium)
             }
         )
     }

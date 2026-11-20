@@ -24,8 +24,8 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            content(safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            content(safeAreaInsets: .zero)
         }
     }
 
@@ -49,7 +49,6 @@ struct SimplePaymentsSummary: View {
                     NoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets, showEditNote: $showEditNote)
                 }
             }
-            .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
         }
@@ -114,7 +113,7 @@ private struct CustomAmountSection: View {
             .bodyStyle()
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
             .accessibilityElement(children: .combine)
 
             Divider()
@@ -145,7 +144,7 @@ private struct EmailSection: View {
                                  keyboardType: .emailAddress)
                 .autocapitalization(.none)
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }
@@ -197,7 +196,7 @@ private struct PaymentsSection: View {
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }
@@ -244,7 +243,7 @@ private struct NoteSection: View {
             }
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }

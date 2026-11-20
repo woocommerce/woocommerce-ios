@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let message: String
     let actionTitle: String
@@ -21,13 +22,11 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: POSSpacing.none) {
-                Spacer()
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSErrorExclamationMark(size: .large)
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Spacer().frame(height: metrics.spacing.large)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
                     Text(title)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
@@ -35,25 +34,14 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                     Text(message)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                 }
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-                Button(actionTitle, action: action)
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .padding([.leading, .trailing], Constants.buttonSidePadding)
-                    .padding([.bottom], Constants.buttonBottomPadding)
-                Spacer()
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+        } buttons: {
+            Button(actionTitle, action: action)
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
-    }
-}
-
-private extension PointOfSaleOrderSyncErrorMessageView {
-    enum Constants {
-        static let buttonSidePadding: CGFloat = POSPadding.xxLarge
-        static let buttonBottomPadding: CGFloat = POSPadding.medium
+        .multilineTextAlignment(.center)
     }
 }
 

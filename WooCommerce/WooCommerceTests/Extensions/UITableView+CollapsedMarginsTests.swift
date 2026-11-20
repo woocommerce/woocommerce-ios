@@ -47,6 +47,20 @@ struct UITableView_CollapsedMarginsTests {
     }
 
     @Test
+    func test_restoreCollapsedLayoutMarginsIfNeeded_in_right_to_left_layout_then_restores_directional_margins() {
+        // Given
+        let tableView = UITableView()
+        tableView.semanticContentAttribute = .forceRightToLeft
+        tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 0)
+
+        // When
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimum)
+
+        // Then
+        #expect(tableView.directionalLayoutMargins == NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
+    }
+
+    @Test
     func test_restoreCollapsedLayoutMarginsIfNeeded_when_both_sides_collapsed_then_falls_back_to_system_minimum() {
         // Given
         let tableView = UITableView()

@@ -3,6 +3,7 @@ import WooFoundation
 
 /// View modifier for search fields that includes a magnifier icon and clear button
 struct POSSearchTextFieldModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     private let focused: Bool
     @Binding private var searchTerm: String
     @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
@@ -21,11 +22,11 @@ struct POSSearchTextFieldModifier: ViewModifier {
             unfocusedBorderColor: unfocusedBorderColor,
             backgroundColor: .posSurfaceBright,
             cornerRadius: POSCornerRadiusStyle.medium.value,
-            insets: EdgeInsets(top: POSPadding.small, leading: POSPadding.medium, bottom: POSPadding.small, trailing: POSPadding.medium),
+            insets: EdgeInsets(top: metrics.padding.small, leading: metrics.padding.medium, bottom: metrics.padding.small, trailing: metrics.padding.medium),
             height: searchFieldHeight,
             content: { configuration in
                 AnyView(
-                    HStack(spacing: POSSpacing.small) {
+                    HStack(spacing: metrics.spacing.small) {
                         Image(systemName: "magnifyingglass")
                             .accessibilityHidden(true)
                             .foregroundColor(.posOnSurface)

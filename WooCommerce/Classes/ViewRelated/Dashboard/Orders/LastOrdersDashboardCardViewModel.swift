@@ -1,4 +1,7 @@
+import Combine
+import CoreData
 import Foundation
+import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -111,6 +114,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let application: ApplicationAdapter
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -124,40 +128,102 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     ///
     private var siteStatuses: [OrderStatus] = []
 
+    private var orderListeners: [EntityListener<Order>] = []
+    private let displayedOrderChanged = PassthroughSubject<Void, Never>()
+    private var subscriptions = Set<AnyCancellable>()
+
+    /// Number of reloads started, used to keep only the results of the latest one.
+    private var reloadCount = 0
+
+    /// Set when orders change while the app is in the background, to reload once the app is active again.
+    private var hasPendingReload = false
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         application: ApplicationAdapter? = nil,
+         notificationCenter: NotificationCenter = .default) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
+        // Not a default value: default values are evaluated outside the main actor, which `UIApplication.shared` requires.
+        self.application = application ?? UIApplication.shared
 
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
         }
 
         configureStatusResultsController()
+
+        // Use `displayedOrderChanged` with `ordersBadgeReloadRequired` to cover what one alone would miss. The listeners in
+        // `observeStoredOrders` catch edits saved to the orders the card shows, even ones that don't post the notification.
+        // The notification catches trashed orders and orders the card doesn't show yet, which the listeners can't see.
+        notificationCenter.publisher(for: .ordersBadgeReloadRequired)
+            .map { _ in () }
+            .merge(with: displayedOrderChanged)
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                Task { @MainActor [weak self] in
+                    // A card that never loaded isn't on the dashboard.
+                    guard let self, reloadCount > 0 else { return }
+                    // In the background, for example for an order push, card loading events would be counted as user activity.
+                    guard self.application.applicationState != .background else {
+                        hasPendingReload = true
+                        return
+                    }
+                    await reloadData(showsLoadingState: false)
+                }
+            }
+            .store(in: &subscriptions)
+
+        notificationCenter.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, hasPendingReload, self.application.applicationState != .background else { return }
+                    await reloadData(showsLoadingState: false)
+                }
+            }
+            .store(in: &subscriptions)
     }
 
+    /// - Parameter showsLoadingState: Whether to clear the rows and show the loading state while fetching. Refreshes after
+    ///   order changes keep the current rows on screen until the new ones arrive.
+    ///
     @MainActor
-    func reloadData() async {
+    func reloadData(showsLoadingState: Bool = true) async {
+        hasPendingReload = false
+        reloadCount += 1
+        let reloadNumber = reloadCount
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .lastOrders))
-        syncingData = true
-        syncingError = nil
-        rows = []
+        if showsLoadingState {
+            syncingData = true
+            syncingError = nil
+            rows = []
+        }
 
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
             let siteStatuses = statusResultsController.fetchedObjects
-            rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
+            let fetchedOrders = try await orders
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
+            // A reload started meanwhile, e.g. for another status or after an order change, has more recent results.
+            guard reloadNumber == reloadCount else {
+                return
+            }
+            syncingError = nil
+            rows = fetchedOrders
+                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
+            observeStoredOrders(for: rows)
         } catch {
-            syncingError = error
             DDLogError("⛔️ Dashboard (Last orders) — Error loading orders: \(error)")
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .lastOrders, error: error))
+            guard reloadNumber == reloadCount else {
+                return
+            }
+            syncingError = error
         }
         syncingData = false
     }
@@ -245,6 +311,31 @@ private extension LastOrdersDashboardCardViewModel {
     func updateStatuses() {
         siteStatuses = statusResultsController.fetchedObjects
         allStatuses = [.any] + siteStatuses.map { OrderStatusRow($0.status) }
+    }
+
+    /// Reloads the card when an order it shows is saved with another status or other displayed details, for example after
+    /// an edit in order details. Reloading, instead of updating the row, also replaces an order that no longer matches the
+    /// selected status.
+    ///
+    /// Saved orders are compared with the rows as shown: a new status is saved locally before the server applies it, so the
+    /// reload this triggers can still fetch the old status, and the server's copy saved afterwards then triggers another one.
+    ///
+    func observeStoredOrders(for rows: [LastOrderDashboardRowViewModel]) {
+        guard let viewContext = storageManager.viewStorage as? NSManagedObjectContext else {
+            return
+        }
+        orderListeners = rows.map { row in
+            let listener = EntityListener(viewContext: viewContext, readOnlyEntity: row.order)
+            listener.onUpsert = { [weak self] storedOrder in
+                guard let self else { return }
+                guard storedOrder.status != row.order.status ||
+                        LastOrderDashboardRowViewModel(order: storedOrder, siteStatuses: siteStatuses).rowData != row.rowData else {
+                    return
+                }
+                displayedOrderChanged.send()
+            }
+            return listener
+        }
     }
 
     @MainActor

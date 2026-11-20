@@ -80,6 +80,8 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
             }
         }
         .listStyle(.plain)
+        // Native list rows can paint outside the content column beside a vertical system bar.
+        .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
         .environment(\.editMode, .constant(.active)) // Always allow reordering
     }
 }

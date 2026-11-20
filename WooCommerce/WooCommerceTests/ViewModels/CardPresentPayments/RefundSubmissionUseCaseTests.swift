@@ -77,6 +77,63 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     }
 
     @MainActor
+    func test_submitRefund_when_server_amount_is_pinned_without_card_reader_then_sends_no_amount_override_and_server_flow() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "40"),
+                                    charge: nil,
+                                    amount: "36.3",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)],
+                                    pinsCardReaderRefundAmount: true)
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
+        let createIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create"))
+        XCTAssertEqual(analyticsProvider.receivedProperties[createIndex]["refund_flow"] as? String, "server_computed")
+    }
+
+    @MainActor
+    func test_submitRefund_when_server_amount_is_pinned_with_interac_then_sends_card_refund_amount() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "40"),
+                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                        details: .init(brand: .visa,
+                                                       last4: "9969",
+                                                       funding: .credit,
+                                                       receipt: .init(accountType: .credit,
+                                                                      applicationPreferredName: "Stripe Credit",
+                                                                      dedicatedFileName: "A000000003101001")))),
+                                    amount: "36.3",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)],
+                                    pinsCardReaderRefundAmount: true)
+        let useCase = createUseCase(details: details)
+        mockCardPresentPaymentActions(clientSideRefundResult: .success(()))
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), "36.3")
+    }
+
+    @MainActor
     func test_submitRefund_with_server_line_items_creates_computed_refund_with_restock_instead_of_classic_create() throws {
         // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),

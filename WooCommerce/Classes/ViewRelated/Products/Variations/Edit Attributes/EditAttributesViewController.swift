@@ -45,6 +45,11 @@ final class EditAttributesViewController: UIViewController {
         configureNavigationBar()
         handleSwipeBackGesture()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration

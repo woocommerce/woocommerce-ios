@@ -101,7 +101,8 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     static func == (lhs: InboxNoteRowViewModel, rhs: InboxNoteRowViewModel) -> Bool {
         lhs.id == rhs.id &&
         lhs.siteID == rhs.siteID &&
-        lhs.isRead == rhs.isRead
+        lhs.isRead == rhs.isRead &&
+        lhs.isActioned == rhs.isActioned
     }
 }
 

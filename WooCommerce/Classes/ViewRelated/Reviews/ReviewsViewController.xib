@@ -29,8 +29,8 @@
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="i5V-XB-HZ3" secondAttribute="bottom" id="Exe-g8-l8x"/>
                 <constraint firstItem="i5V-XB-HZ3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="L2p-AO-VA3"/>
-                <constraint firstItem="i5V-XB-HZ3" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ZFu-2m-NQX"/>
-                <constraint firstAttribute="trailing" secondItem="i5V-XB-HZ3" secondAttribute="trailing" id="oja-Bt-7RE"/>
+                <constraint firstItem="i5V-XB-HZ3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ZFu-2m-NQX"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="i5V-XB-HZ3" secondAttribute="trailing" id="oja-Bt-7RE"/>
             </constraints>
             <point key="canvasLocation" x="139" y="86"/>
         </view>

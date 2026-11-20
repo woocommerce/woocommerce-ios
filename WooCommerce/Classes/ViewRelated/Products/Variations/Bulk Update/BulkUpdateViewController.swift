@@ -72,7 +72,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
                 return
             case .syncing:
                 self.sections = []
-                self.displayGhostContent()
+                self.displayGhostContent(over: self.tableView)
             case let .synced(sections):
                 self.sections = sections
                 self.removeGhostContent()
@@ -91,6 +91,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     ///
     private func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
+        view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
 
         registerTableViewHeaderSections()

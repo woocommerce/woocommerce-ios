@@ -89,9 +89,6 @@ struct StoreOnboardingTaskView: View {
 }
 
 private extension StoreOnboardingTaskView {
-    enum Localization {
-        static let privateLabel = NSLocalizedString("private", comment: "Label shown on the launch store task.")
-    }
     enum Layout {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 4
@@ -102,6 +99,12 @@ private extension StoreOnboardingTaskView {
             static let padding: EdgeInsets = .init(top: 4, leading: 6, bottom: 4, trailing: 6)
             static let cornerRadius: CGFloat = 6
         }
+    }
+}
+
+extension StoreOnboardingTaskView {
+    enum Localization {
+        static let privateLabel = NSLocalizedString("private", comment: "Label shown on the launch store task.")
     }
 }
 

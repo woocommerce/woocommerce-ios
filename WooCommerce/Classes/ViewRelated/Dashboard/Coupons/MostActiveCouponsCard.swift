@@ -190,7 +190,9 @@ private extension MostActiveCouponsCard {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
     }
+}
 
+extension MostActiveCouponsCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "mostActiveCouponsCard.hideCard",

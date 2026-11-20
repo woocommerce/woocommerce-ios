@@ -3,65 +3,61 @@ import struct Yosemite.PrinterDevice
 import enum WooFoundation.BluetoothAuthorization
 import protocol WooFoundation.BluetoothAuthorizationProviding
 
-/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, presenting
-/// pairing, discovery, connection, and error states. Dismisses itself once a printer connects.
+/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, opening on a
+/// printer search and presenting discovery, connection, pairing guidance, and error states.
+/// Dismisses itself once a printer connects.
 struct POSPrinterSetupModal: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
+    let source: POSPrinterSetupSource
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+    @State private var setupSessionID = UUID()
 
     private var isCompactWidth: Bool {
         horizontalSizeClass == .compact
     }
 
     var body: some View {
-        // Size a single `modalCore` via these bounds so it keeps one view identity across size-class
-        // changes on iPad, preserving any state internal to the modal.
+        // Size `modalCore` via these bounds so the outer frame and the setup session hooks keep one view
+        // identity across size-class changes on iPad. `modalCore` itself is rebuilt when the flow style flips.
         modalCore
-            .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
-                   minHeight: modalMinHeight, maxHeight: modalMaxHeight)
+            .frame(maxWidth: modalMaxWidth, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false
                 }
             }
+            .onAppear {
+                controller.startSetup(sessionID: setupSessionID, source: source)
+            }
             .onDisappear {
-                Task {
-                    await controller.cancelSetup()
-                }
+                controller.cancelSetup(sessionID: setupSessionID)
             }
     }
 
-    // In compact width the modal fills the screen to avoid the cramped iPad-tuned card, so its bounds
-    // are pinned to the parent. In regular width it hugs its content up to a share of the parent.
-    private var modalMinWidth: CGFloat? {
-        isCompactWidth ? parentSize.width : nil
-    }
-
+    // In regular width the modal hugs its content up to a share of the parent.
     private var modalMaxWidth: CGFloat {
-        isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
-    }
-
-    private var modalMinHeight: CGFloat? {
-        isCompactWidth ? parentSize.height : nil
+        if isFullScreenFlow {
+            return .infinity
+        }
+        return isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
     }
 
     private var modalMaxHeight: CGFloat {
-        isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
+        if isFullScreenFlow {
+            return .infinity
+        }
+        return isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
     }
 
+    @ViewBuilder
     private var modalCore: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            ScrollView(showsIndicators: false) {
-                HStack {
-                    Spacer()
-                    POSPrinterSetupContent(controller: controller)
-                    Spacer()
-                }
-            }
-            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+        let core = VStack(spacing: metrics.spacing.xLarge) {
+            stepContent
 
             if let buttonConfiguration {
                 POSFlowButtonsView(configuration: buttonConfiguration)
@@ -70,8 +66,34 @@ struct POSPrinterSetupModal: View {
         .posModalCloseButton(action: {
             isPresented = false
         })
-        .padding(POSPadding.xLarge)
-        .background(Color.posSurfaceBright)
+
+        if isFullScreenFlow {
+            // Same padding as the other phone flows, so the buttons line up.
+            core
+                .posModalSizing()
+                .background(Color.posSurfaceBright)
+        } else {
+            core
+                .padding(metrics.padding.xLarge)
+                .background(Color.posSurfaceBright)
+        }
+    }
+
+    @ViewBuilder
+    private var stepContent: some View {
+        let step = HStack {
+            Spacer()
+            POSPrinterSetupContent(controller: controller)
+            Spacer()
+        }
+        if isFullScreenFlow {
+            step.scrollVerticallyIfNeeded()
+        } else {
+            ScrollView(showsIndicators: false) {
+                step
+            }
+            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+        }
     }
 }
 
@@ -80,6 +102,8 @@ struct POSPrinterSetupModal: View {
 /// The step-specific body of the printer setup modal, switching on the controller's discovery state
 /// to present pairing guidance, progress, results, or errors.
 private struct POSPrinterSetupContent: View {
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     let controller: POSPrinterConnectionController
 
     var body: some View {
@@ -102,6 +126,10 @@ private struct POSPrinterSetupContent: View {
             deviceList(devices)
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
+        case .discoveryFailed:
+            messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
+                           title: Localization.discoveryFailedTitle,
+                           message: Localization.discoveryFailedMessage)
         case .error:
             messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
@@ -121,14 +149,14 @@ private struct POSPrinterSetupContent: View {
     }
 
     private func messageContent(icon: Image, title: String, message: String) -> some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             icon
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -137,13 +165,13 @@ private struct POSPrinterSetupContent: View {
                 Text(message)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurface)
-                    .multilineTextAlignment(.center)
             }
+            .multilineTextAlignment(.center)
         }
     }
 
     private func progressContent(message: String) -> some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .padding(Constants.spinnerStrokeOverflow)
@@ -156,19 +184,22 @@ private struct POSPrinterSetupContent: View {
     }
 
     private func deviceList(_ devices: [PrinterDevice]) -> some View {
-        VStack(spacing: POSSpacing.large) {
-            Text(Localization.severalPrintersTitle)
-                .font(.posHeadingBold)
-                .foregroundColor(.posOnSurface)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: metrics.spacing.large) {
+            if !isFullScreenFlow {
+                Text(Localization.severalPrintersTitle)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+            }
 
             if controller.isDiscovering {
                 scanningIndicator
             }
 
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 ForEach(devices) { device in
-                    HStack(spacing: POSSpacing.medium) {
+                    HStack(spacing: metrics.spacing.medium) {
                         Text(device.name)
                             .font(.posBodyLargeRegular())
                             .foregroundStyle(Color.posOnSurface)
@@ -179,14 +210,15 @@ private struct POSPrinterSetupContent: View {
                         .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                         .accessibilityLabel(String(format: Localization.connectRowAccessibilityFormat, device.name))
                     }
-                    .padding(.vertical, POSPadding.small)
+                    .padding(.vertical, metrics.padding.small)
                 }
             }
         }
+        .posModalFlowHeaderTitle(Localization.severalPrintersTitle)
     }
 
     private var scanningIndicator: some View {
-        HStack(spacing: POSSpacing.medium) {
+        HStack(spacing: metrics.spacing.medium) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: Constants.scanningSpinnerSize,
                                                         lineWidth: Constants.scanningSpinnerLineWidth))
@@ -282,6 +314,17 @@ private extension POSPrinterSetupContent {
                 + "then search again.",
             comment: "Message shown when no receipt printers are discovered in POS settings.")
 
+        static let discoveryFailedTitle = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.title",
+            value: "Couldn't search for printers",
+            comment: "Title shown when the receipt printer search fails to run in POS settings.")
+
+        static let discoveryFailedMessage = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.message",
+            value: "Make sure Bluetooth is on, then search again.",
+            comment: "Message shown when the receipt printer search fails to run in POS settings, "
+                + "most often because the device's Bluetooth is switched off.")
+
         static let errorTitle = NSLocalizedString(
             "pos.printerSetup.error.title",
             value: "Something went wrong",
@@ -300,7 +343,7 @@ private extension POSPrinterSetupModal {
         switch controller.discoveryState {
         case .idle:
             return setupButtons(primaryTitle: Localization.connectButton)
-        case .noPrintersFound:
+        case .noPrintersFound, .discoveryFailed:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
         case .error:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
@@ -326,27 +369,17 @@ private extension POSPrinterSetupModal {
     func setupButtons(primaryTitle: String) -> PointOfSaleFlowButtonConfiguration {
         // While the app's Bluetooth permission is off, discovery can't run, so Open Settings is the
         // only action worth offering.
+        let primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig
         if controller.bluetoothAuthorization == .denied {
-            return .init(primaryButton: .init(title: Localization.settingsButton, action: {
+            primaryButton = .init(title: Localization.settingsButton, action: {
                 openDeviceSettings()
-            }),
-                         secondaryButton: cancelButton)
+            })
+        } else {
+            primaryButton = .init(title: primaryTitle, action: {
+                controller.startDiscovery()
+            })
         }
-        return .init(primaryButton: .init(title: primaryTitle, action: {
-            controller.startDiscovery()
-        }),
-                     secondaryButton: cancelButton)
-    }
-
-    /// Compact width pairs the primary action with a stacked Cancel. Regular width keeps the
-    /// single-button modal, where the close button in the corner is the way out.
-    var cancelButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
-        guard isCompactWidth else {
-            return nil
-        }
-        return .init(title: Localization.cancelButton, action: {
-            isPresented = false
-        })
+        return .init(primaryButton: primaryButton, secondaryButton: nil)
     }
 
     func openDeviceSettings() {
@@ -354,6 +387,16 @@ private extension POSPrinterSetupModal {
             return
         }
         UIApplication.shared.open(url)
+    }
+}
+
+extension POSModalCompactStyle {
+    static var receiptPrinterSetup: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.printerSetup.modal.title",
+            value: "Receipt printer",
+            comment: "Title in the header of the full-screen receipt printer setup flow on phone."
+        ))
     }
 }
 
@@ -400,7 +443,9 @@ private extension POSPrinterSetupModal {
 #if DEBUG
 #Preview {
     POSPrinterSetupModal(isPresented: .constant(true),
-                         controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService()))
+                         controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService(),
+                                                                    analytics: EmptyPOSAnalytics()),
+                         source: .settings)
         .posPreviewModalParentSize()
 }
 
@@ -409,7 +454,9 @@ private extension POSPrinterSetupModal {
         isPresented: .constant(true),
         controller: POSPrinterConnectionController(
             service: POSReceiptPrinterPreviewService(),
-            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied))
+            analytics: EmptyPOSAnalytics(),
+            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied)),
+        source: .settings
     )
     .posPreviewModalParentSize()
 }
@@ -418,27 +465,32 @@ private extension POSPrinterSetupModal {
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
-            keepDiscovering: true))
-    controller.startDiscovery()
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 
 #Preview("Discovery error") {
     let controller = POSPrinterConnectionController(
-        service: POSReceiptPrinterPreviewService(failsDiscovery: true))
-    controller.startDiscovery()
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        service: POSReceiptPrinterPreviewService(failsDiscovery: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 
 #Preview("Failed to connect") {
     let device = PrinterDevice(id: "1", name: "Star TSP100")
     let controller = POSPrinterConnectionController(
-        service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
-    controller.connect(to: device)
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true),
+        analytics: EmptyPOSAnalytics())
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
+        .task {
+            controller.connect(to: device)
+        }
 }
 
 #Preview("Several printers found") {
@@ -446,9 +498,10 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100"),
                       PrinterDevice(id: "2", name: "Star mC-Print3")],
-            keepDiscovering: true))
-    controller.startDiscovery()
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 

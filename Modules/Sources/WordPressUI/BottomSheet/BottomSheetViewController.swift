@@ -93,6 +93,7 @@ public class BottomSheetViewController: UIViewController {
 
                 popoverPresentationController?.delegate = self
                 popoverPresentationController?.backgroundColor = view.backgroundColor
+                popoverPresentationController?.adaptiveSheetPresentationController.prefersEdgeAttachedInCompactHeight = true
             }
         } else {
             transitioningDelegate = self

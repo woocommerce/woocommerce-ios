@@ -601,7 +601,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             credentials.authenticationEndpoints,
             false
         )
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _, _ in
+        useCase.setupHandlers(onLoginSuccess: { _ in onSuccess() }, onLoginFailure: { [weak self] error, _, _ in
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
@@ -672,15 +672,16 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
                 finishRetry(true)
             }
         }
-        useCase.setupHandlers(onLoginSuccess: { [weak self] in
+        useCase.setupHandlers(onLoginSuccess: { [weak self] provenEndpoints in
             guard self?.credentialAttemptID == attemptID else {
                 return
             }
+            finishRetry(true)
             // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
             // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
             // password, role eligibility and WooCommerce installation checks, and the form has to stay
             // disabled until one of those navigates away.
-            onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
+            onSuccess(credentials.replacingAuthenticationEndpoints(with: provenEndpoints))
         }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
             guard let self, credentialAttemptID == attemptID else {
                 return
@@ -697,8 +698,9 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             case .unexpectedResponse(let failure) where failure.kind == .unexpectedContent && endpointUnderVerification == .admin &&
                 loginEntryVerified && failure.step == .dashboardVerification:
                 _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL, draftURL: normalizedAdminURL, error: .notFound))
-            case .unexpectedResponse:
-                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, false)
+            case .unexpectedResponse(let failure):
+                let offersBrowserRecovery = failure.statusCode == 401 && offersBrowserAlternative
+                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, offersBrowserRecovery)
                 trackSiteCredentialLoginFailure(error)
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
@@ -741,7 +743,8 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
                                            for siteURL: String,
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
-        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
+        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError,
+           offersBrowserAlternative == false {
             unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
             return
         }

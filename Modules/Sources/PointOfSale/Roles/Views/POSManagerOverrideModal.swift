@@ -45,7 +45,7 @@ extension View {
     }
 }
 
-private extension View {
+extension View {
     func posManagerOverrideModalSizing() -> some View {
         modifier(POSManagerOverrideModalSizing())
     }

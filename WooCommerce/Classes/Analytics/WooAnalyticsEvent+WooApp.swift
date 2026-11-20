@@ -3358,6 +3358,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hardwareBarcodeScanningSuccess, properties: [Keys.source: source.rawValue])
         }
 
+        static func hardwareBarcodeScannerInfoTapped(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hardwareBarcodeScannerInfoTapped, properties: [Keys.source: source.rawValue])
+        }
+
         static func hardwareBarcodeScannerTestScanSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hardwareBarcodeScannerTestScanSuccess, properties: [Keys.source: source.rawValue])
         }

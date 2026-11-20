@@ -649,6 +649,34 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         XCTAssertEqual(offersBrowserAlternative, true)
     }
 
+    func test_handle_login_when_credentials_return_unauthorized_challenge_then_offers_browser_alternative() async {
+        // Given
+        let siteURL = "https://test.com"
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        loginSession.simulateResponse(
+            for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath,
+            data: Data("<html>Please solve this math problem to prove that you are not a bot.</html>".utf8),
+            statusCode: 401
+        )
+
+        // When
+        let outcome = await performLoginWithVerification(
+            siteURL: siteURL,
+            session: session,
+            loginSession: loginSession
+        )
+
+        // Then
+        guard case .failure(.unexpectedResponse(let failure)) = outcome.result else {
+            return XCTFail("Expected unexpected credential response")
+        }
+        XCTAssertEqual(failure.statusCode, 401)
+        XCTAssertEqual(failure.step, .credentialsSubmission)
+        XCTAssertEqual(outcome.loginEntryVerified, true)
+        XCTAssertEqual(outcome.offersBrowserAlternative, true)
+    }
+
     func test_handle_login_when_preflight_requires_basic_authentication_then_returns_basic_authentication_required() async {
         // Given
         let siteURL = "https://test.com"
@@ -1327,7 +1355,9 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         let eligibleErrors: [SiteCredentialLoginError] = [
             .invalidCredentials,
             .invalidLoginResponse,
-            .loginFailed(message: "Captcha required")
+            .loginFailed(message: "Captcha required"),
+            .unacceptableStatusCode(code: 401),
+            .unexpectedResponse(.init(stage: .credentials, statusCode: 401))
         ]
         for error in eligibleErrors {
             XCTAssertTrue(error.offersBrowserAlternative(at: .credentials))
@@ -1340,6 +1370,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             .basicAuthenticationRequired,
             .inaccessibleLoginPage,
             .inaccessibleAdminPage,
+            .unacceptableStatusCode(code: 403),
             .unacceptableStatusCode(code: 500),
             .genericFailure(underlyingError: URLError(.notConnectedToInternet))
         ]

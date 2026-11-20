@@ -10,14 +10,14 @@ struct POSCheckbox: View {
                 if isSelected {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .fill(Color.posPrimaryContainer)
-                        .frame(width: Constants.size, height: Constants.size)
+                        .frame(width: Self.size, height: Self.size)
                     Image(systemName: "checkmark")
                         .font(.posButtonSymbolXSmall)
                         .foregroundColor(.posOnPrimaryContainer)
                 } else {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .strokeBorder(Color.posOutline, lineWidth: 2)
-                        .frame(width: Constants.size, height: Constants.size)
+                        .frame(width: Self.size, height: Self.size)
                 }
             }
             .animation(.easeInOut(duration: 0.15), value: isSelected)
@@ -28,10 +28,8 @@ struct POSCheckbox: View {
     }
 }
 
-private extension POSCheckbox {
-    enum Constants {
-        static let size: CGFloat = 32
-    }
+extension POSCheckbox {
+    static let size: CGFloat = 32
 }
 
 private extension POSCheckbox {

@@ -75,17 +75,12 @@ struct POSListEmptyView: View {
 
     @ViewBuilder
     private var icon: some View {
+        let iconSize = POSStatusIllustrationHelper.illustrationSize(isFullSizeKeyboardVisible: keyboard.isFullSizeKeyboardVisible)
         viewModel.icon
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .frame(width: iconSize, height: iconSize)
             .foregroundColor(.posOnSurfaceVariantHighest)
-    }
-}
-
-private extension POSListEmptyView {
-    enum Constants {
-        static let iconSize: CGFloat = 88
     }
 }
 

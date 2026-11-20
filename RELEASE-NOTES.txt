@@ -3,7 +3,7 @@
 
 26.2
 -----
-- [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens also keep a smaller illustration while the keyboard is up, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
+- [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
 - [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]

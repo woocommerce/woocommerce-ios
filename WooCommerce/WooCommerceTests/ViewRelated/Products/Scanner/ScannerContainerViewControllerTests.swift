@@ -258,7 +258,7 @@ struct ScannerContainerViewControllerTests {
     @Test
     func test_hardware_scan_when_screen_offers_the_scanner_and_is_visible_then_delivers_it() {
         // Given
-        let observerFactory = MockObserverFactory()
+        let observerFactory = MockHardwareBarcodeObserverFactory()
         var scannedBarcodes: [ScannedBarcode] = []
         let sut = ScannerContainerViewController(navigationTitle: "",
                                                  instructionText: "",
@@ -277,7 +277,7 @@ struct ScannerContainerViewControllerTests {
     @Test(arguments: [false, true])
     func test_hardware_scan_when_screen_disappeared_or_does_not_offer_the_scanner_then_is_not_delivered(offersHardwareScanner: Bool) {
         // Given
-        let observerFactory = MockObserverFactory()
+        let observerFactory = MockHardwareBarcodeObserverFactory()
         var scannedBarcodes: [ScannedBarcode] = []
         let sut = ScannerContainerViewController(navigationTitle: "",
                                                  instructionText: "",
@@ -294,7 +294,7 @@ struct ScannerContainerViewControllerTests {
         #expect(observerFactory.acceptsInput() == false)
     }
 
-    private func makeHardwareBarcodeScanner(_ observerFactory: MockObserverFactory) -> HardwareBarcodeScanner {
+    private func makeHardwareBarcodeScanner(_ observerFactory: MockHardwareBarcodeObserverFactory) -> HardwareBarcodeScanner {
         let noticePresenter = MockNoticePresenter()
         return HardwareBarcodeScanner(analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                                       noticePresenter: { noticePresenter },

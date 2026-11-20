@@ -370,7 +370,9 @@ private extension ProductsViewController {
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
             guard let self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
-            presentInventoryUpdate(for: scannedBarcode)
+            presentInventoryUpdate(for: scannedBarcode, onRetry: { [weak self] in
+                self?.scanProducts()
+            })
         }, onPermissionsDenied: { reason in
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
                                                                                                            reason: reason))
@@ -384,7 +386,7 @@ private extension ProductsViewController {
         productSKUBarcodeScannerCoordinator.start()
     }
 
-    func presentInventoryUpdate(for scannedBarcode: ScannedBarcode) {
+    func presentInventoryUpdate(for scannedBarcode: ScannedBarcode, onRetry: @escaping () -> Void) {
         isLookingUpScannedBarcode = true
         Task {
             self.navigationItem.configureLeftBarButtonItemAsLoader()
@@ -402,14 +404,18 @@ private extension ProductsViewController {
                 let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                              code: scannedBarcode,
                                                                              title: Localization.scannerErrorNoticeTitle,
-                                                                             actionHandler: {
-                    self.scanProducts()
-                })
+                                                                             actionHandler: onRetry)
                 self.presentNotice(notice: errorNotice)
             }
             self.isLookingUpScannedBarcode = false
             self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
         }
+    }
+
+    func presentHardwareScannedInventoryUpdate(for scannedBarcode: ScannedBarcode) {
+        presentInventoryUpdate(for: scannedBarcode, onRetry: { [weak self] in
+            self?.presentHardwareScannedInventoryUpdate(for: scannedBarcode)
+        })
     }
 
     func startListeningForHardwareBarcodes() {
@@ -422,7 +428,7 @@ private extension ProductsViewController {
                 && tableView?.isEditing != true
                 && viewModel.isHardwareScanToUpdateInventoryAvailable
         }, onScan: { [weak self] scannedBarcode in
-            self?.presentInventoryUpdate(for: scannedBarcode)
+            self?.presentHardwareScannedInventoryUpdate(for: scannedBarcode)
         })
     }
 

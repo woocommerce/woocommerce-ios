@@ -8,7 +8,7 @@ import enum Hardware.HIDBarcodeParserResult
 struct HardwareBarcodeScannerTests {
     private let analyticsProvider = MockAnalyticsProvider()
     private let noticePresenter = MockNoticePresenter()
-    private let observerFactory = MockObserverFactory()
+    private let observerFactory = MockHardwareBarcodeObserverFactory()
 
     private func makeScanner(isTextInputActive: Bool = false) -> HardwareBarcodeScanner {
         HardwareBarcodeScanner(analytics: WooAnalytics(analyticsProvider: analyticsProvider),
@@ -178,30 +178,5 @@ extension ScannedBarcode {
             case .code128: return .code128
             }
         }
-    }
-}
-
-@MainActor
-final class MockObserverFactory {
-    private(set) var createdObserverCount = 0
-    var lastObserver: AnyObject?
-    private var acceptsInputHandler: () -> Bool = { false }
-    private var onResult: (HIDBarcodeParserResult) -> Void = { _ in }
-
-    func make(acceptsInput: @escaping () -> Bool, onResult: @escaping (HIDBarcodeParserResult) -> Void) -> AnyObject {
-        createdObserverCount += 1
-        acceptsInputHandler = acceptsInput
-        self.onResult = onResult
-        let observer = NSObject()
-        lastObserver = observer
-        return observer
-    }
-
-    func acceptsInput() -> Bool {
-        acceptsInputHandler()
-    }
-
-    func send(_ result: HIDBarcodeParserResult) {
-        onResult(result)
     }
 }

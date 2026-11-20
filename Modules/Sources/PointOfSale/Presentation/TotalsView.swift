@@ -67,9 +67,7 @@ struct TotalsView: View {
                         .environment(\.floatingControlAreaSize,
                                      bottomControlState == .hidden ? floatingControlAreaSize : .zero)
 
-                    bottomControls
-                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
-                        .layoutPriority(1)
+                    scrollableBottomControls
                 }
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
             case .idle, .syncing, .loaded:
@@ -123,13 +121,11 @@ struct TotalsView: View {
 
                         Spacer()
                     }
-                    .scrollVerticallyIfNeeded()
+                    .posScaleToFitHeight()
                     // A completed payment replaces the checkout content. Start the new screen at its top.
                     .id(displayPaymentState.isSuccess)
 
-                    bottomControls
-                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
-                        .layoutPriority(1)
+                    scrollableBottomControls
                 }
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
                 .animation(.default, value: isShowingPaymentView)
@@ -430,6 +426,16 @@ private struct MaxHeightProposalLayout: Layout {
     }
 }
 
+/// Shared with the order details totals so both breakdowns use the same label.
+extension TotalsView {
+    enum SharedLocalization {
+        static let customAmountsTotal = NSLocalizedString(
+            "pos.totalsView.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
+    }
+}
+
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
@@ -469,10 +475,6 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
-        static let customAmountsTotal = NSLocalizedString(
-            "pos.totalsView.customAmountsTotal",
-            value: "Custom amounts",
-            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
         static let connectCardReaderButtonTitle = NSLocalizedString(
             "pos.totalsView.connectCardReader.button.title.1",
             value: "Connect card reader",
@@ -543,7 +545,7 @@ private struct TotalsFieldsContent: View {
 
             if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(
-                    title: TotalsView.Localization.customAmountsTotal,
+                    title: TotalsView.SharedLocalization.customAmountsTotal,
                     formattedPrice: orderTotals?.customAmountsTotal,
                     shimmeringActive: totalsLoading
                 )
@@ -797,6 +799,16 @@ private extension TotalsView {
             return false
         }
         return true
+    }
+
+    @ViewBuilder
+    var scrollableBottomControls: some View {
+        // ViewThatFits drops EmptyView, leaving its fallback ScrollView to reserve space for hidden controls.
+        if bottomControlState != .hidden {
+            bottomControls
+                .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
+                .layoutPriority(1)
+        }
     }
 
     @ViewBuilder

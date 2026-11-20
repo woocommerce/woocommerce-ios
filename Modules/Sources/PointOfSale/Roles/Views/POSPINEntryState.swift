@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 enum POSPINErrorKind: Equatable {
     case invalidPIN
@@ -12,4 +12,10 @@ enum POSPINEntryState: Equatable {
     case unavailable
     case checkingLockout
     case loading
+}
+
+/// One entry step of a setup flow. A new ID starts an empty entry whose dots slide in from `edge`.
+struct POSPINEntryPage: Equatable {
+    let id: Int
+    let edge: HorizontalEdge
 }

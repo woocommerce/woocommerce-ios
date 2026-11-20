@@ -242,7 +242,7 @@ struct ItemListView: View {
                 headerView: {
                     if shouldShowCustomAmountEntryRow(itemListType) {
                         CustomAmountEntryRow(onTap: {
-                            posModel.customAmountFlow = .add
+                            posModel.startAddingCustomAmount()
                         })
                     }
                 }

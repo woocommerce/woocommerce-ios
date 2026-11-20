@@ -41,4 +41,11 @@ struct POSPINAttempt: Equatable {
     mutating func clear() {
         pin = ""
     }
+
+    /// Starts a new entry and makes completions from earlier submissions stale.
+    mutating func startOver() {
+        pin = ""
+        isMessageDeferred = false
+        generation += 1
+    }
 }

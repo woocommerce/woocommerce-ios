@@ -55,7 +55,8 @@ struct POSRootModalViewModifier: ViewModifier {
         content
             .blur(radius: modalManager.isPresented ? 8 : 0)
             .allowsHitTesting(!modalManager.isPresented)
-            .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
+            .accessibilityElement(children: .contain)
+            .accessibilityHidden(modalManager.isPresented)
             .overlay {
                 GeometryReader { geometry in
                     let modalPadding = isFullScreen ? metrics.padding.none : metrics.padding.medium
@@ -68,6 +69,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                         modalManager.dismiss()
                                     }
                                 }
+                                .accessibilityHidden(true)
                             // Don't scale/fade in the backdrop
                                 .animation(nil, value: modalManager.isPresented)
                             // Phone full-screen: paint the bright surface as a sibling above the dim
@@ -88,6 +90,8 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                         .environment(\.posModalCompactStyle, activeCompactStyle)
                                         .posFullScreenFlowHeader(style: activeCompactStyle, dismissAction: dismissActionIfAllowed)
+                                        .accessibilityElement(children: .contain)
+                                        .accessibilityAddTraits(.isModal)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,

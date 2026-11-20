@@ -23,6 +23,15 @@ struct POSSingleFieldInputView: View {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     var disableAutocorrection: Bool = false
+    var selectAllOnFocus: Bool = false
+    var submitLabel: SubmitLabel = .return
+    var textFieldAccessibilityIdentifier: String = ""
+    var submitButtonAccessibilityIdentifier: String = ""
+    var horizontalPadding: KeyPath<POSMetrics.Scale, CGFloat> = \.medium
+    var fillsAvailableHeight: Bool = false
+
+    @State private var selection: TextSelection?
+    @State private var availableHeight: CGFloat = 0
 
     @FocusState private var isTextFieldFocused: Bool
 
@@ -52,6 +61,7 @@ struct POSSingleFieldInputView: View {
                     VStack(alignment: .center, spacing: metrics.spacing.xSmall) {
                         TextField("",
                                   text: $text,
+                                  selection: $selection,
                                   prompt: Text(placeholder).foregroundColor(.posOnDisabledContainer))
                         .foregroundStyle(Color.posOnSurface)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -60,8 +70,22 @@ struct POSSingleFieldInputView: View {
                         .autocorrectionDisabled(disableAutocorrection)
                         .multilineTextAlignment(.center)
                         .font(POSFontStyle.posHeadingRegular)
-                        .focused()
                         .focused($isTextFieldFocused)
+                        .submitLabel(submitLabel)
+                        .accessibilityIdentifier(textFieldAccessibilityIdentifier)
+                        .task {
+                            do {
+                                try await Task.sleep(for: .milliseconds(600))
+                            } catch {
+                                return
+                            }
+                            isTextFieldFocused = true
+                        }
+                        .onChange(of: isTextFieldFocused) { _, focused in
+                            if focused && selectAllOnFocus {
+                                selection = TextSelection(range: text.startIndex..<text.endIndex)
+                            }
+                        }
                         .onSubmit {
                             onSubmit()
                         }
@@ -87,10 +111,12 @@ struct POSSingleFieldInputView: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .frame(maxWidth: .infinity)
                     .disabled(buttonState != .idle || !isButtonEnabled)
+                    .accessibilityIdentifier(submitButtonAccessibilityIdentifier)
                 }
-                .padding(.horizontal, metrics.padding.medium)
-                .padding(.bottom, keyboardFrame.height)
+                .padding(.horizontal, metrics.padding[keyPath: horizontalPadding])
+                .padding(.bottom, fillsAvailableHeight ? metrics.padding.medium : keyboardFrame.height)
             }
+            .frame(minHeight: fillsAvailableHeight ? availableHeight : nil)
             .animation(.easeInOut, value: errorMessage)
             .onChange(of: text) {
                 errorMessage = nil
@@ -102,6 +128,7 @@ struct POSSingleFieldInputView: View {
             .animation(.default, value: shouldMinimizePadding)
         }
         .background(Color.posSurfaceBright)
+        .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { availableHeight = $0 }
     }
 }
 

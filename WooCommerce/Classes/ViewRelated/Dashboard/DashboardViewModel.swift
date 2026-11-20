@@ -196,7 +196,7 @@ final class DashboardViewModel: ObservableObject {
         self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID, stores: stores)
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID, stores: stores)
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
-        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID, stores: stores)
+        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID, stores: stores, application: application)
         self.googleAdsDashboardCardViewModel = GoogleAdsDashboardCardViewModel(
             siteID: siteID,
             eligibilityChecker: googleAdsEligibilityChecker,

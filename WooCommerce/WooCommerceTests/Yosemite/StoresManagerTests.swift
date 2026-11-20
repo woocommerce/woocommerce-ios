@@ -5,6 +5,7 @@ import Networking
 import Storage
 import TestKit
 @testable import WooCommerce
+@testable import PointOfSale
 import Yosemite
 
 /// StoresManager Unit Tests
@@ -260,6 +261,44 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(mockAuthenticationManager.authenticationUIInvoked)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
+
+    @MainActor
+    func test_deauthenticate_when_custom_amount_tax_choices_exist_then_clears_all_stores() throws {
+        // Given
+        let suiteName = "StoresManagerTests.customAmountTax.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSCustomAmountTaxPreferences(userDefaults: defaults)
+        preferences.setTaxable(true, for: 123)
+        preferences.setTaxable(true, for: 456)
+
+        // When
+        manager.deauthenticate()
+
+        // Then
+        XCTAssertNil(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 123)))
+        XCTAssertNil(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)))
+    }
+
+    @MainActor
+    func test_removeDefaultStore_when_custom_amount_tax_choices_exist_then_preserves_them() throws {
+        // Given
+        let suiteName = "StoresManagerTests.customAmountTax.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSCustomAmountTaxPreferences(userDefaults: defaults)
+        preferences.setTaxable(true, for: 123)
+        preferences.setTaxable(false, for: 456)
+
+        // When
+        manager.removeDefaultStore()
+
+        // Then
+        XCTAssertTrue(preferences.isTaxable(for: 123))
+        XCTAssertEqual(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)) as? Bool, false)
     }
 
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.

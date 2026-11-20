@@ -1055,7 +1055,10 @@ final class AuthenticationManagerTests: XCTestCase {
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         var events = [String]()
         useCase.onHandleLogin = { events.append("handle") }
-        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, endpoints, _ in
+            useCase.configuredEndpoints = endpoints
+            return useCase
+        })
 
         // When
         manager.authenticateSiteCredentials(
@@ -1279,7 +1282,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 // When
                 manager.presentSiteCredentialLoginFailure(error: SiteCredentialLoginError.unexpectedResponse(context),
-                                                          offersBrowserAlternative: stage == .credentials && code == nil,
+                                                          offersBrowserAlternative: false,
                                                           for: "https://example.com", in: presenter)
 
                 // Then
@@ -1293,15 +1296,16 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    func test_unexpected_credential_failure_when_forwarded_then_preserves_context_without_tracking_shown() throws {
+    func test_unexpected_credential_401_when_forwarded_then_offers_browser_recovery() throws {
         // Given
         let provider = MockAnalyticsProvider()
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
                                             siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
-        let context = LoginUnexpectedResponseFailure(stage: .credentials)
+        let context = LoginUnexpectedResponseFailure(stage: .credentials, statusCode: 401)
         var receivedError: Error?
         var verifiedLoginURL: String?
+        var offersBrowserAlternative = false
         manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
                                             endpointUnderVerification: .login, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
                                             onRecovery: { _ in XCTFail("Expected failure"); return false },
@@ -1309,7 +1313,7 @@ final class AuthenticationManagerTests: XCTestCase {
             receivedError = error
             verifiedLoginURL = verifiedURL
             XCTAssertFalse(incorrectCredentials)
-            XCTAssertFalse(browserAlternative)
+            offersBrowserAlternative = browserAlternative
         })
 
         // When
@@ -1321,9 +1325,28 @@ final class AuthenticationManagerTests: XCTestCase {
         }
         XCTAssertEqual(receivedContext, context)
         XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
+        XCTAssertTrue(offersBrowserAlternative)
         XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
         XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
-                       SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
+                       SiteCredentialLoginError.unacceptableStatusCode(code: 401).underlyingError.description)
+    }
+
+    func test_unexpected_credential_401_when_browser_recovery_is_offered_then_presents_site_credential_alert() throws {
+        // Given
+        let presenter = SiteCredentialAlertPresenter()
+        navigationController.setViewControllers([presenter], animated: false)
+        let manager = AuthenticationManager()
+
+        // When
+        manager.presentSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.unexpectedResponse(.init(stage: .credentials, statusCode: 401)),
+            offersBrowserAlternative: true,
+            for: "https://example.com",
+            in: presenter
+        )
+
+        // Then
+        try assertCenteredFancyAlertPresented(by: presenter)
     }
 
     func test_unexpected_login_page_when_authentication_fails_then_forwards_to_alert_without_recovery_or_shown_tracking() {
@@ -1516,10 +1539,36 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(results, [false])
     }
 
+    func test_retry_when_login_succeeds_without_the_retried_step_then_reports_success() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, endpoints, _ in
+            useCase.configuredEndpoints = endpoints
+            return useCase
+        })
+        var results = [Bool]()
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: "https://example.com/typed-admin/",
+                                            endpointUnderVerification: .admin,
+                                            retryingFailure: SiteCredentialLoginError.unexpectedResponse(.init(stage: .dashboard)),
+                                            onRetryResult: { results.append($0) }, onLoading: { _ in }, onSuccess: { _ in },
+                                            onRecovery: { _ in false }, onFailure: { _, _, _, _ in })
+
+        // When
+        useCase.onStageSuccess?(.nonce)
+        XCTAssertTrue(results.isEmpty)
+        useCase.succeed()
+
+        // Then
+        XCTAssertEqual(results, [true])
+    }
+
     func test_retry_when_cancelled_then_ignores_stale_stage_and_terminal_callbacks() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
-        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, endpoints, _ in
+            useCase.configuredEndpoints = endpoints
+            return useCase
+        })
         var results = [Bool]()
         manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
                                             endpointUnderVerification: nil,
@@ -1736,7 +1785,10 @@ final class AuthenticationManagerTests: XCTestCase {
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         var receivedCredentials: WordPressOrgCredentials?
         var loading = [Bool]()
-        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, endpoints, _ in
+            useCase.configuredEndpoints = endpoints
+            return useCase
+        })
         let credentials = siteCredentials(options: [
             "login_url": ["value": "https://example.com/stale-login"],
             "admin_url": ["value": "https://example.com/stale-admin"],
@@ -1772,6 +1824,34 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(defaultOptions["login_url"])
         XCTAssertNil(defaultOptions["admin_url"])
         XCTAssertEqual((defaultOptions["unrelated"] as? [String: String])?["value"], "preserved")
+    }
+
+    func test_authenticate_site_credentials_when_login_proves_another_admin_then_returns_credentials_with_that_admin() throws {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var receivedCredentials: WordPressOrgCredentials?
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        let provenEndpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/ghost-admin/"))
+        )
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: "https://example.com/custom-login",
+            adminURL: nil,
+            endpointUnderVerification: .login,
+            onLoading: { _ in },
+            onSuccess: { receivedCredentials = $0 },
+            onRecovery: { _ in XCTFail("Expected success"); return true },
+            onFailure: { _, _, _, _ in XCTFail("Expected success") }
+        )
+        useCase.succeed(with: provenEndpoints)
+
+        // Then
+        XCTAssertEqual(receivedCredentials?.authenticationEndpoints, provenEndpoints)
     }
 }
 
@@ -1827,10 +1907,11 @@ private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCre
     var onHandleLogin: (() -> Void)?
     private(set) var receivedUsername: String?
     private(set) var receivedPassword: String?
-    private var successHandler: (() -> Void)?
+    var configuredEndpoints: CookieNonceAuthenticationEndpoints?
+    private var successHandler: ((CookieNonceAuthenticationEndpoints) -> Void)?
     private var failureHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
 
-    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping (CookieNonceAuthenticationEndpoints) -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void) {
         successHandler = onLoginSuccess
         failureHandler = onLoginFailure
@@ -1842,8 +1923,12 @@ private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCre
         onHandleLogin?()
     }
 
-    func succeed() {
-        successHandler?()
+    /// Succeeds with the given endpoints, or with the ones the manager configured, as a login without a redirected admin does.
+    func succeed(with endpoints: CookieNonceAuthenticationEndpoints? = nil) {
+        guard let endpoints = endpoints ?? configuredEndpoints else {
+            return XCTFail("Missing endpoints for the successful login")
+        }
+        successHandler?(endpoints)
     }
 
     func fail(with error: SiteCredentialLoginError,

@@ -23,6 +23,7 @@ LOG=~/.self-heal/runs.log
 ```
 
 If `$RUNNER` does not exist, create it from `origin/trunk` and bootstrap it (`bundle install && bundle exec rake dependencies`).
+Run tests on the simulator named `Self-Heal iPhone 17 Pro` (`-destination 'platform=iOS Simulator,name=Self-Heal iPhone 17 Pro'`), not the one `AGENTS.md` names: it does not exist on this machine.
 Leave `$RUNNER` clean at the end of every run: commit or `git stash` work in progress, switch back to the detached `origin/trunk`, and delete local branches that have no open PR.
 
 Log every phase as one line to `$LOG`: `<ISO time> <phase> <WOOCOMMERCE-IOS-id or -> <one-line outcome>`.

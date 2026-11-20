@@ -242,7 +242,7 @@ final class StorePerformanceViewModel: ObservableObject {
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
-            currentDate = now() // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
+            updateCurrentDate()
             let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
             try await syncUseCase.sync()
 
@@ -437,6 +437,21 @@ extension StorePerformanceViewModel {
 // MARK: - Private helpers
 //
 private extension StorePerformanceViewModel {
+    /// The period view model reads stats for the day it was created on. When the app stays open across
+    /// midnight in the site's timezone, it must be replaced or it keeps showing the previous day's stats.
+    func updateCurrentDate() {
+        // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
+        let previousDate = currentDate
+        currentDate = now()
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        guard !calendar.isDate(previousDate, inSameDayAs: currentDate) else {
+            return
+        }
+        periodViewModel = makePeriodViewModel(timeRange: timeRange)
+        observePeriodViewModel()
+    }
+
     func observeSyncingCompletion() {
         syncingDidFinishPublisher
             .receive(on: DispatchQueue.global(qos: .background))
@@ -461,16 +476,7 @@ private extension StorePerformanceViewModel {
                 guard let self else {
                     return nil
                 }
-                let viewModel = StoreStatsPeriodViewModel(siteID: siteID,
-                                                          timeRange: timeRange,
-                                                          siteTimezone: siteTimezone,
-                                                          currentDate: currentDate,
-                                                          currencyFormatter: currencyFormatter,
-                                                          currencySettings: currencySettings,
-                                                          storageManager: storageManager)
-                // Carry the current revenue metric over to the freshly created period VM so the
-                // revenue text reflects the merchant's choice immediately on time-range switches.
-                viewModel.revenueType = revenueType
+                let viewModel = makePeriodViewModel(timeRange: timeRange)
                 return (timeRange, viewModel)
             }
             .sink { [weak self] timeRange, viewModel in
@@ -499,6 +505,20 @@ private extension StorePerformanceViewModel {
                 self?.chartViewModel = viewModel
             }
             .store(in: &subscriptions)
+    }
+
+    /// Carries the current revenue metric over to the new period VM so the revenue text reflects the
+    /// merchant's choice immediately on time-range switches.
+    func makePeriodViewModel(timeRange: StatsTimeRangeV4) -> StoreStatsPeriodViewModel {
+        let viewModel = StoreStatsPeriodViewModel(siteID: siteID,
+                                                  timeRange: timeRange,
+                                                  siteTimezone: siteTimezone,
+                                                  currentDate: currentDate,
+                                                  currencyFormatter: currencyFormatter,
+                                                  currencySettings: currencySettings,
+                                                  storageManager: storageManager)
+        viewModel.revenueType = revenueType
+        return viewModel
     }
 
     func observePeriodViewModel() {

@@ -4,16 +4,16 @@
 # --job-type validation: For jobs like unit/UI tests, authenticator tests...
 #     Skip when changes are limited to documentation, tooling, non-code files, and localization files
 # --job-type localization: For jobs that check localization files
-#     Check if any localization files have changed
-#     Return true (skip) if NO localization files have changed
+#     Skip when NO localization files have changed, and outside pull requests
 # --job-type build: For jobs building app binaries, e.g. Build, Prototype Builds...
 #     Skip when changes are limited to documentation, tooling, and non-code files
 #     Does not skip if localization files changed
 #
-# Return codes:
-# 0 - Job should be skipped (script also handles displaying the message and annotation)
-# 1 - Job should not be skipped
-# 15 - Error in script parameters
+# Prints the reason to skip the job, or `false` to run it. Exits 0 either way, and 15 for invalid arguments.
+# `shared-pipeline-vars` exports the result as SKIP_<JOB TYPE>, used as the step's `skip:` (`false` runs the step).
+# Only PR builds skip validation and build jobs. Errors and empty diffs run the job.
+
+run_job() { echo false; exit 0; }
 
 COMMON_PATTERNS=(
   "*.md"
@@ -36,55 +36,47 @@ LOCALIZATION_PATTERNS=(
 )
 
 # Check if arguments are valid
-if [ -z "${1:-}" ] || [ "$1" != "--job-type" ] || [ -z "${2:-}" ]; then
-  echo "Error: Must specify --job-type [validation|build|localization]"
-  buildkite-agent step cancel
+if [[ $# -ne 2 || "$1" != "--job-type" ]]; then
+  echo "Error: Must specify --job-type [validation|build|localization]" >&2
   exit 15
 fi
-
-# Function to display skip message and create annotation
-show_skip_message() {
-  local job_type=$1
-  local message="Skipping ${BUILDKITE_LABEL:-Job} - no relevant files changed"
-  local context="skip-$(echo "${BUILDKITE_LABEL:-$job_type}" | sed -E -e 's/[^[:alnum:]]+/-/g' | tr A-Z a-z)"
-  
-  echo "$message" | buildkite-agent annotate --style "info" --context "$context"
-  echo "$message"
-}
-
 job_type="$2"
+case "$job_type" in
+  validation|build|localization) ;;
+  *)
+    echo "Error: Job type must be either 'validation', 'build', or 'localization'" >&2
+    exit 15
+    ;;
+esac
+
+if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
+  # As before, the localization check only runs for PRs that change localization files.
+  if [[ "$job_type" == localization ]]; then
+    echo "Not a pull request"
+    exit 0
+  fi
+  run_job
+fi
+
 case "$job_type" in
   "validation")
     # We should skip if changes are limited to documentation, tooling, non-code files, and localization files
     PATTERNS=("${COMMON_PATTERNS[@]}" "${LOCALIZATION_PATTERNS[@]}")
-    if pr_changed_files --all-match "${PATTERNS[@]}"; then
-      show_skip_message "$job_type"
-      exit 0
-    fi
-    exit 1
+    pr_changed_files --all-match "${PATTERNS[@]}" || run_job
+    echo "No relevant files changed"
     ;;
   "localization")
-    # Check if any localization files have changed
-    # Return true (skip) if NO localization files have changed
-    if ! pr_changed_files --any-match "${LOCALIZATION_PATTERNS[@]}"; then
-      show_skip_message "$job_type"
-      exit 0
-    fi
-    exit 1
+    # We should skip if NO localization files have changed. Errors run the job.
+    pr_changed_files || run_job
+    localization_changed=$(pr_changed_files --stdout --any-match "${LOCALIZATION_PATTERNS[@]}") || run_job
+    [[ "$localization_changed" == false ]] || run_job
+    echo "No localization files changed"
     ;;
   "build")
     # We should skip if changes are limited to documentation, tooling, and non-code files
     # We'll let the job run (won't skip) if PR includes changes in localization files though
     PATTERNS=("${COMMON_PATTERNS[@]}")
-    if pr_changed_files --all-match "${PATTERNS[@]}"; then
-      show_skip_message "$job_type"
-      exit 0
-    fi
-    exit 1
-    ;;
-  *)
-    echo "Error: Job type must be either 'validation', 'build', or 'localization'"
-    buildkite-agent step cancel
-    exit 15
+    pr_changed_files --all-match "${PATTERNS[@]}" || run_job
+    echo "No relevant files changed"
     ;;
 esac

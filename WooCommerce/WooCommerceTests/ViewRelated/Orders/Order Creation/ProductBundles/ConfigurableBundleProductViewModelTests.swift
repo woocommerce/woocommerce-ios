@@ -627,6 +627,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 }
 
 private extension ConfigurableBundleProductViewModelTests {
+    @MainActor
     func mockProductsRetrieval(result: Result<[Product], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

@@ -3,19 +3,20 @@ import XCTest
 import Yosemite
 import Networking
 
+@MainActor
 final class ProductVariationLoadUseCaseTests: XCTestCase {
     typealias ResultData = ProductVariationLoadUseCase.ResultData
     private var stores: MockStoresManager!
     private let siteID: Int64 = 208
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         stores = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_loadProductVariation_successfully_returns_both_variation_and_product() throws {

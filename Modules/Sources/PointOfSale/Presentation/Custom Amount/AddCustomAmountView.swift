@@ -3,233 +3,144 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
-    /// Glyph for the form's leading back button. The actual dismissal mechanism is
-    /// always provided by `onDismiss`; this only chooses how the back button looks.
-    /// - `.close` shows an `xmark` (typical for modal/sheet/full-screen-cover presentations).
-    /// - `.back` shows a chevron-back (typical for navigation-stack pushes).
-    enum BackButtonStyle {
-        case close
-        case back
-
-        var iconName: String {
-            switch self {
-            case .close: return "xmark"
-            case .back: return "chevron.backward"
-            }
-        }
-    }
-
-    let onDismiss: () -> Void
+    @Environment(\.posMetrics) private var metrics
+    @Bindable var viewModel: AddCustomAmountFormViewModel
+    let requiresSubmitGuard: Bool
+    let onBack: () -> Void
+    let onEditAmount: () -> Void
+    let onEditName: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
-    private let backButtonStyle: BackButtonStyle
 
-    @State private var viewModel: AddCustomAmountFormViewModel
-    @FocusState private var isAmountFocused: Bool
-    @FocusState private var isNameFocused: Bool
+    @State private var hasFinishedSubmitGuard = false
+    @State private var hasSubmitted = false
 
-    private var amountBinding: Binding<String> {
-        Binding(
-            get: { viewModel.amount },
-            set: { viewModel.setAmount($0) }
-        )
-    }
-
-    init(currencySettings: CurrencySettings,
-         editing: POSCustomAmount? = nil,
-         backButtonStyle: BackButtonStyle = .close,
-         onDismiss: @escaping () -> Void,
-         onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self.backButtonStyle = backButtonStyle
-        self.onDismiss = onDismiss
-        self.onSubmit = onSubmit
-        self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
-            currencySettings: currencySettings,
-            editing: editing
-        ))
+    private var isReadyToSubmit: Bool {
+        !requiresSubmitGuard || hasFinishedSubmitGuard
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: viewModel.isEditing ? Localization.editTitle : Localization.title,
-                backButtonConfiguration: .init(
-                    state: .enabled,
-                    action: {
-                        clearFocus()
-                        onDismiss()
-                    },
-                    buttonIcon: backButtonStyle.iconName
-                )
-            )
+            POSPageHeaderView(title: Localization.title,
+                              backButtonConfiguration: .init(state: .enabled, action: onBack))
 
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
-                        amountSection
-                            .id(Field.amount)
-                            .padding(.top, POSSpacing.xLarge)
-
-                        Divider()
-
-                        taxesRow
-
-                        Divider()
-
-                        nameSection
-                            .id(Field.name)
-
-                        Spacer(minLength: POSSpacing.xxLarge)
+            ScrollView {
+                VStack(spacing: metrics.spacing.medium) {
+                    detailCard(label: Localization.amountLabel,
+                               value: viewModel.formattedAmount,
+                               isPlaceholder: false,
+                               accessibilityLabel: Localization.editAmount,
+                               identifier: "pos-custom-amount-amount-card",
+                               action: onEditAmount)
+                    detailCard(label: Localization.nameLabel,
+                               value: viewModel.resolvedName,
+                               isPlaceholder: viewModel.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                               accessibilityLabel: Localization.editName,
+                               identifier: "pos-custom-amount-name-card",
+                               action: onEditName)
+                    Toggle(isOn: $viewModel.isTaxable) {
+                        Text(Localization.chargeTaxes)
+                            .font(.posBodyLargeRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     }
-                    .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                    .tint(.posPrimary)
+                    .accessibilityIdentifier("pos-custom-amount-tax-toggle")
+                    .padding(metrics.padding.xLarge)
+                    .background(Color.posSurfaceContainerLowest)
+                    .posItemCardBorderStyles()
                 }
-                .scrollDismissesKeyboard(.interactively)
-                // The submit button is pinned below the scroll view, so a focused field (especially the
-                // lower Name field) can end up hidden behind the keyboard. Scroll the focused field into
-                // the keyboard-avoided area once the keyboard has settled.
-                .onChange(of: isAmountFocused) { _, focused in
-                    guard focused else { return }
-                    scrollToField(.amount, using: proxy)
-                }
-                .onChange(of: isNameFocused) { _, focused in
-                    guard focused else { return }
-                    scrollToField(.name, using: proxy)
-                }
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.small)
             }
 
-            submitButton
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.vertical, POSPadding.medium)
+            Button(action: submit) {
+                Text(viewModel.isEditing ? Localization.updateButton : Localization.addButton)
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .frame(maxWidth: .infinity)
+            .disabled(!viewModel.isAddEnabled || hasSubmitted)
+            .allowsHitTesting(isReadyToSubmit)
+            .accessibilityIdentifier("pos-add-custom-amount-submit-button")
+            .padding(metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .posIgnoresHiddenKeyboardSafeArea()
-    }
-
-    private var amountSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
-            Text(Localization.amountLabel)
-                .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantLowest)
-
-            ZStack {
-                TextField("", text: amountBinding)
-                    .keyboardType(.decimalPad)
-                    .focused($isAmountFocused)
-                    .opacity(0)
-                    .accessibilityHidden(true)
-
-                HStack(spacing: POSSpacing.xSmall) {
-                    Text(viewModel.currencySymbol)
-                        .font(.posHeadingBold)
-                        .foregroundColor(.posOnSurface)
-
-                    Text(viewModel.amount.isEmpty ? "0" : viewModel.amount)
-                        .font(.posHeadingBold)
-                        .foregroundColor(viewModel.amount.isEmpty ? .posOnSurfaceVariantLowest : .posOnSurface)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+        .posEdgeSwipeBackAction(onBack: onBack)
+        .task {
+            guard requiresSubmitGuard else { return }
+            // A second tap on Continue or Save must not submit Details in the same button position.
+            do {
+                try await Task.sleep(for: .milliseconds(300))
+            } catch {
+                // Leaving Details cancels the delay.
+                return
             }
-            .padding(POSPadding.large)
+            hasFinishedSubmitGuard = true
+        }
+    }
+
+    private func detailCard(label: String, value: String, isPlaceholder: Bool,
+                            accessibilityLabel: String, identifier: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.medium) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: metrics.spacing.medium) {
+                        cardLabel(label)
+                        Spacer()
+                        cardValue(value, isPlaceholder: isPlaceholder)
+                    }
+                    VStack(alignment: .leading, spacing: metrics.spacing.small) {
+                        cardLabel(label)
+                        cardValue(value, isPlaceholder: isPlaceholder)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                Image(systemName: "square.and.pencil")
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .accessibilityHidden(true)
+            }
+            .padding(metrics.padding.xLarge)
             .background(Color.posSurfaceContainerLowest)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
+            .posItemCardBorderStyles()
             .contentShape(Rectangle())
-            .onTapGesture { focusAmountField() }
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("pos-custom-amount-amount-field")
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityValue(value)
+        .accessibilityIdentifier(identifier)
     }
 
-    private func focusAmountField() {
-        isNameFocused = false
-        isAmountFocused = false
-        DispatchQueue.main.async {
-            isAmountFocused = true
-        }
+    private func cardLabel(_ label: String) -> some View {
+        Text(label)
+            .font(.posBodyLargeRegular())
+            .foregroundStyle(Color.posOnSurfaceVariantHighest)
     }
 
-    private var taxesRow: some View {
-        Toggle(isOn: $viewModel.isTaxable) {
-            Text(Localization.chargeTaxes)
-                .font(.posBodyLargeRegular())
-                .foregroundColor(.posOnSurface)
-        }
-        .tint(.posPrimary)
-        .padding(.vertical, POSPadding.small)
-        .onChange(of: viewModel.isTaxable) { _, _ in
-            isAmountFocused = false
-            isNameFocused = false
-        }
-    }
-
-    private var nameSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
-            Text(Localization.nameLabel)
-                .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantLowest)
-
-            TextField(Localization.namePlaceholder, text: $viewModel.name)
-                .font(.posBodyLargeRegular())
-                .foregroundColor(.posOnSurface)
-                .focused($isNameFocused)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.sentences)
-                .submitLabel(.done)
-                .onSubmit(submit)
-                .padding(.vertical, POSPadding.small)
-                .accessibilityIdentifier("pos-custom-amount-name-field")
-        }
-    }
-
-    private var submitButton: some View {
-        Button(action: submit) {
-            Text(viewModel.isEditing ? Localization.updateButton : Localization.addButton)
-        }
-        .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .frame(maxWidth: .infinity)
-        .disabled(!viewModel.isAddEnabled)
-        .accessibilityIdentifier("pos-add-custom-amount-submit-button")
+    private func cardValue(_ value: String, isPlaceholder: Bool) -> some View {
+        Text(value)
+            .font(isPlaceholder ? .posBodyLargeRegular() : .posBodyLargeBold)
+            .foregroundStyle(isPlaceholder ? Color.posOnSurfaceVariantLowest : Color.posOnSurface)
     }
 
     private func submit() {
-        guard let customAmount = viewModel.resolvedCustomAmount() else { return }
-        clearFocus()
+        guard isReadyToSubmit, !hasSubmitted, let customAmount = viewModel.resolvedCustomAmount() else { return }
+        hasSubmitted = true
         onSubmit(customAmount)
-        onDismiss()
-    }
-
-    /// Clears focus so the keyboard dismisses as the form goes away, rather than lingering over the
-    /// next screen (e.g. proceeding to checkout while the Name field is focused).
-    private func clearFocus() {
-        isAmountFocused = false
-        isNameFocused = false
-    }
-
-    /// Scrolls the focused field into view when it gains focus, deferred one runloop tick so the
-    /// focus and layout changes are applied before the scroll runs.
-    private func scrollToField(_ field: Field, using proxy: ScrollViewProxy) {
-        DispatchQueue.main.async {
-            withAnimation {
-                proxy.scrollTo(field, anchor: .center)
-            }
-        }
     }
 }
 
-private extension AddCustomAmountView {
-    /// Scroll-target identifiers for the form's focusable fields.
-    enum Field {
-        case amount
-        case name
-    }
-
+extension AddCustomAmountView {
     enum Localization {
+        static let editAmount = NSLocalizedString(
+            "pos.customAmount.details.editAmount", value: "Edit amount",
+            comment: "Title of the POS custom amount editor and accessibility label for the Amount card that opens it.")
+        static let editName = NSLocalizedString(
+            "pos.customAmount.details.editName", value: "Edit name",
+            comment: "Accessibility label for the name card in POS custom amount details.")
         static let title = NSLocalizedString(
-            "pos.addCustomAmount.title",
-            value: "Custom amount",
+            "pos.customAmount.details.title",
+            value: "Custom amount details",
             comment: "Title of the full-screen Point of Sale form for adding a custom amount to the order.")
-        static let editTitle = NSLocalizedString(
-            "pos.addCustomAmount.editTitle",
-            value: "Edit custom amount",
-            comment: "Title of the full-screen Point of Sale form when editing an existing custom amount on the order.")
         static let amountLabel = NSLocalizedString(
             "pos.addCustomAmount.amountLabel",
             value: "Amount",
@@ -239,8 +150,8 @@ private extension AddCustomAmountView {
             value: "Charge taxes",
             comment: "Title of the taxable toggle in the Point of Sale add custom amount form.")
         static let nameLabel = NSLocalizedString(
-            "pos.addCustomAmount.nameLabel",
-            value: "Name",
+            "pos.customAmount.details.nameLabel",
+            value: "Name (optional)",
             comment: "Label above the name field in the Point of Sale add custom amount form.")
         static let namePlaceholder = NSLocalizedString(
             "pos.addCustomAmount.namePlaceholder",
@@ -258,33 +169,9 @@ private extension AddCustomAmountView {
 }
 
 #if DEBUG
-#Preview("Modal") {
-    AddCustomAmountView(
-        currencySettings: CurrencySettings(),
-        backButtonStyle: .close,
-        onDismiss: {},
-        onSubmit: { _ in }
-    )
-}
-
-#Preview("Editing — Modal") {
-    AddCustomAmountView(
-        currencySettings: CurrencySettings(),
-        editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
-        backButtonStyle: .close,
-        onDismiss: {},
-        onSubmit: { _ in }
-    )
-}
-
-#Preview("Push") {
-    NavigationStack {
-        AddCustomAmountView(
-            currencySettings: CurrencySettings(),
-            backButtonStyle: .back,
-            onDismiss: {},
-            onSubmit: { _ in }
-        )
-    }
+#Preview {
+    AddCustomAmountView(viewModel: AddCustomAmountFormViewModel(currencySettings: CurrencySettings()),
+                        requiresSubmitGuard: false,
+                        onBack: {}, onEditAmount: {}, onEditName: {}, onSubmit: { _ in })
 }
 #endif

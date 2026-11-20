@@ -54,7 +54,7 @@ struct OrderStatusSection: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .padding([.leading, .trailing, .top])
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
 
         Divider()
     }

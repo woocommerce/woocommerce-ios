@@ -69,7 +69,7 @@ private extension POSCouponImageView {
 }
 
 #Preview("ImageView states") {
-    VStack(spacing: 16) {
+    VStack(spacing: POSMetrics.regular.spacing.medium) {
         VStack(alignment: .leading) {
             Text("Normal")
                 .font(.caption)
@@ -105,5 +105,5 @@ private extension POSCouponImageView {
             POSCouponImageView(size: 100, state: .expired)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }

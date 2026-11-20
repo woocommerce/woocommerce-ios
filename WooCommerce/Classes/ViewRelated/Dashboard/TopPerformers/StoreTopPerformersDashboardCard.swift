@@ -25,10 +25,14 @@ struct StoreTopPerformersDashboardCard: View {
                 header
                 if !viewModel.analyticsEnabled {
                     StoreDashboardUnavailableAnalyticsView(title: Localization.unavailableAnalytics)
-                } else if viewModel.syncingError != nil {
-                    errorState
                 } else {
-                    topPerformersContent
+                    StoreDashboardRangedCardContent(cardType: .topPerformers,
+                                                    hasError: viewModel.syncingError != nil,
+                                                    reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                        dateRangeHeader
+                    } content: {
+                        topPerformersContent
+                    }
                 }
             }
         }
@@ -57,26 +61,29 @@ private extension StoreTopPerformersDashboardCard {
         }
     }
 
+    var dateRangeHeader: some View {
+        StoreDashboardDateRangeHeader(
+            timeRange: viewModel.timeRange,
+            dateText: viewModel.timeRangeText,
+            customTitle: Localization.custom,
+            isDisabled: viewModel.syncingData,
+            accessibilityPrefix: "top-performers",
+            onSelect: selectTimeRange,
+            onEditCustom: editCustomRange
+        )
+        .padding(.horizontal, StorePadding.p5)
+        .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
+        .shimmering(active: viewModel.periodViewModel.redacted.header)
+    }
+
     var topPerformersContent: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            StoreDashboardDateRangeHeader(
-                timeRange: viewModel.timeRange,
-                dateText: viewModel.timeRangeText,
-                isDisabled: viewModel.syncingData,
-                accessibilityPrefix: "top-performers",
-                onSelect: selectTimeRange,
-                onEditCustom: editCustomRange
-            )
-            .padding(.horizontal, StorePadding.p5)
-            .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
-            .shimmering(active: viewModel.periodViewModel.redacted.header)
-            StoreDivider()
-                .padding(.bottom, StorePadding.p5)
             StoreTopPerformersPeriodView(viewModel: viewModel.periodViewModel)
+                .padding(.top, StorePadding.p5)
             StoreDashboardTimestamp(
-                lastUpdatedTimestamp: viewModel.lastUpdatedTimestamp,
-                showsScheduledUpdatesDelay: viewModel.shouldShowScheduledAnalyticsImportInfo,
+                text: timestampText,
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
+                infoAccessibilityLabel: Localization.scheduledUpdatesInfoAccessibilityLabel,
                 onInfoTapped: showAnalyticsImportUpdateModeInfo
             )
             .padding(StorePadding.p5)
@@ -92,16 +99,15 @@ private extension StoreTopPerformersDashboardCard {
         }
     }
 
-    var errorState: some View {
-        StoreDashboardCardErrorView {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
-            Task { await viewModel.reloadDataIfNeeded(forceRefresh: true) }
-        }
-    }
-
     func showAnalyticsImportUpdateModeInfo() {
         viewModel.trackAnalyticsImportUpdateModeInfoTapped()
         onAnalyticsImportUpdateModeInfoTapped()
+    }
+
+    var timestampText: String {
+        viewModel.shouldShowScheduledAnalyticsImportInfo ?
+        Localization.scheduledUpdatesDelayText :
+        Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp)
     }
 
     func editCustomRange() {
@@ -131,23 +137,7 @@ private extension StoreTopPerformersDashboardCard {
 }
 
 private extension StoreTopPerformersDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "topPerformersDashboardView.hideCard",
-            value: "Hide Top Performers",
-            comment: "Menu item to dismiss the Top Performers section on the Dashboard screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "topPerformersDashboardView.viewAll",
-            value: "View all store analytics",
-            comment: "Button to navigate to Analytics Hub."
-        )
-        static let unavailableAnalytics = NSLocalizedString(
-            "topPerformersDashboardView.unavailableAnalyticsView.title",
-            value: "Unable to display your store's top performers",
-            comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
-        )
-    }
+    typealias Localization = TopPerformersDashboardView.Localization
 }
 
 #Preview {

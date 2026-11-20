@@ -27,20 +27,19 @@ struct ShippingLabelCarriers: View {
                     case .loading:
                         ForEach(viewModel.ghostRows) { ghostRowVM in
                             ShippingLabelCarrierRow(ghostRowVM)
-                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .redacted(reason: .placeholder)
                                 .shimmering()
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     case .success:
-                        let edgeInsets = EdgeInsets(top: 0, leading: geometry.safeAreaInsets.leading, bottom: 0, trailing: geometry.safeAreaInsets.trailing)
+                        let edgeInsets = EdgeInsets.zero
                         ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
                                                               edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
                         ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { _, sectionVM in
-                            ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
-                                .background(Color(.listForeground(modal: false)))
+                            ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: .zero)
+                                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
                             Spacer().frame(height: Constants.spaceBetweenSections)
                         }
                     case .error:
@@ -52,7 +51,6 @@ struct ShippingLabelCarriers: View {
                                     .frame(width: geometry.size.width)
                             }
                         }
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(minHeight: geometry.size.height)
                     default:
                         EmptyView()
@@ -61,7 +59,7 @@ struct ShippingLabelCarriers: View {
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: .bottom)
             .navigationTitle(Localization.titleView)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

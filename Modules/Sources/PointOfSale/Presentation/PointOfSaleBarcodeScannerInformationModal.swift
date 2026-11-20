@@ -16,10 +16,11 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 }
 
 struct LegacyBarcodeScannerInformationContent: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             PointOfSaleInformationModalParagraphView {
                 Text(AttributedString(Localization.legacyBarcodeInfoIntroMessage))
             }
@@ -34,7 +35,7 @@ struct LegacyBarcodeScannerInformationContent: View {
                 Text(AttributedString(Localization.legacyBarcodeInfoQuaternaryMessage))
                     .accessibilityLabel(Localization.legacyBarcodeInfoQuaternaryMessageAccessible)
             }
-            .padding(.leading, POSSpacing.medium)
+            .padding(.leading, metrics.spacing.medium)
 
             PointOfSaleInformationModalParagraphView(style: .outlined) {
                 Text(AttributedString(Localization.legacyBarcodeInfoQuinaryMessage))
@@ -61,15 +62,16 @@ struct LegacyBarcodeScannerInformationContent: View {
 }
 
 struct BarcodeScannerInformation: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             Text(Localization.scannerInfoHeading)
                 .font(.posHeadingBold)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.xLarge) {
+            VStack(spacing: metrics.spacing.xLarge) {
                 PointOfSaleInformationModalParagraphView {
                     Text(AttributedString(Localization.barcodeInfoIntroMessage))
                 }
@@ -82,7 +84,7 @@ struct BarcodeScannerInformation: View {
                     Text(AttributedString(Localization.barcodeInfoSearchMessage))
                         .accessibilityLabel(Localization.barcodeInfoSearchMessageAccessible)
                 }
-                .padding(.leading, POSSpacing.medium)
+                .padding(.leading, metrics.spacing.medium)
 
                 PointOfSaleInformationModalParagraphView {
                     Text(AttributedString(Localization.legacyBarcodeInfoQuinaryMessage))
@@ -96,15 +98,16 @@ struct BarcodeScannerInformation: View {
 }
 
 struct ProductBarcodeSetupInformation: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             Text(Localization.productBarcodeInfoHeading)
                 .font(.posHeadingBold)
                 .accessibilityAddTraits(.isHeader)
 
-            PointOfSaleInformationModalParagraphView(spacing: POSSpacing.medium) {
+            PointOfSaleInformationModalParagraphView(spacing: \.medium) {
                 Text(productSetupTextWithLink)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)

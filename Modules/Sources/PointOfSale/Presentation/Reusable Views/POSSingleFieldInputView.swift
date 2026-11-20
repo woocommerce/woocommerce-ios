@@ -9,6 +9,7 @@ import WooFoundation
 ///
 /// Consumers provide domain-specific logic for validation, async actions, and analytics
 struct POSSingleFieldInputView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let placeholder: String
     let buttonTitle: String
@@ -22,6 +23,15 @@ struct POSSingleFieldInputView: View {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     var disableAutocorrection: Bool = false
+    var selectAllOnFocus: Bool = false
+    var submitLabel: SubmitLabel = .return
+    var textFieldAccessibilityIdentifier: String = ""
+    var submitButtonAccessibilityIdentifier: String = ""
+    var horizontalPadding: KeyPath<POSMetrics.Scale, CGFloat> = \.medium
+    var fillsAvailableHeight: Bool = false
+
+    @State private var selection: TextSelection?
+    @State private var availableHeight: CGFloat = 0
 
     @FocusState private var isTextFieldFocused: Bool
 
@@ -31,7 +41,7 @@ struct POSSingleFieldInputView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+            VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                 POSPageHeaderView(
                     title: title,
                     backButtonConfiguration: .init(
@@ -45,12 +55,13 @@ struct POSSingleFieldInputView: View {
                     )
                 )
 
-                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                     Spacer()
 
-                    VStack(alignment: .center, spacing: POSSpacing.xSmall) {
+                    VStack(alignment: .center, spacing: metrics.spacing.xSmall) {
                         TextField("",
                                   text: $text,
+                                  selection: $selection,
                                   prompt: Text(placeholder).foregroundColor(.posOnDisabledContainer))
                         .foregroundStyle(Color.posOnSurface)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -59,8 +70,22 @@ struct POSSingleFieldInputView: View {
                         .autocorrectionDisabled(disableAutocorrection)
                         .multilineTextAlignment(.center)
                         .font(POSFontStyle.posHeadingRegular)
-                        .focused()
                         .focused($isTextFieldFocused)
+                        .submitLabel(submitLabel)
+                        .accessibilityIdentifier(textFieldAccessibilityIdentifier)
+                        .task {
+                            do {
+                                try await Task.sleep(for: .milliseconds(600))
+                            } catch {
+                                return
+                            }
+                            isTextFieldFocused = true
+                        }
+                        .onChange(of: isTextFieldFocused) { _, focused in
+                            if focused && selectAllOnFocus {
+                                selection = TextSelection(range: text.startIndex..<text.endIndex)
+                            }
+                        }
                         .onSubmit {
                             onSubmit()
                         }
@@ -86,10 +111,12 @@ struct POSSingleFieldInputView: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .frame(maxWidth: .infinity)
                     .disabled(buttonState != .idle || !isButtonEnabled)
+                    .accessibilityIdentifier(submitButtonAccessibilityIdentifier)
                 }
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, keyboardFrame.height)
+                .padding(.horizontal, metrics.padding[keyPath: horizontalPadding])
+                .padding(.bottom, fillsAvailableHeight ? metrics.padding.medium : keyboardFrame.height)
             }
+            .frame(minHeight: fillsAvailableHeight ? availableHeight : nil)
             .animation(.easeInOut, value: errorMessage)
             .onChange(of: text) {
                 errorMessage = nil
@@ -101,19 +128,16 @@ struct POSSingleFieldInputView: View {
             .animation(.default, value: shouldMinimizePadding)
         }
         .background(Color.posSurfaceBright)
+        .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { availableHeight = $0 }
     }
 }
 
 // MARK: - Helpers
 
 private extension POSSingleFieldInputView {
-    enum Constants {
-        static let minimumPadding: CGFloat = POSSpacing.xSmall
-    }
-
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
-            return Constants.minimumPadding
+            return metrics.spacing.xSmall
         }
         return padding
     }

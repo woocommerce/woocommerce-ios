@@ -6,7 +6,7 @@ import XCTest
 class WooCommerceScreenshots: XCTestCase {
 
     private var screenshotOrientation: UIDeviceOrientation {
-        UIDevice.current.userInterfaceIdiom == .pad ? .landscapeLeft : .portrait
+        UIDevice.current.userInterfaceIdiom == .pad || XCUIScreen.screens.count > 1 ? .landscapeLeft : .portrait
     }
 
     override func setUpWithError() throws {
@@ -27,14 +27,18 @@ class WooCommerceScreenshots: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
+        let shouldShowPOS = UIDevice.current.userInterfaceIdiom == .pad
+        app.launchEnvironment["SCREENSHOTS_SHOW_POS"] = String(shouldShowPOS)
         app.launchArguments.append("mocked-network-layer")
         app.launchArguments.append("use-mocked-card-present-payment")
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
-        app.launchArguments.append("bypass-pos-eligibility-checks")
-        app.launchArguments.append("load-mocked-pos-products")
-        app.launchArguments.append("bypass-pos-order-syncing")
+        if shouldShowPOS {
+            app.launchArguments.append("bypass-pos-eligibility-checks")
+            app.launchArguments.append("load-mocked-pos-products")
+            app.launchArguments.append("bypass-pos-order-syncing")
+        }
         app.launchArguments.append("bypass-card-present-payment")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
@@ -59,6 +63,10 @@ class WooCommerceScreenshots: XCTestCase {
         try TabNavComponent()
             .goToMyStoreScreen()
             .dismissTopBannerIfNeeded()
+            .then { screen in
+                XCTAssertEqual(screen.app.buttons["tab-bar-pos-item"].exists, shouldShowPOS,
+                               "The POS tab must match the screenshot configuration.")
+            }
             .thenTakeScreenshot(named: "order-dashboard", orientation: screenshotOrientation)
 
         // Orders
@@ -107,7 +115,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add", orientation: screenshotOrientation)
 
-        .lockScreenForNotificationScreenshot()
+        .openNotificationCenterForScreenshot()
         .thenTakeScreenshot(named: "order-notification", orientation: screenshotOrientation)
     }
 
@@ -196,24 +204,30 @@ extension BaseScreen {
 
 extension ScreenObject {
 
-    @discardableResult
-    func lockScreen() -> Self {
-        // This is a hack from https://stackoverflow.com/a/57356929
-        // ☠️ Beware of breaking changes in future updates ☠️
-        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-        sleep(5)
-        return self
-    }
-
-
-    @discardableResult
-    func lockScreenForNotificationScreenshot() -> Self {
-        if #available(iOS 18.0, *) {
-            // iOS 18 and above needs double lock
-            return self.lockScreen().lockScreen()
-        } else {
-            return self.lockScreen()
+    @MainActor @discardableResult
+    func openNotificationCenterForScreenshot() -> Self {
+        let appFrame = app.windows.firstMatch.frame
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        springboard.activate()
+        // A window anchor preserves the active display; application coordinates use Duo's outer display.
+        guard let homeWindow = springboard.windows.allElementsBoundByIndex.first(where: {
+            abs($0.frame.width - appFrame.width) < 1 && abs($0.frame.height - appFrame.height) < 1 && $0.icons.firstMatch.exists
+        }) else {
+            XCTFail("The active display's Home window must be available before opening Notification Center.")
+            return self
         }
+        let top = homeWindow.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
+        let bottom = homeWindow.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+        top.press(forDuration: 0.1, thenDragTo: bottom)
+
+        // The fixture amount uses either decimal separator across the supported translations.
+        let notification = springboard.windows["SBCoverSheetWindow"].buttons
+            .matching(NSPredicate(format: "label MATCHES %@", ".*13[.,]98.*")).firstMatch
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == true"), object: notification)
+        if XCTWaiter.wait(for: [visible], timeout: 20) != .completed {
+            XCTFail("The mocked order notification must be visible before capturing it.")
+        }
+        return self
     }
 
     @MainActor @discardableResult

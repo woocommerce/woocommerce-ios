@@ -72,15 +72,15 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
-def xcconfig_development_team(filename)
+def xcconfig_value(filename, key)
   path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
   UI.user_error!("xcconfig not found: #{path}") unless File.readable?(path)
-  Xcodeproj::Config.new(path).attributes['DEVELOPMENT_TEAM'] ||
-    UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")
+  Xcodeproj::Config.new(path).attributes[key] ||
+    UI.user_error!("Could not find #{key} in #{path}")
 end
 
-ENTERPRISE_TEAM_ID = xcconfig_development_team('WooCommerce.release-alpha.xcconfig')
-APP_STORE_TEAM_ID = xcconfig_development_team('WooCommerce.common.xcconfig')
+ENTERPRISE_TEAM_ID = xcconfig_value('WooCommerce.release-alpha.xcconfig', 'DEVELOPMENT_TEAM')
+APP_STORE_TEAM_ID = xcconfig_value('WooCommerce.common.xcconfig', 'DEVELOPMENT_TEAM')
 
 # Shared options to use when invoking `gym` / `build_app`.
 #
@@ -90,6 +90,21 @@ APP_STORE_TEAM_ID = xcconfig_development_team('WooCommerce.common.xcconfig')
 COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 
 TEST_SCHEME = 'WooCommerce'
+
+# Naming the device, deployment target and app stops scan from running `xcodebuild -showBuildSettings`, which resolves every Swift package.
+# The default device is CI only: a developer's Mac may not have it, and without a device, `scan` needs the lookup to pick one.
+CI_SIMULATOR_DEVICE = 'iPhone 17 Pro'
+
+def scan_settings(device: nil, deployment_target_version: nil)
+  device ||= CI_SIMULATOR_DEVICE if is_ci
+  return {} if device.nil?
+
+  {
+    device: device,
+    deployment_target_version: deployment_target_version || xcconfig_value('Common.xcconfig', 'IPHONEOS_DEPLOYMENT_TARGET'),
+    disallow_xcodebuild_settings_lookup: true
+  }
+end
 
 CONCURRENT_SIMULATORS = 2
 
@@ -1016,8 +1031,8 @@ platform :ios do
       derived_data_path: DERIVED_DATA_DIR,
       buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       build_for_testing: true,
-      device: device,
-      deployment_target_version: ios_version
+      app_name: TEST_SCHEME,
+      **scan_settings(device: device, deployment_target_version: ios_version)
     )
   end
 
@@ -1059,6 +1074,7 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
+      xcargs: 'APP_DISPLAY_NAME=Woo',
       derived_data_path: DERIVED_DATA_DIR
     )
   end
@@ -1079,7 +1095,7 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    rebuild_screenshot_devices
+    rebuild_screenshot_devices(devices: devices)
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,
@@ -1146,17 +1162,20 @@ platform :ios do
   end
 
   desc 'Rebuild Screenshot Devices'
-  lane :rebuild_screenshot_devices do
+  lane :rebuild_screenshot_devices do |options|
+    devices = Array(options.fetch(:devices, SCREENSHOT_DEVICES)).flat_map { |device| device.split(',') }.map(&:strip)
+    devices &= SCREENSHOT_DEVICES
+    UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
     runtime = latest_ios_simulator_runtime
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless devices.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
+    devices.each do |device|
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)
@@ -1549,14 +1568,17 @@ lane :test_without_building do |options|
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
 
-  # On Xcode 27 CI images, simulator diagnostics collection after a unit-test run hangs until
+  # On Xcode 27 CI images, simulator diagnostics collection after a test run hangs until
   # its 600 s timeout, even when all tests pass.
-  xcargs = options[:name] == 'UnitTests' ? '-collect-test-diagnostics never' : nil
+  xcargs = '-collect-test-diagnostics never'
 
   run_tests(
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
-    device: options[:device],
+    app_name: TEST_SCHEME,
+    derived_data_path: DERIVED_DATA_DIR,
+    **scan_settings(device: options[:device]),
+    skip_package_dependencies_resolution: true,
     ensure_devices_found: true,
     force_quit_simulator: true,
     parallel_testing: parallel_testing_value,

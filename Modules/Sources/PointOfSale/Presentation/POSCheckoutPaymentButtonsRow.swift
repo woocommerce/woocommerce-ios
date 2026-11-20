@@ -11,13 +11,14 @@ import SwiftUI
 /// rather than being embedded in TotalsView so the array-driven layout is reviewable in
 /// isolation as TTP and additional payment methods land in later parts.
 struct POSCheckoutPaymentButtonsRow: View {
+    @Environment(\.posMetrics) private var metrics
     let methods: [POSCheckoutPaymentMethod]
     let onSelect: (POSCheckoutPaymentMethod) -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             ForEach(Array(methods.enumerated()), id: \.element) { index, method in
                 button(for: method, isPrimary: index == 0)
             }
@@ -27,8 +28,8 @@ struct POSCheckoutPaymentButtonsRow: View {
         }
         .if(horizontalSizeClass != .compact) {
             $0
-                .posContentPadding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.small)
+                .posContentPadding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.small)
         }
     }
 

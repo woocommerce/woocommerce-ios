@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSInformationCardFieldRowWithToggle: View {
+    @Environment(\.posMetrics) private var metrics
     let label: String
     let value: String
     let showSeparator: Bool
@@ -17,9 +18,9 @@ struct POSInformationCardFieldRowWithToggle: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
+        VStack(alignment: .leading, spacing: metrics.padding.small) {
+            HStack(alignment: .center, spacing: metrics.spacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.padding.small) {
                     Text(label)
                         .font(.posBodyMediumBold)
                     Text(value)
@@ -37,7 +38,7 @@ struct POSInformationCardFieldRowWithToggle: View {
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.small)
+                    .padding(.top, metrics.padding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

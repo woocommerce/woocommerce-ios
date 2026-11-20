@@ -32,12 +32,12 @@ struct ComponentsList: View {
     @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            content(safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            content
         }
     }
 
-    private func content(safeAreaInsets: EdgeInsets) -> some View {
+    private var content: some View {
         ScrollView {
             LazyVStack(spacing: Layout.sectionSpacing) {
                 ForEach(viewModel.components) { component in
@@ -64,18 +64,14 @@ struct ComponentsList: View {
                     }
                     Divider()
                         .padding(.leading)
-                        .padding(.trailing, insets: -safeAreaInsets)
                         .renderedIf(component != viewModel.components.last)
                 }
             }
-            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             FooterNotice(infoText: viewModel.infoNotice)
-                .padding(.horizontal, insets: safeAreaInsets)
         }
-        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

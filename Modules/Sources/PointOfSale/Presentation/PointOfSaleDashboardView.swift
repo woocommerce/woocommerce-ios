@@ -2,10 +2,10 @@ import SwiftUI
 import WooFoundation
 
 struct PointOfSaleDashboardView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
@@ -23,7 +23,6 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
-    @State private var itemListBackgroundColor: Color = .posSurface
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -81,13 +80,13 @@ struct PointOfSaleDashboardView: View {
             case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
                     catalogSyncState: catalogSyncState,
-                    onExit: { dismiss() }
+                    onExit: { requestExit(confirmingFirst: false) }
                 )
                     .transition(.opacity)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
-                })
+                }, onExit: { requestExit(confirmingFirst: false) })
                 .frame(maxWidth: .infinity)
             case .error(let error):
                 PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
@@ -108,38 +107,49 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    dismiss()
+                    requestExit(confirmingFirst: false)
                 } : nil)
             case .content:
-                contentView
-                    .accessibilitySortPriority(2)
+                POSPushTransitionContainer(
+                    item: posModel.customAmountFlow,
+                    // Each custom amount step owns Back; the container must not also dismiss the flow.
+                    isBackGestureEnabled: false,
+                    onBack: { posModel.customAmountFlow = nil }
+                ) {
+                    contentView
+                } pushed: { flow in
+                    if let flow {
+                        POSCustomAmountFlowView(flow: flow)
+                    }
+                }
+                .accessibilitySortPriority(2)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
         // report its own ideal height while POS is being presented, which must not drive this position.
         .overlay(alignment: .bottomLeading) {
-            POSFloatingControlView(onExitSelected: requestExitPermission,
+            POSFloatingControlView(onExitSelected: { requestExit(confirmingFirst: true) },
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   onSettingsSelected: requestSettingsPermission,
+                                   showSettings: $showSettings,
                                    onOrdersSelected: presentOrders)
-            .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-            .padding(.bottom, Constants.floatingControlBottomPadding)
+            .offset(x: metrics.padding.medium, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, metrics.padding.medium)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed && posModel.customAmountFlow == nil)
         }
         .overlay {
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
-                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                      CGSizeMake(floatingSize.width + metrics.padding.medium,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
                 // These compact-only cover hosts are removed by the layout change.
-                if phoneShowingBarcodeScannerSetup || posModel.editingCustomAmount != nil {
+                if phoneShowingBarcodeScannerSetup {
                     coverManager.clearPresentation()
                 }
                 phoneShowingCart = false
@@ -154,30 +164,32 @@ struct PointOfSaleDashboardView: View {
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
         }
-        .onPreferenceChange(POSItemListBackgroundPreferenceKey.self) { color in
-            itemListBackgroundColor = color ?? .posSurface
-        }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  compactStyle: .cardReaderConnection,
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
-            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        .posDialog(isPresented: $showExitPOSModal) {
+            .exitPOS(exit: {
+                analytics.track(.pointOfSaleExitConfirmed)
+                dismiss()
+            }, close: {
+                showExitPOSModal = false
+            })
         }
         .posRootModal()
         .posManagerOverrideModal(handler: overrideHandler)
@@ -194,6 +206,12 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
+        .onChange(of: posModel.customAmountFlow) { _, flow in
+            // Editing starts from the phone cart sheet, which would otherwise stay over the form.
+            if flow != nil {
+                phoneShowingCart = false
+            }
+        }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
@@ -209,6 +227,7 @@ struct PointOfSaleDashboardView: View {
             showDocumentation = false
             showSettings = false
             showOrders = false
+            posModel.customAmountFlow = nil
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -245,38 +264,40 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private var phoneContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
-        // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
-        //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
-        //                 break .navigationDestination resolution for pushed views.
-        // Finalizing stage: a fresh NavigationStack siblinged to (not wrapping) the items list, used
-        //                   for pushing cash payment, email receipt, etc. via navigationPath.
-        Group {
-            switch posModel.orderStage {
-            case .building:
-                GeometryReader { geometry in
-                    VStack(spacing: POSSpacing.none) {
-                        ItemListView(
-                            selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                            searchTerm: $viewStateCoordinator.searchTerm,
-                            httpsConfigurationNotice: httpsConfigurationNotice,
-                            phoneHeaderAccessoryBuilder: { context in
-                                AnyView(phoneOverflowMenu(
-                                    canCreateCoupon: context.canCreateCoupon,
-                                    onCreateCoupon: context.onCreateCoupon
-                                ))
-                            }
-                        )
-                        if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                            cartIsEmpty: posModel.cart.isEmpty,
-                            floatingControlSuppressed: floatingControlSuppressed
-                        ) {
-                            phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
-                                .transition(.move(edge: .bottom).combined(with: .opacity))
+        // The items list and checkout are siblings, never nested: ItemListView carries its own
+        // NavigationStack for product drill-down, and nesting stacks breaks .navigationDestination
+        // resolution for pushed views. Checkout gets its own stack for cash payment, email receipt, etc.
+        POSPushTransitionContainer(
+            item: phoneCheckoutScreen,
+            isBackGestureEnabled: canExitFinalizingOnPhone && navigationPath.isEmpty,
+            animatesPop: { $0 != .paymentSuccess },
+            onBack: { posModel.addMoreToCart() }
+        ) {
+            GeometryReader { geometry in
+                VStack(spacing: metrics.spacing.none) {
+                    ItemListView(
+                        selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                        searchTerm: $viewStateCoordinator.searchTerm,
+                        httpsConfigurationNotice: httpsConfigurationNotice,
+                        phoneHeaderAccessoryBuilder: { context in
+                            AnyView(phoneOverflowMenu(
+                                canCreateCoupon: context.canCreateCoupon,
+                                onCreateCoupon: context.onCreateCoupon
+                            ))
                         }
+                    )
+                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                        cartIsEmpty: posModel.cart.isEmpty,
+                        floatingControlSuppressed: floatingControlSuppressed
+                    ) {
+                        phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
                 }
-            case .finalizing:
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
+            }
+        } pushed: { stage in
+            if stage != nil {
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
                         .posNavigationDestinations()
@@ -334,11 +355,8 @@ struct PointOfSaleDashboardView: View {
                 .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
-        // Phone-only covers presented at the dashboard level:
-        //  - Barcode scanner setup, triggered from the cart sheet.
-        //  - Edit-custom-amount, hosted here so it sits above the cart sheet (CartView's
-        //    edit cover is gated to iPad, and POSSheet dismissal can tear down covers
-        //    that live inside the sheet's content).
+        // Phone-only cover presented at the dashboard level: barcode scanner setup, triggered
+        // from the cart sheet.
         .if(isPhoneLayout) { view in
             view
                 .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
@@ -346,25 +364,21 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { proxy in
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
+                            .posFullScreenFlowHeader(style: .barcodeScannerSetup, dismissAction: { phoneShowingBarcodeScannerSetup = false })
                     }
-                }
-                .posFullScreenCover(item: Binding(
-                    get: { posModel.editingCustomAmount },
-                    set: { posModel.editingCustomAmount = $0 }
-                )) { customAmount in
-                    AddCustomAmountView(
-                        currencySettings: currencyProvider.currencySettings,
-                        editing: customAmount,
-                        backButtonStyle: .close,
-                        onDismiss: { posModel.editingCustomAmount = nil },
-                        onSubmit: { updated in
-                            posModel.upsertCustomAmount(updated, mode: .edit)
-                        }
-                    )
+                    .background(Color.posSurfaceBright.ignoresSafeArea())
                 }
         }
-        .animation(.default, value: posModel.orderStage)
         .background(Color.posSurface.ignoresSafeArea())
+    }
+
+    private var phoneCheckoutScreen: PhoneCheckoutScreen? {
+        switch posModel.orderStage {
+        case .building:
+            return nil
+        case .finalizing:
+            return posModel.paymentState.isSuccess ? .paymentSuccess : .checkout
+        }
     }
 
     private var canExitFinalizingOnPhone: Bool {
@@ -397,10 +411,6 @@ struct PointOfSaleDashboardView: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
-        .posEdgeSwipeBackAction(
-            isEnabled: canExitFinalizingOnPhone,
-            onBack: { posModel.addMoreToCart() }
-        )
     }
 
     @State private var showOrders: Bool = false
@@ -410,30 +420,38 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private func phoneOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
-        Menu {
+        POSMenu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
             if canCreateCoupon {
-                Button(action: onCreateCoupon) {
+                POSMenuButton(action: onCreateCoupon) {
                     Label(Localization.phoneMenuCreateCoupon, systemImage: "plus")
                 }
             }
-            Button {
+            POSMenuButton {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                requestSettingsPermission()
+                showSettings = true
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
             .accessibilityIdentifier("pos-settings-menu-item")
-            Button {
+            POSMenuButton {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 presentOrders()
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
-            Button {
+            if session.isPINProtectionEnabled {
+                POSMenuButton {
+                    session.lock()
+                } label: {
+                    Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
+            POSMenuButton {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
-                requestExitPermission()
+                requestExit(confirmingFirst: true)
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
@@ -450,9 +468,6 @@ struct PointOfSaleDashboardView: View {
                 .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
                 .fixedSize()
         }
-        // Keep the declared order (Exit last) instead of letting the system reorder items by the
-        // button's position on screen.
-        .menuOrder(.fixed)
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-compact-overflow-menu")
     }
@@ -479,7 +494,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset))
+        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset, metrics: metrics))
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
@@ -617,7 +632,7 @@ struct PointOfSaleDashboardView: View {
             if posModel.orderStage == .building {
                 Color.clear
                     .frame(width: layout.backgroundLeadingWidth)
-                    .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                    .background(Color.posSurface.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                 Color.clear
                     .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
             } else {
@@ -715,26 +730,17 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
-    func requestSettingsPermission() {
-        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
-            showSettings = true
-        }
-    }
-
-    /// Presents the exit confirmation, gated on `.exitPOS` via manager override.
-    func requestExitPermission() {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { viaOverride in
-            guard viaOverride else {
+    /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
+    func requestExit(confirmingFirst: Bool) {
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
+            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
+            case .showConfirmation:
                 showExitPOSModal = true
-                return
-            }
-            // The override modal and the exit confirmation share the single POS modal manager, so
-            // present the confirmation only after the override modal has finished dismissing —
-            // presenting both together collides on the shared manager and drops the operator back into
-            // POS. Mirrors the cart-sheet → barcode-cover handoff in `phoneCartSheetView`.
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.exitOverrideHandoffDelay) {
-                showExitPOSModal = true
+            case .leave(let tracksConfirmation):
+                if tracksConfirmation {
+                    analytics.track(.pointOfSaleExitConfirmed)
+                }
+                dismiss()
             }
         }
     }
@@ -752,17 +758,16 @@ extension EnvironmentValues {
 }
 
 private extension PointOfSaleDashboardView {
+    enum PhoneCheckoutScreen {
+        case checkout
+        case paymentSuccess
+    }
+
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let floatingControlBottomPadding: CGFloat = POSPadding.medium
-        static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
-        static let exitPOSSheetMaxWidth: CGFloat = 900.0
-        // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
-        // before the exit confirmation presents on the shared modal manager.
-        static let exitOverrideHandoffDelay: TimeInterval = 0.3
         static let cartButtonAppearanceDuration: TimeInterval = 0.25
         static let supportTag = "origin:point-of-sale"
     }
@@ -792,12 +797,6 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
-        )
-        static let settingsOverrideDescription = NSLocalizedString(
-            "pointOfSaleDashboard.settings.overrideReason",
-            value: "Opening settings requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "view-settings permission tries to open Point of Sale settings."
         )
         static let exitOverrideDescription = NSLocalizedString(
             "pointOfSaleDashboard.exit.overrideReason",

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleItemListFullscreenView<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     let showTitle: Bool
     let content: () -> Content
 
@@ -13,7 +14,7 @@ struct PointOfSaleItemListFullscreenView<Content: View>: View {
         ZStack {
             // TODO: WOOMOB-1692 remove specialisation of errors if possible
             if showTitle {
-                VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+                VStack(alignment: .center, spacing: metrics.spacing.medium) {
                     POSHeaderTitleView(
                         title: Localization.title,
                         foregroundColor: .posOnSurfaceVariantHighest

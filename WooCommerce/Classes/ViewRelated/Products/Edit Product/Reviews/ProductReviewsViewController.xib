@@ -28,9 +28,9 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="hO7-cV-1U4" secondAttribute="bottom" id="Tze-iE-9UN"/>
-                <constraint firstAttribute="trailing" secondItem="hO7-cV-1U4" secondAttribute="trailing" id="dmi-uV-oOR"/>
-                <constraint firstItem="hO7-cV-1U4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="eml-dB-PIq"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="bottom" secondItem="hO7-cV-1U4" secondAttribute="bottom" id="Tze-iE-9UN"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="hO7-cV-1U4" secondAttribute="trailing" id="dmi-uV-oOR"/>
+                <constraint firstItem="hO7-cV-1U4" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="eml-dB-PIq"/>
                 <constraint firstItem="hO7-cV-1U4" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="uxJ-Q0-nJF"/>
             </constraints>
             <point key="canvasLocation" x="139" y="114"/>

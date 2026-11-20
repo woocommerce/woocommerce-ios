@@ -5,6 +5,7 @@ struct POSCashAmountTextField: View {
     @Binding var input: POSCashAmountInputState
     @FocusState.Binding var isFocused: Bool
     let onSubmit: () -> Void
+    @State private var selection: TextSelection?
 
     private let formatter: POSCashAmountInputFormatter
     private let preset: Decimal?
@@ -27,7 +28,10 @@ struct POSCashAmountTextField: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            TextField("", text: $input.displayText)
+            TextField("", text: $input.displayText,
+                      selection: $selection,
+                      prompt: Text(formatter.formattedAmount(from: ""))
+                        .foregroundColor(.posOnDisabledContainer))
                 .keyboardType(formatter.hasFractionDigits ? .decimalPad : .numberPad)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.posOnSurface)
@@ -53,10 +57,25 @@ struct POSCashAmountTextField: View {
                 .onDisappear {
                     isFocused = false
                 }
+                .onChange(of: isFocused) { _, _ in
+                    selectPresetIfNeeded()
+                }
+                .onChange(of: input.isDisplayingPreset) { _, _ in
+                    selectPresetIfNeeded()
+                }
                 .onChange(of: input.displayText) { oldValue, newValue in
                     handleTextChange(oldValue: oldValue, newValue: newValue)
                 }
         }
+    }
+
+    /// A preset is replaced by the first key press, so it is shown selected to signal that.
+    /// Watches both focus and the preset because either can arrive first.
+    private func selectPresetIfNeeded() {
+        guard isFocused, input.isDisplayingPreset else {
+            return
+        }
+        selection = TextSelection(range: input.displayText.startIndex..<input.displayText.endIndex)
     }
 
     private func handleTextChange(oldValue: String, newValue: String) {

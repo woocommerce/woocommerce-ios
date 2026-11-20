@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PaymentsActionButtons: View {
+    @Environment(\.posMetrics) private var metrics
     let successAction: PaymentFlowAction
     let showsPrintReceipt: Bool
     var printButtonState: POSButtonState = .idle
@@ -38,9 +39,9 @@ private extension PaymentsActionButtons {
 
     var receiptButtonLayout: AnyLayout {
         if usesSideBySideReceiptButtons {
-            AnyLayout(HStackLayout(spacing: Constants.receiptButtonRowSpacing))
+            AnyLayout(HStackLayout(spacing: metrics.spacing.small))
         } else {
-            AnyLayout(VStackLayout(spacing: Constants.receiptButtonRowSpacing))
+            AnyLayout(VStackLayout(spacing: metrics.spacing.small))
         }
     }
 
@@ -49,7 +50,7 @@ private extension PaymentsActionButtons {
             analytics.track(.receiptEmailTapped)
             router.pushEmailReceipt()
         }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
+            HStack(spacing: metrics.spacing.medium) {
                 Text(Localization.sendReceipt)
             }
         })
@@ -60,7 +61,7 @@ private extension PaymentsActionButtons {
 
     var printReceiptButton: some View {
         Button(action: printReceiptAction, label: {
-            HStack(spacing: Constants.buttonSpacing) {
+            HStack(spacing: metrics.spacing.medium) {
                 Text(Localization.printReceipt)
             }
         })
@@ -77,7 +78,7 @@ private extension PaymentsActionButtons {
             }
             successAction.action()
         }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
+            HStack(spacing: metrics.spacing.medium) {
                 Text(successAction.title)
             }
         })
@@ -86,13 +87,7 @@ private extension PaymentsActionButtons {
     }
 }
 
-
 private extension PaymentsActionButtons {
-    enum Constants {
-        static let buttonSpacing: CGFloat = POSSpacing.medium
-        static let receiptButtonRowSpacing: CGFloat = POSSpacing.small
-    }
-
     enum Localization {
         static let sendReceipt = NSLocalizedString(
             "pos.totalsView.button.sendReceipt",

@@ -4,7 +4,9 @@ This simulator-only suite complements XCUITest/WireMock with a production-like
 release signal against developer-supplied live WooCommerce test stores.
 It never requires Android's store, POS mocks, a Linear issue, or a notification
 channel. Flows launch the app with `-ui_testing`, which turns off analytics and
-skips the privacy banner and login onboarding.
+skips the privacy banner and login onboarding, and with `-AppleLocale en_US`
+(unless the flow tests another locale), so dates and numbers use US formats
+whatever the simulator region.
 
 ## Local setup
 

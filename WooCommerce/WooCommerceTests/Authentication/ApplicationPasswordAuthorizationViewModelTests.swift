@@ -1,5 +1,6 @@
 import UIKit
 import Testing
+import WebKit
 import Yosemite
 @testable import WooCommerce
 
@@ -64,8 +65,8 @@ struct ApplicationPasswordAuthorizationViewModelTests {
             fixture.controller.unexpectedResponsePresenter.select(.retry)
             fixture.controller.unexpectedResponsePresenter.select(.retry)
         }
-        fixture.completeFetch?(success ? .success(URL(string: "https://example.com/authorize")) :
-                                 .failure(UnexpectedStoreResponseError(kind: .unexpectedContent)))
+        let authorization = URL(string: "https://example.com/authorize").map { ApplicationPasswordAuthorization(url: $0, approvalSiteURL: nil) }
+        fixture.completeFetch?(success ? .success(authorization) : .failure(UnexpectedStoreResponseError(kind: .unexpectedContent)))
         await fixture.waitForFetchHandling()
 
         // Then
@@ -141,6 +142,289 @@ struct ApplicationPasswordAuthorizationViewModelTests {
             #expect(LoginUnexpectedResponseFailure(error: error, step: .appPasswordAuthorizationURL)?.step == .appPasswordAuthorizationURL)
         }
     }
+
+    @Test func test_authorization_when_approval_page_belongs_to_another_site_then_shows_alert_and_tracks_before_approval() async {
+        // Given
+        let fixture = AuthorizationFixture()
+        await fixture.start()
+
+        // When
+        fixture.completeFetch?(.failure(ApplicationPasswordAuthorizationError.siteMismatch))
+        await fixture.waitForFetchHandling()
+
+        // Then
+        let event = WooAnalyticsStat.applicationPasswordAuthorizationSiteMismatch.rawValue
+        #expect(fixture.alert?.message == "This approval page belongs to a different site. For your safety, we stopped the login.")
+        #expect(fixture.alert?.actions.map(\.title) == ["Contact Support", "Cancel"])
+        #expect(fixture.provider.receivedEvents.filter { $0 == event }.count == 1)
+        #expect(fixture.provider.properties(for: event)?["step"] as? String == "before_approval")
+        #expect(!fixture.provider.receivedEvents.contains(WooAnalyticsStat.applicationPasswordAuthorizationURLFetchFailed.rawValue))
+    }
+
+    @Test func test_authorization_when_site_mismatch_happens_twice_then_tracks_and_alerts_once() async throws {
+        // Given
+        let fixture = AuthorizationFixture()
+        await fixture.start()
+        fixture.completeFetch?(.failure(ApplicationPasswordAuthorizationError.siteMismatch))
+        await fixture.waitForFetchHandling()
+        let foreignApprovalPage = try #require(URL(string: "https://other.example/wp-admin/authorize-application.php"))
+
+        // When
+        let policy = await fixture.controller.webView(WKWebView(), decidePolicyFor: URLNavigationAction(url: foreignApprovalPage))
+
+        // Then
+        let event = WooAnalyticsStat.applicationPasswordAuthorizationSiteMismatch.rawValue
+        #expect(policy == .cancel)
+        #expect(fixture.provider.receivedEvents.filter { $0 == event }.count == 1)
+        #expect(fixture.alertCount == 1)
+    }
+
+    // MARK: - Navigation decisions
+
+    @Test(arguments: [
+        "https://wordpress.com/log-in?redirect_to=https%3A%2F%2Fsite.example%2Fwp-admin%2F",
+        "https://api-1234.duosecurity.com/frame/v4/auth/prompt",
+        "https://site.example/wp-login.php?redirect_to=https%3A%2F%2Fsite.example%2Fwp-admin%2Fauthorize-application.php"
+    ])
+    func test_decision_when_login_passes_through_a_page_that_is_not_an_approval_page_then_allows(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .allow)
+    }
+
+    @Test(arguments: [
+        "https://site.example/wp-admin/authorize-application.php?app_name=woo&success_url=woocommerce://application-password",
+        "https://www.site.example/wp-admin/authorize-application.php?app_name=woo"
+    ])
+    func test_decision_when_own_approval_page_loads_then_allows(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .allow)
+    }
+
+    @Test func test_decision_when_subfolder_install_loads_its_own_approval_page_then_allows() async throws {
+        // Given
+        let model = try await makeViewModel(authorizationURL: "https://site.example/wp/wp-admin/authorize-application.php")
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: "https://www.site.example/wp/wp-admin/authorize-application.php?app_name=woo")))
+
+        // Then
+        #expect(decision == .allow)
+    }
+
+    @Test func test_decision_when_verified_approval_site_loads_its_approval_page_then_allows() async throws {
+        // Given
+        let model = try await makeViewModel(authorizationURL: "https://wp.site.example/wp-admin/authorize-application.php",
+                                            approvalSiteURL: "https://wp.site.example")
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: "https://wp.site.example/wp-admin/authorize-application.php?app_name=woo")))
+
+        // Then
+        #expect(decision == .allow)
+    }
+
+    @Test(arguments: [
+        "https://other.example/wp-admin/authorize-application.php",
+        "https://other.example/wp-admin/authorize-application.php/x?app_name=woo",
+        "https://other.example/wp-admin%2Fauthorize-application.php?app_name=woo",
+        "https://other.example/wp-admin%5Cauthorize-application.php?app_name=woo",
+        "https://other.example/x/../wp-admin/authorize-application.php",
+        "https://x@site.example/wp-admin/authorize-application.php?app_name=woo",
+        "https://site.example.evil.test/wp-admin/authorize-application.php"
+    ])
+    func test_decision_when_web_view_relays_to_a_foreign_approval_page_then_reports_mismatch_during_approval(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .siteMismatch(.duringApproval))
+    }
+
+    @Test func test_decision_when_listed_page_is_another_site_and_real_store_page_has_a_user_name_then_reports_mismatch() async throws {
+        // Given
+        let model = try await makeViewModel(authorizationURL: "https://other.example/wp-admin/authorize-application.php",
+                                            approvalSiteURL: "https://other.example")
+        let url = "https://x@site.example/wp-admin/authorize-application.php?success_url=https://other.example/"
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .siteMismatch(.duringApproval))
+    }
+
+    @Test(arguments: [
+        "https://network.example/evil/wp-admin/authorize-application.php",
+        "https://network.example/shop/../evil/wp-admin/authorize-application.php"
+    ])
+    func test_decision_when_sibling_multisite_subsite_approval_page_loads_then_reports_mismatch(url: String) async throws {
+        // Given
+        let model = try await makeViewModel(siteURL: "https://network.example/shop",
+                                            authorizationURL: "https://network.example/shop/wp-admin/authorize-application.php")
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .siteMismatch(.duringApproval))
+    }
+
+    @Test func test_decision_when_no_authorization_is_fetched_then_any_approval_page_is_a_mismatch() throws {
+        // Given
+        let model = ApplicationPasswordAuthorizationViewModel(siteURL: "https://site.example", stores: MockStoresManager(sessionManager: .makeForTesting()))
+
+        // When
+        let approvalPage = model.decision(for: try #require(URL(string: "https://site.example/wp-admin/authorize-application.php")))
+        let loginPage = model.decision(for: try #require(URL(string: "https://site.example/wp-login.php")))
+
+        // Then
+        #expect(approvalPage == .siteMismatch(.duringApproval))
+        #expect(loginPage == .allow)
+    }
+
+    @Test func test_decision_when_foreign_approval_page_would_relabel_site_url_then_cancels_it_before_the_redirect() async throws {
+        // Given
+        let model = try await makeViewModel()
+        let foreignPage = "https://other.example/wp-admin/authorize-application.php?app_name=woo&success_url=woocommerce://application-password"
+        let relabeledRedirect = "woocommerce://application-password?user_login=merchant&password=secret&site_url=https://site.example"
+
+        // When
+        let pageDecision = model.decision(for: try #require(URL(string: foreignPage)))
+        let redirectDecision = model.decision(for: try #require(URL(string: relabeledRedirect)))
+
+        // Then: only the web view check catches it, the redirect alone looks valid.
+        #expect(pageDecision == .siteMismatch(.duringApproval))
+        #expect(redirectDecision == .approved(username: "merchant", password: "secret"))
+    }
+
+    @Test(arguments: [
+        "woocommerce://application-password?success=false",
+        "woocommerce://application-password?success=false&site_url=https://other.example",
+        "woocommerce://application-password?success=false&user_login=merchant&password=secret&site_url=https://site.example"
+    ])
+    func test_decision_when_redirect_reports_success_false_then_rejects(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .rejected)
+    }
+
+    @Test(arguments: [
+        "woocommerce://application-password?user_login=merchant&password=secret&site_url=https://other.example",
+        "woocommerce://application-password?user_login=merchant&password=secret&site_url=https://site.example.evil.test",
+        "woocommerce://application-password?user_login=merchant&password=secret&site_url=https://wp.site.example",
+        "woocommerce://application-password?user_login=merchant&password=secret",
+        "woocommerce://application-password?password=secret&site_url=https://other.example",
+        "woocommerce://application-password?",
+        "woocommerce://application-password"
+    ])
+    func test_decision_when_redirect_site_url_is_not_the_store_then_reports_mismatch_after_approval(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .siteMismatch(.afterApproval))
+    }
+
+    @Test(arguments: [
+        "https://site.example",
+        "http://site.example",
+        "https://www.site.example",
+        "https://site.example/wp",
+        "https%3A%2F%2Fsite.example"
+    ])
+    func test_decision_when_redirect_site_url_is_within_the_store_then_approves(siteURL: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+        let url = "woocommerce://application-password?user_login=merchant&password=secret&site_url=" + siteURL
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .approved(username: "merchant", password: "secret"))
+    }
+
+    @Test func test_decision_when_redirect_site_url_is_the_verified_approval_site_then_approves() async throws {
+        // Given
+        let model = try await makeViewModel(authorizationURL: "https://wp.site.example/wp-admin/authorize-application.php",
+                                            approvalSiteURL: "https://wp.site.example")
+        let url = "woocommerce://application-password?user_login=merchant&password=secret&site_url=https%3A%2F%2Fwp.site.example"
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .approved(username: "merchant", password: "secret"))
+    }
+
+    @Test(arguments: [
+        "woocommerce://application-password?password=secret&site_url=https://site.example",
+        "woocommerce://application-password?user_login=merchant&site_url=https://site.example",
+        "woocommerce://application-password?user_login=&password=secret&site_url=https://site.example",
+        "woocommerce://application-password?user_login=merchant&password=&site_url=https://site.example",
+        "woocommerce://application-password?user_login&password=secret&site_url=https://site.example"
+    ])
+    func test_decision_when_redirect_misses_credentials_then_reports_missing_credentials(url: String) async throws {
+        // Given
+        let model = try await makeViewModel()
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .missingCredentials)
+    }
+
+    @Test func test_decision_when_redirect_credentials_are_url_encoded_then_decodes_them() async throws {
+        // Given
+        let model = try await makeViewModel()
+        let url = "woocommerce://application-password?user_login=shop%20manager%40site.example" +
+            "&password=abc%2Bdef%26ghi%3D&site_url=https://site.example"
+
+        // When
+        let decision = model.decision(for: try #require(URL(string: url)))
+
+        // Then
+        #expect(decision == .approved(username: "shop manager@site.example", password: "abc+def&ghi="))
+    }
+
+    private func makeViewModel(siteURL: String = "https://site.example",
+                               authorizationURL: String = "https://site.example/wp-admin/authorize-application.php",
+                               approvalSiteURL: String? = nil) async throws -> ApplicationPasswordAuthorizationViewModel {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let authorization = ApplicationPasswordAuthorization(url: try #require(URL(string: authorizationURL)), approvalSiteURL: approvalSiteURL)
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            if case let .fetchApplicationPasswordAuthorizationURL(_, _, completion) = action {
+                completion(.success(authorization))
+            }
+        }
+        let model = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL, stores: stores)
+        _ = try await model.fetchAuthURL()
+        return model
+    }
 }
 
 @MainActor
@@ -150,7 +434,7 @@ private final class AuthorizationFixture {
     let form = UIViewController()
     lazy var navigation = AuthorizationNavigationController(rootViewController: form)
     var requestedSites: [String] = []
-    var completeFetch: ((Result<URL?, Error>) -> Void)?
+    var completeFetch: ((Result<ApplicationPasswordAuthorization?, Error>) -> Void)?
     var fetchRequested: (() -> Void)?
     var alert: UIAlertController?
     var presentationCompletion: (() -> Void)?
@@ -204,5 +488,18 @@ private final class AuthorizationNavigationController: UINavigationController {
     override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
         lastPopToViewControllerAnimated = animated
         return super.popToViewController(viewController, animated: false)
+    }
+}
+
+private final class URLNavigationAction: WKNavigationAction {
+    private let url: URL
+
+    init(url: URL) {
+        self.url = url
+        super.init()
+    }
+
+    override var request: URLRequest {
+        URLRequest(url: url)
     }
 }

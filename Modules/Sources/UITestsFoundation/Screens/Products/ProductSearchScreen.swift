@@ -5,7 +5,8 @@ import XCTest
 public final class ProductSearchScreen: ScreenObject {
 
     private let searchTextFieldGetter: (XCUIApplication) -> XCUIElement = {
-        $0.descendants(matching: .other).element(matching: .any, identifier: "product-search-screen-search-field")
+        // UIKit exposed the identifier on a container, while StoreSearchField exposes it on its SwiftUI text field.
+        $0.descendants(matching: .any).matching(identifier: "product-search-screen-search-field").firstMatch
     }
 
     private var searchTextField: XCUIElement { searchTextFieldGetter(app) }

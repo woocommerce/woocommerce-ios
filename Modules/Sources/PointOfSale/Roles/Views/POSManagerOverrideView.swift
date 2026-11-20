@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct POSManagerOverrideView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let handler: POSManagerOverrideHandler
     let request: POSManagerOverrideRequest
@@ -15,6 +17,13 @@ struct POSManagerOverrideView: View {
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .task(id: request.id) { await handler.observeWait() }
+    }
+}
+
+extension POSModalCompactStyle {
+    static var managerApproval: POSModalCompactStyle {
+        .fullScreen(title: POSManagerOverrideView.Localization.title)
     }
 }
 
@@ -24,32 +33,37 @@ private extension POSManagerOverrideView {
     }
 
     var modalContent: some View {
-        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(spacing: POSSpacing.medium)
+        VStack(spacing: metrics.spacing.large) {
+            header(spacing: metrics.spacing.medium)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
-        .padding(.top, Constants.modalTopInset)
+        .padding(.top, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .fixedSize(horizontal: false, vertical: true)
     }
 
     var compactContent: some View {
-        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(spacing: POSSpacing.small)
+        VStack(spacing: metrics.spacing.large) {
+            // The flow header already shows the title.
+            if isFullScreenFlow {
+                reason
+            } else {
+                header(spacing: metrics.spacing.small)
+            }
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
-        .padding(.horizontal, POSPadding.large)
+        .padding(.horizontal, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
-        .padding(POSPadding.large)
-        // Size to content and let the modal center it, like the lock screen and the iPad layout. Filling
-        // the screen pushed the close button under the status bar (status-bar overlap, untappable).
-        .fixedSize(horizontal: false, vertical: true)
+        .padding(metrics.padding.large)
+        // Outside the full-screen flow, size to content and let the modal center it.
+        .frame(maxHeight: isFullScreenFlow ? .infinity : nil)
+        .fixedSize(horizontal: false, vertical: !isFullScreenFlow)
     }
 
     func header(spacing: CGFloat) -> some View {
@@ -81,9 +95,8 @@ private extension POSManagerOverrideView {
     }
 
     var pinEntry: some View {
-        POSPINEntryView(state: handler.pinEntryState) { pin in
-            await handler.submit(pin: pin)
-        }
+        POSPINEntryView(state: handler.pinEntryState,
+                        onComplete: { pin in await handler.submit(pin: pin) })
     }
 
     enum Localization {
@@ -102,6 +115,5 @@ private extension POSManagerOverrideView {
     enum Constants {
         static let titleMinimumScaleFactor: CGFloat = 0.75
         static let compactReasonMinimumScaleFactor: CGFloat = 0.9
-        static let modalTopInset: CGFloat = POSPadding.large
     }
 }

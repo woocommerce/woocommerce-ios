@@ -3,6 +3,7 @@ import enum Yosemite.POSItem
 import WooFoundation
 
 struct POSPreSearchView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @ScaledMetric private var chipHeight: CGFloat = 56.0
@@ -32,17 +33,17 @@ struct POSPreSearchView: View {
                 analytics: analytics
             ),
             headerView: {
-                VStack(alignment: .leading, spacing: POSSpacing.none) {
+                VStack(alignment: .leading, spacing: metrics.spacing.none) {
                     recentSearchesSection
 
                     sectionHeader(Localization.popularProductsTitle)
-                        .padding(.bottom, POSPadding.medium)
+                        .padding(.bottom, metrics.padding.medium)
                 }
             })
     }
 
     @ViewBuilder private var recentSearchesOnly: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if savedSearches.isNotEmpty {
                 recentSearchesSection
 
@@ -52,14 +53,14 @@ struct POSPreSearchView: View {
                     .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurface)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .padding(.top, POSPadding.medium)
+                    .padding(.top, metrics.padding.medium)
             }
         }
-        .padding(.horizontal, POSPadding.medium)
+        .padding(.horizontal, metrics.padding.medium)
     }
 
     @ViewBuilder private var recentSearchesSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if savedSearches.isNotEmpty {
                 sectionHeader(Localization.recentSearchesTitle)
 
@@ -70,7 +71,7 @@ struct POSPreSearchView: View {
 
     @ViewBuilder private var recentSearches: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: POSSpacing.small) {
+            HStack(spacing: metrics.spacing.small) {
                 ForEach(savedSearches, id: \.self) { searchTerm in
                     Button(action: {
                         onSearchSelected(searchTerm)
@@ -84,8 +85,8 @@ struct POSPreSearchView: View {
                                 .font(.posBodyMediumRegular())
                                 .foregroundColor(.posOnSurfaceVariantHighest)
                         }
-                        .padding(.horizontal, POSPadding.medium)
-                        .padding(.vertical, POSPadding.small)
+                        .padding(.horizontal, metrics.padding.medium)
+                        .padding(.vertical, metrics.padding.small)
                         .frame(height: chipHeight)
                         .background(Color.posSurfaceBright)
                         .cornerRadius(POSCornerRadiusStyle.medium.value)
@@ -93,7 +94,7 @@ struct POSPreSearchView: View {
                     }
                 }
             }
-            .padding(.vertical, POSPadding.medium) // Use padding not VStack spacing so the Chip shadows aren't clipped
+            .padding(.vertical, metrics.padding.medium) // Use padding not VStack spacing so the Chip shadows aren't clipped
         }
     }
 

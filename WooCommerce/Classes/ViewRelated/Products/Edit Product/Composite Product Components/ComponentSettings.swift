@@ -18,12 +18,12 @@ struct ComponentSettings: View {
     @ScaledMetric private var optionImageWidth = Layout.optionImageWidth
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            content(safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            content
         }
     }
 
-    private func content(safeAreaInsets: EdgeInsets) -> some View {
+    private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 // Component image
@@ -49,47 +49,40 @@ struct ComponentSettings: View {
                 Group {
                     Divider()
                         .padding(.leading)
-                        .padding(.trailing, insets: -safeAreaInsets)
 
                     // Component description
                     TitleAndSubtitleRow(title: Localization.description, subtitle: viewModel.description)
                 }
                 .renderedIf(viewModel.shouldShowDescription)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             // Component options
             ListHeaderView(text: Localization.componentOptions.uppercased(), alignment: .left)
-                .padding(.horizontal, insets: safeAreaInsets)
             LazyVStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 Text(viewModel.optionsType)
                     .headlineStyle()
                     .padding()
 
-                optionsList(safeAreaInsets: safeAreaInsets)
+                optionsList
                     .redacted(reason: viewModel.showOptionsLoadingIndicator ? .placeholder : [])
                     .shimmering(active: viewModel.showOptionsLoadingIndicator)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             // Default component option
             TitleAndValueRow(title: Localization.defaultOption, value: .placeholder(viewModel.defaultOptionTitle))
-                .padding(.horizontal, insets: safeAreaInsets)
                 .addingTopAndBottomDividers()
                 .redacted(reason: viewModel.showDefaultOptionLoadingIndicator ? .placeholder : [])
                 .shimmering(active: viewModel.showDefaultOptionLoadingIndicator)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             FooterNotice(infoText: viewModel.infoNotice)
-                .padding(.horizontal, insets: safeAreaInsets)
         }
         .notice($viewModel.errorNotice, autoDismiss: false)
         .navigationTitle(viewModel.viewTitle)
-        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )
@@ -97,7 +90,7 @@ struct ComponentSettings: View {
 
     /// Displays a list of component options or a placeholder if the list is empty.
     ///
-    @ViewBuilder private func optionsList(safeAreaInsets: EdgeInsets) -> some View {
+    @ViewBuilder private var optionsList: some View {
         if viewModel.options.isNotEmpty {
             ForEach(viewModel.options) { option in
                 HStack {
@@ -120,7 +113,6 @@ struct ComponentSettings: View {
 
                 Divider()
                     .padding(.leading)
-                    .padding(.trailing, insets: -safeAreaInsets)
                     .renderedIf(option != viewModel.options.last)
             }
         } else {

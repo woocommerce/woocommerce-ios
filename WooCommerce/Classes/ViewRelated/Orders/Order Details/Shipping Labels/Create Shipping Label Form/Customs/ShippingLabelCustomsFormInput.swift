@@ -39,7 +39,7 @@ struct ShippingLabelCustomsFormInput: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding(.top, Constants.verticalPadding)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             VStack(spacing: 0) {
                 ListHeaderView(text: Localization.packageContentSection.uppercased(), alignment: .left)

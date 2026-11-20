@@ -35,11 +35,12 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     /// Prints a receipt for the given order on the connected printer.
     ///
     /// Assembles the receipt content from the order (line items, totals, note) so callers that
-    /// only hold an `Order` — like POS — don't have to build Hardware receipt parameters. The
-    /// printed receipt carries no card details in this form (`cardDetails: nil`).
+    /// only hold an `Order` — like POS — don't have to build Hardware receipt parameters.
+    /// `cardDetails` follow the same rules as in `printReceipt(content:storeInformation:cardDetails:)`.
     /// A connection failure disconnects the printer before the error is thrown.
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws
 }
 
 /// Default `ReceiptPrinterServiceProtocol`, backed by an injected Hardware discovery service.
@@ -91,10 +92,11 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     }
 
     public func printReceipt(order: Order,
-                             storeInformation: ReceiptStoreInformation) async throws {
+                             storeInformation: ReceiptStoreInformation,
+                             cardDetails: CardPresentTransactionDetails?) async throws {
         let parameters = receiptParameters(for: order)
         let content = contentAssembler.makeContent(order: order, parameters: parameters, removingHtml: true)
-        try await printReceipt(content: content, storeInformation: storeInformation, cardDetails: nil)
+        try await printReceipt(content: content, storeInformation: storeInformation, cardDetails: cardDetails)
     }
 
     private func receiptParameters(for order: Order) -> CardPresentReceiptParameters {
@@ -108,9 +110,9 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
                                             orderID: order.orderID)
     }
 
-    /// `CardPresentReceiptParameters.cardDetails` is non-optional, but this order-based path prints
-    /// without card details. The renderer reads the separate `cardDetails:` argument (passed `nil`
-    /// above), never `parameters.cardDetails`, so this value only satisfies the type.
+    /// `CardPresentReceiptParameters.cardDetails` is non-optional, but the order-based path receives
+    /// card details separately. The renderer reads the separate `cardDetails:` argument, never
+    /// `parameters.cardDetails`, so this value only satisfies the type.
     private static let placeholderCardDetails = CardPresentTransactionDetails(last4: "",
                                                                               expMonth: 0,
                                                                               expYear: 0,

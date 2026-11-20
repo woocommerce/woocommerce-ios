@@ -19,7 +19,7 @@ struct CollapsibleHStack<Content: View>: View {
     }
 
     var body: some View {
-        ViewThatFits {
+        ViewThatFits(in: .horizontal) {
             HStack(alignment: verticalAlignment, spacing: spacing, content: content)
             VStack(alignment: horizontalAlignment, spacing: spacing, content: content)
         }

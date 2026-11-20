@@ -1,8 +1,40 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+26.2
+-----
+- [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
+- [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
+- [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
+- [*] Dashboard: The Most recent orders card now shows an order's new status and details after it's edited in the app, and drops orders that no longer match its status filter. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
+- [*] Dashboard: The Most recent orders card now updates when an order's status or details change in the app, or the order is trashed. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
+- [*] POS: Action menus now match POS styling in light and dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/18390]
+- [*] Orders: On stores with WooCommerce 11.1 or later, refund amounts in Issue Refund are calculated by the store. [https://github.com/woocommerce/woocommerce-ios/pull/18373]
+- [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]
+- [*] POS: On iPhone, "Why can't I see my products?" and Other payment methods are now bottom sheets as tall as their content. [https://github.com/woocommerce/woocommerce-ios/pull/18316]
+- [*] POS: On iPhone, card reader connection now opens as a full screen page with a header, the close button at the top left and the buttons at the bottom. [https://github.com/woocommerce/woocommerce-ios/pull/18317]
+- [*] POS: On iPhone, barcode scanner setup now opens as a full screen page with a back arrow and a close button in the header, and the Next button stays at the bottom on every step. [https://github.com/woocommerce/woocommerce-ios/pull/18319]
+- [*] POS: On iPhone, the catalog refresh error and the receipt print failure are now dialogs in the center of the screen, and the payment capture error info is a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/18354]
+- [*] POS: On iPhone, refund detail now opens as a full screen page with the close button at the top left and the refund number in the header. [https://github.com/woocommerce/woocommerce-ios/pull/18355]
+- [*] POS: On iPhone, card payments onboarding now opens as a full screen page with a header and the close button at the top left. [https://github.com/woocommerce/woocommerce-ios/pull/18356]
+- [*] POS: On iPhone, manager approval PIN now opens as a full screen page with a header and the close button at the top left. [https://github.com/woocommerce/woocommerce-ios/pull/18357]
+- [*] POS: On iPhone, receipt printer setup now opens as a full screen page with a header, the step in the middle and the buttons at the bottom. [https://github.com/woocommerce/woocommerce-ios/pull/18358]
+- [*] POS: The cancel refund confirmation is now a POS dialog with a close button instead of a system alert. [https://github.com/woocommerce/woocommerce-ios/pull/18338]
+- [*] Orders: the list no longer fails to load when a tax plugin returns a non-numeric line item tax id. [https://github.com/woocommerce/woocommerce-ios/pull/18334]
+- [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
+- [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
+- [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
+- [*] Dashboard: The Performance and Top Performers cards no longer get stuck after failing to load. The time range picker now stays visible, so another range can be picked to recover. [https://github.com/woocommerce/woocommerce-ios/pull/17355]
+- [*] Login: Browser sign-in for site credentials now only saves a password approved on the store you're logging into. [https://github.com/woocommerce/woocommerce-ios/pull/18321]
+
+
 26.1
 -----
+- [*] POS: Buttons on error, empty and payment result screens now fill the width on iPhone and stay at the bottom of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18310]
+- [*] POS: Wait for the card reader to reconnect if it disconnects while preparing a payment. [https://github.com/woocommerce/woocommerce-ios/pull/18254]
+- [*] Orders: the list no longer fails to load when a tax plugin returns a non-numeric line item tax id. [https://github.com/woocommerce/woocommerce-ios/pull/XXXXX]
+- [*] POS: Checkout payment buttons stay on screen with large text sizes, and the content above them scrolls. [https://github.com/woocommerce/woocommerce-ios/pull/18305]
+- [Internal] Track receipt printer setup, connection and print Retry analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/18251]
 - [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
 - [*] Push notifications: The app icon badge now clears when the app returns to the Orders or Products tab after a push arrived while that tab was open. [https://github.com/woocommerce/woocommerce-ios/pull/18273]
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
@@ -11,20 +43,24 @@
 - [*] POS: On iPhone, tapping a selected coupon in the coupon list now removes it from the cart. [https://github.com/woocommerce/woocommerce-ios/pull/18270]
 - [*] POS: On iPhone, Exit POS is now the last item in the menu. [https://github.com/woocommerce/woocommerce-ios/pull/18268]
 - [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
+- [*] POS: On iPhone, settings, orders and checkout now slide between screens with the standard push animation. [https://github.com/woocommerce/woocommerce-ios/pull/18272]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] POS: On iPhone, Point of Sale uses smaller spacing, paddings and cards, so more products and order details fit on the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18256]
 - [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
 - [*] Products: Saving a product with a duplicate SKU now shows a clear error message. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
 - [*] Products: Opening a product that was deleted from the store now says so, for stores connected without Jetpack tunnel. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
 - [*] Products: The Variations list now loads the rest of a product's variations right after a pull to refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18252]
+- [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
+- [Internal] The app no longer requests the list of REST API routes at launch and on store switch, which reduces launch CPU. [https://github.com/woocommerce/woocommerce-ios/pull/18341]
 
 26.0
 -----
+- [Internal] Deletes on stores reached through the Jetpack tunnel are now sent as POST instead of GET. [https://github.com/woocommerce/woocommerce-ios/pull/18276]
 - [*] Push notifications: The "Never miss a new order" card now shows right after logging in to a store without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/18216]
 - [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
 - [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
-- [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
 - [*] Orders: Prevented a crash when restoring focus to an amount field after a layout change. [https://github.com/woocommerce/woocommerce-ios/pull/18184]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]

@@ -66,7 +66,7 @@ struct ShippingLabelCustomsFormList: View {
                     ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { index, item in
                         ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                       packageNumber: index + 1,
-                                                      safeAreaInsets: geometry.safeAreaInsets,
+                                                      safeAreaInsets: .zero,
                                                       viewModel: item,
                                                       infoTooltipTapped: {
                             viewModel.onInfoTooltipTapped()
@@ -79,7 +79,7 @@ struct ShippingLabelCustomsFormList: View {
                     .padding(.bottom, insets: geometry.safeAreaInsets)
                 }
                 .background(Color(.listBackground))
-                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+                .ignoresSafeArea(.container, edges: .bottom)
             }
         }
         .navigationTitle(Localization.navigationTitle)

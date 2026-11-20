@@ -2,6 +2,7 @@ import SwiftUI
 import typealias Yosemite.OrderItemAttribute
 
 struct POSRefundItemRow: View {
+    @Environment(\.posMetrics) private var metrics
     let item: POSRefundSelectableItem
     let onToggle: () -> Void
 
@@ -12,7 +13,7 @@ struct POSRefundItemRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             POSCheckbox(isSelected: item.isSelected, onToggle: onToggle)
 
             if item.isLumpSum {
@@ -25,7 +26,7 @@ struct POSRefundItemRow: View {
                     .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             }
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(item.name)
                     .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -42,7 +43,7 @@ struct POSRefundItemRow: View {
 
             Spacer()
         }
-        .padding(.vertical, POSPadding.medium)
+        .padding(.vertical, metrics.padding.medium)
         .contentShape(Rectangle())
         .onTapGesture {
             onToggle()

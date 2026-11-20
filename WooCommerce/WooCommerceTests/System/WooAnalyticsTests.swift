@@ -7,6 +7,7 @@ import os
 @testable import WooCommerce
 @testable import Yosemite
 @testable import WordPressAuthenticator
+import enum Networking.DotcomError
 
 /// WooAnalytics Unit Tests
 ///
@@ -178,6 +179,31 @@ class WooAnalyticsTests: XCTestCase {
         for (_, descriptionSubstring) in Constants.testErrorUserInfo {
             XCTAssert(descriptionIncludingUserInfo?.contains(descriptionSubstring) == true)
         }
+    }
+
+    func test_track_with_error_when_error_is_DotcomError_then_includes_raw_code() throws {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "unknown_token")
+
+        // When
+        analytics.track(.applicationOpened, withError: error)
+
+        // Then
+        let properties = try XCTUnwrap(testingProvider?.receivedProperties.first)
+        XCTAssertEqual(properties[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyRawCode] as? String, "unknown_token")
+        XCTAssertEqual(properties[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyCode] as? String, "5")
+    }
+
+    func test_track_with_error_when_error_is_not_DotcomError_then_omits_raw_code() throws {
+        // Given
+        let error = NSError(domain: Constants.testErrorDomain, code: Constants.testErrorCode)
+
+        // When
+        analytics.track(.applicationOpened, withError: error)
+
+        // Then
+        let properties = try XCTUnwrap(testingProvider?.receivedProperties.first)
+        XCTAssertNil(properties[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyRawCode])
     }
 
     /// Test user opted out

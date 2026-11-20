@@ -121,10 +121,11 @@ private extension POSPreSearchView {
 }
 
 struct POSCouponPreSearchEmptyViewModel: POSListEmptyViewModelProtocol {
-    let title = Localization.title
-    let subtitle = Localization.subtitle
-    let buttonTitle: String? = nil
-    let icon = PointOfSaleAssets.coupons.decorativeImage
+    var title: String { Localization.title }
+    var subtitle: String { Localization.subtitle }
+    var buttonTitle: String? { nil }
+    // Computed so that creating the view model does not load `Bundle.module`, which is missing in hostless test runs.
+    var icon: Image { PointOfSaleAssets.coupons.decorativeImage }
 }
 
 private extension POSCouponPreSearchEmptyViewModel {

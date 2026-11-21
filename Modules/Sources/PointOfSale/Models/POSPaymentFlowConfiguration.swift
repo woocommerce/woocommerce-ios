@@ -1,5 +1,6 @@
 import Foundation
 import enum WooFoundationCore.WooAnalyticsStat
+import enum Hardware.HIDBarcodeParserError
 
 /// Configures the view-level differences between payment flow callers.
 struct POSPaymentFlowConfiguration {

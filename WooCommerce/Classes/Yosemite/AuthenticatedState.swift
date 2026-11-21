@@ -126,6 +126,11 @@ class AuthenticatedState: StoresManagerState {
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductTagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            // A site-credentials login that fails a later check stays authenticated with no store,
+            // and the login screens remain, so the merchant can still start a QR login from them.
+            QRLoginStore(dispatcher: dispatcher,
+                         wpComClientID: ApiCredentials.dotcomAppId,
+                         wpComClientSecret: ApiCredentials.dotcomSecret),
             RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

@@ -14,6 +14,7 @@ struct POSOrderListView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.siteTimezone) private var siteTimezone
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     private var ordersViewState: POSOrderListState {
@@ -155,6 +156,7 @@ struct POSOrderListView: View {
                                 orderCreatedDate: order.dateCreated,
                                 siteTimezone: siteTimezone
                             ))
+                            dismissSearchKeyboardIfNeeded()
                             onOrderSelected(order)
                         }) {
                             POSOrderRowView(
@@ -349,6 +351,13 @@ private extension POSOrderListView {
             // Clear search results and return to default orders
             orderListModel.ordersController.clearSearchOrders()
         }
+    }
+
+    func dismissSearchKeyboardIfNeeded() {
+        guard isSearching else {
+            return
+        }
+        UIApplication.shared.posDismissSearchKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact)
     }
 }
 

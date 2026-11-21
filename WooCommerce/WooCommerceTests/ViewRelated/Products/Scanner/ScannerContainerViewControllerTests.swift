@@ -188,6 +188,120 @@ struct ScannerContainerViewControllerTests {
         #expect(scannedBarcodes == [barcode])
     }
 
+    @Test
+    func test_hardware_scan_when_received_then_delivers_without_waiting_for_repeated_detections() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+
+        // When
+        sut.handleHardwareScannedBarcode(barcode)
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_camera_detection_when_hardware_scan_was_delivered_then_is_ignored() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        let cameraBarcode = ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128)
+        sut.handleHardwareScannedBarcode(barcode)
+
+        // When
+        for _ in 0..<3 {
+            sut.handleBarcodeDetectionResult(.success([cameraBarcode]))
+        }
+        sut.handleHardwareScannedBarcode(cameraBarcode)
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_hardware_scan_when_camera_already_delivered_then_is_ignored() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        for _ in 0..<3 {
+            sut.handleBarcodeDetectionResult(.success([barcode]))
+        }
+
+        // When
+        sut.handleHardwareScannedBarcode(ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128))
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_detection_when_scanner_info_was_shown_then_requires_three_fresh_matches() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+
+        // When
+        sut.setShowingHardwareScannerInfo(true)
+        sut.setShowingHardwareScannerInfo(false)
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+
+        // Then
+        #expect(scannedBarcodes.isEmpty)
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_hardware_scan_when_screen_offers_the_scanner_and_is_visible_then_delivers_it() {
+        // Given
+        let observerFactory = MockHardwareBarcodeObserverFactory()
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "",
+                                                 instructionText: "",
+                                                 offersHardwareScanner: true,
+                                                 hardwareBarcodeScanner: makeHardwareBarcodeScanner(observerFactory)) { scannedBarcodes.append($0) }
+
+        // When
+        sut.viewDidAppear(false)
+        observerFactory.send(.success(barcode: "SKU-1", scanDurationMs: 50))
+
+        // Then
+        #expect(scannedBarcodes == [ScannedBarcode(hardwareScannerInput: "SKU-1")])
+        #expect(observerFactory.acceptsInput() == false)
+    }
+
+    @Test(arguments: [false, true])
+    func test_hardware_scan_when_screen_disappeared_or_does_not_offer_the_scanner_then_is_not_delivered(offersHardwareScanner: Bool) {
+        // Given
+        let observerFactory = MockHardwareBarcodeObserverFactory()
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "",
+                                                 instructionText: "",
+                                                 offersHardwareScanner: offersHardwareScanner,
+                                                 hardwareBarcodeScanner: makeHardwareBarcodeScanner(observerFactory)) { scannedBarcodes.append($0) }
+        sut.viewDidAppear(false)
+
+        // When
+        sut.viewWillDisappear(false)
+        observerFactory.send(.success(barcode: "SKU-1", scanDurationMs: 50))
+
+        // Then
+        #expect(scannedBarcodes.isEmpty)
+        #expect(observerFactory.acceptsInput() == false)
+    }
+
+    private func makeHardwareBarcodeScanner(_ observerFactory: MockHardwareBarcodeObserverFactory) -> HardwareBarcodeScanner {
+        let noticePresenter = MockNoticePresenter()
+        return HardwareBarcodeScanner(analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                      noticePresenter: { noticePresenter },
+                                      isTextInputActive: { false },
+                                      makeObserver: observerFactory.make)
+    }
+
     private enum DetectionError: Error {
         case failed
     }

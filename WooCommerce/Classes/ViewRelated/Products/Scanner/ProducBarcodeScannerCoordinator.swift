@@ -13,6 +13,7 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
     private let onSettingsTapped: ((FailureReason) -> Void)?
     private let onSettingsOpened: (() -> Void)?
     private let openSettings: UIAlertController.OpenSettingsAction?
+    private let offersHardwareScanner: Bool
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
@@ -20,7 +21,8 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
          onPermissionsDenied: ((FailureReason) -> Void)? = nil,
          onSettingsTapped: ((FailureReason) -> Void)? = nil,
          onSettingsOpened: (() -> Void)? = nil,
-         openSettings: UIAlertController.OpenSettingsAction? = nil) {
+         openSettings: UIAlertController.OpenSettingsAction? = nil,
+         offersHardwareScanner: Bool = false) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
         self.onBarcodeScanned = onBarcodeScanned
@@ -28,6 +30,7 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
         self.onSettingsTapped = onSettingsTapped
         self.onSettingsOpened = onSettingsOpened
         self.openSettings = openSettings
+        self.offersHardwareScanner = offersHardwareScanner
     }
 
     func start() {
@@ -64,7 +67,8 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
 
 private extension ProducBarcodeScannerCoordinator {
     func showScanner() {
-        let scannerViewController = ProductBarcodeScannerProvider.barcodeScanner(onBarcodeScanned: { [weak self] barcode in
+        let scannerViewController = ProductBarcodeScannerProvider.barcodeScanner(offersHardwareScanner: offersHardwareScanner,
+                                                                                  onBarcodeScanned: { [weak self] barcode in
             self?.onBarcodeScanned(barcode)
             self?.navigationController.dismiss(animated: true)
         })

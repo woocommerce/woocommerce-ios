@@ -112,10 +112,10 @@ private extension NotificationStore {
                                                       deviceLocale: String,
                                                       appVersion: String,
                                                       availableAsRESTRequest: Bool,
-                                                      onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+                                                      onCompletion: @escaping (Result<SelfDrivenPushRegistration, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let tokenID = try await devicesRemote.registerForSelfDrivenPushNotifications(
+                let registration = try await devicesRemote.registerForSelfDrivenPushNotifications(
                     siteID: siteID,
                     device: device,
                     applicationID: applicationID,
@@ -123,7 +123,7 @@ private extension NotificationStore {
                     appVersion: appVersion,
                     availableAsRESTRequest: availableAsRESTRequest
                 )
-                onCompletion(.success(tokenID))
+                onCompletion(.success(registration))
             } catch {
                 onCompletion(.failure(error))
             }

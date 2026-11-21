@@ -302,6 +302,12 @@ extension PushNotificationsManager {
     /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
+        unregisterForRemoteNotifications(alwaysClearWooRegistration: stores.isAuthenticatedWithoutWPCom,
+                                         onCompletion: onCompletion)
+    }
+
+    private func unregisterForRemoteNotifications(alwaysClearWooRegistration: Bool,
+                                                  onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
         registrationState.clearWooPushNextChecks()
         wooPushRefreshTask = nil
@@ -317,9 +323,11 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
                 }
-                self.registrationState.clearWooRegistration()
                 group.leave()
             }
+        }
+        if selfDrivenPushNotificationEnabled == true || alwaysClearWooRegistration {
+            registrationState.clearWooRegistration()
         }
 
         if stores.isAuthenticatedWithoutWPCom == false {
@@ -567,7 +575,7 @@ extension PushNotificationsManager {
             return
         }
 
-        unregisterForRemoteNotifications {}
+        unregisterForRemoteNotifications(alwaysClearWooRegistration: false, onCompletion: {})
     }
 
     /// Handles a notification while the app is in foreground
@@ -597,7 +605,8 @@ extension PushNotificationsManager {
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 
-        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: content.userInfo) == false else {
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: content.userInfo) == false,
+              registrationState.shouldSuppressOtherStoreNotification(userInfo: content.userInfo) == false else {
             return []
         }
 
@@ -650,7 +659,8 @@ extension PushNotificationsManager {
 
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: userInfo) {
-            guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
+            guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false,
+                  registrationState.shouldSuppressOtherStoreNotification(userInfo: userInfo) == false else {
                 return
             }
             handleRemoteNotificationInAllAppStates(userInfo)
@@ -677,7 +687,8 @@ extension PushNotificationsManager {
             return .noData
         }
 
-        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false,
+              registrationState.shouldSuppressOtherStoreNotification(userInfo: userInfo) == false else {
             return .noData
         }
 
@@ -1116,16 +1127,22 @@ private extension PushNotificationsManager {
             throw error
         }
     }
+}
 
+// Not private, so unit tests can run a single site's registration flow.
+extension PushNotificationsManager {
     func registerSelfDrivenPushNotificationFlow(with deviceToken: String,
                                                 siteID: Int64,
                                                 onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         DDLogInfo("📱 Registering self-driven push notification token for site \(siteID)")
+        let registrationSiteAddress = siteID == PushNotificationSharedConstants.placeholderSiteID && stores.isAuthenticatedWithoutWPCom
+            ? stores.sessionManager.defaultCredentials?.siteAddress
+            : nil
 
         // Check plugin version before attempting registration
         Task { @MainActor [weak self] in
             guard let self else { return }
-            guard stores.isAuthenticated else {
+            guard isRegistrationSessionCurrent(siteID: siteID, siteAddress: registrationSiteAddress) else {
                 onCompletion(.failure(PushNotificationError.notAuthenticated))
                 return
             }
@@ -1137,7 +1154,7 @@ private extension PushNotificationsManager {
             )
             do {
                 let result = try await pluginVersionChecker.checkCompatibility()
-                guard stores.isAuthenticated else {
+                guard isRegistrationSessionCurrent(siteID: siteID, siteAddress: registrationSiteAddress) else {
                     onCompletion(.failure(PushNotificationError.notAuthenticated))
                     return
                 }
@@ -1156,12 +1173,33 @@ private extension PushNotificationsManager {
             }
 
             // Plugin version is compatible (or check failed), proceed with registration
-            performDeviceRegistration(siteID: siteID, deviceToken: deviceToken, onCompletion: onCompletion)
+            performDeviceRegistration(siteID: siteID,
+                                      deviceToken: deviceToken,
+                                      registrationSiteAddress: registrationSiteAddress,
+                                      onCompletion: onCompletion)
         }
     }
+}
 
-    private func performDeviceRegistration(siteID: Int64, deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+private extension PushNotificationsManager {
+    private func isRegistrationSessionCurrent(siteID: Int64, siteAddress: String?) -> Bool {
         guard stores.isAuthenticated else {
+            return false
+        }
+        guard siteID == PushNotificationSharedConstants.placeholderSiteID else {
+            return true
+        }
+        guard let siteAddress else {
+            return false
+        }
+        return stores.isAuthenticatedWithoutWPCom && stores.sessionManager.defaultCredentials?.siteAddress == siteAddress
+    }
+
+    private func performDeviceRegistration(siteID: Int64,
+                                           deviceToken: String,
+                                           registrationSiteAddress: String?,
+                                           onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard isRegistrationSessionCurrent(siteID: siteID, siteAddress: registrationSiteAddress) else {
             onCompletion(.failure(PushNotificationError.notAuthenticated))
             return
         }
@@ -1180,10 +1218,17 @@ private extension PushNotificationsManager {
             availableAsRESTRequest: isTargetSiteSelected
         ) { [weak self] result in
             guard let self else { return }
+            guard self.isRegistrationSessionCurrent(siteID: siteID, siteAddress: registrationSiteAddress) else {
+                onCompletion(result.map(\.tokenID))
+                return
+            }
 
             switch result {
-            case .success(let tokenID):
-                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, deviceToken: deviceToken, onCompletion: onCompletion)
+            case .success(let registration):
+                self.handleSelfDrivenRegistrationSuccess(registration: registration,
+                                                        siteID: siteID,
+                                                        deviceToken: deviceToken,
+                                                        onCompletion: onCompletion)
 
             case .failure(let error):
                 DDLogError("⛔️ Unable to register self-driven push token for site \(siteID): \(error)")
@@ -1201,15 +1246,18 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    private func handleSelfDrivenRegistrationSuccess(tokenID: Int64,
+    private func handleSelfDrivenRegistrationSuccess(registration: SelfDrivenPushRegistration,
                                                      siteID: Int64,
                                                      deviceToken: String,
                                                      onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         guard stores.isAuthenticated, registrationState.deviceToken == deviceToken else {
-            onCompletion(.success(tokenID))
+            onCompletion(.success(registration.tokenID))
             return
         }
-        registrationState.setWooPushNotificationTokenID(tokenID)
+        registrationState.setWooPushNotificationTokenID(registration.tokenID)
+        if siteID == PushNotificationSharedConstants.placeholderSiteID, let blogID = registration.blogID {
+            registrationState.siteCredentialsBlogID = blogID
+        }
         let wasRegistered = registrationState.isSiteRegisteredForWooPNs(siteID)
         registrationState.markSiteAsRegisteredForWooPNs(siteID)
         scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRefreshInterval)
@@ -1217,7 +1265,7 @@ private extension PushNotificationsManager {
         if !wasRegistered {
             disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: registrationState.deviceID)
         }
-        onCompletion(.success(tokenID))
+        onCompletion(.success(registration.tokenID))
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
@@ -1354,7 +1402,7 @@ private extension PushNotificationsManager {
                 // target is the selected site; cross-site calls go through the Jetpack tunnel.
                 availableAsRESTRequest: siteID == self.siteID
             ) { result in
-                continuation.resume(with: result)
+                continuation.resume(with: result.map(\.tokenID))
             })
         }
     }

@@ -95,4 +95,35 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
         XCTAssertNil(state.wooPushNextCheck(for: 5))
         XCTAssertEqual(state.wooPushNextCheck(for: 6), siteTwoDate)
     }
+
+    func test_clearWooRegistration_clears_blogID_and_preserves_session_flag() {
+        // Given
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+        state.markSiteAsRegisteredForWooPNs(-1)
+
+        // When
+        state.clearWooRegistration()
+
+        // Then
+        XCTAssertNil(state.siteCredentialsBlogID)
+        XCTAssertTrue(state.isAuthenticatedWithoutWPCom)
+    }
+
+    func test_unmarking_placeholder_clears_blogID_but_real_site_keeps_it() {
+        // Given
+        state.siteCredentialsBlogID = 42
+
+        // When
+        state.unmarkSiteAsRegisteredForWooPNs(123)
+
+        // Then
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+
+        // When
+        state.unmarkSiteAsRegisteredForWooPNs(PushNotificationSharedConstants.placeholderSiteID)
+
+        // Then
+        XCTAssertNil(state.siteCredentialsBlogID)
+    }
 }

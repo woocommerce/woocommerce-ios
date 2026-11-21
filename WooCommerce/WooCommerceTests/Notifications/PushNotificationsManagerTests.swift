@@ -1147,7 +1147,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(42))
+                onCompletion(.success(.init(tokenID: 42, blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -1193,7 +1193,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(42))
+                onCompletion(.success(.init(tokenID: 42, blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -1287,7 +1287,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
-                onCompletion(.success(Int64(siteID + 1000)))
+                onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 allRegisteredExpectation.fulfill()
             }
         }
@@ -1334,7 +1334,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                 if siteID == 200 {
                     onCompletion(.failure(NSError(domain: "test", code: 500)))
                 } else {
-                    onCompletion(.success(Int64(siteID + 1000)))
+                    onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 }
                 allAttemptedExpectation.fulfill()
             }
@@ -1379,7 +1379,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
-                onCompletion(.success(Int64(siteID + 1000)))
+                onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -1429,7 +1429,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                 if siteID == 200 {
                     onCompletion(.failure(NSError(domain: "test", code: 500)))
                 } else {
-                    onCompletion(.success(Int64(siteID + 1000)))
+                    onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 }
                 registrationExpectation.fulfill()
             case .registerDevice:
@@ -1488,7 +1488,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, availableAsRESTRequest, onCompletion) = action {
                 restFallbackBySite[siteID] = availableAsRESTRequest
-                onCompletion(.success(Int64(siteID + 1000)))
+                onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 bothAttempted.fulfill()
             }
         }
@@ -1533,7 +1533,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let registrationExpectation = expectation(description: "Site registered")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(Int64(siteID + 1000)))
+                onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -1676,7 +1676,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
-                onCompletion(.success(Int64(siteID + 1000)))
+                onCompletion(.success(.init(tokenID: Int64(siteID + 1000), blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -1752,7 +1752,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                 if siteID == 200 {
                     onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
                 } else {
-                    onCompletion(.success(siteID + 1000))
+                    onCompletion(.success(.init(tokenID: siteID + 1000, blogID: nil)))
                 }
                 if firstPassAttempts <= 2 {
                     firstPassExpectation.fulfill()
@@ -1945,7 +1945,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     func test_refreshWooPushRegistrationsIfNeeded_when_called_during_a_refresh_then_registers_each_store_once() async {
         // Given
         manager = await makeSelfDrivenManager(siteIDs: [100])
-        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        var heldCompletions: [(Result<SelfDrivenPushRegistration, Error>) -> Void] = []
         let firstRegistrationStarted = expectation(description: "First registration started")
         firstRegistrationStarted.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
@@ -1979,7 +1979,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             second.cancel()
             return
         }
-        firstCompletion(.success(1100))
+        firstCompletion(.success(.init(tokenID: 1100, blogID: nil)))
         await first.value
         await second.value
 
@@ -1991,7 +1991,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         manager = await makeSelfDrivenManager(siteIDs: [100])
         seedNextCheck(now, siteID: 100)
-        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        var heldCompletions: [(Result<SelfDrivenPushRegistration, Error>) -> Void] = []
         let previousRegistrationStarted = expectation(description: "Previous registration started")
         previousRegistrationStarted.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
@@ -2017,7 +2017,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.deauthenticate()
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        var currentCompletions: [(Result<Int64, Error>) -> Void] = []
+        var currentCompletions: [(Result<SelfDrivenPushRegistration, Error>) -> Void] = []
         let currentRegistrationStarted = expectation(description: "Current registration started")
         currentRegistrationStarted.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
@@ -2029,14 +2029,14 @@ final class PushNotificationsManagerTests: XCTestCase {
         let nextRefresh = Task { @MainActor in await self.manager.refreshWooPushRegistrationsIfNeeded() }
         await fulfillment(of: [currentRegistrationStarted], timeout: 1.0)
 
-        previousCompletion(.success(1100))
+        previousCompletion(.success(.init(tokenID: 1100, blogID: nil)))
         guard let currentCompletion = currentCompletions.first else {
             XCTFail("Expected the new session registration to be held")
             nextRefresh.cancel()
             await nextRefresh.value
             return
         }
-        currentCompletion(.success(2200))
+        currentCompletion(.success(.init(tokenID: 2200, blogID: nil)))
         currentCompletions.dropFirst().forEach { $0(.failure(NSError(domain: "test", code: 1))) }
         await previousRefresh.value
         await nextRefresh.value
@@ -2055,7 +2055,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let originalNextCheck = now.addingTimeInterval(-60 * 60)
         seedNextCheck(originalNextCheck, siteID: 100)
         seedNextCheck(originalNextCheck, siteID: 200)
-        var heldCompletions: [(siteID: Int64, completion: (Result<Int64, Error>) -> Void)] = []
+        var heldCompletions: [(siteID: Int64, completion: (Result<SelfDrivenPushRegistration, Error>) -> Void)] = []
         let registrationsStarted = expectation(description: "Both registrations started")
         registrationsStarted.expectedFulfillmentCount = 2
         registrationsStarted.assertForOverFulfill = false
@@ -2080,7 +2080,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.deauthenticate()
         heldCompletions.forEach { held in
             if held.siteID == 100 {
-                held.completion(.success(1100))
+                held.completion(.success(.init(tokenID: 1100, blogID: nil)))
             } else {
                 held.completion(.failure(DotcomError.noRestRoute()))
             }
@@ -2101,7 +2101,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         manager = await makeSelfDrivenManager(siteIDs: [100])
         seedStoredDeviceToken("old-token")
-        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        var heldCompletions: [(Result<SelfDrivenPushRegistration, Error>) -> Void] = []
         var tokens: [String] = []
         let firstRegistrationStarted = expectation(description: "First token registration started")
         firstRegistrationStarted.assertForOverFulfill = false
@@ -2203,7 +2203,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let registrationExpectation = expectation(description: "Registration completed")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(1100))
+                onCompletion(.success(.init(tokenID: 1100, blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -2865,7 +2865,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockRemoteFeatureFlagAction(isEnabled: true)
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(42))
+                onCompletion(.success(.init(tokenID: 42, blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -2908,7 +2908,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.success(42))
+                onCompletion(.success(.init(tokenID: 42, blogID: nil)))
                 registrationExpectation.fulfill()
             }
         }
@@ -2951,7 +2951,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
             case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
-                onCompletion(.success(123))
+                onCompletion(.success(.init(tokenID: 123, blogID: nil)))
             case let .registerDevice(_, _, _, onCompletion):
                 dotcomExpectation.fulfill()
                 onCompletion(freshDotcomDevice, nil)
@@ -3241,12 +3241,261 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
+
+    func test_placeholder_registration_saves_blogID_and_keeps_it_when_refresh_omits_blogID() async {
+        // Given
+        configureSiteCredentialsSession()
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.markSiteAsRegisteredForWooPNs(-1)
+        let registrationExpectation = expectation(description: "Placeholder registration completed")
+        var nextRegistration = SelfDrivenPushRegistration(tokenID: 70, blogID: 42)
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, completion) = action {
+                completion(.success(nextRegistration))
+            }
+        }
+
+        // When
+        manager.registerSelfDrivenPushNotificationFlow(with: sampleTokenData.hexString, siteID: -1) { result in
+            XCTAssertEqual(try? result.get(), 70)
+            registrationExpectation.fulfill()
+        }
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+
+        // When
+        nextRegistration = SelfDrivenPushRegistration(tokenID: 71, blogID: nil)
+        let refreshExpectation = expectation(description: "Placeholder refresh completed")
+        manager.registerSelfDrivenPushNotificationFlow(with: sampleTokenData.hexString, siteID: -1) { _ in
+            refreshExpectation.fulfill()
+        }
+        await fulfillment(of: [refreshExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+    }
+
+    func test_real_site_registration_result_after_second_wpcom_authentication_is_saved() async {
+        // Given
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        seedStoredDeviceToken(sampleTokenData.hexString)
+        let registrationExpectation = expectation(description: "Registration dispatched")
+        var registrationCompletion: ((Result<SelfDrivenPushRegistration, Error>) -> Void)?
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, completion) = action {
+                registrationCompletion = completion
+                registrationExpectation.fulfill()
+            }
+        }
+        let completionExpectation = expectation(description: "Second-session registration result saved")
+
+        // When
+        manager.registerSelfDrivenPushNotificationFlow(with: sampleTokenData.hexString, siteID: 100) { result in
+            XCTAssertEqual(try? result.get(), 70)
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        storesManager.authenticate(credentials: .wpcom(username: "user", authToken: "token", siteAddress: "https://new-login.example"))
+        registrationCompletion?(.success(.init(tokenID: 70, blogID: 42)))
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(manager.wooPushNotificationToken, "70")
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertNil(PushNotificationRegistrationState(defaults: defaults).siteCredentialsBlogID)
+    }
+
+    func test_placeholder_registration_result_after_switching_site_credentials_does_not_change_state() async {
+        // Given
+        configureSiteCredentialsSession()
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.markSiteAsRegisteredForWooPNs(-1)
+        state.wooPushNotificationToken = "old-token"
+        state.siteCredentialsBlogID = 42
+        var registrationCompletion: ((Result<SelfDrivenPushRegistration, Error>) -> Void)?
+        let registrationExpectation = expectation(description: "Registration dispatched")
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, completion) = action {
+                registrationCompletion = completion
+                registrationExpectation.fulfill()
+            }
+        }
+        let completionExpectation = expectation(description: "Stale result completed")
+
+        // When
+        manager.registerSelfDrivenPushNotificationFlow(with: sampleTokenData.hexString, siteID: -1) { result in
+            XCTAssertEqual(try? result.get(), 70)
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+        storesManager.authenticate(credentials: .applicationPassword(username: "other", password: "password", siteAddress: "https://other.example"))
+        registrationCompletion?(.success(.init(tokenID: 70, blogID: 99)))
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(state.wooPushNotificationToken, "old-token")
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+        XCTAssertTrue(PushNotificationRegistrationState(defaults: defaults).isSiteRegisteredForWooPNs(-1))
+    }
+
+    func test_placeholder_version_check_after_store_switch_dispatches_no_registration() async {
+        // Given
+        configureSiteCredentialsSession()
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.markSiteAsRegisteredForWooPNs(-1)
+        state.siteCredentialsBlogID = 42
+        let checker = MockPluginVersionChecker()
+        let checkExpectation = expectation(description: "Plugin compatibility checked")
+        checker.onCheckCompatibility = {
+            self.storesManager.authenticate(credentials: .applicationPassword(username: "other", password: "password", siteAddress: "https://other.example"))
+            checkExpectation.fulfill()
+        }
+        manager = makeManager(pluginVersionCheckerFactory: MockPluginVersionCheckerFactory(checker: checker))
+        let completionExpectation = expectation(description: "Registration flow completed")
+
+        // When
+        manager.registerSelfDrivenPushNotificationFlow(with: sampleTokenData.hexString, siteID: -1) { _ in completionExpectation.fulfill() }
+        await fulfillment(of: [checkExpectation, completionExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertTrue(registrationAttempts.isEmpty)
+        XCTAssertTrue(PushNotificationRegistrationState(defaults: defaults).isSiteRegisteredForWooPNs(-1))
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+    }
+
+    func test_unregister_clears_woo_registration_before_delete_completes_and_late_delete_keeps_new_registration() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100], registeredSiteIDs: "100")
+        defaults.set("555", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set(42, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteCredentialsBlogID)
+        var deleteCompletion: ((Result<Void, Error>) -> Void)?
+        let deleteExpectation = expectation(description: "Delete dispatched")
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(_, _, _, completion) = action {
+                deleteCompletion = completion
+                deleteExpectation.fulfill()
+            }
+        }
+
+        // When
+        manager.unregisterForRemoteNotifications {}
+        await fulfillment(of: [deleteExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertNil(manager.wooPushNotificationToken)
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty)
+        XCTAssertNil(PushNotificationRegistrationState(defaults: defaults).siteCredentialsBlogID)
+        defaults.set("777", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set("100", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        defaults.set(42, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteCredentialsBlogID)
+
+        // When
+        deleteCompletion?(.success(()))
+
+        // Then
+        XCTAssertEqual(manager.wooPushNotificationToken, "777")
+        let currentState = PushNotificationRegistrationState(defaults: defaults)
+        XCTAssertEqual(currentState.siteIDsRegisteredForWooPNs, [100])
+        XCTAssertEqual(currentState.siteCredentialsBlogID, 42)
+    }
+
+    func test_site_credentials_logout_clears_woo_registration_when_feature_flag_is_off() async {
+        // Given
+        configureSiteCredentialsSession()
+        manager = await makeFallbackManagerWithFFOff()
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.setWooPushNotificationTokenID(555)
+        state.markSiteAsRegisteredForWooPNs(-1)
+        state.siteCredentialsBlogID = 42
+
+        // When
+        manager.unregisterForRemoteNotifications {}
+
+        // Then
+        XCTAssertNil(manager.wooPushNotificationToken)
+        let clearedState = PushNotificationRegistrationState(defaults: defaults)
+        XCTAssertFalse(clearedState.isSiteRegisteredForWooPNs(-1))
+        XCTAssertNil(clearedState.siteCredentialsBlogID)
+    }
+
+    func test_apns_failure_with_feature_flag_off_preserves_placeholder_registration() async {
+        // Given
+        configureSiteCredentialsSession()
+        manager = await makeFallbackManagerWithFFOff()
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.setWooPushNotificationTokenID(555)
+        state.markSiteAsRegisteredForWooPNs(-1)
+        state.siteCredentialsBlogID = 42
+
+        // When
+        manager.registrationDidFail(with: SampleError.first)
+
+        // Then
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(PushNotificationRegistrationState(defaults: defaults).isSiteRegisteredForWooPNs(-1))
+        XCTAssertEqual(state.siteCredentialsBlogID, 42)
+    }
+
+    func test_notification_handlers_ignore_foreign_pushes_in_site_credentials_session() async throws {
+        // Given
+        configureSiteCredentialsSession()
+        defaults.set("-1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+        let foreignWooPayload = notificationPayload(noteID: nil, type: .storeOrder, siteID: 99)
+        let matchingWooPayload = notificationPayload(noteID: nil, type: .storeOrder, siteID: 42)
+        manager = makeManager()
+
+        application.applicationState = .active
+        var foregroundNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { foregroundNotifications.append($0) }.store(in: &subscriptions)
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: foreignWooPayload)))
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: matchingWooPayload)))
+
+        // Then
+        XCTAssertEqual(foregroundNotifications.map(\.siteID), [42])
+        XCTAssertEqual(application.presentInAppMessages.count, 1)
+
+        // When
+        application.applicationState = .background
+        var backgroundNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { backgroundNotifications.append($0) }.store(in: &subscriptions)
+        let foreignResult = await manager.handleRemoteNotificationInTheBackground(userInfo: foreignWooPayload)
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: matchingWooPayload)
+
+        // Then
+        XCTAssertEqual(foreignResult, .noData)
+        XCTAssertEqual(backgroundNotifications.map(\.siteID), [42])
+
+        // When
+        application.applicationState = .inactive
+        var inactiveNotifications: [WooCommerce.PushNotification] = []
+        manager.inactiveNotifications.sink { inactiveNotifications.append($0) }.store(in: &subscriptions)
+        await manager.handleUserResponseToNotification(try XCTUnwrap(MockNotificationResponse(notificationUserInfo: foreignWooPayload)))
+        await manager.handleUserResponseToNotification(try XCTUnwrap(MockNotificationResponse(notificationUserInfo: matchingWooPayload)))
+
+        // Then
+        XCTAssertEqual(inactiveNotifications.map(\.siteID), [42])
+    }
 }
 
 
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    func configureSiteCredentialsSession() {
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        seedStoredDeviceToken(sampleTokenData.hexString)
+    }
+
     /// Seeds the local state left behind by a prior Woo-driven (FF ON) registration.
     func seedPriorWooRegistration(siteIDs: String = "99", tokenID: String = "555", deviceID: String = "456") {
         defaults.set(siteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
@@ -3351,7 +3600,7 @@ private extension PushNotificationsManagerTests {
         }
     }
 
-    func stubWooPushActions(results: [Int64: Result<Int64, Error>] = [:], onRegistration: (() -> Void)? = nil) {
+    func stubWooPushActions(results: [Int64: Result<SelfDrivenPushRegistration, Error>] = [:], onRegistration: (() -> Void)? = nil) {
         guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "789"}"#.utf8)) else {
             return XCTFail("Failed to decode DotcomDevice")
         }
@@ -3359,7 +3608,7 @@ private extension PushNotificationsManagerTests {
             switch action {
             case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
                 onRegistration?()
-                onCompletion(results[siteID] ?? .success(siteID + 1000))
+                onCompletion(results[siteID] ?? .success(.init(tokenID: siteID + 1000, blogID: nil)))
             case let .registerDevice(_, _, _, onCompletion):
                 onCompletion(device, nil)
             default:
@@ -3380,7 +3629,7 @@ private extension PushNotificationsManagerTests {
             case let .registerDevice(_, _, _, onCompletion):
                 onCompletion(device, nil)
             case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
-                onCompletion(.success(siteID + 1000))
+                onCompletion(.success(.init(tokenID: siteID + 1000, blogID: nil)))
             case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
                 onCompletion(unregisterResult)
             default:
@@ -3566,7 +3815,7 @@ private extension PushNotificationsManagerTests {
                 if let error {
                     completion(.failure(error))
                 } else {
-                    completion(.success(token))
+                    completion(.success(.init(tokenID: token, blogID: nil)))
                 }
 
             case .unregisterDevice(let deviceID, let onCompletion):

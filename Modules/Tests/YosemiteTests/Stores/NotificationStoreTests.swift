@@ -451,7 +451,7 @@ final class NotificationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration")
 
         // When
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<SelfDrivenPushRegistration, Error> = waitFor { promise in
             let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
                 device: self.sampleAPNSDevice(),
@@ -467,8 +467,8 @@ final class NotificationStoreTests: XCTestCase {
 
         // Then
         switch result {
-        case .success(let tokenID):
-            XCTAssertEqual(tokenID, 123)
+        case .success(let registration):
+            XCTAssertEqual(registration.tokenID, 123)
         case .failure(let error):
             XCTFail("Expected success but got error: \(error)")
         }
@@ -483,7 +483,7 @@ final class NotificationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "generic_error")
 
         // When
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<SelfDrivenPushRegistration, Error> = waitFor { promise in
             let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
                 device: self.sampleAPNSDevice(),

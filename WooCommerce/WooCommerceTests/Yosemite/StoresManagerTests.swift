@@ -93,6 +93,67 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
+    func test_push_session_flag_is_true_for_restored_site_credentials() {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = SessionSettings.applicationPasswordCredentials
+
+        // When
+        let manager = DefaultStoresManager(sessionManager: sessionManager, pushNotificationDefaults: pushNotificationDefaults)
+
+        // Then
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertTrue(PushNotificationRegistrationState(defaults: pushNotificationDefaults).isAuthenticatedWithoutWPCom)
+    }
+
+    func test_push_session_flag_is_false_for_restored_wpcom_session_and_clears_stale_flag() {
+        // Given
+        pushNotificationDefaults.set(true, forKey: PushNotificationSharedConstants.UserDefaultsKeys.isAuthenticatedWithoutWPCom)
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+
+        // When
+        _ = DefaultStoresManager(sessionManager: sessionManager, pushNotificationDefaults: pushNotificationDefaults)
+
+        // Then
+        XCTAssertFalse(PushNotificationRegistrationState(defaults: pushNotificationDefaults).isAuthenticatedWithoutWPCom)
+    }
+
+    func test_authenticate_updates_push_session_flag_from_credentials() {
+        // Given
+        let sessionManager = MockSessionManager()
+        let manager = DefaultStoresManager(sessionManager: sessionManager, pushNotificationDefaults: pushNotificationDefaults)
+        let state = PushNotificationRegistrationState(defaults: pushNotificationDefaults)
+
+        // When
+        manager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+
+        // Then
+        XCTAssertTrue(state.isAuthenticatedWithoutWPCom)
+
+        // When
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // Then
+        XCTAssertFalse(state.isAuthenticatedWithoutWPCom)
+    }
+
+    func test_deauthenticate_clears_push_session_flag_and_saved_blog_id() {
+        // Given
+        let sessionManager = MockSessionManager()
+        let manager = DefaultStoresManager(sessionManager: sessionManager, pushNotificationDefaults: pushNotificationDefaults)
+        let state = PushNotificationRegistrationState(defaults: pushNotificationDefaults)
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 123
+
+        // When
+        manager.deauthenticate()
+
+        // Then
+        XCTAssertFalse(state.isAuthenticatedWithoutWPCom)
+        XCTAssertNil(state.siteCredentialsBlogID)
+    }
+
     func test_authenticated_state_relaunch_passes_restored_custom_endpoints_to_network_factory() throws {
         // Given
         let sessionManager = SessionManager(

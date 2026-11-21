@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   review:
-    uses: woocommerce/.github/.github/workflows/ai-code-review.yml@trunk
+    uses: woocommerce/.github/.github/workflows/ai-code-review.yml@f6d65039987f655477f74513a810f18b210af5f9 # shared @ 2026-11-18
     with:
       model: claude-fable-5-1
     secrets:

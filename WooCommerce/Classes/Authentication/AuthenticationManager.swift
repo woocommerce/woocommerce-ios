@@ -74,6 +74,11 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
 
+    @MainActor
+    var isShowingQRLogin: Bool {
+        qrLoginCoordinator?.isNavigationStackShowingQRFlow ?? false
+    }
+
     /// Whether site discovery was entered from the login epilogue rather than from an
     /// in-app store switch. Only the former is part of a login journey.
     private var isSiteDiscoveryFromLogin = false

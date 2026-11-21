@@ -274,6 +274,11 @@ struct PointOfSaleDashboardView: View {
             onBack: { posModel.addMoreToCart() }
         ) {
             GeometryReader { geometry in
+                let showsCartButton = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                    cartIsEmpty: posModel.cart.isEmpty,
+                    floatingControlSuppressed: floatingControlSuppressed,
+                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible
+                )
                 VStack(spacing: metrics.spacing.none) {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
@@ -286,15 +291,12 @@ struct PointOfSaleDashboardView: View {
                             ))
                         }
                     )
-                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                        cartIsEmpty: posModel.cart.isEmpty,
-                        floatingControlSuppressed: floatingControlSuppressed
-                    ) {
+                    if showsCartButton {
                         phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
-                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: showsCartButton)
             }
         } pushed: { stage in
             if stage != nil {

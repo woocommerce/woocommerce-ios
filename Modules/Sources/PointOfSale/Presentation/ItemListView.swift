@@ -182,7 +182,8 @@ struct ItemListView: View {
                                                      itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
                     itemListType: selectedItemListType,
-                    searchTerm: $searchTerm
+                    searchTerm: $searchTerm,
+                    onItemSelected: dismissSearchKeyboardIfNeeded
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
@@ -236,6 +237,7 @@ struct ItemListView: View {
                 itemsController: itemsController(itemListType),
                 node: .root,
                 itemActionHandler: actionHandler(itemListType),
+                onItemSelected: itemListType.isSearching ? dismissSearchKeyboardIfNeeded : nil,
                 willLoadMore: {
                     analyticsTracker.trackNextPageWillLoad()
                 },
@@ -545,6 +547,10 @@ private extension ItemListView {
     private func dismissSearch() {
         searchTerm = ""
         setSearch(false)
+    }
+
+    private func dismissSearchKeyboardIfNeeded() {
+        UIApplication.shared.posDismissSearchKeyboardOnResultSelection(isCompactLayout: horizontalSizeClass == .compact)
     }
 }
 

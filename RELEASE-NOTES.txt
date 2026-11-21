@@ -3,6 +3,9 @@
 
 26.2
 -----
+- [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
+- [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
+- [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
 - [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
@@ -24,9 +27,12 @@
 - [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
 - [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
+
+- [**] Orders and Products: Bluetooth and USB barcode scanners now work outside POS. Scan on the Orders or Products screen, while creating an order, or on the camera scanner screen. [https://github.com/woocommerce/woocommerce-ios/pull/18378]
 - [*] Dashboard: The Performance and Top Performers cards no longer get stuck after failing to load. The time range picker now stays visible, so another range can be picked to recover. [https://github.com/woocommerce/woocommerce-ios/pull/17355]
 - [*] Login: Browser sign-in for site credentials now only saves a password approved on the store you're logging into. [https://github.com/woocommerce/woocommerce-ios/pull/18321]
-
+- [*] Login: QR code sign-in no longer gets stuck on "Signing you in…" after a failed site address login. [https://github.com/woocommerce/woocommerce-ios/pull/18420]
+- [*] Login: When QR code sign-in is rejected after approving the number, for example because of the user's role, the app now shows the reason instead of going back to the welcome screen. [https://github.com/woocommerce/woocommerce-ios/pull/18421]
 
 26.1
 -----

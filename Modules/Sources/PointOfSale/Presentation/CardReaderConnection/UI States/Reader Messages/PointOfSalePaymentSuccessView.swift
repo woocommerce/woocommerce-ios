@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Hardware.HIDBarcodeParserError
 
 struct PointOfSalePaymentSuccessView: View {
     @Environment(\.posMetrics) private var metrics

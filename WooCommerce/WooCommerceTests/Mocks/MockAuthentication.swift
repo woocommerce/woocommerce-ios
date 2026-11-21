@@ -32,6 +32,8 @@ final class MockAuthentication: Authentication {
         false
     }
 
+    var isShowingQRLogin = false
+
     @MainActor
     func authenticationUI() -> UIViewController {
         UIViewController()

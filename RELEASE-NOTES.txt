@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Notifications: After signing in with store credentials, order notifications from other stores are no longer synced or opened in the selected store, and they're removed from Notification Center. Requires WooCommerce 11.4 or later. [https://github.com/woocommerce/woocommerce-ios/pull/18434]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
 - [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
 - [*] Dashboard: The Most recent orders card now shows an order's new status and details after it's edited in the app, and drops orders that no longer match its status filter. [https://github.com/woocommerce/woocommerce-ios/pull/18406]

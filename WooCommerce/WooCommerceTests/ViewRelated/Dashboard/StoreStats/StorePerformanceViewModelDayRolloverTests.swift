@@ -61,10 +61,10 @@ private extension StorePerformanceViewModelDayRolloverTests {
     func insertSummaryStats(visitors: Int, on date: Date) {
         let dateString = StatsStoreV4.buildDateString(from: date, timeRange: .today)
         let stats = SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: visitors)
-        let storage = storageManager.viewStorage
-        let storageStats = storage.insertNewObject(ofType: StorageSiteSummaryStats.self)
-        storageStats.period = StatsTimeRangeV4.today.summaryStatsGranularity.rawValue
-        storageStats.update(with: stats)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let storageStats = storage.insertNewObject(ofType: StorageSiteSummaryStats.self)
+            storageStats.period = StatsTimeRangeV4.today.summaryStatsGranularity.rawValue
+            storageStats.update(with: stats)
+        }, completion: {}, on: .main)
     }
 }

@@ -154,6 +154,7 @@ public typealias RefundPreview = Networking.RefundPreview
 public typealias RefundPreviewLineItem = Networking.RefundPreviewLineItem
 public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
 public typealias RemoteFeatureFlagOverrideStore = Networking.RemoteFeatureFlagOverrideStore
+public typealias SelfDrivenPushRegistration = Networking.SelfDrivenPushRegistration
 public typealias SelfHostedQRLoginExchangeResponse = Networking.SelfHostedQRLoginExchangeResponse
 public typealias SelfHostedQRLoginScanResponse = Networking.SelfHostedQRLoginScanResponse
 public typealias SelfHostedQRLoginSessionStatus = Networking.SelfHostedQRLoginSessionStatus

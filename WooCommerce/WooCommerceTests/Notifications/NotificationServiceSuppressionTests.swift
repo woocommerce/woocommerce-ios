@@ -133,6 +133,57 @@ final class NotificationServiceSuppressionTests: XCTestCase {
         XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
     }
 
+    func test_shouldSuppressOtherStore_drops_unregistered_placeholder_even_when_blog_matches() {
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: ["blog": 42]))
+    }
+
+    func test_shouldSuppressOtherStore_allows_matching_blog_as_number_or_string_and_null_noteID() {
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+        state.markSiteAsRegisteredForWooPNs(-1)
+
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: ["blog": 42, "note_id": NSNull()]))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: ["blog": "42"]))
+    }
+
+    func test_shouldSuppressOtherStore_drops_mismatched_blog() {
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+        state.markSiteAsRegisteredForWooPNs(-1)
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: ["blog": 43]))
+    }
+
+    func test_shouldSuppressOtherStore_allows_registered_store_without_blogID() {
+        state.isAuthenticatedWithoutWPCom = true
+        state.markSiteAsRegisteredForWooPNs(-1)
+
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: ["blog": 42]))
+    }
+
+    func test_shouldSuppressOtherStore_drops_wpcom_notification_even_when_blog_matches() {
+        state.isAuthenticatedWithoutWPCom = true
+        state.siteCredentialsBlogID = 42
+        state.markSiteAsRegisteredForWooPNs(-1)
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: ["blog": 42, "note_id": 5]))
+    }
+
+    func test_shouldSuppressOtherStore_ignores_rules_when_flag_is_off() {
+        state.siteCredentialsBlogID = 42
+
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: ["blog": 43]))
+    }
+
+    func test_shouldSuppressOtherStore_allows_payload_without_blog() {
+        state.isAuthenticatedWithoutWPCom = true
+
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: ["type": "store_order"]))
+    }
+
     // MARK: - Unknown notification type gate (RSM-3048)
 
     func test_isKnownNotificationType_returns_true_when_type_is_missing() {

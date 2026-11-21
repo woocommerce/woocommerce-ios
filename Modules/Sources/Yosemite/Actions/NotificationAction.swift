@@ -57,7 +57,7 @@ public enum NotificationAction: Action {
                                                       deviceLocale: String,
                                                       appVersion: String,
                                                       availableAsRESTRequest: Bool,
-                                                      onCompletion: (Result<Int64, Error>) -> Void)
+                                                      onCompletion: (Result<SelfDrivenPushRegistration, Error>) -> Void)
 
     /// Removes a given tokenID from the the self-driven push notification system.
     ///

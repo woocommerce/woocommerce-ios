@@ -7,14 +7,14 @@ public struct TokenIDMapper: Mapper {
 
     public init() {}
 
-    /// (Attempts) to extract the `id` flag from a given JSON Encoded response.
+    /// Extracts token and optional blog IDs from a JSON response.
     ///
-    public func map(response: Data) throws -> Int64 {
+    public func map(response: Data) throws -> SelfDrivenPushRegistration {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(TokenIDEnvelope.self, from: response).tokenID.id
+            return try decoder.decode(TokenIDEnvelope.self, from: response).tokenID.registration
         } else {
-            return try decoder.decode(TokenID.self, from: response).id
+            return try decoder.decode(TokenID.self, from: response).registration
         }
     }
 }
@@ -36,10 +36,16 @@ private struct TokenID: Decodable {
     /// Success Flag
     ///
     let id: Int64
+    let blogID: Int64?
+
+    var registration: SelfDrivenPushRegistration {
+        SelfDrivenPushRegistration(tokenID: id, blogID: blogID)
+    }
 
     /// Coding Keys!
     ///
     private enum CodingKeys: String, CodingKey {
         case id
+        case blogID = "blog_id"
     }
 }

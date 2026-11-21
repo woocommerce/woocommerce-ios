@@ -99,7 +99,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration")
 
-        let tokenID = try await remote.registerForSelfDrivenPushNotifications(
+        let registration = try await remote.registerForSelfDrivenPushNotifications(
             siteID: Parameters.siteID,
             device: Parameters.appleDevice,
             applicationID: Parameters.applicationId,
@@ -107,7 +107,44 @@ final class DevicesRemoteTests: XCTestCase {
             appVersion: Parameters.applicationVersion
         )
 
-        XCTAssertEqual(tokenID, 123)
+        XCTAssertEqual(registration.tokenID, 123)
+        XCTAssertNil(registration.blogID)
+    }
+
+    func test_registerForSelfDrivenPushNotifications_parses_blogID_from_plain_response() async throws {
+        let remote = DevicesRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration-with-blog")
+
+        let registration = try await remote.registerForSelfDrivenPushNotifications(
+            siteID: Parameters.siteID,
+            device: Parameters.appleDevice,
+            applicationID: Parameters.applicationId,
+            deviceLocale: Parameters.deviceLocale,
+            appVersion: Parameters.applicationVersion
+        )
+
+        XCTAssertEqual(registration, SelfDrivenPushRegistration(tokenID: 123, blogID: 456))
+    }
+
+    func test_registerForSelfDrivenPushNotifications_parses_blogID_from_data_envelope() async throws {
+        let remote = DevicesRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration-envelope")
+
+        let registration = try await remote.registerForSelfDrivenPushNotifications(
+            siteID: Parameters.siteID,
+            device: Parameters.appleDevice,
+            applicationID: Parameters.applicationId,
+            deviceLocale: Parameters.deviceLocale,
+            appVersion: Parameters.applicationVersion
+        )
+
+        XCTAssertEqual(registration, SelfDrivenPushRegistration(tokenID: 123, blogID: 456))
+    }
+
+    func test_tokenIDMapper_normalizes_non_positive_blogID_to_nil() throws {
+        let response = Data(#"{"id":123,"blog_id":0}"#.utf8)
+
+        XCTAssertNil(try TokenIDMapper().map(response: response).blogID)
     }
 
     /// Verifies that registerForSelfDrivenPushNotifications parses a "Failure" Backend Response.

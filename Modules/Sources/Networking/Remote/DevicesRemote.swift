@@ -74,14 +74,14 @@ public class DevicesRemote: Remote, @unchecked Sendable {
     ///       selected site, because the REST fallback routes to the current site's URL. For cross-site
     ///       calls (e.g. registering a non-selected site) pass `false` to force the Jetpack tunnel,
     ///       which carries the `siteID` in the URL path and always reaches the correct site.
-    /// - Returns: The unique ID of the push token record
+    /// - Returns: The push token record and its associated site blog ID, when available
     ///
     public func registerForSelfDrivenPushNotifications(siteID: Int64,
                                                        device: APNSDevice,
                                                        applicationID: String,
                                                        deviceLocale: String,
                                                        appVersion: String,
-                                                       availableAsRESTRequest: Bool = false) async throws -> Int64 {
+                                                       availableAsRESTRequest: Bool = false) async throws -> SelfDrivenPushRegistration {
         var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.origin: applicationID,
             ParameterKeys.token: device.token,

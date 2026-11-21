@@ -185,6 +185,7 @@ class DefaultStoresManager: StoresManager {
         self.grdbManagerProvider = grdbManagerProvider
 
         isLoggedIn = isAuthenticated
+        PushNotificationRegistrationState(defaults: pushNotificationDefaults).isAuthenticatedWithoutWPCom = isLoggedIn && isAuthenticatedWithoutWPCom
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
             startObservingNetworkNotifications()
         } else if isLoggedIn {
@@ -250,6 +251,7 @@ class DefaultStoresManager: StoresManager {
                                    sessionManager: sessionManager,
                                    cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
         sessionManager.defaultCredentials = credentials
+        PushNotificationRegistrationState(defaults: pushNotificationDefaults).isAuthenticatedWithoutWPCom = isAuthenticatedWithoutWPCom
 
         if case .wpcom = credentials {
             stopObservingApplicationPasswordInvalidation()
@@ -442,7 +444,10 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
-        PushNotificationRegistrationState(defaults: pushNotificationDefaults).clearConnectedSiteIDs()
+        let registrationState = PushNotificationRegistrationState(defaults: pushNotificationDefaults)
+        registrationState.clearConnectedSiteIDs()
+        registrationState.isAuthenticatedWithoutWPCom = false
+        registrationState.siteCredentialsBlogID = nil
         let pushNotesManager = ServiceLocator.pushNotesManager
         pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
 

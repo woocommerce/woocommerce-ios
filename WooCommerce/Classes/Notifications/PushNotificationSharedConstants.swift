@@ -3,6 +3,7 @@ import Foundation
 /// Constants shared between the main WooCommerce app and the NotificationServiceExtension.
 enum PushNotificationSharedConstants {
     static let appGroupID = "group.com.automattic.woocommerce"
+    static let placeholderSiteID: Int64 = -1
 
     /// Push notification `type` values this app version knows how to handle. New types must be
     /// added here as they are introduced — pushes with any other `type` are silently discarded
@@ -48,5 +49,7 @@ enum PushNotificationSharedConstants {
         static let siteIDsRegisteredForWooPushNotifications = "siteIDsRegisteredForWooPushNotifications"
         static let connectedSiteIDs = "connectedSiteIDs"
         static let wooPushNextCheckDates = "wooPushNextCheckDates"
+        static let isAuthenticatedWithoutWPCom = "isAuthenticatedWithoutWPCom"
+        static let siteCredentialsBlogID = "siteCredentialsBlogID"
     }
 }

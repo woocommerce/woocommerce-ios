@@ -85,6 +85,9 @@ final class PushNotificationRegistrationState {
     }
 
     func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        if siteID == PushNotificationSharedConstants.placeholderSiteID {
+            siteCredentialsBlogID = nil
+        }
         setWooPushNextCheck(nil, for: siteID)
         let updatedIDs = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
         guard updatedIDs.count != siteIDsRegisteredForWooPNs.count else {
@@ -146,6 +149,24 @@ final class PushNotificationRegistrationState {
     func clearWooPushNextChecks() {
         defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNextCheckDates)
     }
+
+    var isAuthenticatedWithoutWPCom: Bool {
+        get {
+            defaults.bool(forKey: PushNotificationSharedConstants.UserDefaultsKeys.isAuthenticatedWithoutWPCom)
+        }
+        set {
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.isAuthenticatedWithoutWPCom)
+        }
+    }
+
+    var siteCredentialsBlogID: Int64? {
+        get {
+            defaults.object(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteCredentialsBlogID) as? Int64
+        }
+        set {
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteCredentialsBlogID)
+        }
+    }
 }
 
 /// Push notification suppression
@@ -156,7 +177,25 @@ extension PushNotificationRegistrationState {
     /// notifications for omitted sites. For connected sites, the existing WPCom/Woo deduplication
     /// remains in place.
     func shouldSuppressNotification(userInfo: [AnyHashable: Any]) -> Bool {
-        shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) || shouldSuppressWPComDuplicateNotification(userInfo: userInfo)
+        shouldSuppressOtherStoreNotification(userInfo: userInfo) ||
+            shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) ||
+            shouldSuppressWPComDuplicateNotification(userInfo: userInfo)
+    }
+
+    func shouldSuppressOtherStoreNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        guard isAuthenticatedWithoutWPCom, let blogID = userInfo.integer(forKey: "blog") else {
+            return false
+        }
+        if userInfo.integer(forKey: "note_id") != nil {
+            return true
+        }
+        guard isSiteRegisteredForWooPNs(PushNotificationSharedConstants.placeholderSiteID) else {
+            return true
+        }
+        if let siteCredentialsBlogID, blogID != siteCredentialsBlogID {
+            return true
+        }
+        return false
     }
 
     /// Returns `true` when the last successful site synchronization omitted the notification's site.
@@ -187,6 +226,7 @@ extension PushNotificationRegistrationState {
     func clearWooRegistration() {
         wooPushNotificationToken = nil
         siteIDsRegisteredForWooPNs = []
+        siteCredentialsBlogID = nil
     }
 
     func clearWPComRegistration() {

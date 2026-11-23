@@ -4,14 +4,15 @@
 26.2
 -----
 - [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
+- [*] POS: On an iPhone Duo, the checkout no longer stays shrunk after you fold and unfold the phone. [https://github.com/woocommerce/woocommerce-ios/pull/18442]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
 - [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
 - [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
-- [*] Dashboard: The Most recent orders card now shows an order's new status and details after it's edited in the app, and drops orders that no longer match its status filter. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
 - [*] Dashboard: The Most recent orders card now updates when an order's status or details change in the app, or the order is trashed. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
+- [*] Dashboard: Unsaved card changes in Customize no longer reset after opening Control Center or returning to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18413]
 - [*] POS: Action menus now match POS styling in light and dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/18390]
 - [*] Orders: On stores with WooCommerce 11.1 or later, refund amounts in Issue Refund are calculated by the store. [https://github.com/woocommerce/woocommerce-ios/pull/18373]
 - [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]

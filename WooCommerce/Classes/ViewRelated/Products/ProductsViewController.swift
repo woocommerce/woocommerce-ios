@@ -985,7 +985,8 @@ private extension ProductsViewController {
         viewModel.storageDidChange
             .sink { [weak self] in
                 guard let self else { return }
-                refreshUpdates.perform { self.reloadTableAndView() }
+                // `$products` already reloaded the rows, unless loading placeholders still cover them.
+                refreshUpdates.perform { self.reloadTableAndView(reloadsRows: self.isShowingLoadingRows) }
             }
             .store(in: &subscriptions)
         viewModel.$filters
@@ -1117,7 +1118,7 @@ private extension ProductsViewController {
 
     /// Manages view components and reload tableview
     ///
-    func reloadTableAndView() {
+    func reloadTableAndView(reloadsRows: Bool = true) {
         guard tableView != nil else {
             return
         }
@@ -1128,7 +1129,9 @@ private extension ProductsViewController {
         }
         showOrHideToolbar()
         updateEmptyState()
-        reloadProducts()
+        if reloadsRows {
+            reloadProducts()
+        }
         onDataReloaded.send(())
     }
 

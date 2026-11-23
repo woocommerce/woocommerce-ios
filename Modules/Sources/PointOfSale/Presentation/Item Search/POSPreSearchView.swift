@@ -36,7 +36,7 @@ struct POSPreSearchView: View {
             onItemSelected: onItemSelected,
             headerView: {
                 VStack(alignment: .leading, spacing: metrics.spacing.none) {
-                    recentSearchesSection
+                    recentSearchesSection(bottomPadding: metrics.padding.large)
 
                     // No bottom padding: ItemList already spaces its header from the first card.
                     sectionHeader(Localization.popularProductsTitle)
@@ -47,7 +47,7 @@ struct POSPreSearchView: View {
     @ViewBuilder private var recentSearchesOnly: some View {
         VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if savedSearches.isNotEmpty {
-                recentSearchesSection
+                recentSearchesSection(bottomPadding: metrics.padding.medium)
 
                 Spacer()
             } else {
@@ -61,12 +61,13 @@ struct POSPreSearchView: View {
         .padding(.horizontal, metrics.padding.medium)
     }
 
-    @ViewBuilder private var recentSearchesSection: some View {
+    @ViewBuilder private func recentSearchesSection(bottomPadding: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if savedSearches.isNotEmpty {
                 sectionHeader(Localization.recentSearchesTitle)
 
                 recentSearches
+                    .padding(.bottom, bottomPadding)
             }
         }
     }
@@ -96,7 +97,7 @@ struct POSPreSearchView: View {
                     }
                 }
             }
-            .padding(.vertical, metrics.padding.medium) // Use padding not VStack spacing so the Chip shadows aren't clipped
+            .padding(.top, metrics.padding.medium)
         }
         // The chip shadow is larger than this padding and the chips start at the leading edge.
         .scrollClipDisabled()

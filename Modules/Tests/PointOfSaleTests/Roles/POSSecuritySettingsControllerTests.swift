@@ -767,6 +767,32 @@ struct POSSecuritySettingsControllerTests {
         #expect(flow.continueFromSuccess() == (role == .cashier))
     }
 
+    @Test func test_admin_handoff_when_settings_closes_before_dismissal_then_revokes_editor_and_keeps_pins() async throws {
+        // Given
+        let (controller, _, store) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        let (handler, approval) = await changeRequest(for: controller)
+        #expect(await handler.submit(pin: "1234"))
+        let flow = try #require(await approval.value)
+        let presentation = POSSecurityPINPresentation()
+        let destination = POSSecurityPINPresentation.Destination.approval(
+            POSManagerOverrideRequest(capability: .manageStoreSettings, reason: "Change Admin PIN"))
+        presentation.present(destination)
+        presentation.finishApproval(editor: flow)
+        let before = try store.credentials()
+
+        // When
+        presentation.cancel()
+        controller.endPINEditing()
+        presentation.dismissalCompleted(for: destination)
+
+        // Then
+        #expect(presentation.destination == nil)
+        #expect(await flow.submit("2468") == false)
+        #expect(try store.credentials() == before)
+    }
+
     private enum WorkerStage: CaseIterable {
         case validation
         case preparation

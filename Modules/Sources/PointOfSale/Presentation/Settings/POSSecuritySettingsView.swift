@@ -4,7 +4,7 @@ struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let controller: POSSecuritySettingsController
-    @State private var editing: POSPINSetupFlow?
+    @State private var presentation = POSSecurityPINPresentation()
     @State private var approval = POSManagerOverrideHandler()
     @State private var approvalTask: Task<Void, Never>?
 
@@ -13,7 +13,7 @@ struct POSSecuritySettingsView: View {
             if controller.roles?.isEmpty == true {
                 POSAccessControlSetupView {
                     controller.load()
-                    editing = controller.makePINSetupFlow(for: .admin)
+                    presentation.present(.editor(controller.makePINSetupFlow(for: .admin)))
                 }
                 .overlay(alignment: .top) {
                     if horizontalSizeClass == .compact {
@@ -63,14 +63,21 @@ struct POSSecuritySettingsView: View {
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
         .onDisappear(perform: endEditing)
+        .onChange(of: approval.request) { _, request in
+            if let request { presentation.present(.approval(request)) }
+        }
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible {
                 endEditing()
             }
         }
         .posModal(item: presentationBinding,
-                  compactStyle: presentation?.compactStyle ?? .fullScreen(title: Localization.title)) { presentation in
-            switch presentation {
+                  compactStyle: presentation.destination?.compactStyle(editorTitle: Localization.title) ?? .fullScreen(title: Localization.title),
+                  onDismissCompleted: { destination in
+                      guard controller.isVisible else { endEditing(); return }
+                      presentation.dismissalCompleted(for: destination)
+                  }) { destination in
+            switch destination {
             case .approval(let request):
                 POSManagerOverrideView(handler: approval, request: request)
                     .posManagerOverrideModalSizing()
@@ -81,48 +88,27 @@ struct POSSecuritySettingsView: View {
         .accessibilityIdentifier("pos-security-settings")
     }
 
-    private enum Presentation: Identifiable, Equatable {
-        case approval(POSManagerOverrideRequest)
-        case editor(POSPINSetupFlow)
-
-        var id: AnyHashable {
-            switch self {
-            case .approval(let request): AnyHashable(request.id)
-            case .editor(let flow): AnyHashable(ObjectIdentifier(flow))
-            }
-        }
-
-        var compactStyle: POSModalCompactStyle {
-            switch self {
-            case .approval: .managerApproval
-            case .editor: .fullScreen(title: Localization.title)
-            }
-        }
-
-        static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
-    }
-
-    private var presentation: Presentation? {
-        if let request = approval.request { return .approval(request) }
-        return editing.map(Presentation.editor)
-    }
-
-    private var presentationBinding: Binding<Presentation?> {
-        Binding(get: { presentation }, set: { newValue in
+    private var presentationBinding: Binding<POSSecurityPINPresentation.Destination?> {
+        Binding(get: { presentation.destination }, set: { newValue in
             guard newValue == nil else { return }
-            if editing != nil { closeEditor() }
-            if approval.request != nil { dismissApproval() }
+            switch presentation.destination {
+            case .editor: closeEditor()
+            case .approval:
+                presentation.cancel()
+                dismissApproval()
+            case nil: break
+            }
         })
     }
 
     private func endEditing() {
-        editing = nil
+        presentation.cancel()
         controller.endPINEditing()
         dismissApproval()
     }
 
     private func closeEditor() {
-        editing = nil
+        presentation.cancel()
         controller.endPINEditing()
         controller.load()
     }
@@ -133,6 +119,8 @@ struct POSSecuritySettingsView: View {
                 approvalTask?.cancel()
                 approvalTask = Task {
                     _ = await controller.requestProtectionRemoval(using: approval, reason: Localization.disableProtectionReason)
+                    guard !Task.isCancelled else { return }
+                    presentation.finishApproval(editor: nil)
                 }
             }
         })
@@ -149,12 +137,12 @@ struct POSSecuritySettingsView: View {
         dismissApproval()
         if role == .admin, controller.roles?.contains(.admin) == true {
             approvalTask = Task {
-                if let flow = await controller.requestAdminPINChange(using: approval, reason: Localization.changeAdminPINReason) {
-                    editing = flow
-                }
+                let flow = await controller.requestAdminPINChange(using: approval, reason: Localization.changeAdminPINReason)
+                guard !Task.isCancelled else { return }
+                presentation.finishApproval(editor: flow)
             }
         } else {
-            editing = controller.makePINSetupFlow(for: role)
+            presentation.present(.editor(controller.makePINSetupFlow(for: role)))
         }
     }
 

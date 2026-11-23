@@ -9,6 +9,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
     fileprivate let onDismiss: () -> Void
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
     private(set) var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
+    /// Retry starts the setup again, so it goes back like Back does.
+    private(set) var navigationDirection: POSFlowStepDirection = .forward
     private let analytics: POSAnalyticsProviding
 
     init(scannerType: PointOfSaleBarcodeScannerType,
@@ -46,6 +48,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 
     func transition(to stepKey: PointOfSaleBarcodeScannerStepID) {
+        navigationDirection = .forward
         self.currentStepKey = stepKey
     }
 
@@ -89,10 +92,13 @@ class PointOfSaleBarcodeScannerSetupFlow {
         switch transitionType {
         case .next:
             trackSetupNext()
+            navigationDirection = .forward
         case .back:
             trackSetupBack()
+            navigationDirection = .backward
         case .retry:
             trackRetry()
+            navigationDirection = .backward
         }
 
         currentStepKey = targetStep

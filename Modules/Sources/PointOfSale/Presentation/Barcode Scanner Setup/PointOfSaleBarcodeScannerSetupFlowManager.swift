@@ -10,6 +10,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     @ObservationIgnored @Binding var isPresented: Bool
     @ObservationIgnored var onDismiss: (() -> Void)?
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
+    private var selectionNavigationDirection: POSFlowStepDirection = .forward
     private let analytics: POSAnalyticsProviding
     // Read from the nonisolated deinit; otherwise only set once from `init` on the main actor.
     // Remove `nonisolated(unsafe)` once the deployment target allows `isolated deinit` (iOS 18.4).
@@ -17,6 +18,16 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
 
     var currentStepKey: String? {
         currentFlow?.currentStepKey.rawValue
+    }
+
+    /// Identity of the page shown on phone. Steps that only update the same page in place share one identity.
+    var currentPageID: String {
+        currentFlow?.currentStepKey.pageID.rawValue ?? Constants.scannerSelectionPageID
+    }
+
+    /// Direction of the last page change.
+    var navigationDirection: POSFlowStepDirection {
+        currentFlow?.navigationDirection ?? selectionNavigationDirection
     }
 
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
@@ -44,6 +55,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
                 self?.dismiss()
             }
         )
+        selectionNavigationDirection = .forward
         currentState = .setupFlow(scannerType)
     }
 
@@ -56,6 +68,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     func goBackToSelection() {
+        selectionNavigationDirection = .backward
         currentState = .scannerSelection
         currentFlow = nil
     }
@@ -105,5 +118,9 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     private func handleKeyboardConnected() {
         guard case .setupFlow(let scannerType) = currentState else { return }
         analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType))
+    }
+
+    private enum Constants {
+        static let scannerSelectionPageID = "scannerSelection"
     }
 }

@@ -9,7 +9,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     fileprivate let onDismiss: () -> Void
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
     private(set) var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
-    private(set) var navigationDirection: POSFlowStepDirection = .forward
     private let analytics: POSAnalyticsProviding
 
     init(scannerType: PointOfSaleBarcodeScannerType,
@@ -47,7 +46,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 
     func transition(to stepKey: PointOfSaleBarcodeScannerStepID) {
-        navigationDirection = .forward
         self.currentStepKey = stepKey
     }
 
@@ -91,13 +89,10 @@ class PointOfSaleBarcodeScannerSetupFlow {
         switch transitionType {
         case .next:
             trackSetupNext()
-            navigationDirection = .forward
         case .back:
             trackSetupBack()
-            navigationDirection = .backward
         case .retry:
             trackRetry()
-            navigationDirection = .backward
         }
 
         currentStepKey = targetStep
@@ -341,6 +336,7 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
         return PointOfSaleFlowButtonConfiguration(
             primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.retryButtonTitle,
+                stepsBackward: true,
                 action: { flow.transition(to: .retry) }
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(

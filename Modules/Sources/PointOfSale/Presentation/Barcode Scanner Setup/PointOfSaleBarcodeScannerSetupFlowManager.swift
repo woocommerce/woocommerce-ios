@@ -10,7 +10,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     @ObservationIgnored @Binding var isPresented: Bool
     @ObservationIgnored var onDismiss: (() -> Void)?
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
-    private var selectionNavigationDirection: POSFlowStepDirection = .forward
     private let analytics: POSAnalyticsProviding
     // Read from the nonisolated deinit; otherwise only set once from `init` on the main actor.
     // Remove `nonisolated(unsafe)` once the deployment target allows `isolated deinit` (iOS 18.4).
@@ -22,10 +21,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
 
     var currentPageID: String {
         currentFlow?.currentStepKey.pageID.rawValue ?? Constants.scannerSelectionPageID
-    }
-
-    var navigationDirection: POSFlowStepDirection {
-        currentFlow?.navigationDirection ?? selectionNavigationDirection
     }
 
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
@@ -53,7 +48,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
                 self?.dismiss()
             }
         )
-        selectionNavigationDirection = .forward
         currentState = .setupFlow(scannerType)
     }
 
@@ -66,7 +60,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     func goBackToSelection() {
-        selectionNavigationDirection = .backward
         currentState = .scannerSelection
         currentFlow = nil
     }

@@ -122,8 +122,7 @@ struct ItemListView: View {
                 // The regular pane is already inside the dashboard's horizontal safe bounds.
                 .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
-        // Set once here from the visible screen: both tabs and the list under search stay mounted,
-        // so a preference from each error view would also report hidden screens.
+        // Set here, not in each error view: hidden tabs and the list under search stay mounted and would report too.
         .preference(key: POSHidesCompactCartButtonPreferenceKey.self, value: hidesCompactCartButton)
     }
 

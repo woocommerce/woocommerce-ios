@@ -213,9 +213,6 @@ struct ItemListViewHelperTests {
         .inlineError([], error: .errorOnRefreshingCoupons(), context: .refresh)
     ])
     func hidesCompactCartButton_when_root_is_not_a_full_error_screen_then_false(rootState: ItemListState) {
-        // Given
-        // No pushed parent, not on the pre-search screen.
-
         // When
         let result = sut.hidesCompactCartButton(rootState: rootState,
                                                 isShowingPreSearch: false,

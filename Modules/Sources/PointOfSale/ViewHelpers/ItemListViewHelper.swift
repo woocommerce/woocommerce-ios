@@ -37,12 +37,7 @@ struct ItemListViewHelper {
         return !isSearching
     }
 
-    /// Whether the phone cart button should hide because the visible list screen is a full-screen
-    /// error, or a pushed product's empty variations screen. Both already have their own primary button.
-    /// Root empty screens keep the cart button.
-    ///
-    /// - Parameter pushedParentState: State of the variable product pushed on top of the list, if any.
-    ///   When set, it alone decides, since it covers the root list.
+    /// The full-screen error and empty variations screens already have their own primary button.
     func hidesCompactCartButton(rootState: ItemListState,
                                 isShowingPreSearch: Bool,
                                 pushedParentState: ItemListState?) -> Bool {

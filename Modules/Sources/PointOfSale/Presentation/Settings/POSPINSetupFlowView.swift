@@ -66,7 +66,7 @@ struct POSPINSetupFlowView: View {
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     private let flow: POSPINSetupFlow
-    @State private var pinStatusAndSpacingHeight: CGFloat = 0
+    @State private var pinContentHeightAboveKeypad: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
 
@@ -84,7 +84,6 @@ struct POSPINSetupFlowView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .posModalFlowHeaderTitle(title, alignment: .center)
         .posModalFlowBackAction(enabled: isFullScreenFlow && flow.canGoBack) { flow.goBack() }
         .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
         .posModalFullScreen(usesAccessibilityFullScreen)
@@ -109,6 +108,10 @@ private extension POSPINSetupFlowView {
         horizontalSizeClass == .regular && dynamicTypeSize.isAccessibilitySize
     }
 
+    var showsContentTitle: Bool {
+        isFullScreenFlow || usesAccessibilityFullScreen
+    }
+
     var title: String {
         switch flow.step {
         case .choose: flow.configuration.copy.chooseTitle
@@ -119,7 +122,7 @@ private extension POSPINSetupFlowView {
 
     var header: some View {
         ZStack {
-            if !title.isEmpty {
+            if !showsContentTitle && !title.isEmpty {
                 Text(title)
                     .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -177,15 +180,22 @@ private extension POSPINSetupFlowView {
         GeometryReader { geometry in
             let keySize = keySize(fitting: geometry.size)
             let keypadHeight = POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).height
-            let verticalInset = min(metrics.padding.xLarge, max(0, (geometry.size.height - keypadHeight - pinStatusAndSpacingHeight) / 2))
+            let verticalInset = min(metrics.padding.xLarge, max(0, (geometry.size.height - keypadHeight - pinContentHeightAboveKeypad) / 2))
             ScrollViewReader { proxy in
                 ScrollView {
-                    POSPINEntryView(state: flow.pinEntryState,
-                                    style: .setup(keySize: keySize, page: page, feedback: flow.feedback.map(message(for:))),
-                                    onComplete: { pin in await flow.submit(pin) })
+                    VStack(spacing: pinTitleSpacing) {
+                        if showsContentTitle {
+                            pinEntryTitle
+                        }
+                        POSPINEntryView(state: flow.pinEntryState,
+                                        style: .setup(keySize: keySize, page: page,
+                                                      feedback: flow.feedback.map(message(for:)),
+                                                      feedbackMessages: feedbackMessages),
+                                        onComplete: { pin in await flow.submit(pin) })
+                    }
                         .fixedSize(horizontal: false, vertical: true)
                         .onGeometryChange(for: CGFloat.self, of: { max(0, $0.size.height - keypadHeight) }) {
-                            pinStatusAndSpacingHeight = $0
+                            pinContentHeightAboveKeypad = $0
                         }
                         .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * verticalInset))
                         .id(Constants.pinEntryTopID)
@@ -203,6 +213,31 @@ private extension POSPINSetupFlowView {
         .clipped()
     }
 
+    var pinTitleSpacing: CGFloat {
+        // Standard-size errors raise the dots; leave room for that existing movement below the title.
+        dynamicTypeSize.isAccessibilitySize ? metrics.spacing.xLarge : metrics.spacing.xxLarge + metrics.spacing.large
+    }
+
+    var feedbackMessages: [String] {
+        [POSPINSetupFlow.Feedback.mismatch, .failure(.pinMatchesOtherRole), .failure(.storageFailure)].map(message(for:))
+    }
+
+    var pinEntryTitle: some View {
+        // Reserve both titles so wrapping cannot move the dots or keypad between steps.
+        ZStack {
+            Text(flow.configuration.copy.chooseTitle).hidden()
+            Text(flow.configuration.copy.confirmTitle).hidden()
+            Text(title)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("pos-pin-setup-title")
+        }
+        .font(.posBodyXLargeBold)
+        .foregroundStyle(Color.posOnSurface)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .transaction { $0.animation = nil }
+    }
+
     var savedCheck: some View {
         PointOfSaleAssets.checkCircle.decorativeImage
             .resizable()
@@ -215,7 +250,7 @@ private extension POSPINSetupFlowView {
     }
 
     func keySize(fitting size: CGSize) -> CGFloat {
-        POSPINEntryViewHelper.lockScreenKeySize(fitting: CGSize(width: size.width, height: size.height - pinStatusAndSpacingHeight),
+        POSPINEntryViewHelper.lockScreenKeySize(fitting: CGSize(width: size.width, height: size.height - pinContentHeightAboveKeypad),
                                                preferred: layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize,
                                                metrics: metrics)
     }

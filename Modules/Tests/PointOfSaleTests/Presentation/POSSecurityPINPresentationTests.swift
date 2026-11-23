@@ -3,6 +3,26 @@ import Testing
 
 @MainActor
 struct POSSecurityPINPresentationTests {
+    @Test(arguments: [POSPINSetupFlow.Configuration.initialAdmin, .adminChange, .cashier])
+    func test_editor_when_presented_then_leaves_title_in_content(configuration: POSPINSetupFlow.Configuration) {
+        // Given
+        let editor = makeEditor(configuration: configuration)
+
+        // When
+        let style = POSSecurityPINPresentation.Destination.editor(editor).compactStyle
+
+        // Then
+        #expect(style == .fullScreen(title: ""))
+    }
+
+    @Test func test_approval_when_presented_then_keeps_approval_header() {
+        // When
+        let style = makeApproval().compactStyle
+
+        // Then
+        #expect(style == .managerApproval)
+    }
+
     @Test(arguments: [false, true])
     func test_handoff_when_waiting_for_result_or_dismissal_then_blocks_settings(dismissesFirst: Bool) {
         // Given

@@ -212,6 +212,7 @@ final class ProductsViewController: UIViewController {
 
         configureNavigationBar()
         configureMainView()
+        viewModel.loadProducts()
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()

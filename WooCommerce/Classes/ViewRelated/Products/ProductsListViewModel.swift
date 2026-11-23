@@ -56,7 +56,13 @@ final class ProductListViewModel: ObservableObject {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     @MainActor
-    private let resultsController: ResultsController<StorageProduct>
+    private lazy var resultsController: ResultsController<StorageProduct> = {
+        let resultsController = providedResultsController ?? Self.createResultsController(siteID: siteID)
+        configureResultsController(resultsController)
+        return resultsController
+    }()
+
+    private let providedResultsController: ResultsController<StorageProduct>?
 
     @MainActor
     private let paginationTracker = PaginationTracker()
@@ -105,7 +111,7 @@ final class ProductListViewModel: ObservableObject {
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          resultsController: ResultsController<StorageProduct>? = nil) {
         self.siteID = siteID
-        self.resultsController = resultsController ?? Self.createResultsController(siteID: siteID)
+        self.providedResultsController = resultsController
         self.stores = stores
         self.analytics = analytics
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
@@ -113,12 +119,17 @@ final class ProductListViewModel: ObservableObject {
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
         self.pluginsService = pluginsService
 
-        configureResultsController(self.resultsController)
         paginationTracker.delegate = self
 
         Task { @MainActor [weak self] in
             await self?.loadFavoriteProductIDs()
         }
+    }
+
+    /// The view model is created at app launch, so storage is read only once a list view loads.
+    @MainActor
+    func loadProducts() {
+        _ = resultsController
     }
 
     var selectedProductsCount: Int {

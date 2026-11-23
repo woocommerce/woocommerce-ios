@@ -594,6 +594,24 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.products.map(\.name), ["A", "B", "C"], "The list must show what search or other flows store")
     }
 
+    func test_loadProducts_when_view_model_is_created_then_reads_storage_only_once_products_load() {
+        // Given
+        let storage = MockStorageManager()
+        insert(makeProducts(["A"]), into: storage)
+
+        // When
+        let viewModel = makeViewModel(storage: storage, loadProducts: false)
+
+        // Then
+        XCTAssertTrue(viewModel.products.isEmpty, "The view model is created at app launch, before Products is opened")
+
+        // When
+        viewModel.loadProducts()
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.name), ["A"])
+    }
+
     func test_sortOrder_when_changed_then_reorders_products() {
         // Given
         let storage = MockStorageManager()
@@ -784,7 +802,8 @@ private extension ProductListViewModelTests {
 
     func makeViewModel(storage: MockStorageManager = MockStorageManager(),
                        favoriteProductsUseCase: MockFavoriteProductsUseCase = MockFavoriteProductsUseCase(),
-                       analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())) -> ProductListViewModel {
+                       analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                       loadProducts: Bool = true) -> ProductListViewModel {
         let resultsController = ResultsController<StorageProduct>(storageManager: storage,
                                                                   matching: NSPredicate(format: "siteID == %lld", sampleSiteID),
                                                                   sortOrder: .nameAscending)
@@ -795,6 +814,9 @@ private extension ProductListViewModelTests {
                                              resultsController: resultsController)
         recordProductsSettings()
         recordProductSyncs(of: viewModel)
+        if loadProducts {
+            viewModel.loadProducts()
+        }
         return viewModel
     }
 

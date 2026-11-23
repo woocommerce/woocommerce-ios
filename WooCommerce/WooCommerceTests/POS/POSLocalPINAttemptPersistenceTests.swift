@@ -13,8 +13,8 @@ struct POSLocalPINAttemptPersistenceTests {
         defer { try? native.removeAll() }
         let store = POSLocalPINStore(siteID: 123, storage: native, iterations: 1000)
         try await Task.detached {
-            try store.setPIN("1234", for: .admin)
-            try store.setPIN("5678", for: .cashier)
+            try store.preparePIN("1234", for: .admin)()
+            try store.preparePIN("5678", for: .cashier)()
         }.value
         let authenticator = DefaultPOSPINAuthenticator(credentialProvider: store)
         let limiter = POSLocalRateLimiter(siteID: 123, storage: native, clock: clock)

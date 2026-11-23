@@ -4,11 +4,11 @@ import struct Yosemite.DashboardCard
 
 /// Design-system customization screen used by the feature-flagged dashboard.
 struct StoreDashboardCustomizationView: View {
-    @ObservedObject private var viewModel: DashboardCustomizationViewModel
+    @StateObject private var viewModel: DashboardCustomizationViewModel
     @Environment(\.dismiss) private var dismiss
 
     init(viewModel: DashboardCustomizationViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {

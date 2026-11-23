@@ -197,9 +197,9 @@ private extension POSPINEntryView {
                 .offset(y: yOffset)
         } else {
             Circle()
-                .fill(filled ? Color.posPrimary : Color.clear)
+                .fill(filled ? Color.posOnSurface : Color.clear)
                 .overlay(
-                    Circle().strokeBorder(filled ? Color.posPrimary : Color.posOutline,
+                    Circle().strokeBorder(filled ? Color.posOnSurface : Color.posOutline,
                                           lineWidth: Constants.dotBorderWidth)
                 )
                 .frame(width: Constants.dotSize, height: Constants.dotSize)

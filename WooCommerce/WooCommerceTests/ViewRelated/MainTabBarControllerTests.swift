@@ -464,7 +464,7 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     @MainActor
-    func test_navigateTo_when_pos_denies_exit_then_keeps_pos_and_discards_the_request() async throws {
+    func test_navigateTo_when_pos_denies_exit_then_keeps_pos_and_discards_the_request() throws {
         // Given
         let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
         window.rootViewController = tabBar
@@ -472,7 +472,7 @@ final class MainTabBarControllerTests: XCTestCase {
         pos.modalPresentationStyle = .fullScreen
         var canExit = false
         pos.canExitPOS = { canExit }
-        await tabBar.present(pos, animated: false)
+        tabBar.present(pos, animated: false)
         XCTAssertTrue(tabBar.presentedViewController === pos)
 
         // When

@@ -3,6 +3,8 @@
 
 26.2
 -----
+- [*] POS: On iPhone, the search screen before typing now has even gaps between sections, and the recent search shadow is no longer cut. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
+- [*] POS: On iPhone, the Cart button no longer shows under Retry on the "Unable to load coupons" and "No supported variations found" screens. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
 - [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]

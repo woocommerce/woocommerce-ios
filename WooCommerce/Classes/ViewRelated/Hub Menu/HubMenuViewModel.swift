@@ -83,7 +83,7 @@ final class HubMenuViewModel: ObservableObject {
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private let posEligibilityService: POSEligibilityServiceProtocol
-    private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
+    private let bookingsEligibilityCheckerFactory: @MainActor (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
 
     private let appPasswordSupportState = ApplicationPasswordsExperimentState()
@@ -131,7 +131,7 @@ final class HubMenuViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
-         bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
+         bookingsEligibilityCheckerFactory: @escaping @MainActor (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
              BookingsTabEligibilityChecker(site: site)
          },
          // Injected for mocking in tests.

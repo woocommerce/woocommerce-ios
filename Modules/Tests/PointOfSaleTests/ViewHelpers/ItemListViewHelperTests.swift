@@ -131,6 +131,99 @@ struct ItemListViewHelperTests {
         // Then
         #expect(result == false)
     }
+
+    @Test(arguments: [
+        ItemListState.error(.errorOnLoadingVariations()),
+        .empty,
+        .initial,
+        .loaded([], hasMoreItems: false)
+    ])
+    func hidesCompactCartButton_when_pushed_parent_shows_error_or_empty_screen_then_true(pushedParentState: ItemListState) {
+        // Given
+        let rootState = ItemListState.loaded([.coupon(makeCoupon(itemID: 1))], hasMoreItems: false)
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: false,
+                                                pushedParentState: pushedParentState)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func hidesCompactCartButton_when_empty_variations_pushed_from_pre_search_then_true() {
+        // Given
+        let rootState = ItemListState.loading([])
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: true,
+                                                pushedParentState: .loaded([], hasMoreItems: false))
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test(arguments: [
+        ItemListState.loading([]),
+        .loaded([.coupon(POSCoupon(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "A", summary: "B"))], hasMoreItems: false)
+    ])
+    func hidesCompactCartButton_when_pushed_parent_has_content_over_failed_root_then_false(pushedParentState: ItemListState) {
+        // Given
+        let rootState = ItemListState.error(.errorOnLoadingProducts())
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: false,
+                                                pushedParentState: pushedParentState)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func hidesCompactCartButton_when_root_shows_error_then_true() {
+        // Given
+        let rootState = ItemListState.error(.errorOnLoadingCoupons())
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: false,
+                                                pushedParentState: nil)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func hidesCompactCartButton_when_root_error_is_behind_pre_search_then_false() {
+        // Given
+        let rootState = ItemListState.error(.errorOnLoadingCoupons())
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: true,
+                                                pushedParentState: nil)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [
+        ItemListState.empty,
+        .loading([]),
+        .inlineError([], error: .errorOnRefreshingCoupons(), context: .refresh)
+    ])
+    func hidesCompactCartButton_when_root_is_not_a_full_error_screen_then_false(rootState: ItemListState) {
+        // Given
+        // No pushed parent, not on the pre-search screen.
+
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isShowingPreSearch: false,
+                                                pushedParentState: nil)
+
+        // Then
+        #expect(result == false)
+    }
 }
 
 private extension ItemListViewHelperTests {

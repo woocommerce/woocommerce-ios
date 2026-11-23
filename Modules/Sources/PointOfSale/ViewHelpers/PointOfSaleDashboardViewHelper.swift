@@ -29,9 +29,13 @@ struct PointOfSaleDashboardViewHelper {
     /// Whether the compact-layout cart button should be shown below the item list.
     ///
     /// The dashboard does not move up for a full keyboard, so the button would sit under it
-    /// and show through the translucent keyboard.
-    static func showsCompactCartButton(cartIsEmpty: Bool, floatingControlSuppressed: Bool, isFullSizeKeyboardVisible: Bool) -> Bool {
-        !cartIsEmpty && !floatingControlSuppressed && !isFullSizeKeyboardVisible
+    /// and show through the translucent keyboard. Item list error and empty screens hide it
+    /// because they already have their own primary button.
+    static func showsCompactCartButton(cartIsEmpty: Bool,
+                                       floatingControlSuppressed: Bool,
+                                       isFullSizeKeyboardVisible: Bool,
+                                       itemListHidesCartButton: Bool) -> Bool {
+        !cartIsEmpty && !floatingControlSuppressed && !isFullSizeKeyboardVisible && !itemListHidesCartButton
     }
 
     /// Whether a barcode scan should auto-open the compact-layout cart sheet.

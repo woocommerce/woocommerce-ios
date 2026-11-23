@@ -122,6 +122,18 @@ struct ItemListView: View {
                 // The regular pane is already inside the dashboard's horizontal safe bounds.
                 .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
+        // Set once here from the visible screen: both tabs and the list under search stay mounted,
+        // so a preference from each error view would also report hidden screens.
+        .preference(key: POSHidesCompactCartButtonPreferenceKey.self, value: hidesCompactCartButton)
+    }
+
+    private var hidesCompactCartButton: Bool {
+        let pushedParentState = posModel.viewStateCoordinatorForView.itemNavigationPath.last.map { parentItem in
+            itemsController(selectedItemListType).itemsViewState.itemsStack.itemStates[parentItem] ?? .loading([])
+        }
+        return ItemListViewHelper().hidesCompactCartButton(rootState: itemListState(selectedItemListType),
+                                                           isShowingPreSearch: isSearching && searchTerm.isEmpty,
+                                                           pushedParentState: pushedParentState)
     }
 
     var content: some View {

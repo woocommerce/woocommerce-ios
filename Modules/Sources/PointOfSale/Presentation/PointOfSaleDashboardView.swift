@@ -23,6 +23,7 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
+    @State private var itemListHidesCartButton: Bool = false
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -164,6 +165,9 @@ struct PointOfSaleDashboardView: View {
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
         }
+        .onPreferenceChange(POSHidesCompactCartButtonPreferenceKey.self) { hides in
+            itemListHidesCartButton = hides
+        }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface.ignoresSafeArea())
@@ -277,7 +281,8 @@ struct PointOfSaleDashboardView: View {
                 let showsCartButton = PointOfSaleDashboardViewHelper.showsCompactCartButton(
                     cartIsEmpty: posModel.cart.isEmpty,
                     floatingControlSuppressed: floatingControlSuppressed,
-                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible
+                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible,
+                    itemListHidesCartButton: itemListHidesCartButton
                 )
                 VStack(spacing: metrics.spacing.none) {
                     ItemListView(

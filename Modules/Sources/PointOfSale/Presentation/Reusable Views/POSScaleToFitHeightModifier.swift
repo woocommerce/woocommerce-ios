@@ -20,9 +20,7 @@ struct POSScaleToFitHeightModifier: ViewModifier {
                 .frame(width: proxy.size.width)
                 .frame(minHeight: availableHeight)
                 .fixedSize(horizontal: false, vertical: true)
-                // Unfolding an iPhone Duo runs layout passes back to back with different available heights. Observing the
-                // height alone, the last pass was sometimes not reported, leaving the scale based on an earlier pass.
-                // Pairing it with the available height makes every pass a distinct value.
+                // Paired with the available height so a pass repeating an earlier content height is still reported (iPhone Duo unfold).
                 .onGeometryChange(for: HeightMeasurement.self, of: { HeightMeasurement(contentHeight: $0.size.height, availableHeight: availableHeight) }) {
                     contentHeight = $0.contentHeight
                 }

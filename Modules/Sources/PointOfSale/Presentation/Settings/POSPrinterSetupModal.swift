@@ -54,36 +54,34 @@ struct POSPrinterSetupModal: View {
         return isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
     }
 
-    @ViewBuilder
     private var modalCore: some View {
-        let core = VStack(spacing: metrics.spacing.xLarge) {
-            stepContent
+        POSModalFlowSteps(step: controller.discoveryState.step) {
+            let core = VStack(spacing: metrics.spacing.xLarge) {
+                stepContent
 
-            if let buttonConfiguration {
-                POSFlowButtonsView(configuration: buttonConfiguration)
+                if let buttonConfiguration {
+                    POSFlowButtonsView(configuration: buttonConfiguration)
+                }
+            }
+            .posModalCloseButton(action: {
+                isPresented = false
+            })
+
+            if isFullScreenFlow {
+                // Same padding as the other phone flows, so the buttons line up.
+                core.posModalSizing()
+            } else {
+                core.padding(metrics.padding.xLarge)
             }
         }
-        .posModalCloseButton(action: {
-            isPresented = false
-        })
-
-        if isFullScreenFlow {
-            // Same padding as the other phone flows, so the buttons line up.
-            core
-                .posModalSizing()
-                .background(Color.posSurfaceBright)
-        } else {
-            core
-                .padding(metrics.padding.xLarge)
-                .background(Color.posSurfaceBright)
-        }
+        .background(Color.posSurfaceBright)
     }
 
     @ViewBuilder
     private var stepContent: some View {
         let step = HStack {
             Spacer()
-            POSPrinterSetupContent(controller: controller)
+            POSPrinterSetupContent(controller: controller, state: controller.discoveryState)
             Spacer()
         }
         if isFullScreenFlow {
@@ -105,9 +103,11 @@ private struct POSPrinterSetupContent: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     let controller: POSPrinterConnectionController
+    // Passed in, not read from the controller, so the page sliding out keeps showing its own state.
+    let state: PrinterDiscoveryState
 
     var body: some View {
-        switch controller.discoveryState {
+        switch state {
         case .idle:
             messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
                            title: Localization.pairTitle,
@@ -397,6 +397,21 @@ extension POSModalCompactStyle {
             value: "Receipt printer",
             comment: "Title in the header of the full-screen receipt printer setup flow on phone."
         ))
+    }
+}
+
+private extension PrinterDiscoveryState {
+    /// The printer list grows in place while the search continues, so it stays one step.
+    /// The modal opens idle and starts searching at once, so these two share a step and nothing slides on open.
+    var step: PrinterDiscoveryState {
+        switch self {
+        case .foundMultiple:
+            return .foundMultiple([])
+        case .idle:
+            return .searching
+        default:
+            return self
+        }
     }
 }
 

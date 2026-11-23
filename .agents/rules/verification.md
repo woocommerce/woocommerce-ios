@@ -9,6 +9,8 @@ Run agent commands from the task's checkout root. For direct `xcodebuild` comman
 Fastlane already selects this checkout-local build folder. Reuse compatible output; use a fresh
 child of `DerivedData/` only when a diagnostic requires a clean configuration.
 Keep one build writer per output folder and separate output folders between worktrees.
+At the end of a task, list each build output folder that the task created, with its size.
+Offer to remove these folders. Do not remove them without approval.
 
 When an agent needs to save console logs, screenshots, traces, or test results, use a unique directory
 under `.agent-artifacts/`, which is gitignored. Keep evidence until the task's retention requirements

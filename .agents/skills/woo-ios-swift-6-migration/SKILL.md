@@ -25,20 +25,20 @@ The strict-concurrency level has three sources. In order of precedence, they are
 
 Do not set `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` on a whole target. On the pinned toolchain, it caused compiler crashes, an optimizer crash in Release-Alpha archives ([swiftlang/swift#88173](https://github.com/swiftlang/swift/issues/88173)), and XCTest crashes in `swift_task_deinitOnExecutorMainActorBackDeploy`. Its warning counts are not comparable with normal measurements. Use explicit `@MainActor`, `nonisolated`, and `Sendable` declarations instead.
 
-Use the repository build, test, and simulator workflows. To measure workspace warnings, use the existing script with a new DerivedData directory:
+Use the repository build, test, and simulator workflows. To measure workspace warnings, use the existing script. Do not pass a DerivedData path. The script builds into a new temporary folder, which gives a clean build, and removes that folder when it exits. Save the JSON and the build log under `.agent-artifacts/<task>/`:
 
 ```bash
-Scripts/StrictConcurrency/count-warnings.sh /tmp/<task>-before.json
+Scripts/StrictConcurrency/count-warnings.sh .agent-artifacts/<task>/before.json
 ```
 
-Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds.
+Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. For these scoped strict builds, use only the two fixed folders in Xcode's default DerivedData location: `~/Library/Developer/Xcode/DerivedData/woo-strict-before` and `~/Library/Developer/Xcode/DerivedData/woo-strict-after`. Reuse them for every task. Do not create a folder for each task. An incremental build in these folders is valid only if every measured file compiled. Check disk space before large builds.
 
 For a single package target, `swift build` compiles only that target and its dependencies in seconds, including targets that import XCTest:
 
 ```bash
 PLATFORM=$(xcrun --sdk iphonesimulator --show-sdk-platform-path)
 swift build --package-path Modules --target UITestsFoundation \
-  --scratch-path /tmp/<task>-spm --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
+  --scratch-path ~/Library/Developer/Xcode/DerivedData/woo-strict-spm --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
   --triple arm64-apple-ios18.0-simulator -Xswiftc -F -Xswiftc "$PLATFORM/Developer/Library/Frameworks" \
   -Xswiftc -strict-concurrency=complete
 ```

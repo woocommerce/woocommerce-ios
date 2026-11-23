@@ -5,6 +5,7 @@ import Combine
 import class Networking.BookingsRemote
 
 /// View model for booking search functionality
+@MainActor
 final class BookingSearchViewModel: ObservableObject {
 
     @Published private(set) var searchResults: [Booking] = []
@@ -32,7 +33,6 @@ final class BookingSearchViewModel: ObservableObject {
     /// Current search query
     @Published var currentSearchQuery: String = ""
 
-    @MainActor
     init(siteID: Int64,
          type: BookingListTab,
          searchQueryPublisher: AnyPublisher<String, Never>,
@@ -51,7 +51,6 @@ final class BookingSearchViewModel: ObservableObject {
     }
 
     /// Called when the user pulls down the list to refresh.
-    @MainActor
     func onRefreshAction() async {
         await withCheckedContinuation { continuation in
             searchPaginationTracker.resync(reason: nil) {
@@ -61,14 +60,12 @@ final class BookingSearchViewModel: ObservableObject {
     }
 
     /// Called when the next page should be loaded.
-    @MainActor
     func onLoadNextPageAction() {
         guard !currentSearchQuery.isEmpty else { return }
         searchPaginationTracker.ensureNextPageIsSynced()
     }
 
     /// Updates the sort order for search results.
-    @MainActor
     func updateSortOrder(_ sortBy: BookingListViewModel.SortBy) {
         currentOrder = sortBy
         // Trigger a new search if we have a query
@@ -77,7 +74,6 @@ final class BookingSearchViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
         searchPaginationTracker.resync(reason: nil) {}
@@ -92,13 +88,11 @@ final class BookingSearchViewModel: ObservableObject {
 // MARK: Configuration
 
 private extension BookingSearchViewModel {
-    @MainActor
     func configureSearchPaginationTracker() {
         searchPaginationTracker.delegate = self
     }
 
     /// Configures subscription to search query changes.
-    @MainActor
     func configureSearchQuerySubscription(searchQueryPublisher: AnyPublisher<String, Never>) {
         searchQueryPublisher
             .removeDuplicates()
@@ -120,7 +114,6 @@ private extension BookingSearchViewModel {
 }
 
 extension BookingSearchViewModel: @MainActor PaginationTrackerDelegate {
-    @MainActor
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         guard !currentSearchQuery.isEmpty else {
             onCompletion?(.success(false))

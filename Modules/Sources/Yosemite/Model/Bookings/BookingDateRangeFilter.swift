@@ -3,7 +3,7 @@ import Foundation
 
 /// Used to filter bookings by date range
 ///
-public struct BookingDateRangeFilter: Codable, Equatable, Hashable {
+public struct BookingDateRangeFilter: Codable, Equatable, Hashable, Sendable {
     /// Start date of the range (inclusive)
     ///
     public let startDate: Date?

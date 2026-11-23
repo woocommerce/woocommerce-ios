@@ -5,7 +5,7 @@ import class WooFoundationCore.CurrencySettings
 import enum WooFoundationCore.CurrencyCode
 
 extension BookingDetailsViewModel {
-    static func formatPrice(for booking: Booking, priceString: String) -> String {
+    nonisolated static func formatPrice(for booking: Booking, priceString: String) -> String {
         guard let decimalPrice = Decimal(string: priceString) else {
             return priceString
         }
@@ -14,7 +14,7 @@ extension BookingDetailsViewModel {
         ).formatAmount(decimalPrice) ?? priceString
     }
 
-    private static func currencySettings(for booking: Booking) -> CurrencySettings {
+    nonisolated private static func currencySettings(for booking: Booking) -> CurrencySettings {
         let siteCurrencySettings = ServiceLocator.currencySettings
         guard let currencyCode = CurrencyCode(rawValue: booking.currency) else {
             return siteCurrencySettings

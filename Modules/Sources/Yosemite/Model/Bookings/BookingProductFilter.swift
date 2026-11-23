@@ -2,7 +2,7 @@ import Foundation
 
 /// Used to filter bookings by product
 ///
-public struct BookingProductFilter: Codable, Hashable {
+public struct BookingProductFilter: Codable, Hashable, Sendable {
     /// ID of the product
     ///
     public let productID: Int64

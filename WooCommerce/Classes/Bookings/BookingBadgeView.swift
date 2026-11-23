@@ -56,7 +56,7 @@ extension BookingBadgeView {
 // MARK: - BookingBadgeable
 
 protocol BookingBadgeable {
-    var bookingBadge: BookingBadgeView { get }
+    @MainActor var bookingBadge: BookingBadgeView { get }
 }
 
 extension BookingBadgeView {
@@ -68,7 +68,7 @@ extension BookingBadgeView {
 // MARK: - BookingAttendanceStatus
 
 extension BookingAttendanceStatus: BookingBadgeable {
-    var bookingBadge: BookingBadgeView {
+    @MainActor var bookingBadge: BookingBadgeView {
         switch self {
         case .attended:
             return .default(text: localizedTitle)
@@ -81,7 +81,7 @@ extension BookingAttendanceStatus: BookingBadgeable {
 // MARK: - BookingStatus
 
 extension BookingStatus: BookingBadgeable {
-    var bookingBadge: BookingBadgeView {
+    @MainActor var bookingBadge: BookingBadgeView {
         switch self {
         case .cancelled:
             return .info(text: localizedTitle)
@@ -94,7 +94,7 @@ extension BookingStatus: BookingBadgeable {
 // MARK: - BookingPaymentStatus
 
 extension BookingPaymentStatus: BookingBadgeable {
-    var bookingBadge: BookingBadgeView {
+    @MainActor var bookingBadge: BookingBadgeView {
         switch self {
         case .paid, .refunded, .partiallyRefunded, .authorizationVoided:
             return .default(text: text)

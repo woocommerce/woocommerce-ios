@@ -22,7 +22,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var bottomSheetDragOffset: CGFloat = 0
 
-    private let animationDuration = Constants.animationDuration
+    static let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
     private var isFullScreen: Bool {
@@ -123,7 +123,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 // Center cards across the bottom system inset; full-screen content and bottom sheets keep the safe area.
                 .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
-            .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .animation(.easeInOut(duration: Self.animationDuration), value: modalManager.isPresented)
             .onChange(of: modalManager.isPresented) { _, isPresented in
                 if isPresented {
                     bottomSheetDragOffset = 0

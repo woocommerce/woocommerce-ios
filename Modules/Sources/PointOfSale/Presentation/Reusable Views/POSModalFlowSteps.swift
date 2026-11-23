@@ -12,28 +12,97 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.posModalFlowStepNavigation) private var navigation
+    @State private var pacer: POSModalFlowStepPacer<Step>
+    @State private var shownPage = ShownPage()
     private let step: Step
     private let page: () -> Page
 
     init(step: Step, @ViewBuilder page: @escaping () -> Page) {
         self.step = step
         self.page = page
+        _pacer = State(initialValue: POSModalFlowStepPacer(step: step))
     }
 
     var body: some View {
         if isFullScreenFlow && UIDevice.current.userInterfaceIdiom == .phone {
-            let _ = navigation?.show(step: step)
+            let _ = navigation?.show(step: pacer.shown)
             ZStack {
-                page()
-                    .id(step)
+                currentPage
+                    .id(pacer.shown)
                     .transition(reduceMotion ? AnyTransition.opacity : AnyTransition(POSFlowStepSlideTransition(direction: { [navigation] in
                         navigation?.direction ?? .forward
                     })))
             }
-            .animation(.easeInOut(duration: POSFlowStepSlideTransition.animationDuration), value: step)
+            .animation(pacer.isSliding ? .easeInOut(duration: POSFlowStepSlideTransition.animationDuration) : nil, value: pacer.shown)
+            .onChange(of: step) { _, step in
+                pacer.show(step)
+            }
+            .task(id: pacer.slideCount) {
+                let duration = pacer.isModalArriving ? POSRootModalViewModifier.animationDuration : POSFlowStepSlideTransition.settleDuration
+                try? await Task.sleep(for: .seconds(duration))
+                guard !Task.isCancelled else {
+                    return
+                }
+                pacer.motionEnded()
+            }
         } else {
             page()
         }
+    }
+
+    /// While a newer step waits for the running slide, the shown step keeps the page it was last built with.
+    private var currentPage: Page {
+        guard pacer.shown != step, let heldPage = shownPage.page else {
+            let newPage = page()
+            shownPage.page = newPage
+            return newPage
+        }
+        return heldPage
+    }
+
+    private final class ShownPage {
+        var page: Page?
+    }
+}
+
+/// Steps that change during a slide collapse into the latest one, which slides in when that slide ends.
+/// Steps that change while the modal arrives are swapped in on arrival: a page inserted into the moving modal is drawn at its final position.
+struct POSModalFlowStepPacer<Step: Hashable> {
+    private(set) var shown: Step
+    private(set) var isSliding = false
+    private(set) var slideCount = 0
+    private(set) var isModalArriving = true
+    private var latest: Step
+
+    init(step: Step) {
+        shown = step
+        latest = step
+    }
+
+    mutating func show(_ step: Step) {
+        latest = step
+        if !isModalArriving && !isSliding {
+            slideToLatest()
+        }
+    }
+
+    mutating func motionEnded() {
+        isSliding = false
+        if isModalArriving {
+            isModalArriving = false
+            shown = latest
+        } else {
+            slideToLatest()
+        }
+    }
+
+    private mutating func slideToLatest() {
+        guard latest != shown else {
+            return
+        }
+        shown = latest
+        isSliding = true
+        slideCount += 1
     }
 }
 
@@ -64,6 +133,8 @@ extension EnvironmentValues {
 /// would slide the old page out the wrong way on the first change after the direction flips.
 struct POSFlowStepSlideTransition: Transition {
     static let animationDuration: CGFloat = 0.3
+    /// A page that comes back before its removal has finished would reverse instead of sliding in.
+    static let settleDuration = animationDuration + 0.05
 
     let direction: () -> POSFlowStepDirection
 

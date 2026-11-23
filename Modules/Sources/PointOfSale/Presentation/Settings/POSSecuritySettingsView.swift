@@ -45,6 +45,7 @@ struct POSSecuritySettingsView: View {
             }
         }
         .background(Color.posSurface)
+        .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving || presentation.isTransitioning)
         .onAppear { controller.load() }
         .onDisappear(perform: endEditing)

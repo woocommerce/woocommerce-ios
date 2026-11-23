@@ -6,6 +6,8 @@ enum POSErrorAndAlertIconSize {
     case small
     case medium
     case large
+    /// Large icon scaled to 75% for phone layouts.
+    case largeCompact
 
     var dimension: CGFloat {
         switch self {
@@ -15,6 +17,8 @@ enum POSErrorAndAlertIconSize {
             return 56.0
         case .large:
             return 80.0
+        case .largeCompact:
+            return 60.0
         }
     }
 }

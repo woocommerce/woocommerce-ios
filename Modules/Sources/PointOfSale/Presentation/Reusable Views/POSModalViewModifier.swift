@@ -19,6 +19,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
@@ -26,6 +27,11 @@ struct POSRootModalViewModifier: ViewModifier {
 
     private var isFullScreen: Bool {
         (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
+    }
+
+    /// iPhone full-screen modals slide up and down like a full-screen cover. Narrow iPad windows keep the iPad animation.
+    private var slidesFromBottom: Bool {
+        isFullScreen && horizontalSizeClass == .compact && UIDevice.current.userInterfaceIdiom == .phone
     }
 
     private var isCompactDialog: Bool {
@@ -75,7 +81,8 @@ struct POSRootModalViewModifier: ViewModifier {
                             // Phone full-screen: paint the bright surface as a sibling above the dim
                             // backdrop so the screen reads as a single solid take-over, with no
                             // backdrop showing through above the status bar.
-                            if isFullScreen {
+                            // A sliding modal carries its own surface instead, so the surface moves with it.
+                            if isFullScreen && !slidesFromBottom {
                                 Color.posSurfaceBright
                                     .edgesIgnoringSafeArea(.all)
                                     .animation(nil, value: modalManager.isPresented)
@@ -98,12 +105,16 @@ struct POSRootModalViewModifier: ViewModifier {
                                                    cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .padding(modalPadding)
                                 }
+                                .frame(maxWidth: slidesFromBottom ? .infinity : nil, maxHeight: slidesFromBottom ? .infinity : nil)
+                                .background(slidesFromBottom ? Color.posSurfaceBright : Color.clear, ignoresSafeAreaEdges: .all)
                                 .zIndex(1)
                                 // Scale the modal container in and out, fading appropriately.
                                 // Unfortunately combined doesn't work on removal.
                                 // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
                                 // consistent even when animating out, which it wouldn't be if unspecified.
-                                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+                                .transition(modalTransition(screenHeight: geometry.size.height
+                                                            + geometry.safeAreaInsets.top
+                                                            + geometry.safeAreaInsets.bottom))
                             }
                         }
                     }
@@ -123,6 +134,14 @@ struct POSRootModalViewModifier: ViewModifier {
 }
 
 private extension POSRootModalViewModifier {
+    /// The sliding modal moves by the full screen height, not its own frame, because its surface extends into the safe areas.
+    func modalTransition(screenHeight: CGFloat) -> AnyTransition {
+        guard slidesFromBottom else {
+            return .scale(scale: scaleTransitionAmount).combined(with: .opacity)
+        }
+        return reduceMotion ? .opacity : .offset(y: screenHeight)
+    }
+
     func bottomSheet(parentSize: CGSize, bottomSafeArea: CGFloat) -> some View {
         VStack(spacing: metrics.spacing.none) {
             Spacer(minLength: metrics.spacing.xxLarge)

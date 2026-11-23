@@ -60,7 +60,7 @@ struct POSSecuritySettingsView: View {
             }
         }
         .background(Color.posSurface)
-        .disabled(controller.isSaving)
+        .disabled(controller.isSaving || presentation.isTransitioning)
         .onAppear { controller.load() }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in

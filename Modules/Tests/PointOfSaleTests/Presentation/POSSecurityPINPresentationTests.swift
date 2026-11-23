@@ -3,6 +3,45 @@ import Testing
 
 @MainActor
 struct POSSecurityPINPresentationTests {
+    @Test(arguments: [false, true])
+    func test_handoff_when_waiting_for_result_or_dismissal_then_blocks_settings(dismissesFirst: Bool) {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let approval = makeApproval()
+        #expect(!sut.isTransitioning)
+        sut.present(approval)
+        #expect(!sut.isTransitioning)
+
+        // When
+        sut.approvalEnded()
+        #expect(sut.isTransitioning)
+        if dismissesFirst {
+            sut.dismissalCompleted(for: approval)
+            #expect(sut.isTransitioning)
+            sut.finishApproval(editor: makeEditor())
+        } else {
+            sut.finishApproval(editor: makeEditor())
+            #expect(sut.isTransitioning)
+            sut.dismissalCompleted(for: approval)
+        }
+
+        // Then
+        #expect(!sut.isTransitioning)
+    }
+
+    @Test func test_handoff_when_cancelled_then_unblocks_settings() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        sut.present(makeApproval())
+        sut.approvalEnded()
+
+        // When
+        sut.cancel()
+
+        // Then
+        #expect(!sut.isTransitioning)
+    }
+
     @Test func test_approval_when_completed_then_waits_for_dismissal_before_presenting_editor() {
         // Given
         let sut = POSSecurityPINPresentation()

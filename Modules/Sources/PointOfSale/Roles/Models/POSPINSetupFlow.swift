@@ -1,6 +1,5 @@
 import Observation
 
-/// Presentation pauses run alongside that work and never delay saving.
 @MainActor
 @Observable
 final class POSPINSetupFlow {

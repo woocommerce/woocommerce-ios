@@ -39,6 +39,13 @@ final class POSSecurityPINPresentation {
         return destination
     }
 
+    var isTransitioning: Bool {
+        switch state {
+        case .dismissingApproval, .awaitingApprovalResult: true
+        case .idle, .presented: false
+        }
+    }
+
     func present(_ destination: Destination) {
         state = .presented(destination)
     }

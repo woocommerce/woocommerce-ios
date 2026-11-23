@@ -1,6 +1,12 @@
 import Foundation
 import Observation
 
+enum POSPINAction: Equatable {
+    case setUp
+    case change
+    case delete
+}
+
 @MainActor
 @Observable
 final class POSSecuritySettingsController {
@@ -21,12 +27,14 @@ final class POSSecuritySettingsController {
     private var editorID: UUID?
     private let store: POSPINManaging
     private let session: POSAccessSession
+    private let lockSettings: POSLockSettings
     private let flowSleep: @MainActor (Duration) async throws -> Void
 
-    init(store: POSPINManaging, session: POSAccessSession,
+    init(store: POSPINManaging, session: POSAccessSession, lockSettings: POSLockSettings,
          flowSleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
         self.store = store
         self.session = session
+        self.lockSettings = lockSettings
         self.flowSleep = flowSleep
     }
 
@@ -40,7 +48,18 @@ final class POSSecuritySettingsController {
 
     var isApprovingProtectionRemoval: Bool { approvalRequest?.action == .removeProtection }
 
-    var hasOnlyAdminPIN: Bool { roles == [.admin] }
+    var lockPreferences: POSLockPreferences { lockSettings.preferences }
+
+    func pinActions(for role: POSLocalRole) -> [POSPINAction] {
+        guard let roles, role == .admin || offersCashierPINSetup else { return [] }
+        guard roles.contains(role) else { return [.setUp] }
+        return role == .admin ? [.change] : [.change, .delete]
+    }
+
+    func updateLockPreferences(_ change: (inout POSLockPreferences) -> Void) {
+        guard isVisible, isPINProtectionEnabled, !isSaving else { return }
+        lockSettings.update(change)
+    }
 
     func load() {
         do {

@@ -14,6 +14,48 @@ import enum WooFoundationCore.WooAnalyticsStat
 struct POSPaymentModelTests {
 
     @Test @MainActor
+    func test_payment_state_changes_when_success_is_reset_in_one_turn_then_locks_before_returning() {
+        // Given
+        let sut = makePaymentController()
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let autoLock = POSAutoLockActivityController(session: session, paymentStateProvider: { sut.paymentState }, timeout: nil)
+        var transitions: [PointOfSalePaymentState] = []
+        let subscription = sut.paymentStateChanges.sink { change in
+            transitions.append(change.newState)
+            autoLock.handlePaymentStateChange(from: change.oldState, to: change.newState, locksAfterSale: true)
+        }
+        defer {
+            subscription.cancel()
+            autoLock.stop()
+        }
+        let success = PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)
+
+        // When
+        sut.setPreviewState(paymentState: success, inlineMessage: nil)
+        sut.reset()
+
+        // Then
+        #expect(transitions == [success, .idle])
+        #expect(session.lockCallCount == 1)
+    }
+
+    @Test @MainActor
+    func test_payment_state_changes_when_state_is_unchanged_then_does_not_publish_activity() {
+        // Given
+        let sut = makePaymentController()
+        var transitions: [PointOfSalePaymentState] = []
+        let subscription = sut.paymentStateChanges.sink { transitions.append($0.newState) }
+        defer { subscription.cancel() }
+
+        // When
+        sut.setPreviewState(paymentState: .idle, inlineMessage: nil)
+        sut.reset()
+
+        // Then
+        #expect(transitions.isEmpty)
+    }
+
+    @Test @MainActor
     func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {
         // Given
         let service = MockCardPresentPaymentService()

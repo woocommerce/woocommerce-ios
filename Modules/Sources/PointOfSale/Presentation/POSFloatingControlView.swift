@@ -31,9 +31,10 @@ struct POSFloatingControlView: View {
     }
 
     var body: some View {
+        let paymentModel = posModel.paymentModel
         HStack {
             POSMenu {
-                menuOptions()
+                menuOptions(paymentModel: paymentModel)
             } label: {
                 VStack {
                     Spacer()
@@ -81,7 +82,7 @@ private extension POSFloatingControlView {
         }
     }
 
-    @ViewBuilder private func menuOptions() -> some View {
+    @ViewBuilder private func menuOptions(paymentModel: POSPaymentModel) -> some View {
         if horizontalSizeClass == .regular || isPhoneLayout {
             POSMenuButton {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
@@ -106,6 +107,8 @@ private extension POSFloatingControlView {
 
             if canLockPOS {
                 POSMenuButton {
+                    // The menu can stay open while a payment starts.
+                    guard !paymentModel.paymentState.isAutoLockSuppressing else { return }
                     session.lock()
                 } label: {
                     Label(
@@ -113,6 +116,7 @@ private extension POSFloatingControlView {
                         icon: { Image(systemName: "lock") }
                     )
                 }
+                .disabled(paymentModel.paymentState.isAutoLockSuppressing)
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
         }

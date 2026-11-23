@@ -6,7 +6,6 @@ struct POSPreSearchView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posLayoutScale) private var layoutScale
     @ScaledMetric private var chipHeight: CGFloat = 56.0
 
     let savedSearches: [String]
@@ -39,9 +38,8 @@ struct POSPreSearchView: View {
                 VStack(alignment: .leading, spacing: metrics.spacing.none) {
                     recentSearchesSection
 
+                    // No bottom padding: ItemList already spaces its header from the first card.
                     sectionHeader(Localization.popularProductsTitle)
-                        // ItemList already spaces its header from the first card.
-                        .padding(.bottom, layoutScale == .compact ? metrics.padding.none : metrics.padding.medium)
                 }
             })
     }

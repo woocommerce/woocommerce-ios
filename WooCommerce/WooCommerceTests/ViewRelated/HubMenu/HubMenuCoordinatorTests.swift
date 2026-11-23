@@ -125,12 +125,27 @@ final class HubMenuCoordinatorTests: XCTestCase {
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
+
+    func test_review_notification_when_pos_denies_navigation_then_drops_request_before_fetching() {
+        // Given
+        let coordinator = makeHubMenuCoordinator(canNavigateOutsidePOS: { false })
+        coordinator.activate(siteID: siteID)
+        let notification = WooCommerce.PushNotification(noteID: 1234, siteID: 1, kind: .comment, title: "", subtitle: "",
+                                                        message: "", note: nil, meta: nil)
+
+        // When
+        pushNotificationsManager.sendInactiveNotification(notification)
+
+        // Then
+        assertEmpty(storesManager.receivedActions)
+        assertEmpty(noticePresenter.queuedNotices)
+    }
 }
 
 // MARK: - Utils
 private extension HubMenuCoordinatorTests {
     @MainActor
-    func makeHubMenuCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> HubMenuCoordinator {
+    func makeHubMenuCoordinator(canNavigateOutsidePOS: @escaping @MainActor () -> Bool = { true }) -> HubMenuCoordinator {
         HubMenuCoordinator(tabContainerController: TabContainerController(),
                            pushNotificationsManager: pushNotificationsManager,
                            storesManager: storesManager,
@@ -138,6 +153,7 @@ private extension HubMenuCoordinatorTests {
                            switchStoreUseCase: switchStoreUseCase,
                            httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel(stores: storesManager),
                            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                           willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
+                           canNavigateOutsidePOS: canNavigateOutsidePOS,
+                           willPresentReviewDetailsFromPushNotification: { true })
     }
 }

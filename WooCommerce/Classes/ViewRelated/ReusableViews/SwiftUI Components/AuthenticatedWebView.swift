@@ -106,25 +106,29 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
     }
 
     let viewModel: AuthenticatedWebViewModel
+    private let session: AuthenticatedWebViewController.Session
 
     init(isPresented: Binding<Bool>,
          viewModel: AuthenticatedWebViewModel) {
         self._isPresented = isPresented
         self.viewModel = viewModel
+        self.session = .app
     }
 
     init(isPresented: Binding<Bool>,
          url: URL,
+         session: AuthenticatedWebViewController.Session = .app,
          urlToTriggerExit: String? = nil,
          redirectHandler: ((URL) -> Void)? = nil) {
-            self._isPresented = isPresented
-            viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
+        self._isPresented = isPresented
+        self.session = session
+        self.viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,
                                                          redirectHandler: redirectHandler)
         }
 
     func makeUIViewController(context: Context) -> AuthenticatedWebViewController {
-        return AuthenticatedWebViewController(viewModel: viewModel)
+        return AuthenticatedWebViewController(viewModel: viewModel, session: session)
     }
 
     func updateUIViewController(_ uiViewController: AuthenticatedWebViewController, context: Context) {

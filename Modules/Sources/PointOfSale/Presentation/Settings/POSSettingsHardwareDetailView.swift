@@ -6,6 +6,7 @@ struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posAccessSession) private var session
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -106,13 +107,13 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, preservesOnLock: { true }, onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }, content: { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, preservesOnLock: { true }, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }, content: { viewContainer in
             paymentsOnboardingView(from: viewContainer)
@@ -133,7 +134,9 @@ struct POSSettingsHardwareDetailView: View {
 // MARK: - Views
 private extension POSSettingsHardwareDetailView {
     func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
+        let scope = session.accessScope
         onboardingViewContainer.configuration.showSupport = {
+            guard session.isCurrent(scope) else { return }
             posModel.cancelCardPaymentsOnboarding()
             showSupport = true
         }

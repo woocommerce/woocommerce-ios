@@ -123,7 +123,9 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         ))
     }
 
-    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
-        AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
+    func createSettingsWebView(url: URL, title: String, requiresIsolatedSignIn: Bool, completion: @escaping () -> Void) -> AnyView {
+        AnyView(WCAuthenticatedWebView(url: url, title: title,
+                                       session: requiresIsolatedSignIn ? .isolatedSignIn : .app,
+                                       completion: completion))
     }
 }

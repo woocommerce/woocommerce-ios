@@ -9,6 +9,25 @@ struct POSSecuritySettingsControllerTests {
     private let storage = InMemoryPOSSecureStorage()
     private let defaultsScope = POSSecurityTestDefaults()
 
+    @Test(arguments: [POSLocalRole.admin, .cashier])
+    func test_guided_access_settings_return_when_pos_locks_then_requires_the_manage_settings_capability(_ role: POSLocalRole) async throws {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
+        controller.isReturningFromGuidedAccessSettings = true
+
+        // When
+        session.lock()
+
+        // Then
+        #expect(controller.preservesGuidedAccessPresentation)
+        #expect(!controller.isVisible)
+        try await session.signIn(withPIN: role == .admin ? "1234" : "5678")
+        #expect(controller.preservesGuidedAccessPresentation == role.capabilities.contains(.manageStoreSettings))
+    }
+
     @Test func test_confirmation_when_other_role_changes_after_validation_then_final_save_still_rejects_duplicate() async throws {
         // Given
         let (controller, _, store) = makeSUT()

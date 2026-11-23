@@ -21,6 +21,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
     let onSuccess: (POSItem) -> Void
 
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posAccessSession) private var session
     @State private var selectedType: POSCouponDiscountType?
     @State private var showCouponSelectionSheet: Bool = false
     @State private var addedCouponItem: POSItem?
@@ -28,10 +29,12 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .posSheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
+                let scope = session.accessScope
                 externalViews.createCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
                     onSuccess: { coupon in
+                        guard session.isCurrent(scope) else { return }
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
                         addedCouponItem = .coupon(.init(id: id,
                                                         code: coupon.code,
@@ -42,11 +45,10 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                         selectedType = nil
                     },
                     onDisappear: {
-                        if let couponItem = addedCouponItem {
-                            selectedType = nil
-                            onSuccess(couponItem)
-                            addedCouponItem = nil
-                        }
+                        defer { addedCouponItem = nil }
+                        guard session.isCurrent(scope), let couponItem = addedCouponItem else { return }
+                        selectedType = nil
+                        onSuccess(couponItem)
                     }
                 )
                 .posSheet(isPresented: $showCouponSelectionSheet) {
@@ -55,17 +57,20 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                         title: Localization.selectCouponTypeTitle,
                         cancelButtonTitle: Localization.selectCouponCancelButtonTitle
                     ) { type in
+                        guard session.isCurrent(scope) else { return }
                         showCouponSelectionSheet = false
                         selectedType = POSCouponDiscountType(discountType: type)
                     }
                 }
             }
             .posSheet(isPresented: $isPresented) {
+                let scope = session.accessScope
                 externalViews.createDiscountTypeSelectionSheet(
                     isPresented: $isPresented,
                     title: Localization.selectCouponTypeTitle,
                     cancelButtonTitle: Localization.selectCouponCancelButtonTitle
                 ) { type in
+                    guard session.isCurrent(scope) else { return }
                     selectedType = POSCouponDiscountType(discountType: type)
                 }
             }

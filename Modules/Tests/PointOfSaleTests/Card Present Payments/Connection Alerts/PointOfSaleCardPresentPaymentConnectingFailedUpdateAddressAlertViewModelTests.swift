@@ -42,7 +42,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             openURL: { openedURLs.append($0) },
             notificationCenter: notificationCenter)
         // When
-        try XCTUnwrap(sut.primaryButtonViewModel).actionHandler()
+        sut.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
 
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -85,13 +85,36 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             openURL: { _ in },
             notificationCenter: notificationCenter)
         // When
-        try XCTUnwrap(sut.primaryButtonViewModel).actionHandler()
+        sut.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
 
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
 
         // Then
         XCTAssertTrue(sut.shouldShowSettingsWebView)
         XCTAssertEqual(retryCount, 0)
+    }
+
+    func test_open_settings_when_isolated_sign_in_is_required_then_uses_the_embedded_web_view() {
+        // Given
+        var openedBrowser = false
+        var didRetrySearch = false
+        let notificationCenter = NotificationCenter()
+        let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+            settingsAdminUrl: URL(string: "https://example.com")!,
+            showsInAuthenticatedWebView: false,
+            retrySearchAction: { didRetrySearch = true },
+            cancelSearchAction: {},
+            openURL: { _ in openedBrowser = true },
+            notificationCenter: notificationCenter)
+
+        // When
+        sut.primaryButtonViewModel(requiresIsolatedSignIn: true).actionHandler()
+        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertTrue(sut.shouldShowSettingsWebView)
+        XCTAssertFalse(openedBrowser)
+        XCTAssertFalse(didRetrySearch)
     }
 
     func test_application_will_enter_foreground_when_alert_released_then_does_not_retry_search() throws {
@@ -105,7 +128,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             cancelSearchAction: {},
             openURL: { _ in },
             notificationCenter: notificationCenter)
-        try XCTUnwrap(sut?.primaryButtonViewModel).actionHandler()
+        sut?.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
         weak var releasedViewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel?
         releasedViewModel = sut
 

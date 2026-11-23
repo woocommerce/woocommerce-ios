@@ -89,6 +89,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let accessSession: POSAccessSession
     private let siteID: Int64
     private let customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
@@ -169,7 +170,8 @@ protocol PointOfSaleAggregateModelProtocol {
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences()) {
+         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences(),
+         accessSession: POSAccessSession = UnrestrictedPOSAccessSession()) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -183,6 +185,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.accessSession = accessSession
         self.soundPlayer = soundPlayer
         self.siteID = siteID
         self.customAmountTaxPreferences = customAmountTaxPreferences
@@ -208,8 +211,9 @@ protocol PointOfSaleAggregateModelProtocol {
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
                 onSuccessScreenBarcodeScanned: { barcode in
-                    weakSelf?.startNewCart()
-                    weakSelf?.barcodeScanned(barcode)
+                    guard let model = weakSelf, !model.accessSession.isLocked else { return }
+                    model.startNewCart()
+                    model.barcodeScanned(barcode)
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
@@ -354,21 +358,22 @@ extension PointOfSaleAggregateModel {
     @discardableResult
     func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) -> Task<Void, Never> {
         let currentCheckoutGeneration = checkoutGeneration
+        let accessScope = accessSession.accessScope
+        let wasUnlocked = !accessSession.isLocked
         return Task { [weak self] in
             // A queued result must still belong to this cart, even after returning to building.
-            guard let self,
-                  self.orderStage == .building,
-                  self.checkoutGeneration == currentCheckoutGeneration else { return }
+            guard let self, wasUnlocked, accessSession.isCurrent(accessScope),
+                  orderStage == .building, checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
-                await handleSuccessfulScan(barcode: barcode)
+                await handleSuccessfulScan(barcode: barcode, accessScope: accessScope)
             case .failure(let error):
                 await handleFailedScan(error: error)
             }
         }
     }
 
-    private func handleSuccessfulScan(barcode: String) async {
+    private func handleSuccessfulScan(barcode: String, accessScope: POSPINSessionTokens.Token) async {
         let placeholderItemID = cart.addLoadingItem().id
 
         analytics.track(
@@ -380,6 +385,7 @@ extension PointOfSaleAggregateModel {
 
         do throws(PointOfSaleBarcodeScanError) {
             let item = try await barcodeScanService.getItem(barcode: barcode)
+            guard isCurrentScan(placeholderItemID, accessScope: accessScope) else { return }
             if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
                 analytics.track(
                     event: .PointOfSale.addItemToCart(
@@ -392,11 +398,20 @@ extension PointOfSaleAggregateModel {
                 cart.accessibilityFocusedItemID = cartItem.id
             }
         } catch {
+            guard isCurrentScan(placeholderItemID, accessScope: accessScope) else { return }
             DDLogInfo("Failed to find item by barcode: \(error)")
             if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                 await handleErrorItemAdded(error)
             }
         }
+    }
+
+    private func isCurrentScan(_ loadingItemID: UUID, accessScope: POSPINSessionTokens.Token) -> Bool {
+        guard accessSession.isCurrent(accessScope) else {
+            cart.removeItem(id: loadingItemID)
+            return false
+        }
+        return true
     }
 
     private func handleFailedScan(error: Error) async {

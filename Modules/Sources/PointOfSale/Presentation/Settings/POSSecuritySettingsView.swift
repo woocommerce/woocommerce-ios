@@ -57,7 +57,7 @@ struct POSSecuritySettingsView: View {
             }
         }
         .onChange(of: controller.isVisible) { _, isVisible in
-            if !isVisible {
+            if !isVisible && !controller.preservesGuidedAccessPresentation {
                 endEditing()
             }
         }
@@ -66,6 +66,7 @@ struct POSSecuritySettingsView: View {
         }
         .posModal(item: presentationBinding,
                   compactStyle: presentation.destination?.compactStyle(editorTitle: Localization.title) ?? .fullScreen(title: Localization.title),
+                  preservesOnLock: { controller.preservesGuidedAccessPresentation },
                   onDismissCompleted: { destination in
                       guard controller.isVisible else { endEditing(); return }
                       presentation.dismissalCompleted(for: destination)

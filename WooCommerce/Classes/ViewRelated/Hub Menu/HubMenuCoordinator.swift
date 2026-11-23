@@ -21,7 +21,8 @@ final class HubMenuCoordinator {
 
     private var notificationsSubscription: AnyCancellable?
 
-    private let willPresentReviewDetailsFromPushNotification: () async -> Void
+    private let canNavigateOutsidePOS: @MainActor () -> Bool
+    private let willPresentReviewDetailsFromPushNotification: @MainActor () async -> Bool
 
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
@@ -32,7 +33,8 @@ final class HubMenuCoordinator {
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
          httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-         willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
+         canNavigateOutsidePOS: @escaping @MainActor () -> Bool,
+         willPresentReviewDetailsFromPushNotification: @escaping @MainActor () async -> Bool) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
@@ -40,6 +42,7 @@ final class HubMenuCoordinator {
         self.switchStoreUseCase = switchStoreUseCase
         self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
+        self.canNavigateOutsidePOS = canNavigateOutsidePOS
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
         self.tabContainerController = tabContainerController
     }
@@ -48,12 +51,14 @@ final class HubMenuCoordinator {
                      storesManager: StoresManager = ServiceLocator.stores,
                      httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-                     willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
+                     canNavigateOutsidePOS: @escaping @MainActor () -> Bool,
+                     willPresentReviewDetailsFromPushNotification: @escaping @MainActor () async -> Bool) {
         self.init(tabContainerController: tabContainerController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
+                  canNavigateOutsidePOS: canNavigateOutsidePOS,
                   willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 
@@ -85,7 +90,7 @@ final class HubMenuCoordinator {
 
     @MainActor
     private func handleNotification(_ notification: WooCommerce.PushNotification) {
-        guard notification.kind == .comment else {
+        guard notification.kind == .comment, canNavigateOutsidePOS() else {
             return
         }
 
@@ -114,6 +119,7 @@ final class HubMenuCoordinator {
 
     @MainActor
     private func handleProductReviewResult(_ result: Result<ProductReviewFromNoteParcel, Error>) {
+        guard canNavigateOutsidePOS() else { return }
         switch result {
         case .failure:
             noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
@@ -128,7 +134,7 @@ final class HubMenuCoordinator {
 
                 Task { @MainActor in
                     ServiceLocator.analytics.track(.reviewOpen)
-                    await self.willPresentReviewDetailsFromPushNotification()
+                    guard await self.willPresentReviewDetailsFromPushNotification() else { return }
                     self.pushReviewDetailsViewController(using: parcel)
 
                     if siteChanged {

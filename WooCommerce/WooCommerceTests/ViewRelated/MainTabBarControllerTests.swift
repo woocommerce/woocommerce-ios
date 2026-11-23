@@ -440,6 +440,53 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
 
+    @MainActor
+    func test_navigateTo_when_pos_has_persisted_lock_at_launch_then_drops_route_before_pos_opens() throws {
+        // Given
+        let siteID: Int64 = 134
+        let defaultsName = "POSNavigation.\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: defaultsName))
+        defer { defaults.removePersistentDomain(forName: defaultsName) }
+        defaults.set(true, forKey: POSLockStateKey.key(for: siteID))
+        stores.updateDefaultStore(storeID: siteID)
+        let featureFlags = MockFeatureFlagService()
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleRoles] = true
+        let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController { coder in
+            MainTabBarController(coder: coder, featureFlagService: featureFlags, stores: self.stores, userDefaults: defaults)
+        })
+        XCTAssertNil(tabBar.presentedViewController)
+
+        // When
+        let accepted = tabBar.navigateTo(.orders)
+
+        // Then
+        XCTAssertFalse(accepted)
+    }
+
+    @MainActor
+    func test_navigateTo_when_pos_denies_exit_then_keeps_pos_and_discards_the_request() async throws {
+        // Given
+        let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        window.rootViewController = tabBar
+        let pos = POSHostingController(rootView: POSPresentationRootView(posView: nil))
+        pos.modalPresentationStyle = .fullScreen
+        var canExit = false
+        pos.canExitPOS = { canExit }
+        await tabBar.present(pos, animated: false)
+        XCTAssertTrue(tabBar.presentedViewController === pos)
+
+        // When
+        let accepted = tabBar.navigateTo(.products) {
+            XCTFail("The blocked request must not complete")
+        }
+        canExit = true
+
+        // Then
+        XCTAssertFalse(accepted)
+        XCTAssertTrue(tabBar.presentedViewController === pos)
+        XCTAssertTrue(tabBar.canNavigateOutsidePOS)
+    }
+
     func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {
         // Given
         let siteID: Int64 = 134

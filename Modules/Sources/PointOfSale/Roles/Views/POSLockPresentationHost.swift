@@ -4,6 +4,7 @@ import Observation
 
 struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable {
     let session: POSAccessSession
+    let locksInBackground: () -> Bool
     let lockContent: LockContent
 
     func makeCoordinator() -> POSLockPresentationCoordinator {
@@ -33,7 +34,7 @@ struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable
             .environment(\.dynamicTypeSize, environment.dynamicTypeSize)
             .environment(\.colorScheme, environment.colorScheme)
             .environment(\.layoutDirection, environment.layoutDirection)
-        context.coordinator.update(session: session, content: AnyView(content))
+        context.coordinator.update(session: session, content: AnyView(content), locksInBackground: locksInBackground)
     }
 
     static func dismantleUIViewController(_ controller: POSLockPresentationController, coordinator: POSLockPresentationCoordinator) {
@@ -74,7 +75,11 @@ final class POSLockPresentationCoordinator: NSObject {
     private weak var sourceWindow: UIWindow?
     private weak var previousKeyWindow: UIWindow?
     private var lockWindow: UIWindow?
+    private let privacyCover = UIView()
     private var sourceAccessibilityHidden = false
+    private var sourceInteractionEnabled = true
+    private var sceneIsInactive = false
+    private var locksInBackground: () -> Bool = { false }
     private var session: POSAccessSession?
     private var observationID = UUID()
     private var content = AnyView(EmptyView())
@@ -82,6 +87,11 @@ final class POSLockPresentationCoordinator: NSObject {
 
     override init() {
         super.init()
+        privacyCover.backgroundColor = UIColor(Color.posSurfaceContainerLow)
+        privacyCover.isUserInteractionEnabled = false
+        privacyCover.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneDeactivating), name: UIScene.willDeactivateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneBackgrounded), name: UIScene.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sceneActivated), name: UIScene.didActivateNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sceneDisconnected), name: UIScene.didDisconnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sourceBecameKey), name: UIWindow.didBecomeKeyNotification, object: nil)
@@ -90,15 +100,18 @@ final class POSLockPresentationCoordinator: NSObject {
     func attach(to window: UIWindow) {
         if sourceWindow !== window {
             removeLock()
+            privacyCover.removeFromSuperview()
             sourceWindow = window
+            sceneIsInactive = window.windowScene?.activationState != .foregroundActive
         }
         synchronize()
     }
 
-    func update(session: POSAccessSession, content: AnyView) {
+    func update(session: POSAccessSession, content: AnyView, locksInBackground: @escaping () -> Bool = { false }) {
         let sessionChanged = self.session !== session
         self.session = session
         self.content = content
+        self.locksInBackground = locksInBackground
         if sessionChanged {
             synchronizationTask?.cancel()
             observeLock()
@@ -126,6 +139,7 @@ final class POSLockPresentationCoordinator: NSObject {
         synchronizationTask?.cancel()
         synchronizationTask = nil
         removeLock()
+        privacyCover.removeFromSuperview()
         sourceWindow = nil
         session = nil
         content = AnyView(EmptyView())
@@ -143,6 +157,7 @@ final class POSLockPresentationCoordinator: NSObject {
     }
 
     private func synchronizeWindow() {
+        updateSourcePrivacy(forInactiveScene: sceneIsInactive)
         guard session?.isLocked == true, let sourceWindow, let scene = sourceWindow.windowScene,
               scene.activationState != .unattached else {
             removeLock()
@@ -160,6 +175,8 @@ final class POSLockPresentationCoordinator: NSObject {
         previousKeyWindow = scene.keyWindow
         sourceAccessibilityHidden = sourceWindow.accessibilityElementsHidden
         sourceWindow.accessibilityElementsHidden = true
+        sourceInteractionEnabled = sourceWindow.isUserInteractionEnabled
+        sourceWindow.isUserInteractionEnabled = false
         let controller = UIHostingController(rootView: content)
         controller.view.backgroundColor = UIColor(Color.posSurfaceContainerLow)
         controller.view.accessibilityViewIsModal = true
@@ -179,6 +196,7 @@ final class POSLockPresentationCoordinator: NSObject {
         let scene = window.windowScene
         lockWindow = nil
         sourceWindow?.accessibilityElementsHidden = sourceAccessibilityHidden
+        sourceWindow?.isUserInteractionEnabled = sourceInteractionEnabled
         window.isHidden = true
         window.rootViewController = nil
         window.windowScene = nil
@@ -196,14 +214,43 @@ final class POSLockPresentationCoordinator: NSObject {
         synchronize()
     }
 
+    private var shouldLockInBackground: Bool {
+        session?.isPINProtectionEnabled == true && session?.isLocked == false &&
+            session?.currentStaff != nil && locksInBackground()
+    }
+
+    private func updateSourcePrivacy(forInactiveScene isInactive: Bool) {
+        guard let sourceWindow, session?.isLocked == true || (isInactive && shouldLockInBackground) else {
+            privacyCover.removeFromSuperview()
+            return
+        }
+        privacyCover.frame = sourceWindow.bounds
+        sourceWindow.addSubview(privacyCover)
+    }
+
+    @objc private func sceneDeactivating(_ notification: Notification) {
+        guard notification.object as? UIWindowScene === sourceWindow?.windowScene else { return }
+        sceneIsInactive = true
+        // Cover native POS presentations before the system takes its app-switcher snapshot.
+        updateSourcePrivacy(forInactiveScene: true)
+    }
+
+    @objc private func sceneBackgrounded(_ notification: Notification) {
+        guard notification.object as? UIWindowScene === sourceWindow?.windowScene else { return }
+        if shouldLockInBackground { session?.lock() }
+        synchronizeWindow()
+    }
+
     @objc private func sceneActivated(_ notification: Notification) {
         guard notification.object as? UIWindowScene === sourceWindow?.windowScene else { return }
-        synchronize()
+        sceneIsInactive = false
+        synchronizeWindow()
     }
 
     @objc private func sceneDisconnected(_ notification: Notification) {
         guard notification.object as? UIWindowScene === sourceWindow?.windowScene else { return }
         synchronizationTask?.cancel()
         removeLock()
+        privacyCover.removeFromSuperview()
     }
 }

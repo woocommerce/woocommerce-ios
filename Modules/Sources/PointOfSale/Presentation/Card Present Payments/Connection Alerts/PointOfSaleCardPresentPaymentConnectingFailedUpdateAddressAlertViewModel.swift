@@ -12,7 +12,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
     @Published var shouldShowSettingsWebView: Bool = false
 
-    @Published private(set) var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? = nil
+    @Published private var hasOpenedSettings = false
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     private let showsInAuthenticatedWebView: Bool
@@ -22,12 +22,13 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     private let notificationCenter: NotificationCenter
     private var foregroundRetrySubscription: AnyCancellable?
 
-    private var openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel {
-        CardPresentPaymentsModalButtonViewModel(
+    func primaryButtonViewModel(requiresIsolatedSignIn: Bool) -> CardPresentPaymentsModalButtonViewModel {
+        if hasOpenedSettings { return retryButtonViewModel }
+        return CardPresentPaymentsModalButtonViewModel(
             title: Localization.openAdmin,
             actionHandler: { [weak self] in
                 guard let self else { return }
-                if showsInAuthenticatedWebView {
+                if requiresIsolatedSignIn || showsInAuthenticatedWebView {
                     shouldShowSettingsWebView = true
                 } else {
                     foregroundRetrySubscription = notificationCenter
@@ -38,7 +39,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
                         }
                     openURL(settingsAdminUrl)
                 }
-                primaryButtonViewModel = retryButtonViewModel
+                hasOpenedSettings = true
             })
     }
 
@@ -61,7 +62,6 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
         self.cancelButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.cancel,
             actionHandler: cancelSearchAction)
-        self.primaryButtonViewModel = openSettingsButtonViewModel
     }
 
     func settingsWebViewWasDismissed() {
@@ -76,7 +76,7 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         lhs.imageName == rhs.imageName &&
         lhs.settingsAdminUrl == rhs.settingsAdminUrl &&
         lhs.shouldShowSettingsWebView == rhs.shouldShowSettingsWebView &&
-        lhs.primaryButtonViewModel == rhs.primaryButtonViewModel &&
+        lhs.hasOpenedSettings == rhs.hasOpenedSettings &&
         lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
         lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
         lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView &&
@@ -88,7 +88,7 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         hasher.combine(imageName)
         hasher.combine(settingsAdminUrl)
         hasher.combine(shouldShowSettingsWebView)
-        hasher.combine(primaryButtonViewModel)
+        hasher.combine(hasOpenedSettings)
         hasher.combine(cancelButtonViewModel)
         hasher.combine(retryButtonViewModel)
         hasher.combine(showsInAuthenticatedWebView)

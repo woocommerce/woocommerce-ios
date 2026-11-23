@@ -18,6 +18,7 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posAccessSession) private var session
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -46,8 +47,10 @@ struct PointOfSalePaymentSuccessView: View {
         .onChange(of: showPrinterSetupModal) { _, isShowing in
             // The setup modal auto-dismisses when a printer connects, so the modal closing with a
             // printer connected means setup succeeded — print the receipt the merchant asked for.
+            guard !session.isLocked else { return }
+            let coordinator = printCoordinator
             Task {
-                await printCoordinator.setupModalVisibilityChanged(
+                await coordinator.setupModalVisibilityChanged(
                     isPresented: isShowing,
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
@@ -60,6 +63,9 @@ struct PointOfSalePaymentSuccessView: View {
                                  },
                                  close: { printFailure = nil })
         }
+        .onChange(of: session.isLocked) { _, isLocked in
+            if isLocked { selectedFailureAction = nil }
+        }
         .task(id: printButtonState) {
             guard printButtonState == .success else { return }
             try? await Task.sleep(for: Constants.printConfirmationDuration)
@@ -69,29 +75,33 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var printCoordinator: POSPrintReceiptCoordinator {
-        POSPrintReceiptCoordinator(analytics: analytics,
-                                   printReceipt: { try await posModel.printReceipt() },
-                                   presentPrinterSetup: { showPrinterSetupModal = true },
-                                   presentEmailReceipt: { router.pushEmailReceipt() },
-                                   isOnSuccessScreen: { !router.isNavigated },
-                                   presentFailure: { printFailure = $0 },
-                                   updateButtonState: { printButtonState = $0 })
+        let scope = session.accessScope
+        let canPresent = { session.isCurrent(scope) }
+        return POSPrintReceiptCoordinator(analytics: analytics,
+                                          printReceipt: { try await posModel.printReceipt() },
+                                          presentPrinterSetup: { if canPresent() { showPrinterSetupModal = true } },
+                                          presentEmailReceipt: { if canPresent() { router.pushEmailReceipt() } },
+                                          isOnSuccessScreen: { canPresent() && !router.isNavigated },
+                                          presentFailure: { printFailure = $0 },
+                                          updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
-        guard printButtonState == .idle else { return }
+        guard !session.isLocked, printButtonState == .idle else { return }
+        let coordinator = printCoordinator
         Task {
-            await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
+            await coordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
     /// Acts on the merchant's choice only once the failure modal has closed: `POSModalManager` holds one
     /// modal, so presenting printer setup alongside this dismissal could lose the new modal.
     private func handlePrintFailureDismissed() {
-        guard let action = selectedFailureAction else { return }
+        guard !session.isLocked, let action = selectedFailureAction else { return }
         selectedFailureAction = nil
+        let coordinator = printCoordinator
         Task {
-            await printCoordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
+            await coordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 

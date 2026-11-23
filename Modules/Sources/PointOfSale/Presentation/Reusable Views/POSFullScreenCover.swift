@@ -17,12 +17,14 @@ extension View {
     // periphery:ignore
     func posFullScreenCover<Content: View>(
         isPresented: Binding<Bool>,
+        preservesOnLock: Bool = false,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         self.modifier(
             POSFullScreenCoverModifier(
                 isPresented: isPresented,
+                preservesOnLock: preservesOnLock,
                 onDismiss: onDismiss,
                 coverContent: content
             )
@@ -61,8 +63,10 @@ final class POSFullScreenCoverManager: ObservableObject {
 // MARK: - Modifiers
 // periphery:ignore
 struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
+    @Environment(\.posAccessSession) private var session
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var isPresented: Bool
+    let preservesOnLock: Bool
     let onDismiss: (() -> Void)?
     let coverContent: () -> CoverContent
 
@@ -71,11 +75,12 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
 
-    @State private var sheetId = UUID().uuidString
-
     func body(content: Content) -> some View {
+        let shouldDismiss = session.isLocked && !preservesOnLock
+        let activePresentation = Binding(get: { !shouldDismiss && isPresented }, set: { isPresented = $0 })
         content
-            .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
+            .posDismissOnLock($isPresented, to: false, when: shouldDismiss)
+            .fullScreenCover(isPresented: activePresentation, onDismiss: onDismiss, content: {
                 coverContent()
                     .onAppear { parentCoverManager.isPresented = true }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
@@ -92,6 +97,7 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
 }
 // periphery:ignore
 struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverContent: View>: ViewModifier {
+    @Environment(\.posAccessSession) private var session
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
@@ -102,11 +108,11 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
 
-    @State private var sheetId = UUID().uuidString
-
     func body(content: Content) -> some View {
+        let activePresentation = Binding(get: { session.isLocked ? nil : item }, set: { item = $0 })
         content
-            .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
+            .posDismissOnLock($item, to: nil, when: session.isLocked)
+            .fullScreenCover(item: activePresentation, onDismiss: onDismiss, content: {
                 coverContent($0)
                     .onAppear { parentCoverManager.isPresented = true }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)

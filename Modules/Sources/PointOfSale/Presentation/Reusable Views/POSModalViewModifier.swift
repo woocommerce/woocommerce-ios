@@ -19,6 +19,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @Environment(\.posAccessSession) private var session
     @State private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
@@ -113,6 +114,9 @@ struct POSRootModalViewModifier: ViewModifier {
                 .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .onChange(of: session.isLocked, initial: true) { _, isLocked in
+                if isLocked { modalManager.dismissForLock() }
+            }
             .onChange(of: modalManager.isPresented) { _, isPresented in
                 if isPresented {
                     bottomSheetDragOffset = 0
@@ -216,7 +220,10 @@ extension View {
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.posAccessSession) private var session
+    @State private var owner = UUID()
     let compactStyle: POSModalCompactStyle
+    let preservesOnLock: () -> Bool
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -226,32 +233,47 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: item) { _, newItem in
+            .posDismissOnLock($item, to: nil, when: session.isLocked && !preservesOnLock())
+            .onChange(of: item, initial: preservesOnLock()) { _, newItem in
                 if let newItem {
-                    // Don't show a modal if a full screen overlay is presented on top
-                    guard !coverManager.isPresented else { return }
-
-                    let completed = onDismissCompleted.map { completion in { completion(newItem) } }
-                    modalManager.present(compactStyle: compactStyle, onDismiss: {
-                        // Internal dismissal, i.e. from tapping the background
-                        onDismiss?()
-                        item = nil
-                    }, onDismissCompleted: completed) {
-                        modalContent(newItem)
-                            .animation(.default, value: item)
-                    }
+                    present(newItem)
                 } else if onDismissCompleted != nil, reduceMotion {
                     var transaction = Transaction()
                     transaction.disablesAnimations = true
-                    withTransaction(transaction) { modalManager.dismiss() }
+                    withTransaction(transaction) { dismiss() }
                 } else {
-                    modalManager.dismiss()
+                    dismiss()
                 }
             }
+            .onChange(of: coverManager.isPresented) { _, hasCover in
+                if !hasCover, preservesOnLock(), let item { present(item) }
+            }
+    }
+
+    private func present(_ item: Item) {
+        guard !coverManager.isPresented, preservesOnLock() || !session.isLocked else { return }
+        let completed = onDismissCompleted.map { completion in
+            {
+                guard !session.isLocked else { return }
+                completion(item)
+            }
+        }
+        modalManager.present(compactStyle: compactStyle, owner: owner, preservesOnLock: preservesOnLock, onDismiss: {
+            onDismiss?()
+            self.item = nil
+        }, onDismissCompleted: completed) {
+            modalContent(item).animation(.default, value: self.item)
+        }
+    }
+
+    private func dismiss() {
+        modalManager.dismiss(owner: owner, runsCallbacks: preservesOnLock() || !session.isLocked)
     }
 }
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
+    @Environment(\.posAccessSession) private var session
+    @State private var owner = UUID()
     let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
@@ -261,12 +283,11 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .posDismissOnLock($isPresented, to: false, when: session.isLocked)
             .onChange(of: isPresented) { _, newValue in
                 if newValue {
-                    // Don't show a modal if a full screen overlay is presented on top
-                    guard !coverManager.isPresented else { return }
-
-                    modalManager.present(compactStyle: compactStyle, onDismiss: {
+                    guard !coverManager.isPresented, !session.isLocked else { return }
+                    modalManager.present(compactStyle: compactStyle, owner: owner, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         isPresented = false
@@ -274,8 +295,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                         modalContent()
                     }
                 } else {
-                    // External dismissal
-                    modalManager.dismiss()
+                    modalManager.dismiss(owner: owner, runsCallbacks: !session.isLocked)
                 }
             }
     }
@@ -321,11 +341,13 @@ extension View {
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
         compactStyle: POSModalCompactStyle,
+        preservesOnLock: @escaping () -> Bool = { false },
         onDismiss: (() -> Void)? = nil,
         onDismissCompleted: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(compactStyle: compactStyle,
+                                 preservesOnLock: preservesOnLock,
                                  item: item,
                                  onDismiss: onDismiss,
                                  onDismissCompleted: onDismissCompleted,

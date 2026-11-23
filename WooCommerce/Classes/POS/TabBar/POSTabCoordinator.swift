@@ -409,10 +409,11 @@ private extension POSTabCoordinator {
                     services: serviceAdaptor,
                     httpsConfigurationNotice: httpsConfigurationNotice,
                     itemProvider: itemProvider,
-                    registerOnDismiss: { [weak hostingController] cleanup in
+                    registerPresentation: { [weak hostingController] canExitPOS, cleanup in
                         guard let hostingController,
                               !hostingController.isBeingDismissed,
                               hostingController.presentingViewController != nil else { return false }
+                        hostingController.canExitPOS = canExitPOS
                         hostingController.onDismiss = cleanup
                         return true
                     }
@@ -431,7 +432,8 @@ private extension POSTabCoordinator {
 
 
 /// Temporary payment coverage must not end the POS presentation.
-private final class POSHostingController: UIHostingController<POSPresentationRootView> {
+final class POSHostingController: UIHostingController<POSPresentationRootView> {
+    var canExitPOS: (@MainActor () -> Bool)?
     var onDismiss: (() -> Void)?
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -439,6 +441,7 @@ private final class POSHostingController: UIHostingController<POSPresentationRoo
         guard isBeingDismissed || presentingViewController == nil else { return }
         let cleanup = onDismiss
         onDismiss = nil
+        canExitPOS = nil
         cleanup?()
     }
 }

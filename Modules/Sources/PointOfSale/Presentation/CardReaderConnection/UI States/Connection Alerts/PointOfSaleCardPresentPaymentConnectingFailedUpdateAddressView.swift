@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posAccessSession) private var session
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,14 +22,15 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
 
-            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                Spacer(minLength: metrics.spacing.large)
-
-                Button(primaryButtonViewModel.title,
-                       action: primaryButtonViewModel.actionHandler)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
+            Spacer(minLength: metrics.spacing.large)
+            let scope = session.accessScope
+            let button = viewModel.primaryButtonViewModel(requiresIsolatedSignIn: session.isPINProtectionEnabled)
+            Button(button.title) {
+                guard session.isCurrent(scope) else { return }
+                button.actionHandler()
             }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
@@ -39,9 +41,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             isTitleFocused = true
         }
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
-            externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
-                                                    title: Localization.settingsWebViewTitle,
-                                                    completion: viewModel.settingsWebViewWasDismissed)
+            let scope = session.accessScope
+            externalViews.createSettingsWebView(url: viewModel.settingsAdminUrl,
+                                                title: Localization.settingsWebViewTitle,
+                                                requiresIsolatedSignIn: session.isPINProtectionEnabled) {
+                guard session.isCurrent(scope) else { return }
+                viewModel.settingsWebViewWasDismissed()
+            }
         }
     }
 }

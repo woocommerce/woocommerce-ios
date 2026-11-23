@@ -170,13 +170,14 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, preservesOnLock: { true }, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   compactStyle: .cardReaderConnection,
+                  preservesOnLock: { true },
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
@@ -200,7 +201,9 @@ struct PointOfSaleDashboardView: View {
         .posSheet(isPresented: $showDocumentation) {
             documentationView
         }
-        .posFullScreenCover(isPresented: $showSettings) {
+        .posFullScreenCover(isPresented: $showSettings,
+                            preservesOnLock: securitySettings?.preservesGuidedAccessPresentation == true,
+                            onDismiss: { securitySettings?.isReturningFromGuidedAccessSettings = false }) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
         .posFullScreenCover(isPresented: $showOrders) {
@@ -219,15 +222,12 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: session.isLocked) { _, isLocked in
-            // Locking ends the current staff context; dismiss dashboard-owned presentations
-            // so the next signed-in staff member does not inherit them.
-            guard isLocked else { return }
-            showExitPOSModal = false
-            showSupport = false
-            showDocumentation = false
-            showSettings = false
-            showOrders = false
-            posModel.customAmountFlow = nil
+            if isLocked {
+                posModel.customAmountFlow = nil
+            } else if securitySettings?.isReturningFromGuidedAccessSettings == true,
+                      !session.allows(.manageStoreSettings) {
+                showSettings = false
+            }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -242,6 +242,10 @@ struct PointOfSaleDashboardView: View {
                 trackElapsedTimeForInitialLoadingState()
             }
         }
+    }
+
+    private var securitySettings: POSSecuritySettingsController? {
+        posModel.settingsController.securityController
     }
 
     private var navigationRouter: POSNavigationRouter {
@@ -344,7 +348,7 @@ struct PointOfSaleDashboardView: View {
         }
         .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
             // Auto-opens the cart sheet on scan
-            guard itemID != nil,
+            guard !session.isLocked, itemID != nil,
                   PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
                                                                           orderStage: posModel.orderStage) else {
                 return
@@ -531,10 +535,13 @@ struct PointOfSaleDashboardView: View {
         // coverManager interaction.
         var cart = CartView()
         cart.onPresentBarcodeScannerSetup = {
+            guard !session.isLocked else { return }
+            let scope = session.accessScope
             phoneShowingCart = false
             // Tiny delay so the cart sheet finishes dismissing before the cover presents,
             // otherwise iOS rejects the simultaneous transitions and nothing shows.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                guard session.isCurrent(scope) else { return }
                 phoneShowingBarcodeScannerSetup = true
             }
         }
@@ -700,7 +707,9 @@ private extension PointOfSaleDashboardView {
     }
 
     func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewContainer) -> some View {
+        let scope = session.accessScope
         factory.configuration.showSupport = { [weak posModel] in
+            guard session.isCurrent(scope) else { return }
             posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }

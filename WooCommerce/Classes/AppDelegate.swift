@@ -434,6 +434,7 @@ extension AppDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard tabBarController?.canNavigateOutsidePOS != false else { return }
         await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
     }
 
@@ -445,6 +446,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
+        guard tabBarController?.canNavigateOutsidePOS != false else { return false }
         if ServiceLocator.stores.isAuthenticated {
             let pendingAuthFlowStorage = PendingAuthFlowStorage()
             let flow = pendingAuthFlowStorage.current

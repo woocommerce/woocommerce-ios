@@ -12,6 +12,8 @@ enum POSPINAction: Equatable {
 final class POSSecuritySettingsController {
     private(set) var roles: Set<POSLocalRole>?
     private(set) var isSaving = false
+    // WOOMOB-4595 owns the guide's round trip to iOS Settings.
+    var isReturningFromGuidedAccessSettings = false
     private(set) var error: POSPINStoreError?
     private enum ApprovalAction {
         case removeProtection
@@ -40,6 +42,10 @@ final class POSSecuritySettingsController {
 
     var isVisible: Bool {
         !session.isLocked && session.allows(.manageStoreSettings)
+    }
+
+    var preservesGuidedAccessPresentation: Bool {
+        isReturningFromGuidedAccessSettings && (session.isLocked || isVisible)
     }
 
     var isPINProtectionEnabled: Bool { session.isPINProtectionEnabled }

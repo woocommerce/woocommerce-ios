@@ -268,6 +268,39 @@ final class POSLockPresentationTests {
         #expect(nextSource.isKeyWindow)
     }
 
+    @Test func test_background_when_protected_session_locks_then_covers_the_source_and_restores_input_on_unlock() async throws {
+        // Given
+        defer { unmount() }
+        let source = try await mount(WindowPresentationState())
+        let scene = try #require(source.windowScene)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let coordinator = POSLockPresentationCoordinator()
+        defer { coordinator.detach() }
+        coordinator.update(session: session, content: AnyView(Color.clear), locksInBackground: { true })
+        coordinator.attach(to: source)
+        let originalSubviews = source.subviews.count
+
+        // When
+        NotificationCenter.default.post(name: UIScene.willDeactivateNotification, object: scene)
+
+        // Then
+        #expect(source.subviews.count == originalSubviews + 1)
+        #expect(source.subviews.last?.frame == source.bounds)
+        #expect(source.subviews.last?.backgroundColor?.cgColor.alpha == 1)
+        NotificationCenter.default.post(name: UIScene.didEnterBackgroundNotification, object: scene)
+        #expect(session.isLocked)
+        #expect(!source.isUserInteractionEnabled)
+        #expect(source.accessibilityElementsHidden)
+        #expect(pinWindow(in: source) != nil)
+
+        NotificationCenter.default.post(name: UIScene.didActivateNotification, object: scene)
+        try await session.signIn(withPIN: "1234")
+        try await waitUntil { self.pinWindow(in: source) == nil }
+        #expect(source.subviews.count == originalSubviews)
+        #expect(source.isUserInteractionEnabled)
+        #expect(source.isKeyWindow)
+    }
+
     @Test func test_scene_notifications_when_locked_then_retains_gate_and_recreates_after_disconnect() async throws {
         // Given
         let state = WindowPresentationState()

@@ -14,6 +14,12 @@ struct WPOrgWebViewAuthenticationContext {
 ///
 final class AuthenticatedWebViewController: UIViewController {
 
+    enum Session {
+        case app
+        case isolatedSignIn
+    }
+
+    private let session: Session
     private let currentSite: Site?
     private let viewModel: AuthenticatedWebViewModel
     private let authenticationFlow: WebViewAuthenticationFlow
@@ -53,33 +59,43 @@ final class AuthenticatedWebViewController: UIViewController {
 
     convenience init(stores: StoresManager = ServiceLocator.stores,
                      viewModel: AuthenticatedWebViewModel,
-                     extraCredentials: Credentials? = nil) {
+                     extraCredentials: Credentials? = nil,
+                     session: Session = .app) {
+        let configuration = WKWebViewConfiguration()
+        if session == .isolatedSignIn {
+            configuration.websiteDataStore = .nonPersistent()
+        }
         self.init(stores: stores,
                   viewModel: viewModel,
                   extraCredentials: extraCredentials,
-                  webView: WKWebView(frame: .zero))
+                  webView: WKWebView(frame: .zero, configuration: configuration),
+                  session: session)
     }
 
     /// Hosts a JS-initiated popup web view supplied by WebKit's `createWebViewWith`.
     /// The supplied web view must keep the `WKWebViewConfiguration` provided by WebKit.
-    convenience init(popupWebView: WKWebView) {
+    private convenience init(popupWebView: WKWebView, session: Session) {
         self.init(stores: ServiceLocator.stores,
                   viewModel: PopupAuthenticatedWebViewModel(),
                   extraCredentials: nil,
-                  webView: popupWebView)
+                  webView: popupWebView,
+                  session: session)
     }
 
     init(stores: StoresManager,
          viewModel: AuthenticatedWebViewModel,
          extraCredentials: Credentials?,
          webView: WKWebView,
+         session: Session = .app,
          siteCredentialReplacementScheduler: @escaping (@escaping () -> Void) -> Void = { work in
              DispatchQueue.main.async(execute: work)
          }) {
+        self.session = session
         self.viewModel = viewModel
         self.webView = webView
         self.siteCredentialReplacementScheduler = siteCredentialReplacementScheduler
-        let currentCredentials = stores.sessionManager.defaultCredentials
+        let currentCredentials = session == .app ? stores.sessionManager.defaultCredentials : nil
+        let extraCredentials = session == .app ? extraCredentials : nil
 
         let siteAuthentication = Self.resolveWPOrgAuthentication(
             extraCredentials: extraCredentials,
@@ -96,7 +112,7 @@ final class AuthenticatedWebViewController: UIViewController {
             return nil
         }()
 
-        let currentSite = stores.sessionManager.defaultSite
+        let currentSite = session == .app ? stores.sessionManager.defaultSite : nil
 
         self.authenticationFlow = {
             guard let currentSite else {
@@ -599,7 +615,7 @@ private extension AuthenticatedWebViewController {
         }
 
         let childWebView = WKWebView(frame: .zero, configuration: configuration)
-        let popupViewController = AuthenticatedWebViewController(popupWebView: childWebView)
+        let popupViewController = AuthenticatedWebViewController(popupWebView: childWebView, session: session)
         popupViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
             systemItem: .done,
             primaryAction: UIAction { [weak popupViewController] _ in

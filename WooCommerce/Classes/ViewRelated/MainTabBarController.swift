@@ -370,9 +370,21 @@ final class MainTabBarController: UITabBarController {
 
     // MARK: - Public Methods
 
+    var canNavigateOutsidePOS: Bool {
+        if let pos = presentedViewController as? POSHostingController {
+            return pos.canExitPOS?() ?? !featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
+        }
+
+        // Cold-start routes can arrive before the persisted lock is presented.
+        guard needsPOSAutoReopenCheck,
+              featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles),
+              let siteID = stores.sessionManager.defaultStoreID else { return true }
+        return !userDefaults.bool(forKey: POSLockStateKey.key(for: siteID))
+    }
+
     /// Switches the TabBarController to the specified Tab
-    ///
-    func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
+    @discardableResult
+    func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) -> Bool {
         navigateToTabWithViewController(tab, animated: animated) { _ in
             completion?()
         }
@@ -384,7 +396,9 @@ final class MainTabBarController: UITabBarController {
     ///   - tab: The tab to switch to.
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete with the root view controller.
-    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
+    @discardableResult
+    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) -> Bool {
+        guard canNavigateOutsidePOS else { return false }
         dismiss(animated: animated) { [weak self] in
             guard let self else { return }
             httpsConfigurationWarningPresenter.update(for: tab)
@@ -403,6 +417,7 @@ final class MainTabBarController: UITabBarController {
                 completion?(selectedViewController)
             }
         }
+        return true
     }
 
     /// Removes the view controllers in each tab's navigation controller, and resets any logged in properties.
@@ -686,6 +701,7 @@ extension MainTabBarController {
     }
 
     private static func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard AppDelegate.shared.tabBarController?.canNavigateOutsidePOS != false else { return }
         let stores = ServiceLocator.stores
 
         // Already showing that store, do nothing
@@ -777,9 +793,7 @@ extension MainTabBarController {
     }
 
     private static func presentProductDetails(productID: Int64, siteID: Int64) {
-        guard let tabBar = AppDelegate.shared.tabBarController else {
-            return
-        }
+        guard let tabBar = AppDelegate.shared.tabBarController, tabBar.canNavigateOutsidePOS else { return }
 
         let model: ProductLoaderViewController.Model = .product(productID: productID)
         let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
@@ -816,6 +830,7 @@ extension MainTabBarController {
     }
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
+        guard AppDelegate.shared.tabBarController?.canNavigateOutsidePOS == true else { return }
         ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
     }
 
@@ -852,6 +867,7 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
+        guard canNavigateOutsidePOS else { return }
         switch destination {
         case is HubMenuDestination,
             is PaymentsMenuDestination:
@@ -1238,10 +1254,11 @@ private extension MainTabBarController {
                            storesManager: stores,
                            httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
+                           canNavigateOutsidePOS: { [weak self] in self?.canNavigateOutsidePOS == true },
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
-            await withCheckedContinuation { [weak self] continuation in
-                self?.navigateTo(.hubMenu) {
-                    continuation.resume(returning: ())
+            await withCheckedContinuation { continuation in
+                if self?.navigateTo(.hubMenu, completion: { continuation.resume(returning: true) }) != true {
+                    continuation.resume(returning: false)
                 }
             }
         })
@@ -1442,14 +1459,10 @@ private extension MainTabBarController {
         guard needsPOSAutoReopenCheck else { return }
         // Consume the one-shot only when the active site is the locked one.
         guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
-        needsPOSAutoReopenCheck = false
-
-        // Capture the just-created coordinator weakly so a site change between
-        // scheduling and execution can't redirect this auto-reopen at a different
-        // coordinator. If the active site changes mid-flight the old coordinator
-        // is released and the closure no-ops.
-        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
-            coordinator?.openPOS(entryPoint: .autoReopen)
+        DispatchQueue.main.async { [weak self, weak coordinator = posTabCoordinator] in
+            guard let self, let coordinator, coordinator === posTabCoordinator, needsPOSAutoReopenCheck else { return }
+            coordinator.openPOS(entryPoint: .autoReopen)
+            needsPOSAutoReopenCheck = false
         }
     }
 }

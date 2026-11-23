@@ -35,7 +35,7 @@ public struct PointOfSaleEntryPointView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
-    private let registerOnDismiss: (@escaping () -> Void) -> Bool
+    private let registerPresentation: (@escaping @MainActor () -> Bool, @escaping () -> Void) -> Bool
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
@@ -92,8 +92,8 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
-         registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
-        self.registerOnDismiss = registerOnDismiss
+         registerPresentation: @escaping (@escaping @MainActor () -> Bool, @escaping () -> Void) -> Bool = { _, _ in true }) {
+        self.registerPresentation = registerPresentation
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -214,7 +214,7 @@ public struct PointOfSaleEntryPointView: View {
                         aggregateModel: posModel,
                         settings: lockSettings
                     )
-                    .posLockScreenOverlay()
+                    .posLockScreenOverlay(locksInBackground: { lockSettings.preferences.locksInBackground })
             } else {
                 PointOfSaleLoadingView()
             }
@@ -266,7 +266,8 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large,
+                accessSession: session)
 
             let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()
@@ -277,7 +278,8 @@ public struct PointOfSaleEntryPointView: View {
                 posModalManager.onDisappear()
                 posModel?.pointOfSaleClosed()
             }
-            guard registerOnDismiss(cleanup) else {
+            let canExitPOS = { @MainActor in !session.isLocked && session.allows(.exitPOS) }
+            guard registerPresentation(canExitPOS, cleanup) else {
                 cleanup()
                 return
             }
@@ -304,12 +306,6 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posAccessSession, accessSession)
         .onChange(of: isCompactLayout) { _, isCompactLayout in
             posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-            // Active app switch, not idle - lock even mid-payment.
-            guard lockSettings.preferences.locksInBackground,
-                  accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
-            accessSession.lock()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             let session = accessSession

@@ -58,61 +58,61 @@ struct POSAccessControlSetupView: View {
     }
 }
 
-struct POSAdminPINOnboardingView: View {
+struct POSPINSetupFlowView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalDismissAction) private var dismissModal
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-    @State private var onboarding: POSAdminPINOnboarding
+    private let flow: POSPINSetupFlow
     @State private var pinStatusAndSpacingHeight: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
 
-    init(controller: POSSecuritySettingsController, close: @escaping () -> Void) {
+    init(flow: POSPINSetupFlow, controller: POSSecuritySettingsController, close: @escaping () -> Void) {
         self.controller = controller
         self.close = close
-        self._onboarding = State(initialValue: POSAdminPINOnboarding(setup: controller.makePINSetupController(for: .admin)))
+        self.flow = flow
     }
 
     var body: some View {
         VStack(spacing: metrics.spacing.medium) {
-            if !isFullScreenFlow && onboarding.step != .saving {
+            if !isFullScreenFlow && flow.step != .saving {
                 header
             }
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .posModalFlowHeaderTitle(title, alignment: .center)
-        .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
+        .posModalFlowBackAction(enabled: isFullScreenFlow && flow.canGoBack) { flow.goBack() }
         .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
         .posModalFullScreen(usesAccessibilityFullScreen)
-        .posInteractiveDismissDisabled(onboarding.step == .saving || !onboarding.canClose)
+        .posInteractiveDismissDisabled(flow.step == .saving || !flow.canClose)
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible {
                 dismissModal?()
             }
         }
-        .onChange(of: onboarding.feedback) { _, feedback in
+        .onChange(of: flow.feedback) { _, feedback in
             if let feedback {
                 AccessibilityNotification.Announcement(message(for: feedback)).post()
             }
         }
-        .onDisappear { onboarding.discard() }
-        .accessibilityIdentifier("pos-admin-pin-onboarding")
+        .onDisappear { flow.discard() }
+        .accessibilityIdentifier("pos-pin-setup")
     }
 }
 
-private extension POSAdminPINOnboardingView {
+private extension POSPINSetupFlowView {
     var usesAccessibilityFullScreen: Bool {
         horizontalSizeClass == .regular && dynamicTypeSize.isAccessibilitySize
     }
 
     var title: String {
-        switch onboarding.step {
-        case .choose: Localization.chooseTitle
-        case .confirm: Localization.confirmTitle
+        switch flow.step {
+        case .choose: flow.configuration.copy.chooseTitle
+        case .confirm: flow.configuration.copy.confirmTitle
         case .saving, .saved, .guidedAccessOffer: ""
         }
     }
@@ -129,16 +129,16 @@ private extension POSAdminPINOnboardingView {
                     .padding(.horizontal, POSHeaderLayoutConstants.compactBackButtonSize)
             }
             HStack {
-                if onboarding.canGoBack {
+                if flow.canGoBack {
                     POSPageHeaderBackButton(configuration: .init(state: .enabled,
-                                                                 action: { onboarding.goBack() },
+                                                                 action: { flow.goBack() },
                                                                  accessibilityLabel: Localization.back))
                 }
                 Spacer()
-                POSPageHeaderBackButton(configuration: .init(state: onboarding.canClose ? .enabled : .disabled,
+                POSPageHeaderBackButton(configuration: .init(state: flow.canClose ? .enabled : .disabled,
                                                              action: closeFlow,
                                                              buttonIcon: "xmark",
-                                                             accessibilityIdentifier: "pos-admin-pin-onboarding-close",
+                                                             accessibilityIdentifier: "pos-pin-setup-close",
                                                              accessibilityLabel: Localization.close))
             }
         }
@@ -147,15 +147,17 @@ private extension POSAdminPINOnboardingView {
 
     @ViewBuilder
     var content: some View {
-        switch onboarding.step {
+        switch flow.step {
         case .choose, .confirm:
             pinEntry
         case .saving:
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
         case .saved:
-            messagePage(art: savedCheck, title: Localization.savedTitle, message: Localization.savedMessage) {
-                Button(Localization.continueAction) { onboarding.continueToGuidedAccessOffer() }
+            messagePage(art: savedCheck, title: flow.configuration.copy.savedTitle, message: flow.configuration.copy.savedMessage) {
+                Button(flow.configuration.successAction.title) {
+                    if flow.continueFromSuccess() { closeFlow() }
+                }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
             .transition(.opacity.animation(Constants.offerFade))
@@ -178,9 +180,9 @@ private extension POSAdminPINOnboardingView {
             let verticalInset = min(metrics.padding.xLarge, max(0, (geometry.size.height - keypadHeight - pinStatusAndSpacingHeight) / 2))
             ScrollViewReader { proxy in
                 ScrollView {
-                    POSPINEntryView(state: onboarding.pinEntryState,
-                                    style: .setup(keySize: keySize, page: page, feedback: onboarding.feedback.map(message(for:))),
-                                    onComplete: { pin in await onboarding.submit(pin) })
+                    POSPINEntryView(state: flow.pinEntryState,
+                                    style: .setup(keySize: keySize, page: page, feedback: flow.feedback.map(message(for:))),
+                                    onComplete: { pin in await flow.submit(pin) })
                         .fixedSize(horizontal: false, vertical: true)
                         .onGeometryChange(for: CGFloat.self, of: { max(0, $0.size.height - keypadHeight) }) {
                             pinStatusAndSpacingHeight = $0
@@ -190,8 +192,8 @@ private extension POSAdminPINOnboardingView {
                 }
                 .contentMargins(.vertical, verticalInset, for: .scrollContent)
                 .scrollBounceBehavior(.basedOnSize)
-                .onChange(of: onboarding.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
-                .onChange(of: onboarding.feedback) { _, feedback in
+                .onChange(of: flow.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
+                .onChange(of: flow.feedback) { _, feedback in
                     if feedback != nil {
                         proxy.scrollTo(Constants.pinEntryTopID, anchor: .top)
                     }
@@ -209,7 +211,7 @@ private extension POSAdminPINOnboardingView {
     }
 
     var page: POSPINEntryPage {
-        POSPINEntryPage(id: onboarding.pageID, edge: onboarding.step == .confirm ? .trailing : .leading)
+        POSPINEntryPage(id: flow.pageID, edge: flow.step == .confirm ? .trailing : .leading)
     }
 
     func keySize(fitting size: CGSize) -> CGFloat {
@@ -259,7 +261,7 @@ private extension POSAdminPINOnboardingView {
         }
     }
 
-    func message(for feedback: POSAdminPINOnboarding.Feedback) -> String {
+    func message(for feedback: POSPINSetupFlow.Feedback) -> String {
         switch feedback {
         case .mismatch: POSSecuritySettingsView.Localization.mismatch
         case .failure(.pinMatchesOtherRole): POSSecuritySettingsView.Localization.distinctPINs
@@ -268,13 +270,13 @@ private extension POSAdminPINOnboardingView {
     }
 
     func closeFlow() {
-        if onboarding.close() {
+        if flow.close() {
             close()
         }
     }
 
     enum Constants {
-        static let pinEntryTopID = "admin-pin-entry-top"
+        static let pinEntryTopID = "pin-entry-top"
         static let regularKeySize: CGFloat = 90
         static let compactKeySize: CGFloat = 72
         static let checkSize: CGFloat = 80
@@ -284,17 +286,6 @@ private extension POSAdminPINOnboardingView {
     }
 
     enum Localization {
-        static let chooseTitle = NSLocalizedString("pos.adminPINOnboarding.choose.title", value: "Choose your admin PIN",
-                                                   comment: "Title while choosing the first admin PIN in POS.")
-        static let confirmTitle = NSLocalizedString("pos.adminPINOnboarding.confirm.title", value: "Confirm your admin PIN",
-                                                    comment: "Title while re-entering the first admin PIN in POS.")
-        static let savedTitle = NSLocalizedString("pos.adminPINOnboarding.saved.title", value: "Your admin PIN is set",
-                                                  comment: "Title after the first admin PIN is saved in POS.")
-        static let savedMessage = NSLocalizedString("pos.adminPINOnboarding.saved.message",
-                                                    value: "Use your admin PIN to unlock Point of Sale with full access.",
-                                                    comment: "Explanation after the first admin PIN is saved in POS.")
-        static let continueAction = NSLocalizedString("pos.adminPINOnboarding.saved.continue", value: "Continue",
-                                                      comment: "Button after the admin PIN is saved. Shows the Guided Access offer.")
         static let offerTitle = NSLocalizedString("pos.adminPINOnboarding.guidedAccess.title", value: "Keep your device on POS",
                                                   comment: "Title of the optional Guided Access offer after admin PIN setup.")
         static let offerMessage = NSLocalizedString("pos.adminPINOnboarding.guidedAccess.message",

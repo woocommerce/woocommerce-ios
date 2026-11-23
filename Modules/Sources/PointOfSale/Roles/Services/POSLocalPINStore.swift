@@ -43,14 +43,17 @@ final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
         _ = try validatedPINs(for: pin, role: role)
     }
 
-    /// Runs up to two PBKDF2 derivations, so call it off the main actor.
-    func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
-        var pins = try validatedPINs(for: pin, role: role)
+    func preparePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) -> POSPINCommit {
+        let previous = try validatedPINs(for: pin, role: role)
+        var pins = previous
         guard let hash = POSPINHash(pin: pin, iterations: iterations) else {
             throw .storageFailure
         }
         pins[role] = hash
-        try savePINs(pins)
+        return { [pins] () throws(POSPINStoreError) -> Void in
+            guard try self.loadPINs() == previous else { throw .storageFailure }
+            try self.savePINs(pins)
+        }
     }
 
     /// Removing the Admin PIN also removes the Cashier PIN, which turns protection off.

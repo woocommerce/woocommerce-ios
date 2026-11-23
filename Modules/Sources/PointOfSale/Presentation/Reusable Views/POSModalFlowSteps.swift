@@ -5,33 +5,59 @@ enum POSFlowStepDirection: Equatable {
     case backward
 }
 
+/// Slides between the steps of a full-screen flow on phone. The header Back makes the next step change go backward.
 /// Takes a page builder, not a view modifier: a modifier's content always shows the current state, so the page
 /// sliding out would already show the new step.
-struct POSFullScreenFlowSteps<ID: Hashable, Page: View>: View {
+struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    private let id: ID
-    private let direction: () -> POSFlowStepDirection
+    @Environment(\.posModalFlowStepNavigation) private var navigation
+    private let step: Step
     private let page: () -> Page
 
-    init(id: ID, direction: @escaping () -> POSFlowStepDirection, @ViewBuilder page: @escaping () -> Page) {
-        self.id = id
-        self.direction = direction
+    init(step: Step, @ViewBuilder page: @escaping () -> Page) {
+        self.step = step
         self.page = page
     }
 
     var body: some View {
         if isFullScreenFlow && UIDevice.current.userInterfaceIdiom == .phone {
+            let _ = navigation?.show(step: step)
             ZStack {
                 page()
-                    .id(id)
-                    .transition(reduceMotion ? AnyTransition.opacity : AnyTransition(POSFlowStepSlideTransition(direction: direction)))
+                    .id(step)
+                    .transition(reduceMotion ? AnyTransition.opacity : AnyTransition(POSFlowStepSlideTransition(direction: { [navigation] in
+                        navigation?.direction ?? .forward
+                    })))
             }
-            .animation(.easeInOut(duration: POSFlowStepSlideTransition.animationDuration), value: id)
+            .animation(.easeInOut(duration: POSFlowStepSlideTransition.animationDuration), value: step)
         } else {
             page()
         }
     }
+}
+
+final class POSModalFlowStepNavigation {
+    private(set) var direction = POSFlowStepDirection.forward
+    private var nextDirection = POSFlowStepDirection.forward
+    private var step: AnyHashable?
+
+    func goBackwardOnNextStep() {
+        nextDirection = .backward
+    }
+
+    func show(step newStep: AnyHashable) {
+        guard newStep != step else {
+            return
+        }
+        direction = step == nil ? .forward : nextDirection
+        nextDirection = .forward
+        step = newStep
+    }
+}
+
+extension EnvironmentValues {
+    @Entry var posModalFlowStepNavigation: POSModalFlowStepNavigation?
 }
 
 /// Reads the direction lazily: a removed page keeps the transition of its last render, so a direction stored there

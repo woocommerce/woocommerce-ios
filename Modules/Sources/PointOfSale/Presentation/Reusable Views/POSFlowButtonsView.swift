@@ -4,6 +4,7 @@ struct POSFlowButtonsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+    @Environment(\.posModalFlowStepNavigation) private var stepNavigation
 
     let configuration: PointOfSaleFlowButtonConfiguration
 
@@ -61,6 +62,9 @@ struct POSFlowButtonsView: View {
     @ViewBuilder
     private func button(for config: PointOfSaleFlowButtonConfiguration.ButtonConfig) -> some View {
         let button = Button(config.title) {
+            if config.stepsBackward {
+                stepNavigation?.goBackwardOnNextStep()
+            }
             config.action()
         }
         .disabled(!config.isEnabled)
@@ -84,6 +88,7 @@ struct PointOfSaleFlowButtonConfiguration {
         let accessibilityIdentifier: String?
         /// In a phone full screen flow, the header back arrow replaces it.
         let isBack: Bool
+        let stepsBackward: Bool
         let action: () -> Void
 
         init(
@@ -91,12 +96,14 @@ struct PointOfSaleFlowButtonConfiguration {
             isEnabled: Bool = true,
             accessibilityIdentifier: String? = nil,
             isBack: Bool = false,
+            stepsBackward: Bool = false,
             action: @escaping () -> Void,
         ) {
             self.title = title
             self.isEnabled = isEnabled
             self.accessibilityIdentifier = accessibilityIdentifier
             self.isBack = isBack
+            self.stepsBackward = stepsBackward
             self.action = action
         }
     }

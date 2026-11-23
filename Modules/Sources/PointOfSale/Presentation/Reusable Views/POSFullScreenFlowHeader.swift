@@ -32,6 +32,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @State private var contentTitle: String?
     @State private var titleAlignment = POSPageHeaderTitleAlignment.leading
     @State private var closeAccessibilityIdentifier: String?
+    @State private var stepNavigation = POSModalFlowStepNavigation()
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -48,6 +49,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                                             buttons: .init(backAction: backAction, closeAction: closeAction,
                                                            titleAlignment: titleAlignment))
                 }
+                .environment(\.posModalFlowStepNavigation, stepNavigation)
         } else {
             content
         }
@@ -100,6 +102,7 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 }
 
 private struct POSFullScreenFlowHeader: View {
+    @Environment(\.posModalFlowStepNavigation) private var stepNavigation
     let title: String
     let titleAlignment: POSPageHeaderTitleAlignment
     let buttons: POSFullScreenFlowHeaderButtons
@@ -137,7 +140,10 @@ private struct POSFullScreenFlowHeader: View {
         switch leading {
         case .back(let backAction):
             return .init(state: backAction.isEnabled ? .enabled : .disabled,
-                         action: { backAction.perform() },
+                         action: {
+                stepNavigation?.goBackwardOnNextStep()
+                backAction.perform()
+            },
                          accessibilityIdentifier: backAction.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
                          accessibilityLabel: POSFullScreenFlowHeaderLocalization.backAccessibilityLabel)
         case .close(let closeAction):

@@ -250,6 +250,44 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(enteredAmount, "1234.50")
     }
 
+    func test_updatePercentageCalculatedAmount_when_percentage_has_persian_digits_then_calculates_that_percentage() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+
+        // When
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("۱۰")
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(viewModel.percentageViewModel?.amount, "1234.50")
+        XCTAssertEqual(enteredAmount, "1234.50")
+    }
+
+    func test_updateAmount_when_fixed_amount_has_persian_digits_below_one_then_enables_done_and_passes_amount() {
+        // Given
+        let inputs = ["۰٫۵۰", "۰.۵۰"]
+
+        for input in inputs {
+            var enteredAmount: String?
+            let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                     locale: Locale(identifier: "fa_IR"),
+                                                     storeCurrencySettings: CurrencySettings(),
+                                                     onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+
+            // When
+            viewModel.formattableAmountTextFieldViewModel?.updateAmount(input)
+            viewModel.doneButtonPressed()
+
+            // Then
+            XCTAssertEqual(viewModel.formattableAmountTextFieldViewModel?.amount, "۰.۵۰", input)
+            XCTAssertTrue(viewModel.shouldEnableDoneButton, input)
+            XCTAssertEqual(enteredAmount, "0.50", input)
+        }
+    }
+
     func test_doneButtonPressed_when_fixed_amount_has_a_numeral_that_is_not_a_decimal_digit_then_does_not_convert_it() {
         // Given
         var enteredAmount: String?

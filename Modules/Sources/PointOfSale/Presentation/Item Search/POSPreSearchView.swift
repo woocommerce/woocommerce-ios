@@ -101,7 +101,7 @@ struct POSPreSearchView: View {
             .padding(.vertical, metrics.padding.medium) // Use padding not VStack spacing so the Chip shadows aren't clipped
         }
         // The chip shadow is larger than this padding and the chips start at the leading edge.
-        .scrollClipDisabled(layoutScale == .compact)
+        .scrollClipDisabled()
     }
 
     @ViewBuilder private func sectionHeader(_ title: String) -> some View {

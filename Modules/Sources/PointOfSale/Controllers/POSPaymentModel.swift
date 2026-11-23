@@ -20,10 +20,8 @@ final class POSPaymentModel {
             paymentStateChangesSubject.send((oldState: oldValue, newState: paymentState))
         }
     }
-    private let paymentStateChangesSubject = PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>()
-    var paymentStateChanges: AnyPublisher<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never> {
-        paymentStateChangesSubject.eraseToAnyPublisher()
-    }
+    private let paymentStateChangesSubject: PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
+    let paymentStateChanges: AnyPublisher<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
@@ -180,6 +178,9 @@ final class POSPaymentModel {
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
          paymentState: PointOfSalePaymentState = .idle) {
+        let paymentStateChangesSubject = PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>()
+        self.paymentStateChangesSubject = paymentStateChangesSubject
+        self.paymentStateChanges = paymentStateChangesSubject.eraseToAnyPublisher()
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
         self.cashPaymentHandler = cashPaymentHandler

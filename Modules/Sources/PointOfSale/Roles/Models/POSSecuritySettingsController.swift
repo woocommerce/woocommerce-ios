@@ -48,8 +48,6 @@ final class POSSecuritySettingsController {
 
     var isApprovingProtectionRemoval: Bool { approvalRequest?.action == .removeProtection }
 
-    var hasOnlyAdminPIN: Bool { roles == [.admin] }
-
     var lockPreferences: POSLockPreferences { lockSettings.preferences }
 
     func pinActions(for role: POSLocalRole) -> [POSPINAction] {

@@ -14,7 +14,7 @@ for file in .xcode-version .nvmrc .ruby-version ios/.xcode-version; do
   fi
 done
 cd "$fixture"
-git init -q
+git init -q -b trunk
 git config commit.gpgsign false
 git config core.hooksPath /dev/null
 git config user.name 'CI skip verification'
@@ -23,6 +23,7 @@ echo base > fixture-base
 git add fixture-base
 git commit -qm 'Fixture base'
 base=$(git rev-parse HEAD)
+git switch -q -c topic
 case "$scenario" in
   docs) path='docs/ci-probe.md'; expected=(1 0 1 1) ;;
   code) path='WooCommerce/Classes/CIProbe.swift'; expected=(0 0 0 1) ;;
@@ -31,7 +32,9 @@ esac
 mkdir -p "$(dirname "$path")"
 echo changed > "$path"
 git add "$path"
-git commit -qm 'Fixture merge (#999999)'
+git commit -qm 'Fixture change (#999999)'
+git switch -q trunk
+git merge -q --no-ff -m 'Merge fixture branch' topic
 export BUILDKITE_SOURCE=webhook BUILDKITE_PULL_REQUEST=false BUILDKITE_BRANCH=trunk
 export PIPELINE=pipeline.yml
 unset BUILDKITE_TAG CI_CHANGED_FILES_BASE CI_FULL_BUILD
@@ -79,8 +82,8 @@ read_vars
 check_values
 unset CI_CHANGED_FILES_BASE
 
-# A direct push without a PR-merge subject runs fully unless an explicit base is supplied.
-git commit --amend -qm 'Fixture direct push'
+# The same change on a single-parent commit runs fully, even with a PR number in its subject.
+git switch -q topic
 read_vars
 check_values
 export CI_CHANGED_FILES_BASE=$base

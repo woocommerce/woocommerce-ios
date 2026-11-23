@@ -20,7 +20,12 @@ struct POSScaleToFitHeightModifier: ViewModifier {
                 .frame(width: proxy.size.width)
                 .frame(minHeight: availableHeight)
                 .fixedSize(horizontal: false, vertical: true)
-                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { contentHeight = $0 }
+                // Unfolding an iPhone Duo runs layout passes back to back with different available heights. Observing the
+                // height alone, the last pass was sometimes not reported, leaving the scale based on an earlier pass.
+                // Pairing it with the available height makes every pass a distinct value.
+                .onGeometryChange(for: HeightMeasurement.self, of: { HeightMeasurement(contentHeight: $0.size.height, availableHeight: availableHeight) }) {
+                    contentHeight = $0.contentHeight
+                }
             let scale = Self.scale(contentHeight: contentHeight, availableHeight: availableHeight)
             let shouldScroll = dynamicTypeSize.isAccessibilitySize || scale < minimumScale
 
@@ -33,6 +38,11 @@ struct POSScaleToFitHeightModifier: ViewModifier {
             .scrollDisabled(!shouldScroll)
             .scrollBounceBehavior(.basedOnSize)
         }
+    }
+
+    private struct HeightMeasurement: Equatable {
+        let contentHeight: CGFloat
+        let availableHeight: CGFloat
     }
 
     nonisolated static func scale(contentHeight: CGFloat, availableHeight: CGFloat) -> CGFloat {

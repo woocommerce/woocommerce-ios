@@ -188,13 +188,18 @@ private extension POSPINEntryView {
                             ))
                     }
                 }
+                .transaction { transaction in
+                    if setupPage != nil && !filled && enteredPIN.isEmpty {
+                        transaction.animation = nil
+                    }
+                }
                 .frame(width: LockScreenConstants.dotSize, height: LockScreenConstants.dotSize)
                 .offset(y: yOffset)
         } else {
             Circle()
-                .fill(filled ? Color.posPrimary : Color.clear)
+                .fill(filled ? Color.posOnSurface : Color.clear)
                 .overlay(
-                    Circle().strokeBorder(filled ? Color.posPrimary : Color.posOutline,
+                    Circle().strokeBorder(filled ? Color.posOnSurface : Color.posOutline,
                                           lineWidth: Constants.dotBorderWidth)
                 )
                 .frame(width: Constants.dotSize, height: Constants.dotSize)

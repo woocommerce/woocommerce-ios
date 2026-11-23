@@ -31,6 +31,7 @@ public struct PointOfSaleEntryPointView: View {
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @State private var accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
+    @State private var lockSettings: POSLockSettings
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -163,6 +164,7 @@ public struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self._lockSettings = State(initialValue: POSLockSettings(siteID: siteID))
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
@@ -209,7 +211,8 @@ public struct PointOfSaleEntryPointView: View {
                     .posAutoLockActivityTracking(
                         session: accessSession,
                         paymentModel: posModel.paymentModel,
-                        aggregateModel: posModel
+                        aggregateModel: posModel,
+                        settings: lockSettings
                     )
                     .posLockScreenOverlay()
             } else {
@@ -236,7 +239,7 @@ public struct PointOfSaleEntryPointView: View {
             }
             accessSession = session
             if services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) {
-                settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session)
+                settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session, lockSettings: lockSettings)
             }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
@@ -265,8 +268,11 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, session, onPointOfSaleModeActiveStateChange] in
+            let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()
+                if posModel?.paymentState.isSuccess == true {
+                    POSAccessSessionFactory.handleCompletedSaleExit(siteID: siteID)
+                }
                 onPointOfSaleModeActiveStateChange(false)
                 posModalManager.onDisappear()
                 posModel?.pointOfSaleClosed()
@@ -301,7 +307,8 @@ public struct PointOfSaleEntryPointView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
+            guard lockSettings.preferences.locksInBackground,
+                  accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in

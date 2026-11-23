@@ -16,24 +16,35 @@ final class DefaultPOSAccessSession: POSAccessSession {
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private var generation: POSPINSessionTokens.Token
     @ObservationIgnored private var hasKnownProtection: Bool
+    @ObservationIgnored private let onEnd: @MainActor (POSStaff?) -> Void
 
     init(siteID: Int64,
          authenticator: POSPINAuthenticating,
          rateLimiter: POSLocalRateLimiter,
          credentialProvider: POSPINCredentialProviding,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         resumingStaff: POSStaff? = nil,
+         onEnd: @escaping @MainActor (POSStaff?) -> Void = { _ in }) {
         self.credentialProvider = credentialProvider
         self.siteID = siteID
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
         self.generation = rateLimiter.sessionTokens.invalidate()
         self.userDefaults = userDefaults
-        let hasCredentials = try? !credentialProvider.credentials().isEmpty
+        self.onEnd = onEnd
+        let credentials = try? credentialProvider.credentials()
+        let hasCredentials = credentials.map { !$0.isEmpty }
         self.hasKnownProtection = hasCredentials == true
         let isProtected = hasCredentials ?? true
         self.isPINProtectionEnabled = isProtected
-        self.isLocked = isProtected
-        if let hasCredentials { persistLockState(hasCredentials) }
+        let resumedStaff = resumingStaff.flatMap { staff -> POSStaff? in
+            let hasPIN = credentials?.contains { $0.staff == staff } == true
+            let wasLeftUnlocked = !userDefaults.bool(forKey: POSLockStateKey.key(for: siteID))
+            return hasPIN && wasLeftUnlocked ? staff : nil
+        }
+        self.currentStaff = isProtected ? resumedStaff : nil
+        self.isLocked = isProtected && resumedStaff == nil
+        if hasCredentials != nil { persistLockState(isLocked) }
     }
 
     func refreshPINProtection() throws(POSPINStoreError) {
@@ -110,6 +121,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func endSession() {
+        onEnd(isLocked ? nil : currentStaff)
         accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         _ = rateLimiter.sessionTokens.invalidate(ifCurrent: generation)

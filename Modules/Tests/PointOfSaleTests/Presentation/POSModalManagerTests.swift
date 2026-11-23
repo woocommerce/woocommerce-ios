@@ -54,4 +54,36 @@ struct POSModalManagerTests {
         // Then
         #expect(sut.compactStyle == nil)
     }
+
+    @Test func test_dismiss_when_completion_is_supplied_then_calls_it_once_after_clearing_presentation() {
+        // Given
+        let sut = POSModalManager()
+        var callbacks: [String] = []
+        sut.present(compactStyle: .dialog, onDismiss: { callbacks.append("dismiss") }, onDismissCompleted: {
+            #expect(!sut.isPresented)
+            #expect(sut.compactStyle == nil)
+            callbacks.append("completed")
+        }) { EmptyView() }
+
+        // When
+        sut.dismiss()
+        sut.dismiss()
+
+        // Then
+        #expect(callbacks == ["dismiss", "completed"])
+    }
+
+    @Test func test_onDisappear_when_completion_is_supplied_then_clears_it_without_reopening_content() {
+        // Given
+        let sut = POSModalManager()
+        var completed = false
+        sut.present(compactStyle: .dialog, onDismiss: {}, onDismissCompleted: { completed = true }) { EmptyView() }
+
+        // When
+        sut.onDisappear()
+        sut.dismiss()
+
+        // Then
+        #expect(!completed)
+    }
 }

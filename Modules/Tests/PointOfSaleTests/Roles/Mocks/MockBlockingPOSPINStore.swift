@@ -21,9 +21,9 @@ final class MockBlockingPOSPINStore: POSPINManaging, Sendable {
         try store.validatePIN(pin, for: role)
     }
 
-    func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
+    func preparePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) -> POSPINCommit {
         try waitForRelease()
-        try store.setPIN(pin, for: role)
+        return try store.preparePIN(pin, for: role)
     }
 
     func removePIN(for role: POSLocalRole) throws(POSPINStoreError) {

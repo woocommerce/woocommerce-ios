@@ -2704,6 +2704,175 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedProperties.last?["added_via"] as? String, "scanning")
     }
 
+    func test_addHardwareScannedProductToOrder_when_a_scan_is_still_being_added_then_ignores_the_next_scan() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+        var lookedUpIdentifiers: [String] = []
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, identifier, _) = action {
+                // The lookup doesn't complete, like a slow network request.
+                lookedUpIdentifiers.append(identifier)
+            }
+        })
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "first", symbology: .code128))
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "second", symbology: .code128))
+
+        // Then
+        waitUntil {
+            lookedUpIdentifiers.isNotEmpty
+        }
+        XCTAssertEqual(lookedUpIdentifiers, ["first"])
+        XCTAssertFalse(viewModel.canAddHardwareScannedProduct)
+        XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.barcodeScanningSuccess.rawValue))
+    }
+
+    func test_addHardwareScannedProductToOrder_when_lookup_is_in_progress_then_order_cannot_be_created_until_it_finishes() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        var completeLookup: (() -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion) = action {
+                // The lookup completes later, like a slow network request.
+                completeLookup = { onCompletion(.failure(ProductLoadError.notFound)) }
+            }
+        })
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "sku", symbology: .code128))
+        waitUntil {
+            completeLookup != nil
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .loading)
+        XCTAssertEqual(viewModel.doneButtonType, .create(loading: true))
+        completeLookup?()
+        waitUntil {
+            viewModel.canAddHardwareScannedProduct
+        }
+        XCTAssertEqual(viewModel.navigationTrailingItem, .create)
+        XCTAssertEqual(viewModel.doneButtonType, .create(loading: false))
+    }
+
+    func test_addHardwareScannedProductToOrder_when_lookup_is_in_progress_then_disables_collect_payment_until_it_finishes() {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: true, total: "10")
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+        var completeLookup: (() -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion) = action {
+                // The lookup completes later, like a slow network request.
+                completeLookup = { onCompletion(.failure(ProductLoadError.notFound)) }
+            }
+        })
+        XCTAssertFalse(viewModel.collectPaymentDisabled)
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "sku", symbology: .code128))
+        waitUntil {
+            completeLookup != nil
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.collectPaymentDisabled)
+        completeLookup?()
+        waitUntil {
+            !viewModel.collectPaymentDisabled
+        }
+    }
+
+    func test_addHardwareScannedProductToOrder_when_bundle_is_being_checked_then_ignores_the_next_scan() {
+        // Given
+        let child = Product.fake().copy(siteID: sampleSiteID, productID: 77, purchasable: true)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: child.productID)])
+        storageManager.insertSampleProduct(readOnlyProduct: bundle)
+        var identifierLookupCount = 0
+        var completeBundledProductsLookup: (() -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion):
+                identifierLookupCount += 1
+                onCompletion(.success((.product(bundle), .SKU)))
+            case let .retrieveProductsIfNeeded(_, _, onCompletion):
+                // The bundled products load later, like a slow network request.
+                completeBundledProductsLookup = { onCompletion(.success([child])) }
+            default:
+                break
+            }
+        })
+        let barcode = ScannedBarcode(payloadStringValue: "bundle", symbology: .code128)
+        viewModel.addHardwareScannedProductToOrder(barcode: barcode)
+        waitUntil {
+            completeBundledProductsLookup != nil
+        }
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: barcode)
+
+        // Then
+        XCTAssertEqual(identifierLookupCount, 1)
+        XCTAssertFalse(viewModel.canAddHardwareScannedProduct)
+        completeBundledProductsLookup?()
+        waitUntil { [weak self] in
+            self?.viewModel.configurableScannedProductViewModel != nil
+        }
+        XCTAssertFalse(viewModel.canAddHardwareScannedProduct)
+    }
+
+    func test_addHardwareScannedProductToOrder_when_lookup_finishes_then_accepts_the_next_scan() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion) = action {
+                onCompletion(.failure(ProductLoadError.notFound))
+            }
+        })
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "unknown", symbology: .code128))
+
+        // Then
+        waitUntil {
+            viewModel.canAddHardwareScannedProduct
+        }
+        XCTAssertNotNil(viewModel.autodismissableNotice)
+    }
+
+    func test_addHardwareScannedProductToOrder_when_order_is_not_editable_then_ignores_the_scan() {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+        var lookupCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case .retrieveFirstPurchasableItemMatchFromIdentifier = action {
+                lookupCount += 1
+            }
+        })
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "sku", symbology: .code128))
+
+        // Then
+        XCTAssertFalse(viewModel.canAddHardwareScannedProduct)
+        XCTAssertEqual(lookupCount, 0)
+    }
+
     func test_order_creation_when_withinitialItem_is_nil_then_currentOrderItems_are_zero() {
         // Given, When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: nil)

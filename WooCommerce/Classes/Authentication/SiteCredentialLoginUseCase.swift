@@ -12,10 +12,11 @@ protocol SiteCredentialLoginProtocol: AnyObject {
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)? { get set }
     func cancel()
 
+    /// - Parameter onLoginSuccess: called with the proven endpoints, whose admin base can differ from the configured one.
     /// - Parameter onLoginFailure: called with the failure and whether the configured login entry was proven
     ///   to render one eligible WordPress login form before the failure occurred, plus whether the failure
     ///   came from the credential response and can plausibly be solved by browser authentication.
-    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping (CookieNonceAuthenticationEndpoints) -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void)
 
     func handleLogin(username: String, password: String)
@@ -116,10 +117,11 @@ enum SiteCredentialLoginError: LocalizedError {
             return presentationError.offersBrowserAlternative(at: stage)
         case .invalidCredentials, .invalidLoginResponse, .loginFailed:
             return true
+        case .unacceptableStatusCode(let code):
+            return code == 401
         case .basicAuthenticationRequired,
              .inaccessibleLoginPage,
              .inaccessibleAdminPage,
-             .unacceptableStatusCode,
              .genericFailure:
             return false
         }
@@ -161,6 +163,7 @@ enum SiteCredentialLoginError: LocalizedError {
 /// - Post to that transaction's form action with the exact rest nonce endpoint as the redirect target.
 /// - Prevent the HTTP stack from automatically following that redirect.
 /// - Accept only the expected nonce or configured admin redirect as login-success evidence, but never follow it.
+/// - If the redirect names the nonce under another admin base, fetch that re-derived nonce; when it passes, keep that admin base and stop.
 /// - Optionally prove the admin dashboard from its independently derived URL.
 /// - Issue an explicit nonce GET using the same private session.
 /// Ref: pe5sF9-1iQ-p2
@@ -174,7 +177,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let ownedTransactionSession: URLSession?
     private let verifyAdminDashboard: Bool
     private let logUnexpectedResponse: (String) -> Void
-    private var successHandler: (() -> Void)?
+    private var successHandler: ((CookieNonceAuthenticationEndpoints) -> Void)?
     private var errorHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
     private var loginTask: Task<Void, Never>?
@@ -217,7 +220,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         ownedTransactionSession?.invalidateAndCancel()
     }
 
-    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping (CookieNonceAuthenticationEndpoints) -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void) {
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
@@ -240,7 +243,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                     DDLogError("⛔️ Error constructing or validating login requests")
                     throw error
                 }
-                try await startLogin(
+                let provenEndpoints = try await startLogin(
                     username: username,
                     password: password,
                     endpoints: endpoints,
@@ -248,7 +251,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                     onResponseStageChanged: { responseStage = $0 }
                 )
                 guard !Task.isCancelled else { return }
-                successHandler?()
+                successHandler?(provenEndpoints)
             } catch let error as SiteCredentialLoginError {
                 guard !Task.isCancelled else { return }
                 errorHandler?(error, loginEntryVerified, error.offersBrowserAlternative(at: responseStage))
@@ -282,7 +285,7 @@ private extension SiteCredentialLoginUseCase {
         endpoints: CookieNonceAuthenticationEndpoints,
         onLoginEntryVerified: () -> Void,
         onResponseStageChanged: (CookieNonceAuthenticationResponseStage) -> Void
-    ) async throws {
+    ) async throws -> CookieNonceAuthenticationEndpoints {
         let submissionURL = try await preflight(endpoints: endpoints)
         try Task.checkCancellation()
         onStageSuccess?(.preflight)
@@ -308,6 +311,19 @@ private extension SiteCredentialLoginUseCase {
                   ) else {
                 throw unexpectedResponse(stage: .credentials, response: loginResponse)
             }
+            try Task.checkCancellation()
+            onStageSuccess?(.credentials)
+            if let candidate = endpoints.adminCandidate(fromCredentialRedirect: location, from: responseURL, afterLoginAt: submissionURL) {
+                do {
+                    try await retrieveNonce(at: candidate.nonceURL(afterLoginAt: submissionURL), afterLoginAt: submissionURL, endpoints: candidate)
+                    try Task.checkCancellation()
+                    onStageSuccess?(.nonce)
+                    return candidate
+                } catch {
+                    try Task.checkCancellation()
+                    DDLogWarn("⚠️ Redirected admin address \(candidate.adminBaseURL) was not proven, using the configured one: \(error)")
+                }
+            }
         } else {
             let html = try decodedHTML(from: loginResponse, stage: .credentials)
             throw responseError(
@@ -318,8 +334,6 @@ private extension SiteCredentialLoginUseCase {
             )
         }
 
-        try Task.checkCancellation()
-        onStageSuccess?(.credentials)
         if verifyAdminDashboard {
             onResponseStageChanged(.dashboard)
             try await verifyDashboard(afterLoginAt: submissionURL, endpoints: endpoints)
@@ -330,6 +344,7 @@ private extension SiteCredentialLoginUseCase {
         try await retrieveNonce(at: nonceURL, afterLoginAt: submissionURL, endpoints: endpoints)
         try Task.checkCancellation()
         onStageSuccess?(.nonce)
+        return endpoints
     }
 
     /// Fetches a document, following only same-site redirects and never more than the shared bound.

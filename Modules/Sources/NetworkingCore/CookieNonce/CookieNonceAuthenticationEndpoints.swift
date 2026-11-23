@@ -101,6 +101,27 @@ public struct CookieNonceAuthenticationEndpoints: Equatable, Sendable {
             components.percentEncodedQuery == "action=rest-nonce"
     }
 
+    /// Endpoints re-derived from a credential redirect to the nonce endpoint under another admin base. Plugins that move the
+    /// admin can send this redirect while still answering the standard nonce. Callers adopt them only after their own nonce passes.
+    public func adminCandidate(fromCredentialRedirect location: String, from previousURL: URL, afterLoginAt finalLoginURL: URL) -> Self? {
+        guard let redirectURL = try? resolveRedirect(location: location, from: previousURL),
+              isNonceEndpoint(redirectURL),
+              var components = URLComponents(url: redirectURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.percentEncodedPath = String(components.percentEncodedPath.dropLast("admin-ajax.php".count))
+        components.query = nil
+        guard let adminBaseURL = components.url,
+              let candidate = try? Self(siteURL: siteURL, loginEntryURL: loginEntryURL, adminBaseURL: adminBaseURL),
+              let candidateNonceURL = try? candidate.nonceURL(afterLoginAt: finalLoginURL),
+              let configuredNonceURL = try? nonceURL(afterLoginAt: finalLoginURL),
+              candidateNonceURL == redirectURL,
+              candidateNonceURL != configuredNonceURL else {
+            return nil
+        }
+        return candidate
+    }
+
     public func isExpectedNonceURL(_ candidate: URL, afterLoginAt finalLoginURL: URL? = nil) -> Bool {
         guard isNonceEndpoint(candidate),
               let normalized = try? Self.normalized(candidate, relativeTo: siteURL, kind: .login),
@@ -113,8 +134,8 @@ public struct CookieNonceAuthenticationEndpoints: Equatable, Sendable {
     /// Validates a credential response redirect without promoting its target to a request URL.
     ///
     /// Some login integrations redirect to a structurally valid custom nonce endpoint or the configured admin base
-    /// instead of honoring the requested nonce URL. Callers must still fetch the internally derived nonce URL rather
-    /// than follow or promote this transaction-local redirect.
+    /// instead of honoring the requested nonce URL. Callers never follow the raw redirect: they fetch the internally derived
+    /// nonce URL, or the nonce URL of the endpoints that `adminCandidate(fromCredentialRedirect:…)` re-derives from it.
     public func isExpectedCredentialRedirect(location: String, from previousURL: URL, afterLoginAt finalLoginURL: URL) -> Bool {
         guard let candidate = try? resolveRedirect(location: location, from: previousURL) else {
             return false

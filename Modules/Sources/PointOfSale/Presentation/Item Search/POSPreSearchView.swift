@@ -10,6 +10,7 @@ struct POSPreSearchView: View {
 
     let savedSearches: [String]
     let onSearchSelected: (String) -> Void
+    let onItemSelected: () -> Void
 
     let itemListType: ItemListType
 
@@ -32,6 +33,7 @@ struct POSPreSearchView: View {
                 sourceViewType: .preSearch,
                 analytics: analytics
             ),
+            onItemSelected: onItemSelected,
             headerView: {
                 VStack(alignment: .leading, spacing: metrics.spacing.none) {
                     recentSearchesSection

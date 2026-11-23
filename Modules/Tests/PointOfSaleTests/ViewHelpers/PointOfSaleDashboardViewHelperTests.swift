@@ -162,7 +162,8 @@ struct PointOfSaleDashboardViewHelperTests {
         // When
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
-            floatingControlSuppressed: false
+            floatingControlSuppressed: false,
+            isFullSizeKeyboardVisible: false
         )
 
         // Then
@@ -173,7 +174,8 @@ struct PointOfSaleDashboardViewHelperTests {
         // When
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
-            floatingControlSuppressed: false
+            floatingControlSuppressed: false,
+            isFullSizeKeyboardVisible: false
         )
 
         // Then
@@ -184,7 +186,8 @@ struct PointOfSaleDashboardViewHelperTests {
         // When
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
-            floatingControlSuppressed: true
+            floatingControlSuppressed: true,
+            isFullSizeKeyboardVisible: false
         )
 
         // Then
@@ -195,7 +198,20 @@ struct PointOfSaleDashboardViewHelperTests {
         // When
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
-            floatingControlSuppressed: true
+            floatingControlSuppressed: true,
+            isFullSizeKeyboardVisible: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func showsCompactCartButton_when_cart_has_items_but_full_size_keyboard_is_visible_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: false,
+            floatingControlSuppressed: false,
+            isFullSizeKeyboardVisible: true
         )
 
         // Then

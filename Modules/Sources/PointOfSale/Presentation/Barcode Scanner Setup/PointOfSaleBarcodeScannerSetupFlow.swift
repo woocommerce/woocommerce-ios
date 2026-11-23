@@ -9,7 +9,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     fileprivate let onDismiss: () -> Void
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
     private(set) var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
-    /// Retry starts the setup again, so it goes back like Back does.
     private(set) var navigationDirection: POSFlowStepDirection = .forward
     private let analytics: POSAnalyticsProviding
 

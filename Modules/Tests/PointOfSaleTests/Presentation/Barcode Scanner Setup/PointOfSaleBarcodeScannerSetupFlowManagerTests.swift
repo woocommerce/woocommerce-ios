@@ -147,48 +147,48 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
     }
 
     @Test func test_navigationDirection_when_next_then_back_then_forward_then_backward() {
-        // Given a flow manager on the first setup step
+        // Given
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: .constant(true), analytics: MockPOSAnalytics())
         sut.selectScanner(.starBSH20B)
         #expect(sut.navigationDirection == .forward)
 
-        // When going to the next step
+        // When
         sut.buttonConfiguration.primaryButton?.action()
 
-        // Then the change goes forward
+        // Then
         #expect(sut.currentPageID == PointOfSaleBarcodeScannerStepID.pairing.rawValue)
         #expect(sut.navigationDirection == .forward)
 
-        // When going back
+        // When
         sut.buttonConfiguration.backButton?.action()
 
-        // Then the change goes backward
+        // Then
         #expect(sut.currentPageID == PointOfSaleBarcodeScannerStepID.setupBarcodeHID.rawValue)
         #expect(sut.navigationDirection == .backward)
     }
 
     @Test func test_navigationDirection_when_going_back_to_selection_then_backward_and_forward_on_next_selection() {
-        // Given a flow manager on the first setup step
+        // Given
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: .constant(true), analytics: MockPOSAnalytics())
         sut.selectScanner(.starBSH20B)
         let firstStepPageID = sut.currentPageID
 
-        // When going back from the first step
+        // When
         sut.buttonConfiguration.backButton?.action()
 
-        // Then the selection page comes back from the leading edge
+        // Then
         #expect(sut.currentPageID != firstStepPageID)
         #expect(sut.navigationDirection == .backward)
 
-        // When a scanner is selected again
+        // When
         sut.selectScanner(.tera12002D)
 
-        // Then the change goes forward
+        // Then
         #expect(sut.navigationDirection == .forward)
     }
 
     @Test func test_flow_navigationDirection_when_retry_after_failed_scan_then_backward() {
-        // Given a flow on the failed test scan step
+        // Given
         let sut = PointOfSaleBarcodeScannerSetupFlow(scannerType: .starBSH20B,
                                                      analytics: MockPOSAnalytics(),
                                                      onBackToSelection: {},
@@ -196,10 +196,10 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         sut.transition(to: .testScanFailed)
         #expect(sut.navigationDirection == .forward)
 
-        // When retrying
+        // When
         sut.transition(to: .retry)
 
-        // Then it goes back to the first step
+        // Then
         #expect(sut.currentStepKey == .setupBarcodeHID)
         #expect(sut.navigationDirection == .backward)
     }

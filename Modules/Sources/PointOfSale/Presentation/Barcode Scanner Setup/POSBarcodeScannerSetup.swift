@@ -65,7 +65,7 @@ struct POSBarcodeScannerSetup: View {
         // mechanism for the same outcome. See #17067 review feedback.
     }
 
-    /// The buttons stay at the bottom of each page, so they don't move between steps.
+    /// The buttons stay at the bottom, so they don't move between steps.
     private var compactBody: some View {
         POSFullScreenFlowSteps(id: flowManager.currentPageID, direction: { [flowManager] in flowManager.navigationDirection }) {
             VStack(spacing: metrics.spacing.xLarge) {

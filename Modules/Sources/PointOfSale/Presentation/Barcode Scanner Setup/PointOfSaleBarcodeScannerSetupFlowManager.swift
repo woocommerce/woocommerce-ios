@@ -20,12 +20,10 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow?.currentStepKey.rawValue
     }
 
-    /// Identity of the page shown on phone. Steps that only update the same page in place share one identity.
     var currentPageID: String {
         currentFlow?.currentStepKey.pageID.rawValue ?? Constants.scannerSelectionPageID
     }
 
-    /// Direction of the last page change.
     var navigationDirection: POSFlowStepDirection {
         currentFlow?.navigationDirection ?? selectionNavigationDirection
     }

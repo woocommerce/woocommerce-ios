@@ -29,7 +29,7 @@ struct POSRootModalViewModifier: ViewModifier {
         (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
     }
 
-    /// iPhone full-screen modals slide up and down like a full-screen cover. Narrow iPad windows keep the iPad animation.
+    /// Narrow iPad windows are compact too, but keep the iPad animation.
     private var slidesFromBottom: Bool {
         isFullScreen && horizontalSizeClass == .compact && UIDevice.current.userInterfaceIdiom == .phone
     }

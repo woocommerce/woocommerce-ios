@@ -5,11 +5,8 @@ enum POSFlowStepDirection: Equatable {
     case backward
 }
 
-/// Slides between the pages of a full-screen flow on iPhone, like a navigation push or pop.
-/// Outside a phone full-screen flow the page changes as before.
-///
-/// The page comes from a builder, not a view modifier: a modifier's content always shows the current state, so the
-/// page sliding out would already show the new step.
+/// Takes a page builder, not a view modifier: a modifier's content always shows the current state, so the page
+/// sliding out would already show the new step.
 struct POSFullScreenFlowSteps<ID: Hashable, Page: View>: View {
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -17,11 +14,6 @@ struct POSFullScreenFlowSteps<ID: Hashable, Page: View>: View {
     private let direction: () -> POSFlowStepDirection
     private let page: () -> Page
 
-    /// - Parameters:
-    ///   - id: Identity of the current page. A new value slides the new page in.
-    ///   - direction: Read when a page is inserted or removed, so it must already return the direction of the change
-    ///     that updated `id`.
-    ///   - page: The current page.
     init(id: ID, direction: @escaping () -> POSFlowStepDirection, @ViewBuilder page: @escaping () -> Page) {
         self.id = id
         self.direction = direction
@@ -42,9 +34,8 @@ struct POSFullScreenFlowSteps<ID: Hashable, Page: View>: View {
     }
 }
 
-/// The direction is read in the transition body, not captured when the page was rendered. A removed page keeps the
-/// modifiers of its last render, so an asymmetric transition built from a stored direction would slide the old page
-/// out the wrong way on the first change after the direction flips.
+/// Reads the direction lazily: a removed page keeps the transition of its last render, so a direction stored there
+/// would slide the old page out the wrong way on the first change after the direction flips.
 struct POSFlowStepSlideTransition: Transition {
     static let animationDuration: CGFloat = 0.3
 

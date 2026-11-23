@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] POS: On iPhone, full-screen pages now slide up to open and slide down to close, and the barcode scanner setup slides between its steps. [https://github.com/woocommerce/woocommerce-ios/pull/TBD]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
 - [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]

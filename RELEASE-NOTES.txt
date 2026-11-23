@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] In-Person Payments: Show the updated order after a successful card payment. [https://github.com/woocommerce/woocommerce-ios/pull/18213]
 - [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
 - [*] POS: On an iPhone Duo, the checkout no longer stays shrunk after you fold and unfold the phone. [https://github.com/woocommerce/woocommerce-ios/pull/18442]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
@@ -69,7 +70,6 @@
 - [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
 - [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
-- [*] In-Person Payments: Show the updated order after a successful card payment. [https://github.com/woocommerce/woocommerce-ios/pull/18213]
 - [*] Orders: Prevented a crash when restoring focus to an amount field after a layout change. [https://github.com/woocommerce/woocommerce-ios/pull/18184]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]

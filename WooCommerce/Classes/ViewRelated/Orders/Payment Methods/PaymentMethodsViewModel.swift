@@ -34,7 +34,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showLoadingIndicator = false
 
-    @MainActor private var lastOrderRefreshTask: Task<Void, Never>?
+    @MainActor private var lastOrderRefreshTask: Task<Order?, Never>?
 
     /// Stores the payment link for the order.
     ///
@@ -217,7 +217,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         showLoadingIndicator = true
         do {
             // Keep an earlier card response from overwriting the cash update.
-            await lastOrderRefreshTask?.value
+            _ = await lastOrderRefreshTask?.value
             try await markOrderCompletedWithCashOnDelivery()
             let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { _, _ in }
             stores.dispatch(action)
@@ -298,7 +298,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                                        tapToPayReconnectionController: ServiceLocator.tapToPayReconnectionController,
                                                                        analyticsTracker: analyticsTracker))
 
-        var paymentOrderRefreshTask: Task<Void, Never>?
+        var paymentOrderRefreshTask: Task<Order?, Never>?
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,
             channel: channel,
@@ -311,9 +311,9 @@ final class PaymentMethodsViewModel: ObservableObject {
                     onFailure()
                     return
                 }
-                let refreshTask = updateOrderAsynchronously()
+                let refreshTask = refreshOrder()
                 if shouldReturnToOrderDetails(for: discoveryMethod, error: error) {
-                    refreshOrderBeforeReturningToDetails(after: refreshTask, onCompletion: onFailure)
+                    returnToOrderDetails(after: { _ = await refreshTask.value }, onCompletion: onFailure)
                 }
             },
             onCancel: {
@@ -321,15 +321,24 @@ final class PaymentMethodsViewModel: ObservableObject {
             },
             onPaymentCompletion: { [weak self] _ in
                 guard let self, paymentOrderRefreshTask == nil else { return }
-                paymentOrderRefreshTask = updateOrderAsynchronously()
+                paymentOrderRefreshTask = refreshOrder()
             },
             onCompleted: { [weak self] in
                 guard let self else { return }
-                let refreshTask = paymentOrderRefreshTask ?? updateOrderAsynchronously()
+                let refreshedDuringReceipt = paymentOrderRefreshTask != nil
+                let refreshTask = paymentOrderRefreshTask ?? refreshOrder()
                 paymentOrderRefreshTask = refreshTask
-                refreshOrderBeforeReturningToDetails(after: refreshTask) { [weak self] in
+                returnToOrderDetails(after: { [weak self] in
+                    let refreshedOrder = await refreshTask.value
                     guard let self else { return }
-                    _ = updateOrderAsynchronously()
+                    if let refreshedOrder, refreshedOrder.datePaid == nil {
+                        // The first response can predate the store recording the payment.
+                        _ = await refreshOrder().value
+                    } else if refreshedDuringReceipt || refreshedOrder == nil {
+                        _ = refreshOrder()
+                    }
+                }) { [weak self] in
+                    guard let self else { return }
                     onSuccess()
                     presentNoticeSubject.send(.completed)
                     collectPaymentsUseCase = nil
@@ -552,10 +561,10 @@ private extension PaymentMethodsViewModel {
     }
 
     @MainActor
-    func refreshOrderBeforeReturningToDetails(after task: Task<Void, Never>, onCompletion: @escaping () -> Void) {
+    func returnToOrderDetails(after refresh: @escaping @MainActor () async -> Void, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
         Task { @MainActor [weak self] in
-            await task.value
+            await refresh()
             guard let self else { return }
             showLoadingIndicator = false
             onCompletion()
@@ -563,17 +572,20 @@ private extension PaymentMethodsViewModel {
     }
 
     @MainActor
-    func updateOrderAsynchronously() -> Task<Void, Never> {
+    func refreshOrder() -> Task<Order?, Never> {
         let previousTask = lastOrderRefreshTask
-        let task = Task { @MainActor [stores, siteID, orderID] in
+        let task = Task<Order?, Never> { @MainActor [stores, siteID, orderID] in
             // An older attempt's response must be saved before this refresh starts.
-            await previousTask?.value
-            await withCheckedContinuation { continuation in
+            _ = await previousTask?.value
+            return await withCheckedContinuation { continuation in
                 let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { result in
-                    if case .failure(let error) = result {
+                    switch result {
+                    case .success(let order):
+                        continuation.resume(returning: order)
+                    case .failure(let error):
                         DDLogError("⛔️ Error refreshing order after payment: \(error)")
+                        continuation.resume(returning: nil)
                     }
-                    continuation.resume()
                 }
                 stores.dispatch(action)
             }

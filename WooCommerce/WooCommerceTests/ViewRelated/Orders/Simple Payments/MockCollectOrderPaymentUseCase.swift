@@ -13,7 +13,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
 
     var onSuccessfulPayment: SuccessfulPaymentHandler?
 
-    /// Calls `onCompleted` for a successful collect result, and `onFailure` for an errer .
+    /// Uses the no-receipt callback order unless the test controls when the receipt closes.
     ///
     func collectPayment(using: Yosemite.CardReaderDiscoveryMethod,
                         channel: PaymentChannel,
@@ -27,6 +27,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
                 onSuccessfulPayment({ onPaymentCompletion(nil) }, onCompleted)
             } else {
                 onCompleted()
+                onPaymentCompletion(nil)
             }
         case .failure(let error):
             onFailure(error)

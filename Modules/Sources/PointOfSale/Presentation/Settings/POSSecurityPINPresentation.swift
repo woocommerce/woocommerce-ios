@@ -28,7 +28,8 @@ final class POSSecurityPINPresentation {
     private enum State {
         case idle
         case presented(Destination)
-        case dismissingApproval(UUID, POSPINSetupFlow)
+        case dismissingApproval(UUID, POSPINSetupFlow?)
+        case awaitingApprovalResult
     }
 
     private var state = State.idle
@@ -42,12 +43,27 @@ final class POSSecurityPINPresentation {
         state = .presented(destination)
     }
 
-    func finishApproval(editor: POSPINSetupFlow?) {
+    func approvalEnded() {
         guard case .presented(.approval(let request)) = state else { return }
-        if let editor {
+        state = .dismissingApproval(request.id, nil)
+    }
+
+    func finishApproval(editor: POSPINSetupFlow?) {
+        guard let editor else {
+            switch state {
+            case .presented(.approval), .dismissingApproval, .awaitingApprovalResult: state = .idle
+            case .idle, .presented(.editor): break
+            }
+            return
+        }
+        switch state {
+        case .presented(.approval(let request)):
             state = .dismissingApproval(request.id, editor)
-        } else {
-            state = .idle
+        case .dismissingApproval(let id, _):
+            state = .dismissingApproval(id, editor)
+        case .awaitingApprovalResult:
+            state = .presented(.editor(editor))
+        case .idle, .presented(.editor): break
         }
     }
 
@@ -55,7 +71,11 @@ final class POSSecurityPINPresentation {
         guard case .approval(let request) = destination,
               case .dismissingApproval(let id, let editor) = state,
               id == request.id else { return }
-        state = .presented(.editor(editor))
+        if let editor {
+            state = .presented(.editor(editor))
+        } else {
+            state = .awaitingApprovalResult
+        }
     }
 
     func cancel() {

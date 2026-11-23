@@ -21,6 +21,63 @@ struct POSSecurityPINPresentationTests {
         #expect(sut.destination == .editor(editor))
     }
 
+    @Test(arguments: [false, true])
+    func test_approval_when_request_ends_before_result_then_opens_only_after_result_and_dismissal(dismissesFirst: Bool) {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let approval = makeApproval()
+        let editor = makeEditor()
+        sut.present(approval)
+
+        // When
+        sut.approvalEnded()
+        #expect(sut.destination == nil)
+        if dismissesFirst {
+            sut.dismissalCompleted(for: approval)
+            #expect(sut.destination == nil)
+            sut.finishApproval(editor: editor)
+        } else {
+            sut.finishApproval(editor: editor)
+            #expect(sut.destination == nil)
+            sut.dismissalCompleted(for: approval)
+        }
+
+        // Then
+        #expect(sut.destination == .editor(editor))
+    }
+
+    @Test func test_pending_approval_when_cancelled_then_closes_before_worker_finishes() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let approval = makeApproval()
+        sut.present(approval)
+
+        // When
+        sut.approvalEnded()
+
+        // Then
+        #expect(sut.destination == nil)
+        sut.dismissalCompleted(for: approval)
+        sut.finishApproval(editor: nil)
+        #expect(sut.destination == nil)
+    }
+
+    @Test func test_dismissed_approval_when_settings_closes_then_late_worker_cannot_reopen_editor() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let approval = makeApproval()
+        sut.present(approval)
+        sut.approvalEnded()
+        sut.dismissalCompleted(for: approval)
+
+        // When
+        sut.cancel()
+        sut.finishApproval(editor: makeEditor())
+
+        // Then
+        #expect(sut.destination == nil)
+    }
+
     @Test func test_approval_when_cancelled_then_dismissal_does_not_open_editor() {
         // Given
         let sut = POSSecurityPINPresentation()

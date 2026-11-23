@@ -64,7 +64,11 @@ struct POSSecuritySettingsView: View {
         .onAppear { controller.load() }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in
-            if let request { presentation.present(.approval(request)) }
+            if let request {
+                presentation.present(.approval(request))
+            } else {
+                presentation.approvalEnded()
+            }
         }
         .onChange(of: controller.isVisible) { _, isVisible in
             if !isVisible {

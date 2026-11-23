@@ -215,11 +215,13 @@ extension View {
 }
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
+    let onDismissCompleted: ((Item) -> Void)?
     let modalContent: (Item) -> ModalContent
 
     func body(content: Content) -> some View {
@@ -229,16 +231,20 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
+                    let completed = onDismissCompleted.map { completion in { completion(newItem) } }
                     modalManager.present(compactStyle: compactStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         item = nil
-                    }) {
+                    }, onDismissCompleted: completed) {
                         modalContent(newItem)
                             .animation(.default, value: item)
                     }
+                } else if onDismissCompleted != nil, reduceMotion {
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) { modalManager.dismiss() }
                 } else {
-                    // External dismissal
                     modalManager.dismiss()
                 }
             }
@@ -316,11 +322,13 @@ extension View {
         item: Binding<Item?>,
         compactStyle: POSModalCompactStyle,
         onDismiss: (() -> Void)? = nil,
+        onDismissCompleted: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(compactStyle: compactStyle,
                                  item: item,
                                  onDismiss: onDismiss,
+                                 onDismissCompleted: onDismissCompleted,
                                  modalContent: content))
     }
 }

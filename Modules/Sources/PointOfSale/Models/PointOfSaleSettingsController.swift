@@ -77,8 +77,8 @@ extension POSSettingsControllerProtocol {
         observeCardReader(from: cardPresentPaymentService)
     }
 
-    func configureSecurity(store: POSPINManaging, session: POSAccessSession) {
-        securityController = POSSecuritySettingsController(store: store, session: session)
+    func configureSecurity(store: POSPINManaging, session: POSAccessSession, lockSettings: POSLockSettings) {
+        securityController = POSSecuritySettingsController(store: store, session: session, lockSettings: lockSettings)
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {

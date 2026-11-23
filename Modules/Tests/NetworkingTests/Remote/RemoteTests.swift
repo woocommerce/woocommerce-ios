@@ -1709,6 +1709,49 @@ final class RemoteTests: XCTestCase {
             XCTAssertEqual(headers[key], value, "Header \(key) should match expected value")
         }
     }
+
+    // MARK: - DotcomError log message
+
+    func test_dotcomErrorLogMessage_when_request_is_tunneled_then_names_code_site_path_and_jetpack_tunnel() {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "unknown_token")
+
+        // When
+        let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: true)
+
+        // Then
+        XCTAssertTrue(message.contains("unknown_token"))
+        XCTAssertTrue(message.contains("site_id=123"))
+        XCTAssertTrue(message.contains("path=something"))
+        XCTAssertTrue(message.contains("connection=jetpack_tunnel"))
+    }
+
+    func test_dotcomErrorLogMessage_when_jetpack_request_is_not_tunneled_then_names_application_password() {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "invalid_blog")
+
+        // When
+        let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: false)
+
+        // Then
+        XCTAssertTrue(message.contains("invalid_blog"))
+        XCTAssertTrue(message.contains("site_id=123"))
+        XCTAssertTrue(message.contains("connection=application_password"))
+    }
+
+    func test_dotcomErrorLogMessage_when_request_is_dotcom_then_has_no_site_and_names_wpcom() {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: "unknown_token")
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: "mock")
+
+        // When
+        let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: false)
+
+        // Then
+        XCTAssertTrue(message.contains("site_id=none"))
+        XCTAssertTrue(message.contains("path=mock"))
+        XCTAssertTrue(message.contains("connection=wpcom"))
+    }
 }
 
 private extension RemoteTests {

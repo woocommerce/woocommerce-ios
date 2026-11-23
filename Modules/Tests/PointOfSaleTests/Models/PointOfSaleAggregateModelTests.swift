@@ -13,6 +13,7 @@ import struct Yosemite.OrderItem
 import struct Yosemite.POSReceiptInformation
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
+import enum Hardware.HIDBarcodeParserError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
 import protocol Yosemite.ReceiptPrinterServiceProtocol

@@ -17,14 +17,23 @@
 #   STRICT_CONCURRENCY_LOG           Parse this existing build log instead of
 #                                    building (fast; used by tests).
 #   STRICT_CONCURRENCY_DERIVED_DATA  Derived data path (default: fresh temp dir,
-#                                    which forces the clean build the count needs).
+#                                    which forces the clean build the count needs,
+#                                    removed when the script exits). A path passed
+#                                    here is kept.
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 OUTPUT="${1:-$REPO_ROOT/Scripts/StrictConcurrency/current.json}"
 LOG_FILE="${STRICT_CONCURRENCY_LOG:-}"
 
 if [[ -z "$LOG_FILE" ]]; then
-  DERIVED_DATA="${STRICT_CONCURRENCY_DERIVED_DATA:-$(mktemp -d)/DerivedData}"
+  if [[ -n "${STRICT_CONCURRENCY_DERIVED_DATA:-}" ]]; then
+    DERIVED_DATA="$STRICT_CONCURRENCY_DERIVED_DATA"
+  else
+    # A clean workspace build leaves about 23 GB; only the log and the JSON are needed afterwards.
+    TEMP_DERIVED_DATA_ROOT="$(mktemp -d)"
+    trap 'rm -rf "$TEMP_DERIVED_DATA_ROOT"' EXIT
+    DERIVED_DATA="$TEMP_DERIVED_DATA_ROOT/DerivedData"
+  fi
   LOG_FILE="$(mktemp -d)/strict-concurrency-build.log"
   echo "Building with SWIFT_STRICT_CONCURRENCY=complete (log: $LOG_FILE)..."
   set +e

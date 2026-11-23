@@ -1,16 +1,12 @@
 import Foundation
 
-/// Owns the POS auto-lock timer. Decoupled from the view modifier so the timer-fire
-/// decision is unit-testable.
 @MainActor
 final class POSAutoLockActivityController {
-    nonisolated static let defaultTimeout: TimeInterval = 5 * 60
-
     nonisolated private static let activityThrottle: TimeInterval = 1
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState
-    private let timeout: TimeInterval
+    private var timeout: TimeInterval?
     private let now: () -> Date
 
     private var lastActivityAt: Date
@@ -18,7 +14,7 @@ final class POSAutoLockActivityController {
 
     init(session: any POSAccessSession,
          paymentStateProvider: @escaping () -> PointOfSalePaymentState,
-         timeout: TimeInterval = POSAutoLockActivityController.defaultTimeout,
+         timeout: TimeInterval?,
          now: @escaping () -> Date = Date.init) {
         self.session = session
         self.paymentStateProvider = paymentStateProvider
@@ -30,6 +26,12 @@ final class POSAutoLockActivityController {
     func noteActivity() {
         lastActivityAt = now()
         restartTimer()
+    }
+
+    func updateTimeout(_ timeout: TimeInterval?) {
+        guard timeout != self.timeout else { return }
+        self.timeout = timeout
+        noteActivity()
     }
 
     func noteActivityThrottled() {
@@ -44,8 +46,20 @@ final class POSAutoLockActivityController {
         timer = nil
     }
 
+    func handlePaymentStateChange(from oldState: PointOfSalePaymentState,
+                                  to newState: PointOfSalePaymentState,
+                                  locksAfterSale: Bool) {
+        guard !newState.isAutoLockSuppressing else { return }
+        let leftCompletedSale = oldState.isSuccess && !newState.isSuccess
+        if locksAfterSale, leftCompletedSale, hasUnlockedStaff {
+            session.lock()
+        } else {
+            noteActivity()
+        }
+    }
+
     func handleTimerFire() {
-        guard session.isPINProtectionEnabled, session.currentStaff != nil else {
+        guard let timeout, hasUnlockedStaff else {
             stop()
             return
         }
@@ -63,8 +77,16 @@ final class POSAutoLockActivityController {
 }
 
 private extension POSAutoLockActivityController {
+    var hasUnlockedStaff: Bool {
+        session.isPINProtectionEnabled && session.currentStaff != nil
+    }
+
     func restartTimer() {
         timer?.invalidate()
+        guard let timeout else {
+            timer = nil
+            return
+        }
         let scheduled = Timer(timeInterval: timeout, repeats: false) { [weak self] _ in
             Task { @MainActor in self?.handleTimerFire() }
         }

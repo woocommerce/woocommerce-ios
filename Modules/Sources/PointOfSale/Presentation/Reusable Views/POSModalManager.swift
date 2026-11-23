@@ -1,11 +1,13 @@
 import SwiftUI
 
-class POSModalManager: ObservableObject {
+@MainActor
+final class POSModalManager: ObservableObject {
     @Published private(set) var isPresented: Bool = false
     @Published private(set) var allowsInteractiveDismissal: Bool = true
     @Published private(set) var isFullScreen: Bool = false
     @Published private(set) var compactStyle: POSModalCompactStyle?
     private var owner: UUID?
+    private var session: POSAccessSession?
     private var preservesOnLock: () -> Bool = { false }
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
@@ -13,12 +15,16 @@ class POSModalManager: ObservableObject {
 
     func present<Content: View>(compactStyle: POSModalCompactStyle,
                                 owner: UUID? = nil,
+                                session: POSAccessSession? = nil,
+                                isCovered: Bool = false,
                                 preservesOnLock: @escaping () -> Bool = { false },
                                 onDismiss: @escaping () -> Void,
                                 onDismissCompleted: (() -> Void)? = nil,
                                 content: @escaping () -> Content) {
+        guard !isCovered, session?.isLocked != true || preservesOnLock() else { return }
         self.compactStyle = compactStyle
         self.owner = owner
+        self.session = session
         self.preservesOnLock = preservesOnLock
         contentBuilder = { AnyView(content()) }
         self.onDismiss = onDismiss
@@ -28,15 +34,21 @@ class POSModalManager: ObservableObject {
 
     func dismiss(owner: UUID? = nil, runsCallbacks: Bool = true) {
         guard isPresented, owner == nil || self.owner == owner else { return }
-        let onDismiss = runsCallbacks ? self.onDismiss : nil
-        let onDismissCompleted = runsCallbacks ? self.onDismissCompleted : nil
+        let canRunCallbacks = runsCallbacks && session?.isLocked != true
+        let onDismiss = canRunCallbacks ? self.onDismiss : nil
+        let completion = canRunCallbacks ? self.onDismissCompleted : nil
+        let session = self.session
+        let scope = session?.accessScope
         let changes = {
             self.isPresented = false
             self.reset()
             onDismiss?()
         }
-        if let onDismissCompleted {
-            withAnimation(completionCriteria: .removed, changes, completion: onDismissCompleted)
+        if let completion {
+            withAnimation(completionCriteria: .removed, changes) {
+                if let session, let scope, !session.isCurrent(scope) { return }
+                completion()
+            }
         } else {
             changes()
         }
@@ -65,6 +77,7 @@ class POSModalManager: ObservableObject {
 
     private func reset() {
         owner = nil
+        session = nil
         preservesOnLock = { false }
         onDismiss = nil
         onDismissCompleted = nil

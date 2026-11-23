@@ -42,7 +42,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             openURL: { openedURLs.append($0) },
             notificationCenter: notificationCenter)
         // When
-        sut.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
+        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
 
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -85,7 +85,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             openURL: { _ in },
             notificationCenter: notificationCenter)
         // When
-        sut.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
+        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
 
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
 
@@ -94,7 +94,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
         XCTAssertEqual(retryCount, 0)
     }
 
-    func test_open_settings_when_isolated_sign_in_is_required_then_uses_the_embedded_web_view() {
+    func test_open_settings_when_embedding_is_required_then_uses_the_embedded_web_view() {
         // Given
         var openedBrowser = false
         var didRetrySearch = false
@@ -108,7 +108,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             notificationCenter: notificationCenter)
 
         // When
-        sut.primaryButtonViewModel(requiresIsolatedSignIn: true).actionHandler()
+        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: true).actionHandler()
         notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
 
         // Then
@@ -128,7 +128,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             cancelSearchAction: {},
             openURL: { _ in },
             notificationCenter: notificationCenter)
-        sut?.primaryButtonViewModel(requiresIsolatedSignIn: false).actionHandler()
+        sut?.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
         weak var releasedViewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel?
         releasedViewModel = sut
 

@@ -12,6 +12,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
+import struct PointOfSale.POSExternalViewContext
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
@@ -37,8 +38,8 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSExternalNavigationAdaptor()
     }
 
-    @MainActor var externalViews: POSExternalViewProviding {
-        POSExternalViewAdaptor()
+    @MainActor func externalViews(context: POSExternalViewContext) -> POSExternalViewProviding {
+        POSExternalViewAdaptor(context: context)
     }
 }
 
@@ -88,9 +89,13 @@ private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
 }
 
 private struct POSExternalViewAdaptor: POSExternalViewProviding {
+    let context: POSExternalViewContext
+
+    var requiresEmbeddedSettingsWebView: Bool { context.requiresEmbeddedSettingsWebView }
+
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(
-            SupportForm(isPresented: isPresented,
+            SupportForm(isPresented: context.whileSessionIsCurrent(isPresented),
                         viewModel: SupportFormViewModel(sourceTag: sourceTag,
                                                         mobileStatusReportProvider: MobileStatusReportProvider(),
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
@@ -100,14 +105,12 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void,
-                                  onDisappear: @escaping () -> Void) -> AnyView {
+                                  dismissHandler: @escaping () -> Void) -> AnyView {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
-            showTypeSelection: showTypeSelection,
-            onSuccess: onSuccess,
-            dismissHandler: dismissHandler,
-            onDisappear: onDisappear
+            showTypeSelection: context.whileSessionIsCurrent(showTypeSelection),
+            onSuccess: context.whileSessionIsCurrent(onSuccess),
+            dismissHandler: context.whileSessionIsCurrent(dismissHandler)
         ))
     }
 
@@ -116,16 +119,16 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
         AnyView(POSDiscountTypeSelectionSheetAdaptor(
-            isPresented: isPresented,
+            isPresented: context.whileSessionIsCurrent(isPresented),
             title: title,
             cancelButtonTitle: cancelButtonTitle,
-            onSelection: onSelection
+            onSelection: context.whileSessionIsCurrent(onSelection)
         ))
     }
 
-    func createSettingsWebView(url: URL, title: String, requiresIsolatedSignIn: Bool, completion: @escaping () -> Void) -> AnyView {
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(WCAuthenticatedWebView(url: url, title: title,
-                                       session: requiresIsolatedSignIn ? .isolatedSignIn : .app,
-                                       completion: completion))
+                                       session: context.canReuseAppWebSignIn ? .app : .isolatedSignIn,
+                                       completion: context.whileSessionIsCurrent(completion)))
     }
 }

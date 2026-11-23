@@ -48,21 +48,56 @@ public protocol POSExternalNavigationProviding {
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 public protocol POSExternalViewProviding {
+    @MainActor var requiresEmbeddedSettingsWebView: Bool { get }
     @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     @MainActor
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void,
-                                  onDisappear: @escaping () -> Void) -> AnyView
+                                  dismissHandler: @escaping () -> Void) -> AnyView
     @MainActor
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
                                           title: String,
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
     @MainActor
-    func createSettingsWebView(url: URL, title: String, requiresIsolatedSignIn: Bool, completion: @escaping () -> Void) -> AnyView
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
+}
+
+/// The live POS session policy for views supplied by the app target.
+@MainActor
+public struct POSExternalViewContext {
+    let session: POSAccessSession
+
+    public var requiresEmbeddedSettingsWebView: Bool {
+        session.isPINProtectionEnabled
+    }
+
+    public var canReuseAppWebSignIn: Bool {
+        !session.isLocked && session.allows(.manageStoreSettings)
+    }
+
+    public func whileSessionIsCurrent<Value>(_ action: @escaping (Value) -> Void) -> (Value) -> Void {
+        let scope = session.accessScope
+        return { value in
+            guard session.isCurrent(scope) else { return }
+            action(value)
+        }
+    }
+
+    public func whileSessionIsCurrent(_ action: @escaping () -> Void) -> () -> Void {
+        let perform = whileSessionIsCurrent { (_: Void) in action() }
+        return { perform(()) }
+    }
+
+    public func whileSessionIsCurrent(_ binding: Binding<Bool>) -> Binding<Bool> {
+        let scope = session.accessScope
+        return Binding(get: { binding.wrappedValue }, set: { value in
+            guard session.isCurrent(scope) else { return }
+            binding.wrappedValue = value
+        })
+    }
 }
 
 /// Main protocol that combines all POS dependency providers
@@ -73,5 +108,5 @@ public protocol POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding { get }
     var connectivity: POSConnectivityProviding { get }
     @MainActor var externalNavigation: POSExternalNavigationProviding { get }
-    @MainActor var externalViews: POSExternalViewProviding { get }
+    @MainActor func externalViews(context: POSExternalViewContext) -> POSExternalViewProviding
 }

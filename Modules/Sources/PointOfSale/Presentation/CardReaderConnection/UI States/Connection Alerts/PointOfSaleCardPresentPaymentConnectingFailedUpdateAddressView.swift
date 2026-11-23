@@ -23,10 +23,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             }
 
             Spacer(minLength: metrics.spacing.large)
-            let scope = session.accessScope
-            let button = viewModel.primaryButtonViewModel(requiresIsolatedSignIn: session.isPINProtectionEnabled)
+            let button = viewModel.primaryButtonViewModel(requiresEmbeddedSettingsWebView: externalViews.requiresEmbeddedSettingsWebView)
             Button(button.title) {
-                guard session.isCurrent(scope) else { return }
+                guard !session.isLocked else { return }
                 button.actionHandler()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -41,11 +40,8 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             isTitleFocused = true
         }
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
-            let scope = session.accessScope
-            externalViews.createSettingsWebView(url: viewModel.settingsAdminUrl,
-                                                title: Localization.settingsWebViewTitle,
-                                                requiresIsolatedSignIn: session.isPINProtectionEnabled) {
-                guard session.isCurrent(scope) else { return }
+            externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
+                                                    title: Localization.settingsWebViewTitle) {
                 viewModel.settingsWebViewWasDismissed()
             }
         }

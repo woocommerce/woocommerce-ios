@@ -22,13 +22,13 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     private let notificationCenter: NotificationCenter
     private var foregroundRetrySubscription: AnyCancellable?
 
-    func primaryButtonViewModel(requiresIsolatedSignIn: Bool) -> CardPresentPaymentsModalButtonViewModel {
+    func primaryButtonViewModel(requiresEmbeddedSettingsWebView: Bool) -> CardPresentPaymentsModalButtonViewModel {
         if hasOpenedSettings { return retryButtonViewModel }
         return CardPresentPaymentsModalButtonViewModel(
             title: Localization.openAdmin,
             actionHandler: { [weak self] in
                 guard let self else { return }
-                if requiresIsolatedSignIn || showsInAuthenticatedWebView {
+                if requiresEmbeddedSettingsWebView || showsInAuthenticatedWebView {
                     shouldShowSettingsWebView = true
                 } else {
                     foregroundRetrySubscription = notificationCenter

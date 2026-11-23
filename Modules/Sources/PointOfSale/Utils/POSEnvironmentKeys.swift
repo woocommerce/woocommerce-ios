@@ -157,12 +157,12 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 }
 
 struct EmptyPOSExternalView: POSExternalViewProviding {
+    var requiresEmbeddedSettingsWebView: Bool { false }
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void,
-                                  onDisappear: @escaping () -> Void) -> AnyView {
+                                  dismissHandler: @escaping () -> Void) -> AnyView {
         AnyView(EmptyView())
     }
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
@@ -171,7 +171,7 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
                                           onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
         AnyView(EmptyView())
     }
-    func createSettingsWebView(url: URL, title: String, requiresIsolatedSignIn: Bool, completion: @escaping () -> Void) -> AnyView {
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(EmptyView())
     }
     init() {}

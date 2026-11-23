@@ -251,14 +251,9 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     }
 
     private func present(_ item: Item) {
-        guard !coverManager.isPresented, preservesOnLock() || !session.isLocked else { return }
-        let completed = onDismissCompleted.map { completion in
-            {
-                guard !session.isLocked else { return }
-                completion(item)
-            }
-        }
-        modalManager.present(compactStyle: compactStyle, owner: owner, preservesOnLock: preservesOnLock, onDismiss: {
+        let completed = onDismissCompleted.map { completion in { completion(item) } }
+        modalManager.present(compactStyle: compactStyle, owner: owner, session: session,
+                             isCovered: coverManager.isPresented, preservesOnLock: preservesOnLock, onDismiss: {
             onDismiss?()
             self.item = nil
         }, onDismissCompleted: completed) {
@@ -267,38 +262,14 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     }
 
     private func dismiss() {
-        modalManager.dismiss(owner: owner, runsCallbacks: preservesOnLock() || !session.isLocked)
+        modalManager.dismiss(owner: owner)
     }
 }
 
-struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
-    @Environment(\.posAccessSession) private var session
-    @State private var owner = UUID()
-    let compactStyle: POSModalCompactStyle
-    @EnvironmentObject var modalManager: POSModalManager
-    @EnvironmentObject var coverManager: POSFullScreenCoverManager
-    @Binding var isPresented: Bool
-    let onDismiss: (() -> Void)?
-    let modalContent: () -> ModalContent
+private enum POSModalPresence: Hashable, Identifiable {
+    case presented
 
-    func body(content: Content) -> some View {
-        content
-            .posDismissOnLock($isPresented, to: false, when: session.isLocked)
-            .onChange(of: isPresented) { _, newValue in
-                if newValue {
-                    guard !coverManager.isPresented, !session.isLocked else { return }
-                    modalManager.present(compactStyle: compactStyle, owner: owner, onDismiss: {
-                        // Internal dismissal, i.e. from tapping the background
-                        onDismiss?()
-                        isPresented = false
-                    }) {
-                        modalContent()
-                    }
-                } else {
-                    modalManager.dismiss(owner: owner, runsCallbacks: !session.isLocked)
-                }
-            }
-    }
+    var id: Self { self }
 }
 
 extension View {
@@ -319,11 +290,12 @@ extension View {
                                       compactStyle: POSModalCompactStyle,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
-        self.modifier(
-            POSModalViewModifierForBool(compactStyle: compactStyle,
-                                        isPresented: isPresented,
-                                        onDismiss: onDismiss,
-                                        modalContent: content))
+        let item = Binding<POSModalPresence?>(get: {
+            isPresented.wrappedValue ? .presented : nil
+        }, set: {
+            isPresented.wrappedValue = $0 != nil
+        })
+        return posModal(item: item, compactStyle: compactStyle, onDismiss: onDismiss) { _ in content() }
     }
 
     /// Shows a modal view over the Point of Sale experience.

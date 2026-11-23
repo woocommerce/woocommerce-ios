@@ -294,7 +294,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posFeatureFlags, services.featureFlags)
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
-        .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posExternalViews, services.externalViews(context: POSExternalViewContext(session: accessSession)))
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)

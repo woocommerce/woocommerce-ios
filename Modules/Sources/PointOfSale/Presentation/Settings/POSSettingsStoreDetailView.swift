@@ -76,12 +76,9 @@ struct POSSettingsStoreDetailView: View {
         }
         .posFullScreenCover(isPresented: $showingWebView) {
             if let adminURL = URL(string: viewModel.receiptSettingsAdminURL) {
-                let scope = session.accessScope
-                externalViews.createSettingsWebView(
+                externalViews.createAuthenticatedWebView(
                     url: adminURL,
-                    title: Localization.editReceiptWebViewTitle,
-                    requiresIsolatedSignIn: session.isPINProtectionEnabled) {
-                        guard session.isCurrent(scope) else { return }
+                    title: Localization.editReceiptWebViewTitle) {
                         showingWebView = false
                         Task {
                             isLoading = true

@@ -11,27 +11,25 @@ import typealias Yosemite.CouponDiscountType
 struct POSCouponCreationViewAdaptor: View {
     @StateObject private var viewModel: AddEditCouponViewModel
     @Binding private var showTypeSelection: Bool
+    private let onSuccess: (Coupon) -> Void
     private let dismissHandler: () -> Void
-    private let onDisappear: () -> Void
 
     init(discountType: CouponDiscountType,
          showTypeSelection: Binding<Bool>,
          onSuccess: @escaping (Coupon) -> Void,
-         dismissHandler: @escaping () -> Void,
-         onDisappear: @escaping () -> Void) {
+         dismissHandler: @escaping () -> Void) {
         _showTypeSelection = showTypeSelection
+        self.onSuccess = onSuccess
         self.dismissHandler = dismissHandler
-        self.onDisappear = onDisappear
-        _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(
-            discountType: discountType,
-            onSuccess: onSuccess
-        ))
+        _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(discountType: discountType, onSuccess: { _ in }))
     }
 
     var body: some View {
         var view = AddEditCoupon(viewModel)
         view.dismissHandler = dismissHandler
-        view.onDisappear = onDisappear
+        view.onDisappear = {
+            if let coupon = viewModel.coupon { onSuccess(coupon) }
+        }
         view.discountTypeHandler = { _ in
             showTypeSelection = true
         }

@@ -17,7 +17,6 @@ struct POSPINSetupControllerTests {
         // Then
         #expect(result == .rejected)
         #expect(controller.error == .pinMatchesOtherRole)
-        #expect(!controller.isConfirmingPIN)
         #expect(!controller.isSaving)
         #expect(!saved)
     }
@@ -37,18 +36,16 @@ struct POSPINSetupControllerTests {
 
         // Then
         #expect(result == .rejected)
-        #expect(!controller.isConfirmingPIN)
         #expect(controller.error == nil)
         #expect(!controller.isSaving)
     }
 
-    @Test func test_validation_when_pending_then_reentry_and_cancel_are_rejected() async {
+    @Test func test_validation_when_pending_then_reentry_is_rejected() async {
         // Given
         weak var validatingController: POSPINSetupController?
         let controller = POSPINSetupController(validatePIN: { _ in
             let current = try #require(validatingController)
             #expect(current.isSaving)
-            #expect(!current.cancel())
             #expect(await current.submit("5678") == .rejected)
         }) { _ in true }
         validatingController = controller
@@ -58,7 +55,6 @@ struct POSPINSetupControllerTests {
 
         // Then
         #expect(result == .confirmationRequired)
-        #expect(controller.isConfirmingPIN)
         #expect(!controller.isSaving)
     }
 
@@ -72,8 +68,6 @@ struct POSPINSetupControllerTests {
 
         // Then
         #expect(result == .confirmationRequired)
-        #expect(controller.isConfirmingPIN)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
     }
 
@@ -89,7 +83,6 @@ struct POSPINSetupControllerTests {
         // Then
         #expect(result == .saved)
         #expect(savedPINs == ["1234"])
-        #expect(!controller.isConfirmingPIN)
         #expect(!controller.isSaving)
     }
 
@@ -103,11 +96,8 @@ struct POSPINSetupControllerTests {
         #expect(await controller.submit("5678") == .rejected)
 
         // Then
-        #expect(controller.hasMismatch)
-        #expect(!controller.isConfirmingPIN)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("2468") == .confirmationRequired)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("2468") == .saved)
         #expect(savedPINs == ["2468"])
@@ -124,34 +114,29 @@ struct POSPINSetupControllerTests {
         // Then
         #expect(result == .rejected)
         #expect(!controller.isSaving)
-        #expect(!controller.isConfirmingPIN)
         #expect(await controller.submit("5678") == .confirmationRequired)
     }
 
-    @Test func test_cancel_when_confirming_then_discards_input_without_saving() async {
+    @Test func test_discard_when_confirming_then_discards_input_without_saving() async {
         // Given
         var savedPINs: [String] = []
         let controller = POSPINSetupController(validatePIN: { _ in }) { savedPINs.append($0); return true }
         _ = await controller.submit("1234")
 
         // When
-        let cancelled = controller.cancel()
+        controller.discardDraft()
 
         // Then
-        #expect(cancelled)
-        #expect(!controller.isConfirmingPIN)
-        #expect(!controller.hasMismatch)
         #expect(savedPINs.isEmpty)
         #expect(await controller.submit("5678") == .confirmationRequired)
     }
 
-    @Test func test_submit_when_already_saving_then_rejects_reentry_and_cancel() async {
+    @Test func test_submit_when_already_saving_then_rejects_reentry() async {
         // Given
         weak var savingController: POSPINSetupController?
         let controller = POSPINSetupController(validatePIN: { _ in }) { _ in
             guard let savingController else { return false }
             #expect(savingController.isSaving)
-            #expect(!savingController.cancel())
             #expect(await savingController.submit("5678") == .rejected)
             return true
         }
@@ -176,8 +161,6 @@ struct POSPINSetupControllerTests {
         controller.discardDraft()
 
         // Then
-        #expect(!controller.hasMismatch)
-        #expect(!controller.isConfirmingPIN)
         #expect(await controller.submit("2468") == .confirmationRequired)
     }
 }

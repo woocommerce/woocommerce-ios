@@ -497,7 +497,8 @@ private struct CouponsCartSection: View {
                     couponRowState: viewHelper.couponRowState(
                         orderStage: orderStage,
                         orderState: posModel.orderState,
-                        couponItem: couponItem
+                        couponItem: couponItem,
+                        cart: posModel.cart
                     ),
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: orderStage == .building ? {

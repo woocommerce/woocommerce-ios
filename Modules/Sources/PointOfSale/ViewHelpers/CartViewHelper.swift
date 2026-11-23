@@ -90,6 +90,7 @@ enum CouponRowState: Equatable {
     case idle
     case validating
     case valid(PointOfSaleCouponTotal)
+    case notApplied
     case invalid
 }
 
@@ -136,7 +137,8 @@ extension CartViewHelper {
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,
-        couponItem: Cart.CouponItem
+        couponItem: Cart.CouponItem,
+        cart: Cart
     ) -> CouponRowState {
         guard orderStage == .finalizing else {
             return .idle
@@ -146,12 +148,13 @@ extension CartViewHelper {
         case .syncing:
             return .validating
         case .loaded(let totals):
-            if let couponTotal = totals.couponsTotals
-                .first(where: { $0.matches(code: couponItem.code) }) {
-                    return .valid(couponTotal)
-                } else {
-                    return .idle
-                }
+            guard let couponTotal = totals.couponsTotals.first(where: { $0.matches(code: couponItem.code) }) else {
+                return .idle
+            }
+            if !couponTotal.hasDiscount && cart.purchasableItems.isEmpty && cart.customAmounts.isNotEmpty {
+                return .notApplied
+            }
+            return .valid(couponTotal)
         case .error(.invalidCoupon, _):
             return .invalid
         default:

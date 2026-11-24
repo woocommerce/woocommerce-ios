@@ -96,6 +96,95 @@ struct POSPaymentModelTests {
         #expect(sut.lastConnectedMethod == nil)
     }
 
+    @Test(arguments: [false, true]) @MainActor
+    func test_start_card_payment_waits_for_status_after_successful_connect(preconnect: Bool) async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        service.connectReaderOverride = { .connected(reader) }
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        if preconnect {
+            sut.connectTapToPayReader()
+        }
+
+        // When the connect returns before the status publisher delivers its update
+        await sut.startCardPayment(with: .tapToPay)
+        await sut.paymentStartConnectTask?.value
+
+        // Then
+        #expect(sut.isCardPaymentStartPending)
+        #expect(!service.collectPaymentWasCalled)
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            service.connectedReader = reader
+        }
+        #expect(service.connectReaderCallCount == 1)
+        #expect(service.spyCollectPaymentMethods == [.tapToPay])
+    }
+
+    @Test @MainActor
+    func test_reset_records_a_successful_connection_that_finishes_after_checkout_leaves() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        var finishConnect: CheckedContinuation<Void, Never>?
+        await fireOnce { fire in
+            service.connectReaderOverride = {
+                await withCheckedContinuation { continuation in
+                    finishConnect = continuation
+                    fire()
+                }
+                service.connectedReader = reader
+                return .connected(reader)
+            }
+            Task { await sut.startCardPayment(with: .tapToPay) }
+        }
+        let connection = sut.paymentStartConnectTask
+
+        // When
+        sut.reset()
+        finishConnect?.resume()
+        await connection?.value
+
+        // Then
+        #expect(sut.lastConnectedMethod == .tapToPay)
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!service.collectPaymentWasCalled)
+    }
+
+    @Test @MainActor
+    func test_suppressed_tap_to_pay_discovery_failure_ends_the_pending_start() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectReaderOverride = {
+            await withCheckedContinuation { continuation in
+                service.paymentEvent = .show(eventDetails: .scanningFailed(error: NSError(domain: "test", code: 1),
+                                                                         endSearch: { continuation.resume(returning: .canceled) }))
+            }
+        }
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+
+        // When
+        await sut.startCardPayment(with: .tapToPay)
+        await sut.paymentStartConnectTask?.value
+
+        // Then
+        #expect(!sut.isPaymentSessionActive)
+        #expect(!sut.isCardPaymentStartPending)
+        #expect(sut.cardPresentPaymentAlertViewModel == nil)
+    }
+
     @Test(arguments: [POSCardPaymentSelectionMode.compact, .large]) @MainActor
     func test_start_card_payment_when_tap_to_pay_reader_is_disconnecting_then_tap_ends_and_next_tap_starts(
         mode: POSCardPaymentSelectionMode) async {

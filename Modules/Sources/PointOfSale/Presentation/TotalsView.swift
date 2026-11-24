@@ -34,7 +34,7 @@ struct TotalsView: View {
     @State private var paymentStartGate = POSPaymentStartGate()
 
     private var isStartingPayment: Bool {
-        paymentStartGate.isStarting
+        paymentStartGate.isClosed(isCardStartPending: paymentModel.isCardPaymentStartPending)
     }
 
     @State private var checkoutHeight: CGFloat = .infinity
@@ -167,25 +167,7 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
-        .onChange(of: paymentModel.paymentState.card) {
-            // Any card state change means the payment state machine has reacted
-            // to the merchant's tap (preparingReader, error, idle after cancel,
-            // etc.). Release the double-tap gate so the buttons become
-            // tappable again whenever the layout decides to show them.
-            releasePaymentStartGate()
-        }
-        .onChange(of: paymentModel.paymentState.cash) {
-            releasePaymentStartGate()
-        }
-        .onChange(of: paymentModel.paymentState.scanToPay) {
-            // Scan to Pay transitions out of `.idle` when the QR flow starts —
-            // release the gate so the merchant can interact with the next state.
-            releasePaymentStartGate()
-        }
-        .onChange(of: paymentModel.paymentState.markAsPaid) {
-            // Mark as Paid transitions out of `.idle` when the confirmation push
-            // happens — release the gate so the merchant can interact with the
-            // next state.
+        .onChange(of: paymentModel.paymentState) {
             releasePaymentStartGate()
         }
         .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
@@ -886,7 +868,7 @@ private extension TotalsView {
 
     /// Runs a payment start behind the double-tap gate.
     func startPayment(_ start: @escaping @MainActor () async -> Void) {
-        paymentStartGate.run(start, isStillPending: { paymentModel.isCardPaymentStartPending })
+        paymentStartGate.run(start, isCardStartPending: paymentModel.isCardPaymentStartPending)
     }
 
     /// Opens the gate unless the model is still starting a card payment, e.g. a reader scan alert

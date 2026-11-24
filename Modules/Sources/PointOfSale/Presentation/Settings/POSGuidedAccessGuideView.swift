@@ -207,6 +207,7 @@ private extension POSGuidedAccessGuideView {
         Button(action: { show(target) }, label: {
             Text(Image(systemName: icon))
                 .font(.posButtonSymbolLarge)
+                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
                 .frame(width: Constants.arrowSize, height: Constants.arrowSize)
                 .contentShape(Rectangle())

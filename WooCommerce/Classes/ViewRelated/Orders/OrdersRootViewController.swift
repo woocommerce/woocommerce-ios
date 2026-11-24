@@ -20,6 +20,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
+        usesStoreDesignSystem: featureFlagService.usesStoreDesignSystem,
         switchDetailsHandler: switchDetailsHandler
     )
 
@@ -57,8 +58,10 @@ final class OrdersRootViewController: UIViewController {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
-                filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
-                orderListViewModel.updateFilters(filters: filters)
+                if !featureFlagService.usesStoreDesignSystem {
+                    filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
+                }
+                ordersViewController.updateFilters(filters)
             }
         }
     }
@@ -82,6 +85,11 @@ final class OrdersRootViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
+    private let hardwareBarcodeScanner: HardwareBarcodeScanner
+    private var hardwareBarcodeScannerToken: HardwareBarcodeScanner.ListenerToken?
+
+    private var isLookingUpScannedBarcode = false
+
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
 
@@ -91,12 +99,14 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil,
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -154,7 +164,21 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-        updateTimeoutText()
+        if !featureFlagService.usesStoreDesignSystem {
+            updateTimeoutText()
+        } else {
+            ordersViewController.updateStoreHeader()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startListeningForHardwareBarcodes()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopListeningForHardwareBarcodes()
     }
 
     /// Shows `SearchViewController`.
@@ -162,16 +186,26 @@ final class OrdersRootViewController: UIViewController {
     @objc private func displaySearchOrders() {
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
-            storeID: siteID,
-            command: OrderSearchUICommand(siteID: siteID,
-                                          onSelectSearchResult: { [weak self] order, viewController in
-                                              guard let self else { return }
-                                              navigateToOrderDetail(order)
-                                              viewController.dismiss(animated: true)
-                                          }),
-            cellType: OrderTableViewCell.self,
-            cellSeparator: .singleLine)
+        let command = OrderSearchUICommand(siteID: siteID,
+                                           onSelectSearchResult: { [weak self] order, viewController in
+                                               guard let self else { return }
+                                               navigateToOrderDetail(order)
+                                               viewController.dismiss(animated: true)
+                                           })
+        let searchViewController: UIViewController
+        if featureFlagService.usesStoreDesignSystem {
+            searchViewController = SearchViewController<StoreOrderListTableViewCell, OrderSearchUICommand>(
+                storeID: siteID,
+                command: command,
+                cellType: StoreOrderListTableViewCell.self,
+                cellSeparator: .none)
+        } else {
+            searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
+                storeID: siteID,
+                command: command,
+                cellType: OrderTableViewCell.self,
+                cellSeparator: .singleLine)
+        }
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -282,37 +316,57 @@ final class OrdersRootViewController: UIViewController {
         let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningSuccess(from: .orderList))
-
-            self?.navigationItem.configureLeftBarButtonItemAsLoader()
-            self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case let .success(item):
-                    // The scanner never passes through the selector, so refuse restricted products
-                    // here and explain why on the order list, rather than opening an empty order.
-                    if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
-                        self.displayRestrictedScannedProductNotice(restriction)
-                    } else {
-                        self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
-                                                                            source: .orderList,
-                                                                            addedVia: .scanning,
-                                                                            includesBundleProductConfiguration: false))
-                        self.presentOrderCreationFlowWithScannedProduct(item)
-                    }
-                case let .failure(error):
-                    self.displayScannedProductErrorNotice(error, code: scannedBarcode)
-                }
-                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
-            }
+            self?.presentOrderCreationFlowWithScannedBarcode(scannedBarcode)
         }, onPermissionsDenied: { [weak self] reason in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
         }, onSettingsTapped: { [weak self] reason in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderList, reason: reason))
         }, onSettingsOpened: { [weak self] in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
-        })
+        }, offersHardwareScanner: true)
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
+    }
+
+    private func presentOrderCreationFlowWithScannedBarcode(_ scannedBarcode: ScannedBarcode) {
+        isLookingUpScannedBarcode = true
+        navigationItem.configureLeftBarButtonItemAsLoader()
+        handleScannedBarcode(scannedBarcode) { [weak self] result in
+            guard let self else { return }
+            isLookingUpScannedBarcode = false
+            switch result {
+            case let .success(item):
+                // The scanner skips the product selector, so restricted products are refused here.
+                if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+                    displayRestrictedScannedProductNotice(restriction)
+                } else {
+                    analytics.track(event: .Orders.orderProductAdd(flow: .creation,
+                                                                   source: .orderList,
+                                                                   addedVia: .scanning,
+                                                                   includesBundleProductConfiguration: false))
+                    presentOrderCreationFlowWithScannedProduct(item)
+                }
+            case let .failure(error):
+                displayScannedProductErrorNotice(error, code: scannedBarcode)
+            }
+            navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        }
+    }
+
+    private func startListeningForHardwareBarcodes() {
+        guard hardwareBarcodeScannerToken == nil else { return }
+        hardwareBarcodeScannerToken = hardwareBarcodeScanner.startListening(source: .orderList, isEnabled: { [weak self] in
+            guard let self else { return false }
+            return !isLookingUpScannedBarcode && presentedViewController == nil && view.window != nil
+        }, onScan: { [weak self] scannedBarcode in
+            self?.presentOrderCreationFlowWithScannedBarcode(scannedBarcode)
+        })
+    }
+
+    private func stopListeningForHardwareBarcodes() {
+        guard let hardwareBarcodeScannerToken else { return }
+        hardwareBarcodeScanner.stopListening(hardwareBarcodeScannerToken)
+        self.hardwareBarcodeScannerToken = nil
     }
 
     /// Handles the result of scanning a barcode
@@ -405,19 +459,26 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        if #available(iOS 26.0, *) {
-            configureLiquidGlassHeaderOverlay()
-        } else {
-            // Display the filtered orders bar
-            stackView.addArrangedSubview(filtersBar)
+        if featureFlagService.usesStoreDesignSystem {
+            configureStickyHeader(ordersViewController.storeHeaderView)
+            return
         }
 
+        configureStickyHeader(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
     }
 
-    func configureLiquidGlassHeaderOverlay() {
+    func configureStickyHeader(_ headerView: UIView) {
+        if #available(iOS 26.0, *) {
+            configureLiquidGlassHeaderOverlay(headerView)
+        } else {
+            stackView.addArrangedSubview(headerView)
+        }
+    }
+
+    func configureLiquidGlassHeaderOverlay(_ headerView: UIView) {
         guard #available(iOS 26.0, *) else {
             return
         }
@@ -426,17 +487,17 @@ private extension OrdersRootViewController {
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 
-        filtersBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(filtersBar)
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(headerView)
 
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
-            filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            backgroundView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 
@@ -445,10 +506,16 @@ private extension OrdersRootViewController {
             return
         }
 
-        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
-        let height = filtersBar.systemLayoutSizeFitting(targetSize,
-                                                       withHorizontalFittingPriority: .required,
-                                                       verticalFittingPriority: .fittingSizeLevel).height
+        let headerView = featureFlagService.usesStoreDesignSystem ? ordersViewController.storeHeaderView : filtersBar
+        let height: CGFloat
+        if featureFlagService.usesStoreDesignSystem {
+            height = ordersViewController.storeHeaderView.fittingHeight(for: view.bounds.width)
+        } else {
+            let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+            height = headerView.systemLayoutSizeFitting(targetSize,
+                                                        withHorizontalFittingPriority: .required,
+                                                        verticalFittingPriority: .fittingSizeLevel).height
+        }
 
         guard height > 0 else {
             return
@@ -460,15 +527,16 @@ private extension OrdersRootViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
-            let previousContentOffset = tableView.contentOffset
+            let previousTopPosition = tableView.contentOffset.y + tableView.adjustedContentInset.top
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
             if !tableView.isTracking,
                !tableView.isDragging,
                !tableView.isDecelerating {
-                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
-                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
+                // Include changes to UIKit's navigation-bar inset when preserving the list's position.
+                tableView.layoutIfNeeded()
+                tableView.contentOffset.y = previousTopPosition - tableView.adjustedContentInset.top
             }
         }
 
@@ -557,7 +625,17 @@ extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
     }
 
     func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
-        updateTimeoutText()
+        if !featureFlagService.usesStoreDesignSystem {
+            updateTimeoutText()
+        }
+    }
+
+    func orderListViewControllerDidRequestFilters(_ viewController: OrderListViewController) {
+        filterButtonTapped()
+    }
+
+    func orderListViewControllerHeaderDidChange(_ viewController: OrderListViewController) {
+        view.setNeedsLayout()
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -592,8 +670,9 @@ extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
             return
         }
 
+        let headerView = featureFlagService.usesStoreDesignSystem ? ordersViewController.storeHeaderView : filtersBar
         OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
-                                                           headerViews: [filtersBar],
+                                                           headerViews: [headerView],
                                                            scrollView: scrollView)
     }
 }

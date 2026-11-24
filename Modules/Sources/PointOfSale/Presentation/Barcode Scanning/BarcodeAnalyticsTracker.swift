@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import struct WooFoundation.WooAnalyticsEvent
+import enum Hardware.HIDBarcodeParserResult
 
 // MARK: - VoiceOver State Provider
 

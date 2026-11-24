@@ -27,11 +27,15 @@ struct TotalsView: View {
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
     @State private var isShowingOtherPaymentMethodsSheet: Bool = false
-    /// True between the merchant tapping a hero / bottom-strip button and the
+    /// Closed between the merchant tapping a hero / bottom-strip button and the
     /// payment state machine actually leaving idle. Disables the hero CTA and
     /// the bottom-strip buttons during that brief async window so a quick
     /// double-tap can't kick off two payment flows.
-    @State private var isStartingPayment: Bool = false
+    @State private var paymentStartGate = POSPaymentStartGate()
+
+    private var isStartingPayment: Bool {
+        paymentStartGate.isClosed(isCardStartPending: paymentModel.isCardPaymentStartPending)
+    }
 
     @State private var checkoutHeight: CGFloat = .infinity
 
@@ -163,26 +167,8 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
-        .onChange(of: paymentModel.paymentState.card) {
-            // Any card state change means the payment state machine has reacted
-            // to the merchant's tap (preparingReader, error, idle after cancel,
-            // etc.). Release the double-tap gate so the buttons become
-            // tappable again whenever the layout decides to show them.
-            isStartingPayment = false
-        }
-        .onChange(of: paymentModel.paymentState.cash) {
-            isStartingPayment = false
-        }
-        .onChange(of: paymentModel.paymentState.scanToPay) {
-            // Scan to Pay transitions out of `.idle` when the QR flow starts —
-            // release the gate so the merchant can interact with the next state.
-            isStartingPayment = false
-        }
-        .onChange(of: paymentModel.paymentState.markAsPaid) {
-            // Mark as Paid transitions out of `.idle` when the confirmation push
-            // happens — release the gate so the merchant can interact with the
-            // next state.
-            isStartingPayment = false
+        .onChange(of: paymentModel.paymentState) {
+            releasePaymentStartGate()
         }
         .onChange(of: paymentModel.isPaymentSessionActive) { _, isActive in
             // The card-state onChange above doesn't always fire when a flow
@@ -191,7 +177,7 @@ struct TotalsView: View {
             // cancel-on-reader, this signals "session ended" — release the
             // double-tap lock so the merchant can tap the hero CTA again.
             if !isActive {
-                isStartingPayment = false
+                releasePaymentStartGate()
             }
         }
         .onChange(of: paymentModel.cardPresentPaymentAlertViewModel == nil) { _, becameNil in
@@ -204,28 +190,18 @@ struct TotalsView: View {
             // merchant has stepped out of a connect flow that never reached
             // collect.
             if becameNil && paymentModel.paymentState.card == .idle {
-                isStartingPayment = false
+                releasePaymentStartGate()
             }
         }
         .posModal(isPresented: $isShowingOtherPaymentMethodsSheet, compactStyle: .bottomSheet) {
             POSOtherPaymentMethodsSheet(
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
                 isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
-                onTapToPay: {
-                    guard !isStartingPayment else { return }
-                    isStartingPayment = true
-                    Task { @MainActor in
-                        await paymentModel.startCardPayment(with: .tapToPay)
-                    }
-                },
+                onTapToPay: handleTapToPayTapped,
                 isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
                 isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
-                    guard !isStartingPayment else { return }
-                    isStartingPayment = true
-                    Task { @MainActor in
-                        await paymentModel.startCardPayment(with: .bluetoothReader)
-                    }
+                    startCardPayment(with: .bluetoothReader)
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
                 onScanToPay: handleScanToPaySelected,
@@ -426,6 +402,16 @@ private struct MaxHeightProposalLayout: Layout {
     }
 }
 
+/// Shared with the order details totals so both breakdowns use the same label.
+extension TotalsView {
+    enum SharedLocalization {
+        static let customAmountsTotal = NSLocalizedString(
+            "pos.totalsView.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
+    }
+}
+
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
@@ -465,10 +451,6 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
-        static let customAmountsTotal = NSLocalizedString(
-            "pos.totalsView.customAmountsTotal",
-            value: "Custom amounts",
-            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
         static let connectCardReaderButtonTitle = NSLocalizedString(
             "pos.totalsView.connectCardReader.button.title.1",
             value: "Connect card reader",
@@ -539,7 +521,7 @@ private struct TotalsFieldsContent: View {
 
             if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(
-                    title: TotalsView.Localization.customAmountsTotal,
+                    title: TotalsView.SharedLocalization.customAmountsTotal,
                     formattedPrice: orderTotals?.customAmountsTotal,
                     shimmeringActive: totalsLoading
                 )
@@ -738,16 +720,14 @@ private extension TotalsView {
             handleTapToPayTapped()
         case .cardReader:
             guard paymentModel.isCompactCardPaymentSelectionEnabled else {
-                paymentModel.connectCardReader()
+                startPayment {
+                    paymentModel.connectCardReader()
+                }
                 return
             }
-            guard !isStartingPayment else { return }
-            isStartingPayment = true
-            Task { @MainActor in
-                await paymentModel.startCardPayment(with: .bluetoothReader)
-            }
+            startCardPayment(with: .bluetoothReader)
         case .cashPayment:
-            paymentModel.startCashPayment()
+            handleCashPaymentTapped()
         }
     }
 
@@ -886,18 +866,31 @@ private extension TotalsView {
         paymentModel.currentPaymentMethod != .bluetooth
     }
 
-    func handleTapToPayTapped() {
-        guard !isStartingPayment else { return }
-        isStartingPayment = true
-        Task { @MainActor in
-            await paymentModel.startCardPayment(with: .tapToPay)
+    /// Runs a payment start behind the double-tap gate.
+    func startPayment(_ start: @escaping @MainActor () async -> Void) {
+        paymentStartGate.run(start, isCardStartPending: paymentModel.isCardPaymentStartPending)
+    }
+
+    /// Opens the gate unless the model is still starting a card payment, e.g. a reader scan alert
+    /// can go away while its connection is still running.
+    func releasePaymentStartGate() {
+        paymentStartGate.release(isStillPending: paymentModel.isCardPaymentStartPending)
+    }
+
+    func startCardPayment(with rail: POSCardPaymentRail) {
+        startPayment {
+            await paymentModel.startCardPayment(with: rail)
         }
     }
 
+    func handleTapToPayTapped() {
+        startCardPayment(with: .tapToPay)
+    }
+
     func handleCashPaymentTapped() {
-        guard !isStartingPayment else { return }
-        isStartingPayment = true
-        paymentModel.startCashPayment()
+        startPayment {
+            paymentModel.startCashPayment()
+        }
     }
 
     func handleOtherPaymentMethodsTapped() {
@@ -905,17 +898,15 @@ private extension TotalsView {
     }
 
     func handleScanToPaySelected() {
-        guard !isStartingPayment else { return }
-        isStartingPayment = true
-        Task { @MainActor in
+        startPayment {
             await paymentModel.startScanToPayPayment()
         }
     }
 
     func handleMarkAsPaidSelected() {
-        guard !isStartingPayment else { return }
-        isStartingPayment = true
-        paymentModel.startMarkAsPaidPayment()
+        startPayment {
+            paymentModel.startMarkAsPaidPayment()
+        }
     }
 
     @ViewBuilder

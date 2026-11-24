@@ -32,7 +32,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
-            return buildConfig == .localDeveloper
+            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
@@ -56,6 +56,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeDesignSystem:
             return buildConfig == .localDeveloper
         case .starReceiptPrinterSupport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleOnboardingGuide:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

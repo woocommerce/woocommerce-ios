@@ -1,10 +1,10 @@
 import Observation
 
-/// Presents first Admin PIN setup on top of `POSPINSetupController`, which owns validation and the single save.
-/// Presentation pauses run alongside that work and never delay saving.
 @MainActor
 @Observable
-final class POSAdminPINOnboarding {
+final class POSPINSetupFlow {
+    let configuration: Configuration
+
     enum Step: Equatable {
         case choose
         case confirm
@@ -26,8 +26,9 @@ final class POSAdminPINOnboarding {
     private let setup: POSPINSetupController
     private let sleep: @MainActor (Duration) async throws -> Void
 
-    init(setup: POSPINSetupController,
+    init(configuration: Configuration, setup: POSPINSetupController,
          sleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+        self.configuration = configuration
         self.setup = setup
         self.sleep = sleep
     }
@@ -65,16 +66,19 @@ final class POSAdminPINOnboarding {
         show(.choose, feedback: nil)
     }
 
-    func continueToGuidedAccessOffer() {
-        guard step == .saved else {
-            return
+    func continueFromSuccess() -> Bool {
+        guard step == .saved else { return false }
+        switch configuration.successAction {
+        case .offerGuidedAccess:
+            step = .guidedAccessOffer
+            return false
+        case .done:
+            return true
         }
-        step = .guidedAccessOffer
     }
 
-    /// Returns `false` while the PIN is being checked or saved.
     func close() -> Bool {
-        guard setup.cancel() else {
+        guard canClose else {
             return false
         }
         discard()
@@ -89,7 +93,7 @@ final class POSAdminPINOnboarding {
     }
 }
 
-private extension POSAdminPINOnboarding {
+private extension POSPINSetupFlow {
     func choose(_ pin: String, request: Int) async -> Bool {
         async let hold: Void = pause(Constants.filledDotsHold)
         let result = await setup.submit(pin)
@@ -97,11 +101,11 @@ private extension POSAdminPINOnboarding {
         guard request == generation else {
             return false
         }
-        isProcessing = false
         guard result == .confirmationRequired else {
-            feedback = .failure(setup.error ?? .storageFailure)
+            showEntryFeedback(.failure(setup.error ?? .storageFailure), request: request)
             return false
         }
+        isProcessing = false
         show(.confirm, feedback: nil)
         return true
     }
@@ -109,7 +113,7 @@ private extension POSAdminPINOnboarding {
     func confirm(_ pin: String, request: Int) async -> Bool {
         guard setup.confirms(pin) else {
             setup.discardDraft()
-            showMismatch(request: request)
+            showEntryFeedback(.mismatch, request: request)
             return false
         }
         async let presentation: Void = presentSaving(request: request)
@@ -120,7 +124,7 @@ private extension POSAdminPINOnboarding {
         }
         isProcessing = false
         guard result == .saved else {
-            show(.choose, feedback: .failure(.storageFailure))
+            show(.choose, feedback: .failure(setup.error ?? .storageFailure))
             return false
         }
         step = .saved
@@ -136,21 +140,22 @@ private extension POSAdminPINOnboarding {
         await pause(Constants.minimumSavingDuration)
     }
 
-    /// The entry reports the mismatch at once so the dots shake, then slides back to Choose and explains it.
-    func showMismatch(request: Int) {
+    func showEntryFeedback(_ feedback: Feedback, request: Int) {
         Task { @MainActor in
-            await pause(Constants.mismatchShake)
+            await pause(Constants.failedEntryPause)
             guard request == generation else {
                 return
             }
             isProcessing = false
-            show(.choose, feedback: nil)
-            let shown = generation
-            await pause(Constants.mismatchMessageDelay)
-            guard shown == generation, !isProcessing else {
-                return
+            if feedback == .mismatch {
+                show(.choose, feedback: nil)
+                let shown = generation
+                await pause(Constants.mismatchMessageDelay)
+                guard shown == generation, !isProcessing else {
+                    return
+                }
             }
-            feedback = .mismatch
+            self.feedback = feedback
         }
     }
 
@@ -168,7 +173,7 @@ private extension POSAdminPINOnboarding {
     enum Constants {
         static let filledDotsHold: Duration = .milliseconds(500)
         static let minimumSavingDuration: Duration = .seconds(1)
-        static let mismatchShake: Duration = .milliseconds(550)
+        static let failedEntryPause: Duration = .milliseconds(550)
         static let mismatchMessageDelay: Duration = .milliseconds(500)
     }
 }

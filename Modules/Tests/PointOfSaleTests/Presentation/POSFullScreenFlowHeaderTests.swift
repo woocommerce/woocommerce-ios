@@ -21,45 +21,46 @@ struct POSFullScreenFlowHeaderTests {
 
     @Test func test_buttons_when_only_close_is_offered_then_close_is_leading() {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: closeAction)
+        let buttons = POSFullScreenFlowHeaderButtons(title: "Card reader", backAction: nil, closeAction: closeAction)
 
         // Then
         #expect(buttons.leading == .close(closeAction))
         #expect(buttons.trailingClose == nil)
     }
 
-    @Test func test_buttons_when_nothing_is_offered_then_header_has_title_only() {
+    @Test(arguments: ["Card reader", ""])
+    func test_buttons_when_nothing_is_offered_then_header_has_no_buttons(title: String) {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: nil)
+        let buttons = POSFullScreenFlowHeaderButtons(title: title, backAction: nil, closeAction: nil)
 
         // Then
         #expect(buttons.leading == nil)
         #expect(buttons.trailingClose == nil)
     }
 
-    @Test func test_buttons_when_centered_flow_only_offers_close_then_close_stays_trailing() {
+    @Test func test_buttons_when_title_is_in_content_and_only_close_is_offered_then_close_stays_trailing() {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: closeAction, titleAlignment: .center)
+        let buttons = POSFullScreenFlowHeaderButtons(title: "", backAction: nil, closeAction: closeAction)
 
         // Then
         #expect(buttons.leading == nil)
         #expect(buttons.trailingClose == closeAction)
     }
 
-    @Test(arguments: [POSPageHeaderTitleAlignment.leading, .center])
-    func test_buttons_when_back_and_close_are_offered_then_back_is_leading_and_close_is_trailing(titleAlignment: POSPageHeaderTitleAlignment) {
+    @Test(arguments: ["Card reader", ""])
+    func test_buttons_when_back_and_close_are_offered_then_back_is_leading_and_close_is_trailing(title: String) {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: closeAction, titleAlignment: titleAlignment)
+        let buttons = POSFullScreenFlowHeaderButtons(title: title, backAction: backAction, closeAction: closeAction)
 
         // Then
         #expect(buttons.leading == .back(backAction))
         #expect(buttons.trailingClose == closeAction)
     }
 
-    @Test(arguments: [POSPageHeaderTitleAlignment.leading, .center])
-    func test_buttons_when_only_back_is_offered_then_back_is_leading_without_close(titleAlignment: POSPageHeaderTitleAlignment) {
+    @Test(arguments: ["Card reader", ""])
+    func test_buttons_when_only_back_is_offered_then_back_is_leading_without_close(title: String) {
         // When
-        let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: nil, titleAlignment: titleAlignment)
+        let buttons = POSFullScreenFlowHeaderButtons(title: title, backAction: backAction, closeAction: nil)
 
         // Then
         #expect(buttons.leading == .back(backAction))

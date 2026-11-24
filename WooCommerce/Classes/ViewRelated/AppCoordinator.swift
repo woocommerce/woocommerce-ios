@@ -112,7 +112,11 @@ final class AppCoordinator {
                     // the login UI replaces the whole hierarchy, so drop the blocker with it.
                     self.cancelDeferredAgeVerification()
                     self.dismissSignificantChangeBlockerIfNeeded(animated: false)
-                    self.displayAuthenticatorWithOnboardingIfNeeded()
+                    // A QR sign-in that fails after approval signs out while its error is on screen.
+                    // Replacing the login UI here would remove that error and its Scan again button.
+                    if self.authenticationManager.isShowingQRLogin == false {
+                        self.displayAuthenticatorWithOnboardingIfNeeded()
+                    }
                 case (false, false):
                     // This is not an expected auth state. When the user is logged out, we expect the default store will not be set.
                     // Starting the auth flow from this state seems to cause a crash: peaMlT-hY-p2

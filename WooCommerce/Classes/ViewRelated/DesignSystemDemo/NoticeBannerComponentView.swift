@@ -33,6 +33,7 @@ struct NoticeBannerComponentView: View {
     @State private var showsIcon = true
     @State private var showsDescription = true
     @State private var showsAction = false
+    @State private var showsProminentAction = false
     @State private var showsDismiss = false
     @State private var accessibilityStatus = ""
 
@@ -46,6 +47,7 @@ struct NoticeBannerComponentView: View {
             Toggle("Icon", isOn: $showsIcon)
             Toggle("Description", isOn: $showsDescription)
             Toggle("Action", isOn: $showsAction)
+            Toggle("Prominent action", isOn: $showsProminentAction)
             Toggle("Dismiss", isOn: $showsDismiss)
             TextField("Title", text: $title)
             TextField("Description", text: $description)
@@ -57,6 +59,8 @@ struct NoticeBannerComponentView: View {
                               icon: showsIcon ? StoreIcon.CircleInfo.regular : nil,
                               actionTitle: showsAction ? "Learn more" : nil,
                               action: showsAction ? {} : nil,
+                              prominentActionTitle: showsProminentAction ? "Set up now" : nil,
+                              prominentAction: showsProminentAction ? {} : nil,
                               onDismiss: showsDismiss ? {} : nil,
                               accessibilityStatus: accessibilityStatus.isEmpty ? nil : accessibilityStatus)
                 .padding()

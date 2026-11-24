@@ -333,6 +333,45 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
 
+    @MainActor
+    func test_logging_out_when_QR_login_is_showing_then_keeps_the_login_UI() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: mockAuthentication,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        appCoordinator.start()
+        let loginUI = try XCTUnwrap(window.rootViewController)
+        mockAuthentication.isShowingQRLogin = true
+
+        // When
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        stores.deauthenticate()
+
+        // Then
+        XCTAssertTrue(window.rootViewController === loginUI)
+    }
+
+    @MainActor
+    func test_logging_out_when_QR_login_is_not_showing_then_replaces_the_login_UI() throws {
+        // Given
+        let mockAuthentication = MockAuthentication()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: mockAuthentication,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        appCoordinator.start()
+        let loginUI = try XCTUnwrap(window.rootViewController)
+
+        // When
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        stores.deauthenticate()
+
+        // Then
+        XCTAssertFalse(window.rootViewController === loginUI)
+    }
+
     // MARK: - Age verification timing
 
     @MainActor

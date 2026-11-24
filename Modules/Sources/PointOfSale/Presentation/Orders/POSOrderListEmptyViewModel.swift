@@ -47,8 +47,8 @@ private enum Localization {
     )
 
     static let emptyOrdersSearchSubtitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersSearchSubtitle.2",
-        value: "We couldn't find any orders with that name. Try adjusting your search term.",
+        "pos.orderListView.emptyOrdersSearchSubtitle.3",
+        value: "Try a different search.",
         comment: "Subtitle appearing when order search returns no results."
     )
 }

@@ -133,7 +133,8 @@ final class AddCustomAmountViewModel: ObservableObject {
         trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
-        onCustomAmountEntered(amount, customAmountName, feeID, isTaxable)
+        // WooCommerce only reads ASCII digits.
+        onCustomAmountEntered(amount.withASCIIDigits, customAmountName, feeID, isTaxable)
     }
 
     func deleteButtonPressed() {

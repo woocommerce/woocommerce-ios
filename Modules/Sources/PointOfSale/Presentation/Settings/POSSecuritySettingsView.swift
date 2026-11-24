@@ -3,6 +3,7 @@ import SwiftUI
 struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var modalManager: POSModalManager
     let controller: POSSecuritySettingsController
     @State private var presentation = POSSecurityPINPresentation()
     @State private var approval = POSManagerOverrideHandler()
@@ -116,6 +117,10 @@ struct POSSecuritySettingsView: View {
     }
 
     private func endEditing() {
+        if case .guidedAccessGuide? = presentation.destination {
+            // This cover reuses its modal manager after a lock; finish guide ownership before it detaches.
+            modalManager.onDisappear()
+        }
         presentation.cancel()
         controller.endPINEditing()
         controller.dismissGuidedAccessGuide()

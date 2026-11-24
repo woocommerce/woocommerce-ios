@@ -43,16 +43,19 @@ struct POSModalManagerTests {
         #expect(sut.compactStyle == nil)
     }
 
-    @Test func test_onDisappear_when_dialog_was_presented_then_resets_compactStyle() {
+    @Test func test_onDisappear_when_dialog_was_presented_then_clears_presentation_without_dismissal_callbacks() {
         // Given
         let sut = POSModalManager()
-        sut.present(compactStyle: .dialog, onDismiss: {}) { EmptyView() }
+        var onDismissCalled = false
+        sut.present(compactStyle: .dialog, onDismiss: { onDismissCalled = true }) { EmptyView() }
 
         // When
         sut.onDisappear()
 
         // Then
+        #expect(!sut.isPresented)
         #expect(sut.compactStyle == nil)
+        #expect(!onDismissCalled)
     }
 
     @Test func test_dismiss_when_completion_is_supplied_then_calls_it_once_after_clearing_presentation() {

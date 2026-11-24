@@ -409,6 +409,12 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        group.enter()
+        syncCountriesIfNeeded {
+            onReloadSections?()
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
 
             /// Update state to synced
@@ -829,6 +835,26 @@ extension OrderDetailsViewModel {
         }
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
             Task { @MainActor in finish(result) }
+        }
+        stores.dispatch(action)
+    }
+
+    // Address cells need the countries cache to show state names instead of numeric codes like CN24.
+    private func syncCountriesIfNeeded(onCompletion: @escaping () -> Void) {
+        let retriever = LocallyStoredStateNameRetriever(storageManager: storageManager)
+        let needsStateNames = [order.billingAddress, order.shippingAddress].compactMap { $0 }.contains { address in
+            LocallyStoredStateNameRetriever.countriesWithNumericStateCodes.contains(address.country)
+            && retriever.retrieveLocallyStoredStateName(of: address) == nil
+        }
+        guard needsStateNames else {
+            onCompletion()
+            return
+        }
+        let action = DataAction.synchronizeCountries(siteID: order.siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error synchronizing countries: \(error)")
+            }
+            onCompletion()
         }
         stores.dispatch(action)
     }

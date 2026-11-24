@@ -1100,9 +1100,64 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.dataSource.isEligibleForBackendReceipt)
     }
+
+    // MARK: - `syncEverything` countries
+
+    func test_syncEverything_when_shipping_state_is_numeric_code_without_stored_name_then_synchronizes_countries() {
+        // Given
+        // A CN24 code means nothing to merchants, so the name has to be fetched to show it.
+        let order = Order.fake().copy(billingAddress: Address.fake().copy(state: "CA", country: "US"),
+                                      shippingAddress: Address.fake().copy(state: "CN24", country: "CN"))
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_numeric_state_code_name_is_already_stored_then_does_not_synchronize_countries() {
+        // Given
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "CN", name: "China", states: [StateOfACountry(code: "CN24", name: "Sichuan")])
+        ])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_state_codes_are_readable_then_does_not_synchronize_countries() {
+        // Given
+        // US codes like CA are shown as they are, so stores that only see them never pay for the large request.
+        let address = Address.fake().copy(state: "CA", country: "US")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
 }
 
 private extension OrderDetailsViewModelTests {
+    var didDispatchSynchronizeCountries: Bool {
+        storesManager.receivedActions.contains { action in
+            guard let action = action as? DataAction, case .synchronizeCountries = action else {
+                return false
+            }
+            return true
+        }
+    }
+
     enum PluginPath {
         static let wooShipping = "woocommerce-shipping/woocommerce-shipping.php"
         static let wooShippingAndTax = "woocommerce-services/woocommerce-services.php"

@@ -5,6 +5,11 @@ import Storage
 /// Retrieves the locally stored state name of an address.
 ///
 final class LocallyStoredStateNameRetriever {
+    // WooCommerce countries whose state codes all contain digits (e.g. CN24), unreadable to merchants.
+    static let countriesWithNumericStateCodes: Set<String> = [
+        "AL", "BD", "BG", "CN", "DO", "DZ", "HR", "JM", "JP", "KE", "TH", "TR", "TZ", "UA", "UG", "UM", "ZM"
+    ]
+
     private let storageManager: StorageManagerType
 
     private lazy var sharedDerivedStorage: StorageType = {

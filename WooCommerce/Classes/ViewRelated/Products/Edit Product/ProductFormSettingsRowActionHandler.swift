@@ -1,28 +1,13 @@
 import UIKit
 import protocol WooFoundation.Analytics
 
-enum ProductFormSettingsDestination {
-    case price, customFields, reviews
-    case downloadableFiles, linkedProducts
-    case productType(sourceView: UIView?)
-    case shipping, inventory, addOns
-    case categories, tags, shortDescription
-    case externalURL, simplifiedInventory, groupedProducts
-    case variations, attributes
-    case bundledProducts, components
-    case subscriptionFreeTrial, subscriptionExpiry, quantityRules
-}
-
-@MainActor
-protocol ProductFormSettingsNavigating: AnyObject { func navigate(to destination: ProductFormSettingsDestination) }
-
 @MainActor
 final class ProductFormSettingsRowActionHandler {
-    private weak var navigator: ProductFormSettingsNavigating?
+    private weak var navigator: ProductFormNavigating?
     private let eventLogger: ProductFormEventLoggerProtocol
     private let analytics: Analytics
 
-    init(navigator: ProductFormSettingsNavigating,
+    init(navigator: ProductFormNavigating,
          eventLogger: ProductFormEventLoggerProtocol,
          analytics: Analytics = ServiceLocator.analytics) {
         self.navigator = navigator

@@ -25,6 +25,24 @@ struct POSMetricsTests {
         #expect(metrics.checkboxSize == 24)
     }
 
+    @Test func test_status_sizes_when_regular_then_illustration_and_error_mark_are_80() {
+        // Given / When
+        let metrics = POSMetrics.metrics(for: .regular)
+
+        // Then
+        #expect(metrics.statusIllustrationSize == 80)
+        #expect(metrics.statusErrorMarkSize.dimension == 80)
+    }
+
+    @Test func test_status_sizes_when_compact_then_illustration_and_error_mark_are_60() {
+        // Given / When
+        let metrics = POSMetrics.metrics(for: .compact)
+
+        // Then
+        #expect(metrics.statusIllustrationSize == 60)
+        #expect(metrics.statusErrorMarkSize.dimension == 60)
+    }
+
     @Test func test_posMetrics_environment_value_follows_layout_scale() {
         // Given
         var environment = EnvironmentValues()

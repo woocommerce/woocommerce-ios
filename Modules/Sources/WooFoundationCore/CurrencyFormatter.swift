@@ -32,7 +32,9 @@ public class CurrencyFormatter {
     /// See https://github.com/woocommerce/woocommerce-ios/issues/13829 for discussion and further work to fix this.
     public func convertToDecimal(_ stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
 
-        let latinValue = stringValue.applyingTransform(StringTransform.toLatin, reverse: false) ?? stringValue
+        // `.toLatin` alone leaves combining marks on Persian digits.
+        let asciiDigitsValue = stringValue.withASCIIDigits
+        let latinValue = asciiDigitsValue.applyingTransform(StringTransform.toLatin, reverse: false) ?? asciiDigitsValue
 
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.

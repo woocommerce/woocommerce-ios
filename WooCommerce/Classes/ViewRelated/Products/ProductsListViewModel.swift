@@ -6,6 +6,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `ProductsViewController`: sort, filters, saved settings, bulk editing and subscriptions.
 ///
+@MainActor
 final class ProductListViewModel: ObservableObject {
 
     enum BulkEditError: Error {
@@ -32,30 +33,24 @@ final class ProductListViewModel: ObservableObject {
     private(set) var favoriteProductIDs: [Int64] = []
 
     /// Latest presentable products, recomputed on every storage, sort or filter change.
-    @MainActor
     @Published private(set) var products: [ProductListItem] = []
 
     /// Sent only when a storage change recomputes `products`.
     let storageDidChange = PassthroughSubject<Void, Never>()
 
-    @MainActor
     @Published private(set) var syncState: SyncState = .idle
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    @MainActor
     @Published private(set) var dataLoadingError: Error?
 
-    @MainActor
     private(set) var syncingPageNumber: Int?
 
     // The store's name sort can differ from the local sort, so keep products from later pages below earlier pages.
-    @MainActor
     private var productPageOrder = ProductListPageOrder()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
-    @MainActor
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = providedResultsController ?? Self.createResultsController(siteID: siteID)
         configureResultsController(resultsController)
@@ -64,10 +59,8 @@ final class ProductListViewModel: ObservableObject {
 
     private let providedResultsController: ResultsController<StorageProduct>?
 
-    @MainActor
     private let paginationTracker = PaginationTracker()
 
-    @MainActor
     var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
@@ -81,7 +74,6 @@ final class ProductListViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     @Published var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
@@ -99,10 +91,8 @@ final class ProductListViewModel: ObservableObject {
     }
 
     /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
-    @MainActor
     private var categoryHasChangedRemotely: Bool = false
 
-    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -127,7 +117,6 @@ final class ProductListViewModel: ObservableObject {
     }
 
     /// The view model is created at app launch, so storage is read only once a list view loads.
-    @MainActor
     func loadProducts() {
         _ = resultsController
     }
@@ -270,7 +259,6 @@ final class ProductListViewModel: ObservableObject {
         wooSubscriptionProductsEligibilityChecker.isSiteEligible()
     }
 
-    @MainActor
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> ItemIdentifierSearchResult {
         do {
             return try await barcodeScannerItemFinder.searchByIdentifier(from: scannedBarcode,
@@ -284,7 +272,6 @@ final class ProductListViewModel: ObservableObject {
     }
 
     /// Opens the same inventory sheet as the camera, so it follows the same Square plugin rule.
-    @MainActor
     var isHardwareScanToUpdateInventoryAvailable: Bool {
         !isPluginActive(.wooSquare)
     }
@@ -292,7 +279,6 @@ final class ProductListViewModel: ObservableObject {
     // The feature breaks if the Square plugin is active, since modifies inventory management logic
     // If the plugin is active, we'll hide the inventory scanner button
     // More details: https://wp.me/pdfdoF-2Nq
-    @MainActor
     func scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: Bool? = nil,
                                                     completion: @escaping (Bool) -> (Void)) {
         let isCameraAvailable = isCameraAvailable ?? UIImagePickerController.isSourceTypeAvailable(.camera)
@@ -313,12 +299,10 @@ final class ProductListViewModel: ObservableObject {
 
     /// Loads favorite product IDs
     ///
-    @MainActor
     func loadFavoriteProductIDs() async {
         favoriteProductIDs = await favoriteProductsUseCase.favoriteProductIDs()
     }
 
-    @MainActor
     private func isPluginActive(_ plugin: Plugin) -> Bool {
         pluginsService.isPluginActiveInStorage(siteID: siteID, plugin: plugin)
     }
@@ -326,7 +310,6 @@ final class ProductListViewModel: ObservableObject {
 
 // MARK: - Products data
 //
-@MainActor
 extension ProductListViewModel {
     var isEmpty: Bool {
         resultsController.isEmpty
@@ -407,7 +390,6 @@ extension ProductListViewModel {
     }
 }
 
-@MainActor
 private extension ProductListViewModel {
     /// Uses the default filters and sort; stored settings are applied once they load.
     static func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
@@ -481,7 +463,6 @@ extension ProductListViewModel: @MainActor PaginationTrackerDelegate {
 
     /// Synchronizes the Products for the Default Store (if any).
     ///
-    @MainActor
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         syncingPageNumber = pageNumber
         syncState = .syncing(pageNumber: pageNumber)
@@ -532,7 +513,6 @@ extension ProductListViewModel: @MainActor PaginationTrackerDelegate {
 
 // MARK: - Products settings
 //
-@MainActor
 extension ProductListViewModel {
     /// Update local Products Settings (eg. sort order or filters stored in Products settings)
     ///

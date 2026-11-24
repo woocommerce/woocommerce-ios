@@ -9,11 +9,6 @@ struct POSCheckbox: View {
         metrics.checkboxSize
     }
 
-    /// The checkmark font is tuned for the regular box, so it shrinks with the box on phone.
-    private var checkmarkScale: CGFloat {
-        size / POSMetrics.regular.checkboxSize
-    }
-
     private var tapTargetOutset: CGFloat {
         max((Constants.minimumTapTargetSize - size) / 2, 0)
     }
@@ -27,7 +22,6 @@ struct POSCheckbox: View {
                         .frame(width: size, height: size)
                     Image(systemName: "checkmark")
                         .font(.posButtonSymbolXSmall)
-                        .scaleEffect(checkmarkScale)
                         .foregroundColor(.posOnPrimaryContainer)
                 } else {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)

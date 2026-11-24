@@ -219,6 +219,10 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: session.isLocked) { _, isLocked in
+            if !isLocked {
+                if posModel.settingsController.securityController?.resumeGuidedAccessGuide() == true { showSettings = true }
+                return
+            }
             // Locking ends the current staff context; dismiss dashboard-owned presentations
             // so the next signed-in staff member does not inherit them.
             guard isLocked else { return }
@@ -228,6 +232,9 @@ struct PointOfSaleDashboardView: View {
             showSettings = false
             showOrders = false
             posModel.customAmountFlow = nil
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            if posModel.settingsController.securityController?.resumeGuidedAccessGuide() == true { showSettings = true }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }

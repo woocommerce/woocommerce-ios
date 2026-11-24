@@ -3,6 +3,22 @@ import Testing
 
 @MainActor
 struct POSSecurityPINPresentationTests {
+    @Test func test_guide_when_presented_and_closed_then_never_restores_pin_editor() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        sut.present(.editor(makeEditor()))
+
+        // When
+        sut.present(.guidedAccessGuide)
+        sut.finishApproval(editor: makeEditor())
+
+        // Then
+        #expect(sut.destination == .guidedAccessGuide)
+        #expect(sut.destination?.compactStyle == .fullScreen(title: POSGuidedAccessGuideView.Localization.title))
+        sut.cancel()
+        #expect(sut.destination == nil)
+    }
+
     @Test(arguments: [POSPINSetupFlow.Configuration.initialAdmin, .adminChange, .cashier])
     func test_editor_when_presented_then_leaves_title_in_content(configuration: POSPINSetupFlow.Configuration) {
         // Given

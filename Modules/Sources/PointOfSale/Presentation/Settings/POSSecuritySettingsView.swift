@@ -47,7 +47,11 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving || presentation.isTransitioning)
-        .onAppear { controller.load() }
+        .onAppear {
+            controller.load()
+            isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
+            if controller.guidedAccessGuide != nil { presentation.present(.guidedAccessGuide) }
+        }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in
             if let request {
@@ -64,6 +68,9 @@ struct POSSecuritySettingsView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.guidedAccessStatusDidChangeNotification)) { _ in
             isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
+        }
         .posModal(item: presentationBinding,
                   compactStyle: presentation.destination?.compactStyle ?? .fullScreen(title: Localization.title),
                   onDismissCompleted: { destination in
@@ -75,7 +82,14 @@ struct POSSecuritySettingsView: View {
                 POSManagerOverrideView(handler: approval, request: request)
                     .posManagerOverrideModalSizing()
             case .editor(let flow):
-                POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor)
+                POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor) {
+                    closeEditor()
+                    startGuidedAccessGuide()
+                }
+            case .guidedAccessGuide:
+                if let guide = controller.guidedAccessGuide {
+                    POSGuidedAccessGuideView(guide: guide, close: closeGuidedAccessGuide)
+                }
             }
         }
         .accessibilityIdentifier("pos-security-settings")
@@ -89,6 +103,13 @@ struct POSSecuritySettingsView: View {
             case .approval:
                 presentation.cancel()
                 dismissApproval()
+            case .guidedAccessGuide:
+                if controller.isVisible {
+                    closeGuidedAccessGuide()
+                } else {
+                    controller.dismissGuidedAccessGuide()
+                    presentation.cancel()
+                }
             case nil: break
             }
         })
@@ -97,7 +118,18 @@ struct POSSecuritySettingsView: View {
     private func endEditing() {
         presentation.cancel()
         controller.endPINEditing()
+        controller.dismissGuidedAccessGuide()
         dismissApproval()
+    }
+
+    private func startGuidedAccessGuide() {
+        controller.startGuidedAccessGuide()
+        if controller.guidedAccessGuide != nil { presentation.present(.guidedAccessGuide) }
+    }
+
+    private func closeGuidedAccessGuide() {
+        controller.closeGuidedAccessGuide()
+        presentation.cancel()
     }
 
     private func closeEditor() {
@@ -152,8 +184,7 @@ struct POSSecuritySettingsView: View {
                         .background(Color.posDefault)
                         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 } else {
-                    // WOOMOB-4595 connects the Guided Access guide.
-                    Button(Localization.setUpGuidedAccessButton) {}
+                    Button(Localization.setUpGuidedAccessButton, action: startGuidedAccessGuide)
                         .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary))
                         .accessibilityLabel(Localization.setUpGuidedAccess)
                 }

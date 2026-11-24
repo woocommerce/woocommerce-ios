@@ -69,10 +69,15 @@ struct POSPINSetupFlowView: View {
     @State private var pinContentHeightAboveKeypad: CGFloat = 0
     private let controller: POSSecuritySettingsController
     private let close: () -> Void
+    private let setUpGuidedAccess: () -> Void
 
-    init(flow: POSPINSetupFlow, controller: POSSecuritySettingsController, close: @escaping () -> Void) {
+    init(flow: POSPINSetupFlow,
+         controller: POSSecuritySettingsController,
+         close: @escaping () -> Void,
+         setUpGuidedAccess: @escaping () -> Void) {
         self.controller = controller
         self.close = close
+        self.setUpGuidedAccess = setUpGuidedAccess
         self.flow = flow
     }
 
@@ -166,8 +171,9 @@ private extension POSPINSetupFlowView {
             .transition(.opacity.animation(Constants.offerFade))
         case .guidedAccessOffer:
             messagePage(art: POSLockIllustration(), title: Localization.offerTitle, message: Localization.offerMessage) {
-                // WOOMOB-4595 connects the Guided Access guide.
-                Button(Localization.setUpGuidedAccess) {}
+                Button(Localization.setUpGuidedAccess) {
+                    if flow.close() { setUpGuidedAccess() }
+                }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                 Button(Localization.maybeLater, action: closeFlow)
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))

@@ -269,6 +269,7 @@ public struct PointOfSaleEntryPointView: View {
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
             let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
+                posModel?.settingsController.securityController?.closeGuidedAccessGuide()
                 session.endSession()
                 if posModel?.paymentState.isSuccess == true {
                     POSAccessSessionFactory.handleCompletedSaleExit(siteID: siteID)

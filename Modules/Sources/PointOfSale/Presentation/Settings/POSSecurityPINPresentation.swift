@@ -7,11 +7,13 @@ final class POSSecurityPINPresentation {
     enum Destination: Identifiable, Equatable {
         case approval(POSManagerOverrideRequest)
         case editor(POSPINSetupFlow)
+        case guidedAccessGuide
 
         var id: AnyHashable {
             switch self {
             case .approval(let request): AnyHashable(request.id)
             case .editor(let flow): AnyHashable(ObjectIdentifier(flow))
+            case .guidedAccessGuide: AnyHashable("guidedAccessGuide")
             }
         }
 
@@ -19,6 +21,7 @@ final class POSSecurityPINPresentation {
             switch self {
             case .approval: .managerApproval
             case .editor: .fullScreen(title: "")
+            case .guidedAccessGuide: .fullScreen(title: POSGuidedAccessGuideView.Localization.title)
             }
         }
 
@@ -59,7 +62,7 @@ final class POSSecurityPINPresentation {
         guard let editor else {
             switch state {
             case .presented(.approval), .dismissingApproval, .awaitingApprovalResult: state = .idle
-            case .idle, .presented(.editor): break
+            case .idle, .presented(.editor), .presented(.guidedAccessGuide): break
             }
             return
         }
@@ -70,7 +73,7 @@ final class POSSecurityPINPresentation {
             state = .dismissingApproval(id, editor)
         case .awaitingApprovalResult:
             state = .presented(.editor(editor))
-        case .idle, .presented(.editor): break
+        case .idle, .presented(.editor), .presented(.guidedAccessGuide): break
         }
     }
 

@@ -1113,7 +1113,7 @@ private extension ProductsViewController {
         guard presentedProducts.indices.contains(indexPath.row) else {
             return nil
         }
-        return viewModel.product(withID: presentedProducts[indexPath.row].productID)
+        return viewModel.product(withID: presentedProducts[indexPath.row].productID, at: indexPath.row)
     }
 
     /// Manages view components and reload tableview

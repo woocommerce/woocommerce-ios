@@ -667,6 +667,23 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.products.map(\.productID), [2], "Rows must match the products that taps resolve against")
     }
 
+    func test_product_when_displayed_row_is_stale_then_returns_the_product_with_the_requested_ID() {
+        // Given
+        let storage = MockStorageManager()
+        insert(makeProducts(["A", "B"]), into: storage)
+        let viewModel = makeViewModel(storage: storage)
+
+        // When
+        let matchingRow = viewModel.product(withID: 1, at: 0)
+        let reorderedRow = viewModel.product(withID: 2, at: 0)
+        let removedRow = viewModel.product(withID: 2, at: 5)
+
+        // Then
+        XCTAssertEqual(matchingRow?.productID, 1)
+        XCTAssertEqual(reorderedRow?.productID, 2, "Storage can reorder before the table reloads, so a tap must not open another product")
+        XCTAssertEqual(removedRow?.productID, 2)
+    }
+
     func test_sync_when_sort_and_filters_are_set_then_requests_them_with_favorite_product_IDs() throws {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()

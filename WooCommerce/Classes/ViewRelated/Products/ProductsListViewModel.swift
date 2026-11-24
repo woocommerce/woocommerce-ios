@@ -336,7 +336,11 @@ extension ProductListViewModel {
         resultsController.fetchedObjects
     }
 
-    func product(withID productID: Int64) -> Product? {
+    /// `index` is the displayed row, which usually matches the fetched row and avoids a scan per row.
+    func product(withID productID: Int64, at index: Int) -> Product? {
+        if let product = resultsController.safeObject(at: IndexPath(row: index, section: 0)), product.productID == productID {
+            return product
+        }
         guard let indexPath = resultsController.indexPath(forObjectMatching: { $0.productID == productID }) else {
             return nil
         }

@@ -1211,7 +1211,6 @@ private extension ProductFormViewController {
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
-
 }
 
 // MARK: Navigation Bar Items

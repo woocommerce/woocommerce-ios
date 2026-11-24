@@ -127,20 +127,59 @@ struct ReceiptContentAssemblerTests {
 
     // MARK: - Cart totals: fees
 
-    @Test func test_makeContent_when_order_has_fees_then_includes_summed_fees_line() throws {
+    @Test func test_makeContent_when_order_has_named_fees_then_includes_one_line_per_fee_in_order() throws {
         // Given
         let parameters = try makeReceiptParameters()
-        let order = makeOrder(fees: [makeFee(amount: "5.00"), makeFee(amount: "15.50")])
+        let fees = [makeFee(id: 1, name: "Gift wrap", amount: "5.00"),
+                    makeFee(id: 2, name: "Service charge", amount: "15.50")]
+        let order = makeOrder(shippingTotal: "5.50", totalTax: "2.00", fees: fees)
 
         // When
         let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
 
         // Then
-        let feesLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.feesLineDescription }
-        #expect(feesLine?.amount == "$20.50")
+        #expect(content.cartTotals.map(\.description) == [
+            ReceiptContent.Localization.productTotalLineDescription,
+            "Gift wrap",
+            "Service charge",
+            ReceiptContent.Localization.shippingLineDescription,
+            ReceiptContent.Localization.totalTaxLineDescription,
+            ReceiptContent.Localization.amountPaidLineDescription
+        ])
+        #expect(content.cartTotals.first { $0.description == "Gift wrap" }?.amount == "$5.00")
+        #expect(content.cartTotals.first { $0.description == "Service charge" }?.amount == "$15.50")
     }
 
-    @Test func test_makeContent_when_order_has_no_fees_then_excludes_fees_line() throws {
+    @Test(arguments: [nil, "", "   "] as [String?])
+    func test_makeContent_when_fee_has_no_name_then_labels_fee_line_as_unnamed_fee(name: String?) throws {
+        // Given
+        let parameters = try makeReceiptParameters()
+        let order = makeOrder(fees: [makeFee(name: name, amount: "3.00")])
+
+        // When
+        let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
+
+        // Then
+        let feeLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.unnamedFeeLineDescription }
+        #expect(feeLine?.amount == "$3.00")
+    }
+
+    @Test func test_makeContent_when_fee_total_is_zero_then_excludes_that_fee_line() throws {
+        // Given
+        let parameters = try makeReceiptParameters()
+        let fees = [makeFee(id: 1, name: "Gift wrap", amount: "0.00"),
+                    makeFee(id: 2, name: "Service charge", amount: "4.00")]
+        let order = makeOrder(fees: fees)
+
+        // When
+        let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
+
+        // Then
+        #expect(content.cartTotals.contains { $0.description == "Gift wrap" } == false)
+        #expect(content.cartTotals.first { $0.description == "Service charge" }?.amount == "$4.00")
+    }
+
+    @Test func test_makeContent_when_order_has_no_fees_then_excludes_fee_lines() throws {
         // Given
         let parameters = try makeReceiptParameters()
         let order = makeOrder(fees: [])
@@ -149,21 +188,10 @@ struct ReceiptContentAssemblerTests {
         let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
 
         // Then
-        let feesLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.feesLineDescription }
-        #expect(feesLine == nil)
-    }
-
-    @Test func test_makeContent_when_order_has_zero_fees_then_excludes_fees_line() throws {
-        // Given
-        let parameters = try makeReceiptParameters()
-        let order = makeOrder(fees: [makeFee(amount: "0.00")])
-
-        // When
-        let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
-
-        // Then
-        let feesLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.feesLineDescription }
-        #expect(feesLine == nil)
+        #expect(content.cartTotals.map(\.description) == [
+            ReceiptContent.Localization.productTotalLineDescription,
+            ReceiptContent.Localization.amountPaidLineDescription
+        ])
     }
 
     // MARK: - Cart totals: line items total
@@ -267,7 +295,7 @@ private extension ReceiptContentAssemblerTests {
     }
 
     func makeFee(id: Int64 = 123,
-                 name: String = "Fee",
+                 name: String? = "Fee",
                  amount: String) -> Yosemite.OrderFeeLine {
         Yosemite.OrderFeeLine(feeID: id,
                               name: name,

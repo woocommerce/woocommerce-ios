@@ -51,18 +51,17 @@ private extension ReceiptContentAssembler {
     }
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
-        let subtotalLines = [
+        let subtotalLines: [ReceiptTotalLine?] = [
             productTotalLine(order: order, currency: parameters.currency),
-            discountLine(order: order),
-            lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription,
-                          amount: feesLineAmount(fees: order.fees), currency: parameters.currency),
+            discountLine(order: order)
+        ] + feeLines(fees: order.fees, currency: parameters.currency) + [
             lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal, currency: parameters.currency),
             lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription, amount: order.totalTax, currency: parameters.currency)
-        ].compactMap { $0 }
+        ]
         let totalLine = [ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription,
                                          amount: parameters.formattedAmount)]
 
-        return subtotalLines + totalLine
+        return subtotalLines.compactMap { $0 } + totalLine
     }
 
     func productTotalLine(order: Order, currency: String) -> ReceiptTotalLine {
@@ -102,11 +101,13 @@ private extension ReceiptContentAssembler {
         }
     }
 
-    func feesLineAmount(fees: [OrderFeeLine]) -> String {
-        let feeTotal = fees.reduce(into: Decimal(0)) { result, fee in
-            result += NSDecimalNumber(apiAmount: fee.total).decimalValue
+    /// One line per fee so each POS custom amount prints under its own name, in order.
+    func feeLines(fees: [OrderFeeLine], currency: String) -> [ReceiptTotalLine?] {
+        fees.map { fee in
+            let name = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let description = name.isEmpty ? ReceiptContent.Localization.unnamedFeeLineDescription : name
+            return lineIfNonZero(description: description, amount: fee.total, currency: currency)
         }
-        return currencyFormatter.localize(feeTotal) ?? ""
     }
 
     func lineIfNonZero(description: String, amount: String, currency: String) -> ReceiptTotalLine? {

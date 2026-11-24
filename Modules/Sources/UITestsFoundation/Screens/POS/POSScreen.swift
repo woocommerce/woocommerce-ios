@@ -25,13 +25,7 @@ public final class POSScreen: ScreenObject {
 
         XCTAssertTrue(waitForVisibleElement(productButton, timeout: 15), "Product \(productID) should be visible in POS.")
 
-        if productButton.isHittable {
-            productButton.tap()
-            return self
-        }
-
-        // On iOS 27 the card can be on screen and uncovered while never reporting `isHittable`.
-        // Callers verify the cart afterwards.
+        // XCTest can resolve the wrong hit point for a visible POS card on iOS 27.
         productButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
         return self
@@ -42,12 +36,12 @@ public final class POSScreen: ScreenObject {
         let parentProductButton = app.buttons["pos-variable-product-card-\(parentProductID)"]
         parentProductButton.scrollIntoView(app: app)
         XCTAssertTrue(parentProductButton.waitForIsHittable(timeout: 5), "Variable product \(parentProductID) should be tappable in POS.")
-        parentProductButton.tap()
+        parentProductButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
         let variationButton = app.buttons["pos-variation-card-\(variationID)"]
         variationButton.scrollIntoView(app: app)
         XCTAssertTrue(variationButton.waitForIsHittable(timeout: 5), "Variation \(variationID) should be tappable in POS.")
-        variationButton.tap()
+        variationButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
         return self
     }

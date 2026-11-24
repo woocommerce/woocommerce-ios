@@ -48,12 +48,12 @@ public final class TabNavComponent: ScreenObject {
         return try ProductsScreen(app: app)
     }
     public func goToPOSScreen() throws -> POSScreen {
-        posTabButton.waitAndTap()
+        tapPOSTab()
         return try POSScreen(app: app)
     }
     @discardableResult
     public func goToPOSIneligibleScreen() throws -> POSIneligibleScreen {
-        posTabButton.waitAndTap()
+        tapPOSTab()
         return try POSIneligibleScreen(app: app)
     }
     @discardableResult
@@ -72,6 +72,12 @@ public final class TabNavComponent: ScreenObject {
 }
 
 private extension TabNavComponent {
+    func tapPOSTab() {
+        XCTAssertTrue(posTabButton.waitForIsHittable(timeout: 10), "POS tab should be tappable.")
+        // XCTest can report the tab as hittable and still synthesize a tap outside the tab bar.
+        posTabButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+    }
+
     func selectTab(_ tabButtonGetter: (XCUIApplication) -> XCUIElement, named name: String, maxAttempts: Int = 3) throws {
         for _ in 0..<maxAttempts {
             let tabButton = tabButtonGetter(app)

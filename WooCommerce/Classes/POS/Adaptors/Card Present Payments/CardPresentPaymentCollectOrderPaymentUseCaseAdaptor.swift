@@ -8,6 +8,7 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
+import enum Yosemite.CollectOrderPaymentUseCaseError
 import enum Yosemite.PaymentChannel
 import struct Yosemite.CardPresentTransactionDetails
 
@@ -69,11 +70,19 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 preflightController: preflightController,
                 analyticsTracker: collectOrderPaymentAnalyticsTracker,
                 applicationStateProvider: applicationStateProvider)
+            defer { alertsPresenter.onOrderAlreadyPaid = nil }
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in
                     // The nillableContinuation prevents us accidentally resuming it twice.
                     var nillableContinuation: CheckedContinuation<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>? = continuation
+                    alertsPresenter.onOrderAlreadyPaid = {
+                        guard let continuation = nillableContinuation else { return }
+                        nillableContinuation = nil
+                        invalidatablePaymentOrchestrator.invalidatePayment()
+                        self.isCancelled.withLock { $0 = true }
+                        continuation.resume(throwing: CollectOrderPaymentUseCaseError.orderAlreadyPaid)
+                    }
 
                     orderPaymentUseCase.collectPayment(
                         using: connectionMethod.discoveryMethod,

@@ -23,7 +23,7 @@ struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_payment_is_unresolved_then_rejects_without_authenticating() async {
         // Given
         let authenticator = MockPOSPINAuthenticator()
-        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { true })
+        let sut = makeSUT(authenticator: authenticator, isPaymentPending: { true })
         let lockedScope = sut.session.accessScope
 
         // When / Then
@@ -41,12 +41,12 @@ struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_payment_becomes_unresolved_during_authentication_then_rejects_late_authority() async {
         // Given
         let authenticator = MockPOSPINAuthenticator()
-        var isPaymentUnresolved = false
-        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { isPaymentUnresolved })
+        var isPaymentPending = false
+        let sut = makeSUT(authenticator: authenticator, isPaymentPending: { isPaymentPending })
         let lockedScope = sut.session.accessScope
         authenticator.onAuthenticate = {
             await Task.yield()
-            isPaymentUnresolved = true
+            isPaymentPending = true
         }
 
         // When / Then
@@ -65,9 +65,9 @@ struct DefaultPOSAccessSessionTests {
         // Given
         let staff = makeStaff()
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .success(staff))
-        var isPaymentUnresolved = false
-        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { isPaymentUnresolved })
-        authenticator.onAuthenticate = { isPaymentUnresolved = true }
+        var isPaymentPending = false
+        let sut = makeSUT(authenticator: authenticator, isPaymentPending: { isPaymentPending })
+        authenticator.onAuthenticate = { isPaymentPending = true }
         await #expect(throws: POSAuthError.unknown) {
             try await sut.session.signIn(withPIN: "1234")
         }
@@ -75,7 +75,7 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.isLocked)
 
         // When
-        isPaymentUnresolved = false
+        isPaymentPending = false
         authenticator.onAuthenticate = nil
         try await sut.session.signIn(withPIN: "1234")
 
@@ -455,7 +455,9 @@ struct DefaultPOSAccessSessionTests {
         authenticator.onAuthenticate = {
             replacement = DefaultPOSAccessSession(siteID: 123, authenticator: authenticator, rateLimiter: sut.limiter,
                                                   credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
-                                                  userDefaults: sut.scope.defaults)
+                                                  userDefaults: sut.scope.defaults,
+                                                  isPaymentPending: { false },
+                                                  onLock: {})
         }
 
         // When / Then
@@ -473,7 +475,9 @@ struct DefaultPOSAccessSessionTests {
         try await sut.session.signIn(withPIN: "1234")
         let replacement = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: sut.limiter,
                                                   credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
-                                                  userDefaults: sut.scope.defaults)
+                                                  userDefaults: sut.scope.defaults,
+                                                  isPaymentPending: { false },
+                                                  onLock: {})
         if unlockFirst { try await replacement.signIn(withPIN: "1234") }
         let token = sut.limiter.sessionTokens.current()
         #expect(sut.session.allows(.manageStoreSettings) == false)
@@ -506,7 +510,9 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.processSales))
         let replacement = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: sut.limiter,
                                                   credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
-                                                  userDefaults: sut.scope.defaults)
+                                                  userDefaults: sut.scope.defaults,
+                                                  isPaymentPending: { false },
+                                                  onLock: {})
         try await replacement.signIn(withPIN: "1234")
         let token = sut.limiter.sessionTokens.current()
 
@@ -527,7 +533,9 @@ struct DefaultPOSAccessSessionTests {
         let scope = UserDefaultsTestScope()
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: limiter,
                                               credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
-                                              userDefaults: scope.defaults)
+                                              userDefaults: scope.defaults,
+                                              isPaymentPending: { false },
+                                              onLock: {})
         try await session.signIn(withPIN: "1234")
         try storage.removeAll()
         scope.defaults.removeObject(forKey: POSLockStateKey.key(for: 123))
@@ -553,7 +561,9 @@ struct DefaultPOSAccessSessionTests {
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(),
                                               rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                               credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .failure(.storageFailure)),
-                                              userDefaults: scope.defaults)
+                                              userDefaults: scope.defaults,
+                                              isPaymentPending: { false },
+                                              onLock: {})
 
         // Then
         #expect(session.isLocked)
@@ -567,7 +577,9 @@ struct DefaultPOSAccessSessionTests {
         let provider = MockPOSPINCredentialProvider(credentialsResult: .success(wasProtected ? [makeAdminCredential()] : []))
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(),
                                               rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
-                                              credentialProvider: provider, userDefaults: scope.defaults)
+                                              credentialProvider: provider, userDefaults: scope.defaults,
+                                              isPaymentPending: { false },
+                                              onLock: {})
         if wasProtected { try await session.signIn(withPIN: "1234") }
         #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
         provider.credentialsResult = .failure(.storageFailure)
@@ -609,7 +621,7 @@ private extension DefaultPOSAccessSessionTests {
 
     func makeSUT(authenticator: POSPINAuthenticating,
                  credentials: Result<[POSPINCredential], POSPINStoreError>? = nil,
-                 isPaymentUnresolved: @escaping @MainActor () -> Bool = { false },
+                 isPaymentPending: @escaping @MainActor () -> Bool = { false },
                  onLock: @escaping @MainActor () -> Void = {}) -> SUT {
         let scope = UserDefaultsTestScope()
         let credentialProvider = MockPOSPINCredentialProvider(credentialsResult: credentials ?? .success([makeAdminCredential()]))
@@ -620,7 +632,7 @@ private extension DefaultPOSAccessSessionTests {
             rateLimiter: limiter,
             credentialProvider: credentialProvider,
             userDefaults: scope.defaults,
-            isPaymentUnresolved: isPaymentUnresolved,
+            isPaymentPending: isPaymentPending,
             onLock: onLock
         )
         return SUT(session: session, limiter: limiter, scope: scope, credentialProvider: credentialProvider)

@@ -130,6 +130,106 @@ struct POSPaymentModelTests {
         #expect(!sut.isLockSuppressed)
     }
 
+    @Test @MainActor
+    func test_reader_reconnection_when_session_locks_and_unlocks_then_original_observer_still_starts_payment() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        service.connectedReader = reader
+        service.collectPaymentOverride = { .cancellation }
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let originalScope = session.accessScope
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(orderID: 42, total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, accessSession: session)
+        sut.observeReaderReconnection()
+
+        // When
+        sut.lockManually(session: session)
+        #expect(session.isLocked)
+        #expect(session.accessScope != originalScope)
+        await fireOnce { canceled in
+            service.onCancelPaymentCalled = { canceled() }
+            sut.cancelPaymentForLock()
+        }
+        service.onCancelPaymentCalled = nil
+        try await session.signIn(withPIN: "1234")
+        await updateReaderConnectionStatus(observedBy: sut) {
+            service.connectedReader = nil
+        }
+        await fireOnce { collected in
+            service.onCollectPaymentCalled = { collected() }
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(session.lockCallCount == 1)
+        #expect(!session.isLocked)
+        #expect(session.accessScope != originalScope)
+        #expect(service.spyCollectPaymentMethods == [.bluetooth])
+        #expect(service.spyCollectPaymentOrders.map(\.orderID) == [42])
+    }
+
+    @Test @MainActor
+    func test_cancelPaymentForLock_when_owner_moves_directly_from_active_to_idle_then_clears_prompt_before_collect_returns() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(orderID: 42, total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let printer = MockReceiptPrinterService()
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider,
+                                        accessSession: session, receiptPrinter: printer)
+        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
+        var originalCollectReturned = false
+        var collection: Task<Void, Never>?
+        defer { finishCollection?.resume(returning: .cancellation) }
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                let result = await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+                originalCollectReturned = true
+                return result
+            }
+            collection = Task { await sut.startPayment() }
+        }
+        #expect(sut.cardPresentPaymentInlineMessage != nil)
+        #expect(sut.paymentState.card == .acceptingCard)
+        service.onCancelPaymentCalled = {
+            #expect(!originalCollectReturned)
+            service.paymentSessionState = .idle
+        }
+
+        // When
+        session.lock()
+        sut.cancelPaymentForLock()
+        await waitUntil(false) { sut.cardPresentPaymentInlineMessage != nil }
+
+        // Then
+        #expect(service.cancelPaymentCalled)
+        #expect(!originalCollectReturned)
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(sut.paymentState.card == .idle)
+        #expect(!sut.isCardPaymentPending)
+        #expect(provider.provideOrderCallCount == 1)
+        provider.orderToReturn = Order.fake().copy(orderID: 99, total: "20.00")
+        try await sut.printReceipt(storeInformation: .empty)
+        #expect(printer.printedOrder?.orderID == 42)
+        #expect(!originalCollectReturned)
+
+        finishCollection?.resume(returning: .cancellation)
+        finishCollection = nil
+        await collection?.value
+        #expect(originalCollectReturned)
+    }
+
     // MARK: - Payment starts that end without a payment
 
     @Test @MainActor
@@ -481,7 +581,8 @@ struct POSPaymentModelTests {
         // Given
         let sut = makePaymentController()
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let autoLock = POSAutoLockActivityController(session: session, paymentStateProvider: { sut.paymentState }, timeout: nil)
+        let autoLock = POSAutoLockActivityController(session: session, paymentStateProvider: { sut.paymentState }, timeout: nil,
+                                                isPaymentPending: { false })
         var transitions: [PointOfSalePaymentState] = []
         let subscription = sut.paymentStateChanges.sink { change in
             transitions.append(change.newState)
@@ -1350,7 +1451,7 @@ struct POSPaymentModelTests {
         await sut.startPayment()
         #expect(orderProvider.provideOrderCallCount == 1)
         #expect(!sut.paymentState.isSuccess)
-        #expect(!sut.isCardPaymentUnresolved)
+        #expect(!sut.isCardPaymentPending)
 
         // When
         sut.startMarkAsPaidPayment()
@@ -2654,7 +2755,7 @@ struct POSPaymentModelTests {
             service.onCancelPaymentCalled = {
                 service.paymentSessionState = .cancelling
                 #expect(sut.paymentState.card == .acceptingCard)
-                #expect(sut.isCardPaymentUnresolved)
+                #expect(sut.isCardPaymentPending)
                 finishCollection?.resume(returning: .cancellation)
                 finishCollection = nil
                 service.paymentSessionState = .idle
@@ -2667,7 +2768,7 @@ struct POSPaymentModelTests {
         // Then
         #expect(sut.paymentState.card == .idle)
         #expect(sut.cardPresentPaymentInlineMessage == nil)
-        #expect(!sut.isCardPaymentUnresolved)
+        #expect(!sut.isCardPaymentPending)
         #expect(sut.currentPaymentMethod == nil)
         service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
         #expect(sut.paymentState.card == .idle)

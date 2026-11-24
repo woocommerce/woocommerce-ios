@@ -295,7 +295,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
-        guard !paymentModel.isCardPaymentUnresolved else { return }
+        guard !paymentModel.isCardPaymentPending else { return }
         collectOrderPaymentAnalyticsTracker.resetCheckoutTiming()
         removeAllItemsFromCart()
         orderController.clearOrder()
@@ -304,7 +304,7 @@ extension PointOfSaleAggregateModel {
     }
 
     private func setStateForEditing() {
-        guard !paymentModel.isCardPaymentUnresolved else {
+        guard !paymentModel.isCardPaymentPending else {
             paymentModel.reset()
             return
         }
@@ -716,7 +716,7 @@ extension PointOfSaleAggregateModel {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         checkoutGeneration += 1
-        if !paymentModel.isCardPaymentUnresolved { orderController.clearOrder() }
+        if !paymentModel.isCardPaymentPending { orderController.clearOrder() }
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.

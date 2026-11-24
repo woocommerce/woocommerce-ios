@@ -459,7 +459,9 @@ struct POSSecuritySettingsControllerTests {
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults,
+                                              isPaymentPending: { false },
+                                              onLock: {})
         let controller = POSSecuritySettingsController(store: store, session: session,
                                                        lockSettings: makeLockSettings(), flowSleep: { _ in })
         controller.load()
@@ -473,7 +475,9 @@ struct POSSecuritySettingsControllerTests {
             replacement = nil
         } else {
             replacement = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                                  rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+                                                  rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults,
+                                                  isPaymentPending: { false },
+                                                  onLock: {})
         }
 
         // Then
@@ -965,7 +969,9 @@ struct POSSecuritySettingsControllerTests {
                                              authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
-                                             userDefaults: defaults)
+                                             userDefaults: defaults,
+                                             isPaymentPending: { false },
+                                             onLock: {})
         let controller = POSSecuritySettingsController(store: store, session: session,
                                                        lockSettings: lockSettings ?? makeLockSettings(), flowSleep: { _ in })
         return (controller, session, store)

@@ -80,6 +80,7 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
         try await Task.sleep(nanoseconds: UInt64(mockCardWaitInterval * 1_000_000_000))
         guard paymentAttemptID == attemptID else { return .cancellation }
 
+        paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         return .success(CardPresentPaymentTransaction())
     }
 

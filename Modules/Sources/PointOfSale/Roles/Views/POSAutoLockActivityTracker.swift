@@ -57,7 +57,7 @@ struct POSAutoLockActivityTracker: ViewModifier {
                         session: session,
                         paymentStateProvider: { paymentModel.paymentState },
                         timeout: settings.preferences.inactivityTimeout.interval,
-                        isPaymentUnresolved: { paymentModel.isCardPaymentUnresolved }
+                        isPaymentPending: { paymentModel.isCardPaymentPending }
                     )
                 }
                 controller?.noteActivity()

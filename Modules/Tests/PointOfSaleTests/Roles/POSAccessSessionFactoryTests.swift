@@ -41,7 +41,9 @@ struct POSAccessSessionFactoryTests {
         let flags = StubPOSFeatureFlagProviding(enabledFlags: [])
 
         // When
-        let session = try await POSAccessSessionFactory.make(siteID: 123, featureFlags: flags)
+        let session = try await POSAccessSessionFactory.make(siteID: 123, featureFlags: flags,
+                                                             isPaymentPending: { false },
+                                                             onLock: {})
 
         // Then
         #expect(session is UnrestrictedPOSAccessSession)
@@ -55,7 +57,7 @@ struct POSAccessSessionFactoryTests {
 
         // When
         let session = try await POSAccessSessionFactory.make(siteID: 123, featureFlags: flags,
-                                                             isPaymentUnresolved: { true },
+                                                             isPaymentPending: { true },
                                                              onLock: { lockCallbackCount += 1 })
         try await session.signIn(withPIN: "1234")
         session.lock()
@@ -111,7 +113,7 @@ struct POSAccessSessionFactoryTests {
         first.endSession()
 
         // When
-        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentUnresolved: { true })
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentPending: { true })
 
         // Then
         #expect(second.isLocked)
@@ -125,14 +127,14 @@ struct POSAccessSessionFactoryTests {
         // Given
         let sut = makeSUT(siteID: uniqueSiteID())
         try sut.store.setPIN("1234", for: .admin)
-        var isPaymentUnresolved = false
-        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentUnresolved: { isPaymentUnresolved })
+        var isPaymentPending = false
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentPending: { isPaymentPending })
         try await first.signIn(withPIN: "1234")
 
         // When
-        isPaymentUnresolved = true
+        isPaymentPending = true
         first.endSession()
-        isPaymentUnresolved = false
+        isPaymentPending = false
         let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
 
         // Then
@@ -561,7 +563,9 @@ private extension POSAccessSessionFactoryTests {
         let limiter = POSLocalRateLimiter(siteID: siteID, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let defaultsScope = FactoryTestDefaults()
         let session = DefaultPOSAccessSession(siteID: siteID, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults,
+                                              isPaymentPending: { false },
+                                              onLock: {})
         return SUT(siteID: siteID, store: store, blocking: blocking, limiter: limiter, session: session,
                    controller: POSSecuritySettingsController(store: blocking, session: session,
                                                              lockSettings: POSLockSettings(siteID: siteID, userDefaults: defaultsScope.defaults)),
@@ -570,7 +574,7 @@ private extension POSAccessSessionFactoryTests {
 
     func makeReplacement(_ sut: SUT,
                          locksWhenPOSOpens: Bool = true,
-                         isPaymentUnresolved: @escaping @MainActor () -> Bool = { false },
+                         isPaymentPending: @escaping @MainActor () -> Bool = { false },
                          now: @escaping @MainActor () -> Date = Date.init,
                          shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.locksWhenPOSOpens = locksWhenPOSOpens }
@@ -578,7 +582,9 @@ private extension POSAccessSessionFactoryTests {
                                                       featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
                                                       credentialProvider: sut.store, rateLimiter: sut.limiter,
                                                       userDefaults: sut.defaultsScope.defaults,
-                                                      isPaymentUnresolved: isPaymentUnresolved, now: now, shouldCreate: shouldCreate)
+                                                      isPaymentPending: isPaymentPending,
+                                                      onLock: {},
+                                                      now: now, shouldCreate: shouldCreate)
     }
 
     /// The factory keeps unlocked operators per store in memory, so each launch-lock test uses its own store.

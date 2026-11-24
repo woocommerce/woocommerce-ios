@@ -6,7 +6,7 @@ final class POSAutoLockActivityController {
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState
-    private let isPaymentUnresolved: () -> Bool
+    private let isPaymentPending: () -> Bool
     private var timeout: TimeInterval?
     private let now: () -> Date
 
@@ -17,8 +17,8 @@ final class POSAutoLockActivityController {
          paymentStateProvider: @escaping () -> PointOfSalePaymentState,
          timeout: TimeInterval?,
          now: @escaping () -> Date = Date.init,
-         isPaymentUnresolved: @escaping () -> Bool = { false }) {
-        self.isPaymentUnresolved = isPaymentUnresolved
+         isPaymentPending: @escaping () -> Bool) {
+        self.isPaymentPending = isPaymentPending
         self.session = session
         self.paymentStateProvider = paymentStateProvider
         self.timeout = timeout
@@ -52,7 +52,7 @@ final class POSAutoLockActivityController {
     func handlePaymentStateChange(from oldState: PointOfSalePaymentState,
                                   to newState: PointOfSalePaymentState,
                                   locksAfterSale: Bool) {
-        guard !newState.isAutoLockSuppressing, !isPaymentUnresolved() else {
+        guard !newState.isAutoLockSuppressing, !isPaymentPending() else {
             stop()
             return
         }
@@ -73,7 +73,7 @@ final class POSAutoLockActivityController {
             stop()
             return
         }
-        if paymentStateProvider().isAutoLockSuppressing || isPaymentUnresolved() {
+        if paymentStateProvider().isAutoLockSuppressing || isPaymentPending() {
             stop()
             return
         }
@@ -93,7 +93,7 @@ private extension POSAutoLockActivityController {
 
     func restartTimer() {
         timer?.invalidate()
-        guard let timeout, !isPaymentUnresolved(), !paymentStateProvider().isAutoLockSuppressing else {
+        guard let timeout, !isPaymentPending(), !paymentStateProvider().isAutoLockSuppressing else {
             timer = nil
             return
         }

@@ -226,11 +226,12 @@ public struct PointOfSaleEntryPointView: View {
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
             // Session initialization persists lock state, so it must run once, before content is exposed.
+            // The session outlives this callback and the model retains the session.
             weak var paymentModel: POSPaymentModel?
             let session: POSAccessSession
             do {
                 session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
-                                                                 isPaymentUnresolved: { cardPresentPaymentService.paymentSessionState.isPending },
+                                                                 isPaymentPending: { cardPresentPaymentService.paymentSessionState.isPending },
                                                                  onLock: { paymentModel?.cancelPaymentForLock() },
                                                                  shouldCreate: { posModel == nil })
             } catch {
@@ -313,7 +314,7 @@ public struct PointOfSaleEntryPointView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
             guard lockSettings.preferences.locksInBackground, accessSession.isPINProtectionEnabled else { return }
-            guard accessSession.currentStaff != nil || posModel?.paymentModel.isCardPaymentUnresolved == true else { return }
+            guard accessSession.currentStaff != nil || posModel?.paymentModel.isCardPaymentPending == true else { return }
             accessSession.lock()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in

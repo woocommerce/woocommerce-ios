@@ -9,7 +9,7 @@ import Yosemite
 struct ProductFormTableViewDataSourceTests {
     @Test func test_status_row_when_switch_tapped_then_delivers_status_change_synchronously() throws {
         // Given
-        let row = ProductFormSection.SettingsRow.status(viewModel: .init(viewModel: .init(icon: UIImage(),
+        let row = ProductFormSection.SettingsRow.status(viewModel: .init(viewModel: .init(icon: .visibility,
                                                                                        title: "Status",
                                                                                        details: "Published"),
                                                                         isSwitchOn: false,
@@ -40,7 +40,7 @@ struct ProductFormTableViewDataSourceTests {
 
     @Test func test_reviews_row_when_requested_through_data_source_then_loads_review_cell() {
         // Given
-        let row = ProductFormSection.SettingsRow.reviews(viewModel: .init(icon: UIImage(), title: "Reviews", details: "3 reviews"),
+        let row = ProductFormSection.SettingsRow.reviews(viewModel: .init(icon: .reviews, title: "Reviews", details: "3 reviews"),
                                                         ratingCount: 3,
                                                         averageRating: "4.5")
         let dataSource = makeDataSource(sections: [.settings(rows: [row])])

@@ -1,4 +1,3 @@
-import UIKit
 import Yosemite
 
 enum ProductFormSection: Equatable {
@@ -53,21 +52,48 @@ enum ProductFormSection: Equatable {
         case noVariationsWarning(viewModel: WarningViewModel)
         case quantityRules(viewModel: ViewModel)
 
+        enum Icon: Equatable {
+            case add
+            case calendarClock
+            case categories
+            case cloud
+            case customFields
+            case customize
+            case hourglass
+            case information
+            case inventory
+            case link
+            case linkedProducts
+            case price
+            case product
+            case reviews
+            case shipping
+            case shortDescription
+            case tags
+            case variations
+            case visibility
+            case widgets
+        }
+
+        enum Tint: Equatable {
+            case warning
+        }
+
         struct ViewModel {
-            let icon: UIImage
+            let icon: Icon
             let title: String?
             let details: String?
-            /// If not nil, the color is applied to icon and text labels.
-            let tintColor: UIColor?
+            /// If not nil, the tint is applied to the icon and text labels.
+            let tint: Tint?
             let numberOfLinesForDetails: Int
             let isActionable: Bool
             let hideSeparator: Bool
             let detailsAccessibilityIdentifier: String?
 
-            init(icon: UIImage,
+            init(icon: Icon,
                  title: String?,
                  details: String?,
-                 tintColor: UIColor? = nil,
+                 tint: Tint? = nil,
                  numberOfLinesForDetails: Int = 0,
                  isActionable: Bool = true,
                  hideSeparator: Bool = false,
@@ -75,7 +101,7 @@ enum ProductFormSection: Equatable {
                 self.icon = icon
                 self.title = title
                 self.details = details
-                self.tintColor = tintColor
+                self.tint = tint
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
                 self.hideSeparator = hideSeparator
@@ -100,7 +126,7 @@ enum ProductFormSection: Equatable {
 
         /// View model for warning UI
         struct WarningViewModel: Equatable {
-            let icon: UIImage
+            let icon: Icon
             let title: String?
             let isActionable: Bool
         }

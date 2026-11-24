@@ -110,7 +110,7 @@ private struct POSPrinterSetupContent: View {
         switch controller.discoveryState {
         case .idle:
             messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
-                           title: Localization.pairTitle,
+                           title: pairTitle,
                            message: pairMessage)
         case .searching:
             progressContent(message: Localization.searching)
@@ -134,6 +134,15 @@ private struct POSPrinterSetupContent: View {
             messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
                            message: Localization.errorMessage)
+        }
+    }
+
+    private var pairTitle: String {
+        switch controller.bluetoothAuthorization {
+        case .denied:
+            return Localization.enableBluetoothTitle
+        case .notDetermined, .allowed:
+            return Localization.pairTitle
         }
     }
 
@@ -246,6 +255,12 @@ private extension POSPrinterSetupContent {
             "pos.printerSetup.pair.title",
             value: "Pair your printer",
             comment: "Title for the printer pairing step in POS settings.")
+
+        static let enableBluetoothTitle = NSLocalizedString(
+            "pos.printerSetup.pair.enableBluetoothTitle",
+            value: "Turn on Bluetooth access",
+            comment: "Title for the receipt printer pairing step in POS settings when the app's Bluetooth "
+                + "permission is disabled.")
 
         static let pairInstruction = NSLocalizedString(
             "pos.printerSetup.pair.pairInSettingsInstruction",

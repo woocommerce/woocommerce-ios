@@ -105,8 +105,6 @@ extension View {
 // MARK: - Autofocus
 
 extension View {
-    /// Focuses the field once per appearance. On phone it focuses as soon as the field is in a window, so the keyboard
-    /// rises together with the presentation slide; the delayed focus is only a fallback there.
     func posAutofocus(_ isFocused: FocusState<Bool>.Binding) -> some View {
         modifier(POSAutofocusModifier(isFocused: isFocused))
     }

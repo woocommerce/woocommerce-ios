@@ -20,9 +20,6 @@ public final class TabNavComponent: ScreenObject {
         $0.buttons["tab-bar-menu-item"]
     }
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
-    private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
-    private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
-    private var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
     private var posTabButton: XCUIElement { posTabButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
@@ -42,13 +39,13 @@ public final class TabNavComponent: ScreenObject {
     }
     @discardableResult
     public func goToOrdersScreen() throws -> OrdersScreen {
-        try selectOrdersTab()
+        try selectTab(ordersTabButtonGetter, named: "Orders")
         return try OrdersScreen(app: app)
     }
     @discardableResult
     public func goToProductsScreen() throws -> ProductsScreen {
-        productsTabButton.tap()
-        return try ProductsScreen()
+        try selectTab(productsTabButtonGetter, named: "Products")
+        return try ProductsScreen(app: app)
     }
     public func goToPOSScreen() throws -> POSScreen {
         posTabButton.waitAndTap()
@@ -61,8 +58,8 @@ public final class TabNavComponent: ScreenObject {
     }
     @discardableResult
     public func goToMenuScreen() throws -> MenuScreen {
-        menuTabButton.tap()
-        return try MenuScreen()
+        try selectTab(menuTabButtonGetter, named: "Menu")
+        return try MenuScreen(app: app)
     }
     static func isLoaded() -> Bool {
         (try? TabNavComponent().isLoaded) ?? false
@@ -75,22 +72,22 @@ public final class TabNavComponent: ScreenObject {
 }
 
 private extension TabNavComponent {
-    func selectOrdersTab(maxAttempts: Int = 3) throws {
+    func selectTab(_ tabButtonGetter: (XCUIApplication) -> XCUIElement, named name: String, maxAttempts: Int = 3) throws {
         for _ in 0..<maxAttempts {
-            let ordersTabButton = ordersTabButtonGetter(app)
-            guard ordersTabButton.waitForIsHittable(timeout: 5) else {
+            let tabButton = tabButtonGetter(app)
+            guard tabButton.waitForIsHittable(timeout: 5) else {
                 continue
             }
-            ordersTabButton.tap()
-            if ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed {
+            tabButton.tap()
+            if tabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed {
                 return
             }
         }
 
-        throw TabNavigationError.ordersTabSelectionTimedOut
+        throw TabNavigationError.selectionTimedOut(tab: name)
     }
 
     enum TabNavigationError: Error {
-        case ordersTabSelectionTimedOut
+        case selectionTimedOut(tab: String)
     }
 }

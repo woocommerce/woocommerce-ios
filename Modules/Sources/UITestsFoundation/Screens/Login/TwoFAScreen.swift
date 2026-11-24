@@ -36,9 +36,6 @@ public final class TwoFAScreen {
     public func enterValidTwoFACode() throws -> MyStoreScreen {
         try proceedWith(twoFACode: "123456")
 
-        // The notification prompt can block store queries while the app finishes logging in.
-        app.dismissNotificationsPermissionPromptIfNeeded(timeout: 10)
-
         let myStoreTitle = app.staticTexts["my-store-title"]
         guard app.dismissSavePasswordPromptIfNeeded(timeout: 30,
                                                     until: myStoreTitle,
@@ -50,16 +47,16 @@ public final class TwoFAScreen {
     }
 
     public func proceedWith(twoFACode: String) throws {
-        enterTwoFACode(twoFACode)
+        try enterTwoFACode(twoFACode)
         try submitTwoFACode()
     }
 
-    private func enterTwoFACode(_ twoFACode: String) {
-        app.dismissSavePasswordPromptIfNeeded(timeout: 2)
+    private func enterTwoFACode(_ twoFACode: String) throws {
+        try dismissSavePasswordPrompt()
         XCTAssertTrue(twoFAField.waitForExistence(timeout: 10), "2FA field should be visible before typing.")
 
         focusTwoFAFieldIfNeeded()
-        enterTwoFACodeUsingFocusedField(twoFACode)
+        try enterTwoFACodeUsingFocusedField(twoFACode)
     }
 
     private func focusTwoFAFieldIfNeeded() {
@@ -70,13 +67,13 @@ public final class TwoFAScreen {
         }
     }
 
-    private func enterTwoFACodeUsingFocusedField(_ twoFACode: String) {
+    private func enterTwoFACodeUsingFocusedField(_ twoFACode: String) throws {
         for (index, digit) in twoFACode.enumerated() {
             let expectedCode = String(twoFACode.prefix(index + 1))
             app.typeText(String(digit))
             guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
                 // A delayed system prompt can interrupt text entry after the 2FA screen appeared.
-                app.dismissSavePasswordPromptIfNeeded(timeout: 2)
+                try dismissSavePasswordPrompt()
                 if waitForTwoFACode(expectedCode, timeout: Constants.promptRecoveryWaitTimeout) {
                     continue
                 }
@@ -105,10 +102,14 @@ public final class TwoFAScreen {
         return twoFAField.value as? String == expectedCode
     }
 
-    private func submitTwoFACode() throws {
-        guard app.dismissSavePasswordPromptIfNeeded(timeout: 5) else {
+    private func dismissSavePasswordPrompt() throws {
+        guard app.dismissSavePasswordPromptIfNeeded() else {
             throw TwoFAScreenError.timedOut
         }
+    }
+
+    private func submitTwoFACode() throws {
+        try dismissSavePasswordPrompt()
 
         guard continueButton.waitForExistence(timeout: 5),
               continueButton.isEnabled,

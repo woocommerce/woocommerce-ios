@@ -14,8 +14,7 @@ steps:
   #################
   - label: ":pipeline: Build"
     key: build
-    # Temporary: drop RBENV_VERSION once .ruby-version is 3.4.13 (AINFRA-3878); the Linux agents lack it until AINFRA-3889/3890/3891.
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/build-for-testing.sh
+    command: .buildkite/commands/build-for-testing.sh
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
@@ -23,7 +22,7 @@ steps:
 
   - label: ":warning: Build Warning Baseline"
     key: build-warning-baseline
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/build-warning-baseline.sh
+    command: .buildkite/commands/build-warning-baseline.sh
     if: build.pull_request.id != null
     # Advisory-only: if the baseline can't be produced, the comparison step
     # reports it as unavailable instead of the PR build going red.
@@ -32,7 +31,7 @@ steps:
 
   - label: ":warning: Build Warning Count"
     key: build-warning-count
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/comment-build-warning-increase.sh
+    command: .buildkite/commands/comment-build-warning-increase.sh
     depends_on:
       - build
       - build-warning-baseline
@@ -55,7 +54,7 @@ steps:
   - label: ":swift: Strict Concurrency Baseline Guard"
     key: strict_concurrency
     soft_fail: true
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/strict-concurrency-guard.sh
+    command: .buildkite/commands/strict-concurrency-guard.sh
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - strict-concurrency-current.json
@@ -78,7 +77,7 @@ steps:
         key: prototype_build_triggered
       - label: ":firebase: Prototype Build"
         depends_on: prototype_build_triggered
-        command: RBENV_VERSION=3.4.13 .buildkite/commands/prototype-build.sh
+        command: .buildkite/commands/prototype-build.sh
         plugins: [$CI_TOOLKIT]
 
   #################
@@ -86,7 +85,7 @@ steps:
   #################
   - label: ":microscope: Unit Tests"
     key: unit-tests
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/run-unit-tests.sh
+    command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
     plugins:
       - $CI_TOOLKIT
@@ -106,7 +105,7 @@ steps:
   #################
   - label: ":ruby: Ruby Automation Tests"
     key: ruby-automation-tests
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/run-ruby-automation-tests.sh
+    command: .buildkite/commands/run-ruby-automation-tests.sh
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
@@ -152,7 +151,7 @@ steps:
               context: Lint Translations
 
       - label: ":sleuth_or_spy: Lint Localized Strings Format"
-        command: RBENV_VERSION=3.4.13 .buildkite/commands/lint-localized-strings-format.sh
+        command: .buildkite/commands/lint-localized-strings-format.sh
         plugins: [$CI_TOOLKIT]
         notify:
           - github_commit_status:
@@ -171,7 +170,7 @@ steps:
   #################
   - label: ":microscope: UI Tests (iPhone)"
     key: ui-tests-iphone
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
@@ -191,7 +190,7 @@ steps:
 
   - label: ":microscope: UI Tests (iPad)"
     key: ui-tests-ipad
-    command: RBENV_VERSION=3.4.13 .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")

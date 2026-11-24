@@ -13,6 +13,106 @@ import enum WooFoundationCore.WooAnalyticsStat
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
+    @Test @MainActor
+    func test_manual_lock_when_menu_action_was_created_before_payment_then_rechecks_owner() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let staleMenuAction = { sut.lockManually(session: session) }
+        #expect(!sut.isLockSuppressed)
+
+        // When
+        service.paymentSessionState = .active
+        staleMenuAction()
+        service.paymentSessionState = .unresolved
+        staleMenuAction()
+
+        // Then
+        #expect(session.lockCallCount == 0)
+        #expect(sut.isLockSuppressed)
+    }
+
+    @Test @MainActor
+    func test_reset_when_payment_is_unresolved_then_preserves_sale_and_blocks_reentry() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        paymentState: .init(card: .processingPayment, cash: .idle))
+        service.paymentSessionState = .unresolved
+
+        // When
+        sut.reset()
+        await sut.startPayment()
+        await sut.startPaymentWithMethod(.tapToPay)
+        await sut.selectCardPaymentRail(.tapToPay)
+
+        // Then
+        #expect(sut.paymentState.card == .processingPayment)
+        #expect(service.cancelPaymentCalled)
+        #expect(!service.collectPaymentWasCalled)
+        #expect(service.connectReaderCallCount == 0)
+        #expect(sut.isLockSuppressed)
+    }
+
+    @Test @MainActor
+    func test_manual_lock_when_payment_resolution_is_confirmed_then_allows_lock() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        service.paymentSessionState = .unresolved
+
+        // When
+        service.paymentSessionState = .idle
+        sut.lockManually(session: session)
+
+        // Then
+        #expect(session.lockCallCount == 1)
+    }
+
+    @Test @MainActor
+    func test_collect_when_operator_changes_during_order_preparation_then_does_not_charge() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let provider = MockPOSPaymentOrderProvider()
+        provider.onProvideOrder = {
+            session.lock()
+            try await session.signIn(withPIN: "1234")
+            return POSPaymentOrder(order: .fake(), formattedTotal: "$10", totalDecimal: 10)
+        }
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, accessSession: session)
+        await updateReaderConnectionStatus(observedBy: sut) {
+            service.connectedReader = .init(name: "Reader", batteryLevel: 1)
+        }
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(provider.provideOrderCallCount == 1)
+        #expect(!service.collectPaymentWasCalled)
+    }
+
+    @Test @MainActor
+    func test_owner_confirms_cancellation_when_reader_ui_is_stale_then_clears_reader_state() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        paymentState: .init(card: .acceptingCard, cash: .idle))
+        service.paymentSessionState = .active
+        service.paymentSessionState = .cancelling
+        #expect(sut.isLockSuppressed)
+
+        // When
+        service.paymentSessionState = .idle
+
+        // Then
+        #expect(sut.paymentState.card == .idle)
+        #expect(!sut.isLockSuppressed)
+    }
+
     // MARK: - Payment starts that end without a payment
 
     @Test @MainActor
@@ -3654,6 +3754,7 @@ struct POSPaymentModelTests {
 private func makePaymentController(
     cardPresentPaymentService: CardPresentPaymentFacade? = nil,
     orderProvider: POSPaymentOrderProviding? = nil,
+    accessSession: (any POSAccessSession)? = nil,
     cashPaymentHandler: POSCashPaymentHandling? = nil,
     scanToPayHandler: POSScanToPayHandling? = nil,
     scanToPayVerifier: POSScanToPayVerifying? = nil,
@@ -3675,6 +3776,7 @@ private func makePaymentController(
     return POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
         orderProvider: orderProvider ?? MockPOSPaymentOrderProvider(),
+        accessSession: accessSession,
         cashPaymentHandler: cashPaymentHandler ?? MockPOSCashPaymentHandler(),
         scanToPayHandler: scanToPayHandler ?? MockPOSScanToPayHandler(),
         scanToPayVerifier: scanToPayVerifier,

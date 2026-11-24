@@ -28,6 +28,9 @@ struct POSAutoLockActivityTracker: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .onReceive(paymentModel.paymentSessionStatePublisher) { state in
+                controller?.handlePaymentSessionStateChange(state)
+            }
             .onReceive(paymentModel.paymentStateChanges) { change in
                 controller?.handlePaymentStateChange(from: change.oldState, to: change.newState,
                                                      locksAfterSale: settings.preferences.locksAfterSale)
@@ -53,7 +56,8 @@ struct POSAutoLockActivityTracker: ViewModifier {
                     controller = POSAutoLockActivityController(
                         session: session,
                         paymentStateProvider: { paymentModel.paymentState },
-                        timeout: settings.preferences.inactivityTimeout.interval
+                        timeout: settings.preferences.inactivityTimeout.interval,
+                        isPaymentUnresolved: { paymentModel.isCardPaymentUnresolved }
                     )
                 }
                 controller?.noteActivity()

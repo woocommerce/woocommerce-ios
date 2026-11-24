@@ -77,24 +77,64 @@ final class POSPaymentModel {
     /// Pay…" indicator each time.
     private(set) var lastConnectedMethod: CardReaderConnectionMethod?
 
-    /// True while *any* collection session is active (TTP or BT). Drives
-    /// TotalsView's `isStartingPayment` reset — when this transitions back
-    /// to false the merchant's flow has wrapped up (success, error, cancel,
-    /// BT scan dismissed, etc.) and the hero CTA + bottom strip can become
-    /// tappable again.
     var isPaymentSessionActive: Bool {
-        currentPaymentMethod != nil
+        currentPaymentMethod != nil || isCardPaymentUnresolved
     }
 
-    /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
-    /// has not reported its first payment state yet. The wait for a Bluetooth reader that starts on its own
-    /// when checkout opens does not count, so the other payment methods stay available during it.
+    private var cardPaymentSessionState: CardPresentPaymentSessionState = .idle
+    private func canProcessPayment(in scope: POSPINSessionTokens.Token?) -> Bool {
+        guard let accessSession else { return true }
+        return accessSession.accessScope == scope && !accessSession.isLocked && accessSession.allows(.processSales)
+    }
+
+    var isCardPaymentUnresolved: Bool { cardPaymentSessionState.isPending }
+    var isLockSuppressed: Bool {
+        isCardPaymentStartPending || paymentState.isAutoLockSuppressing ||
+        (currentPaymentMethod != nil && paymentState.card == .idle)
+    }
+    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
+        cardPresentPaymentService.paymentSessionStatePublisher
+    }
+
+    private func handlePaymentSessionState(_ state: CardPresentPaymentSessionState) {
+        let wasCancelling = cardPaymentSessionState == .cancelling || cardPaymentSessionState == .unresolved
+        cardPaymentSessionState = state
+        if wasCancelling, !state.isPending {
+            currentPaymentMethod = nil
+            if !paymentState.isSuccess { paymentState.card = .idle }
+            cardPresentPaymentInlineMessage = nil
+        }
+    }
+
+    func lockManually(session: any POSAccessSession) {
+        guard !isLockSuppressed else { return }
+        resetCardReaderObservation()
+        session.lock()
+    }
+
+    func cancelPaymentForLock() {
+        resetCardReaderObservation()
+        isAwaitingExplicitPaymentStart = true
+        cardPaymentCancelTask = Task { @MainActor in
+            do {
+                try await cardPresentPaymentService.cancelPayment()
+                guard !isCardPaymentUnresolved else { return }
+                currentPaymentMethod = nil
+                if !paymentState.isSuccess { paymentState.card = .idle }
+            } catch {
+                DDLogError("Failed to cancel locked POS payment: \(error)")
+            }
+        }
+    }
+
+    /// Pending SDK outcomes block another start even after reader preparation or payment UI has cleared.
     var isCardPaymentStartPending: Bool {
-        connectCardReaderTask != nil || paymentStartConnectTask != nil ||
+        isCardPaymentUnresolved || connectCardReaderTask != nil || paymentStartConnectTask != nil ||
         (currentPaymentMethod == .tapToPay && paymentState.card == .idle)
     }
 
     // MARK: - Dependencies
+    private let accessSession: (any POSAccessSession)?
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding
     private let cashPaymentHandler: POSCashPaymentHandling
@@ -175,6 +215,7 @@ final class POSPaymentModel {
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
+         accessSession: (any POSAccessSession)? = nil,
          cashPaymentHandler: POSCashPaymentHandling,
          scanToPayHandler: POSScanToPayHandling,
          scanToPayVerifier: POSScanToPayVerifying? = nil,
@@ -195,6 +236,7 @@ final class POSPaymentModel {
         self.paymentStateChanges = paymentStateChangesSubject.eraseToAnyPublisher()
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
+        self.accessSession = accessSession
         self.cashPaymentHandler = cashPaymentHandler
         self.scanToPayHandler = scanToPayHandler
         self.scanToPayVerifier = scanToPayVerifier
@@ -215,6 +257,9 @@ final class POSPaymentModel {
         publishCardReaderConnectionStatus()
         publishCardReaderUpdateState()
         subscribeToAlwaysOnPaymentEvents()
+        cardPresentPaymentService.paymentSessionStatePublisher
+            .sink { [weak self] state in self?.handlePaymentSessionState(state) }
+            .store(in: &cancellables)
     }
 }
 
@@ -238,6 +283,7 @@ extension POSPaymentModel {
     /// behind an explicit `startCardPayment(with: .tapToPay)` from the hero CTA so
     /// the merchant's selection drives the actual flow — no auto-collect to race.
     func startPayment() async {
+        guard !isCardPaymentUnresolved, canProcessPayment(in: accessSession?.accessScope) else { return }
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
         subscribeToPaymentSessionEvents()
@@ -301,6 +347,11 @@ extension POSPaymentModel {
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
+        let scope = accessSession?.accessScope
+        guard canProcessPayment(in: scope), !paymentState.isSuccess else { return }
+        if isCardPaymentUnresolved {
+            guard cardPaymentSessionState == .active, let active = currentPaymentMethod, active != method else { return }
+        }
         logInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), " +
                 "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
@@ -322,10 +373,6 @@ extension POSPaymentModel {
             return
         }
 
-        if isCompactCardPaymentSelectionEnabled {
-            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
-        }
-
         // Method-switch path: the merchant is switching from one active
         // method to another (e.g. picking Tap to Pay from the Other Payment
         // Methods sheet while a BT reader is mid-collection). Cancel the
@@ -338,6 +385,7 @@ extension POSPaymentModel {
                 try await cardPresentPaymentService.cancelPayment()
             } catch {
                 DDLogError("🃏 [CardPayment] cancelPayment on method switch failed: \(error)")
+                return
             }
             currentPaymentMethod = nil
         }
@@ -354,6 +402,11 @@ extension POSPaymentModel {
         if method == .bluetooth, let task = tapToPayConnectTask {
             DDLogInfo("🃏 [CardPayment] BT pick waiting for in-flight TTP pre-connect to finish")
             _ = await task.value
+        }
+
+        guard canProcessPayment(in: scope), !isCardPaymentUnresolved, !paymentState.isSuccess else { return }
+        if isCompactCardPaymentSelectionEnabled {
+            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
 
         if method == .tapToPay {
@@ -396,6 +449,7 @@ extension POSPaymentModel {
             }
         }
 
+        guard canProcessPayment(in: scope) else { return }
         if case .disconnected = cardReaderConnectionStatus {
             await startPaymentFlow(using: method)
 
@@ -411,6 +465,11 @@ extension POSPaymentModel {
     }
 
     func selectCardPaymentRail(_ rail: POSCardPaymentRail) async {
+        let scope = accessSession?.accessScope
+        guard canProcessPayment(in: scope), !paymentState.isSuccess else { return }
+        if isCardPaymentUnresolved {
+            guard cardPaymentSessionState == .active, let active = currentPaymentMethod, active != rail.connectionMethod else { return }
+        }
         guard isCompactCardPaymentSelectionEnabled else { return }
         guard selectedCardPaymentRail != rail else { return }
 
@@ -419,10 +478,12 @@ extension POSPaymentModel {
                 try await cardPresentPaymentService.cancelPayment()
             } catch {
                 DDLogError("🃏 [CardPayment] cancelPayment on rail switch failed: \(error)")
+                return
             }
             currentPaymentMethod = nil
         }
 
+        guard canProcessPayment(in: scope), !isCardPaymentUnresolved, !paymentState.isSuccess else { return }
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
         startPaymentGeneration += 1
@@ -577,14 +638,16 @@ extension POSPaymentModel {
     /// The generation check after the cancel guards against a newer
     /// `startPayment()` call that may have started during the await.
     private func cancelThenCollectCardPayment(generation: Int, using method: CardReaderConnectionMethod) async {
+        let scope = accessSession?.accessScope
         do {
             try await cardPresentPaymentService.cancelPayment()
         } catch {
             DDLogError("🃏 [CardPayment] cancelPayment before collect failed: \(error)")
+            return
         }
         DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
-        guard startPaymentGeneration == generation else {
+        guard startPaymentGeneration == generation, canProcessPayment(in: scope) else {
             DDLogInfo("🃏 [CardPayment] startPayment superseded by a newer call, bailing out")
             return
         }
@@ -619,6 +682,7 @@ extension POSPaymentModel {
     private func collectCardPayment(using method: CardReaderConnectionMethod) async {
         DDLogInfo("🃏 [CardPayment] collectCardPayment(\(method)) called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         let generation = startPaymentGeneration
+        let scope = accessSession?.accessScope
         defer {
             // A collect that changed nothing, e.g. for a zero total, has not started a payment.
             if startPaymentGeneration == generation {
@@ -627,6 +691,7 @@ extension POSPaymentModel {
         }
         do {
             let paymentOrder = try await orderProvider.provideOrder()
+            guard startPaymentGeneration == generation, !isCardPaymentUnresolved, canProcessPayment(in: scope) else { return }
             currentOrder = paymentOrder.order
             formattedOrderTotalPrice = paymentOrder.formattedTotal
             guard paymentOrder.totalDecimal > 0 else { return }
@@ -639,8 +704,17 @@ extension POSPaymentModel {
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
         let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
-        if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
-            cardPaymentDetails = (order.orderID, cardDetails)
+        if case .success(let transaction) = result {
+            paymentState.cash = .idle
+            paymentState.scanToPay = .idle
+            paymentState.markAsPaid = .idle
+            stopScanToPayPolling()
+            if let cardDetails = transaction.cardDetails { cardPaymentDetails = (order.orderID, cardDetails) }
+            paymentState.card = .cardPaymentSuccessful
+        } else {
+            currentPaymentMethod = nil
+            paymentState.card = .idle
+            cardPresentPaymentInlineMessage = nil
         }
     }
 
@@ -652,6 +726,7 @@ extension POSPaymentModel {
     }
 
     func cancelThenCollectPayment() async {
+        let scope = accessSession?.accessScope
         if case .reconnecting = cardReaderConnectionStatus {
             await cardPresentPaymentService.cancelReconnection()
         }
@@ -660,11 +735,10 @@ extension POSPaymentModel {
             try await cardPresentPaymentService.cancelPayment()
         } catch {
             DDLogError("🃏 [CardPayment] cancelPayment before retry-collect failed: \(error)")
-        }
-
-        guard case .connected = cardReaderConnectionStatus else {
             return
         }
+
+        guard case .connected = cardReaderConnectionStatus, canProcessPayment(in: scope) else { return }
         await collectCardPayment(using: activeCardPaymentConnectionMethod)
     }
 
@@ -785,6 +859,9 @@ extension POSPaymentModel {
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {
+        let scope = accessSession?.accessScope
+        await cardPaymentCancelTask?.value
+        guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
         let order: Order
         if let currentOrder {
             order = currentOrder
@@ -793,6 +870,7 @@ extension POSPaymentModel {
             order = paymentOrder.order
             currentOrder = order
         }
+        guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
         try? await postPaymentStep?()
         cashPaymentSuccess(order: order)
@@ -839,6 +917,8 @@ extension POSPaymentModel {
         }
 
         do {
+            await cardPaymentCancelTask?.value
+            guard !isCardPaymentUnresolved else { throw CancellationError() }
             // Promotes the autoDraft to `.pending` so the WC backend populates `payment_url`.
             // Mirrors what the order-creation flow already does at the equivalent step.
             let paymentOrder = try await orderProvider.provideOrderForScanToPay()
@@ -884,10 +964,14 @@ extension POSPaymentModel {
     /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
     /// the merchant verified the payment out-of-band.
     func completeScanToPayPayment() async throws {
+        let scope = accessSession?.accessScope
+        await cardPaymentCancelTask?.value
+        guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
         if currentOrder == nil {
             currentOrder = try await orderProvider.provideOrder().order
         }
         guard let order = currentOrder else { return }
+        guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
         try await scanToPayHandler.completeScanToPayPayment()
         try? await postPaymentStep?()
         scanToPayPaymentSuccess(order: order)
@@ -1033,6 +1117,9 @@ extension POSPaymentModel {
     ///   confirmation view (e.g. "Bank transfer from Maria"). Forwarded to the handler so it
     ///   can be attached to the order as a private order note for reconciliation context.
     func confirmMarkAsPaidPayment(note: String? = nil) async throws {
+        let scope = accessSession?.accessScope
+        await cardPaymentCancelTask?.value
+        guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
         do {
             let order: Order
             if let currentOrder {
@@ -1042,6 +1129,7 @@ extension POSPaymentModel {
                 order = paymentOrder.order
                 currentOrder = order
             }
+            guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }
             analytics.track(.pointOfSaleMarkAsPaidConfirmed)
             paymentState.markAsPaid = .processing
             try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
@@ -1130,6 +1218,11 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
+        guard !isCardPaymentUnresolved else {
+            resetCardReaderObservation()
+            cardPresentPaymentService.cancelPayment()
+            return
+        }
         scanToPayGeneration = UUID()
         cancelConnectCardReaderTask()
         cancelTapToPayConnectTask()
@@ -1404,23 +1497,6 @@ private extension POSPaymentModel {
             })
             .store(in: &paymentSessionCancellables)
 
-        // TTP cancel-on-reader → drop back to the idle hero. Synchronously closes
-        // the gate, resets `paymentState.card` to `.idle`, and clears the inline
-        // message in the same run loop the event arrives on, so a stray
-        // `.tapSwipeOrInsertCard` arriving immediately after (or the previous
-        // one's cached state) can't keep the "Tap card" message visible. The
-        // actual Stripe cancel runs in a fire-and-forget Task — it's async, but
-        // we don't need to wait for it before flipping back to the hero.
-        //
-        // ⚠️ SUBSCRIPTION ORDER IS LOAD-BEARING — DO NOT REORDER ⚠️
-        // This sink MUST be subscribed before the "Payment events -> card payment state"
-        // sink below. Combine delivers to subscribers in subscription order. When a
-        // `cancelledOnReader` event arrives, both sinks receive it synchronously in the
-        // same run loop. The gate (`isAwaitingExplicitPaymentStart`) must flip to `true`
-        // HERE, before the card-state sink evaluates `shouldPropagatePaymentEvent` — so
-        // that sink short-circuits and does NOT overwrite `paymentState.card`. Reversing
-        // the order would let the card-state sink run first, advancing state to e.g.
-        // `.acceptingCard` for a frame before this sink resets it to `.idle`.
         cardPresentPaymentService.paymentEventPublisher
             .filter { event in
                 if case .show(.cancelledOnReader) = event { return true }
@@ -1429,12 +1505,14 @@ private extension POSPaymentModel {
             .sink { [weak self] _ in
                 guard let self, self.currentPaymentMethod == .tapToPay else { return }
                 self.isAwaitingExplicitPaymentStart = true
-                self.currentPaymentMethod = nil
-                self.paymentState.card = .idle
-                self.cardPresentPaymentInlineMessage = nil
                 Task { @MainActor [weak self] in
+                    guard let self else { return }
                     do {
-                        try await self?.cardPresentPaymentService.cancelPayment()
+                        try await self.cardPresentPaymentService.cancelPayment()
+                        guard !self.isCardPaymentUnresolved else { return }
+                        self.currentPaymentMethod = nil
+                        self.paymentState.card = .idle
+                        self.cardPresentPaymentInlineMessage = nil
                     } catch {
                         DDLogError("🃏 [CardPayment] cancelPayment on cancelledOnReader failed: \(error)")
                     }

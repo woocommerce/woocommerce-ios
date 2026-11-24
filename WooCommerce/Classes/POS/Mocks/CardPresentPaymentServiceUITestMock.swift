@@ -7,10 +7,16 @@ import Yosemite
 
 @MainActor
 final class CardPresentPaymentServiceUITestMock: CardPresentPaymentFacade {
+    @Published var paymentSessionState: CardPresentPaymentSessionState = .idle
+    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
+        $paymentSessionState.eraseToAnyPublisher()
+    }
+
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
     let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>
 
+    private var paymentAttemptID: UUID?
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
     private let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
 
@@ -31,6 +37,7 @@ final class CardPresentPaymentServiceUITestMock: CardPresentPaymentFacade {
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         try await Task.sleep(nanoseconds: 100_000_000)
+
         readerConnectionStatusSubject.send(.connected(Self.mockReader))
         return .connected(Self.mockReader)
     }
@@ -44,29 +51,40 @@ final class CardPresentPaymentServiceUITestMock: CardPresentPaymentFacade {
     }
 
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
+        guard paymentAttemptID == nil else { return .cancellation }
+        let attemptID = UUID()
+        paymentAttemptID = attemptID
+        paymentSessionState = .active
+        defer { if paymentAttemptID == attemptID { finishMockPayment() } }
+
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
         try await Task.sleep(nanoseconds: 100_000_000)
+        guard paymentAttemptID == attemptID else { return .cancellation }
 
         paymentEventSubject.send(.show(eventDetails: .preparingForPayment(cancelPayment: {})))
         try await Task.sleep(nanoseconds: 100_000_000)
+        guard paymentAttemptID == attemptID else { return .cancellation }
 
         let inputMethods: Yosemite.CardReaderInput = [.tap, .swipe, .insert]
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: inputMethods, cancelPayment: {})))
         try await Task.sleep(nanoseconds: 100_000_000)
+        guard paymentAttemptID == attemptID else { return .cancellation }
 
         paymentEventSubject.send(.show(eventDetails: .processing))
         try await Task.sleep(nanoseconds: 100_000_000)
+        guard paymentAttemptID == attemptID else { return .cancellation }
 
         paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         return .success(CardPresentPaymentTransaction())
     }
 
-    func cancelPayment() {
-        // No-op for UI tests.
-    }
+    func cancelPayment() { finishMockPayment() }
 
-    func cancelPayment() async throws {
-        // No-op for UI tests.
+    func cancelPayment() async throws { finishMockPayment() }
+
+    private func finishMockPayment() {
+        paymentAttemptID = nil
+        paymentSessionState = .idle
     }
 
     func cancelReconnection() async {

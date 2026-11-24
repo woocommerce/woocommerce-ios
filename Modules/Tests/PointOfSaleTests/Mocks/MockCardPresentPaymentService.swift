@@ -7,6 +7,11 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 
 @MainActor
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
+    @Published var paymentSessionState: CardPresentPaymentSessionState = .idle
+    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
+        $paymentSessionState.eraseToAnyPublisher()
+    }
+
     // MARK: - Variables for emitting events in unit tests
 
     @Published var paymentEvent: CardPresentPaymentEvent = .idle

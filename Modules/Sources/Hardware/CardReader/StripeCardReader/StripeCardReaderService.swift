@@ -362,7 +362,9 @@ extension StripeCardReaderService: CardReaderService {
             }.flatMap { intent in
                 self.collectPaymentMethod(intent: intent, paymentAttemptID: paymentAttemptID)
             }.flatMap { intent in
-                self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
+                self.prepareForPaymentConfirmation(intent: intent,
+                                                   paymentAttemptID: paymentAttemptID,
+                                                   beforePaymentConfirmation: beforePaymentConfirmation)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }
@@ -382,7 +384,9 @@ extension StripeCardReaderService: CardReaderService {
             let paymentAttemptID = paymentAttemptTracker.beginAttempt()
             return collectPaymentMethod(intent: activePaymentIntent, paymentAttemptID: paymentAttemptID)
                 .flatMap { intent in
-                    self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
+                    self.prepareForPaymentConfirmation(intent: intent,
+                                                       paymentAttemptID: paymentAttemptID,
+                                                       beforePaymentConfirmation: beforePaymentConfirmation)
                 }
                 .flatMap { intent in
                     self.processPayment(intent: intent)
@@ -470,55 +474,16 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            let paymentAttemptID = self.paymentAttemptTracker.cancelActiveAttempt()
-
-            guard let activePaymentIntent = self.activePaymentIntent else {
-                if paymentAttemptID != nil {
-                    // Intent creation is still in flight. The attempt is marked and its creation callback will cancel it.
-                    promise(.success(()))
-                } else {
-                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
-                }
-                return
+            if self.paymentAttemptTracker.activeAttemptID == nil, self.activePaymentIntent != nil {
+                _ = self.paymentAttemptTracker.beginAttempt()
             }
-
-            self.cancellationStartedInApp = true
-
-            let cancelPaymentIntent = { [weak self] in
-                Terminal.shared.cancelPaymentIntent(activePaymentIntent) { intent, error in
-                    if let error {
-                        let underlyingError = Self.logAndDecodeError(error)
-                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
-                    }
-
-                    if let _ = intent {
-                        self?.activePaymentIntent = nil
-                        promise(.success(()))
-                    }
-                    if let paymentAttemptID {
-                        self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
-                    }
-                    self?.cancellationStartedInApp = nil
-                }
+            guard let paymentAttemptID = self.paymentAttemptTracker.cancelActiveAttempt(completion: promise) else {
+                return promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
             }
-            guard let paymentCancellable = self.paymentCancellable,
-                  !paymentCancellable.completed else {
-                return cancelPaymentIntent()
+            // Without an intent, cancellation waits for creation to fail or for the created intent to be canceled.
+            if let intent = self.activePaymentIntent {
+                self.cancelPaymentIntent(intent: intent, paymentAttemptID: paymentAttemptID)
             }
-
-            paymentCancellable.cancel({ [weak self] error in
-                // If the action could not be canceled,
-                // e.g. it has already completed, the completion block will be called with an
-                // error. Otherwise, the completion block will be called with nil.
-                if let error {
-                    _ = Self.logAndDecodeError(error)
-                } else {
-                    self?.paymentCancellable = nil
-                }
-                // The collection command can complete while cancellation is being requested. Always follow up by
-                // canceling the PaymentIntent so a command that lost the race cannot leave Tap to Pay presented.
-                cancelPaymentIntent()
-            })
         }
     }
 
@@ -755,6 +720,42 @@ private extension StripeCardReaderService {
         connectedReadersSubject.value.first?.readerType.model
     }
 
+    func cancelPaymentIntent(intent: StripeTerminal.PaymentIntent, paymentAttemptID: UUID) {
+        guard let cancellationID = paymentAttemptTracker.beginCancellation(paymentAttemptID) else { return }
+        if paymentAttemptTracker.activeAttemptID == paymentAttemptID { cancellationStartedInApp = true }
+        let cancelIntent = { [self] in
+            Terminal.shared.cancelPaymentIntent(intent) { [self] canceledIntent, error in
+                let result: Result<Void, Error>
+                if let error {
+                    result = .failure(CardReaderServiceError.paymentCancellation(underlyingError: Self.logAndDecodeError(error)))
+                } else if canceledIntent?.status == .canceled {
+                    result = .success(())
+                } else {
+                    result = .failure(CardReaderServiceError.paymentCancellation())
+                }
+                paymentAttemptTracker.completeCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) {
+                    if case .success = result, activePaymentIntent?.stripeId == intent.stripeId {
+                        activePaymentIntent = nil
+                    }
+                    if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
+                        cancellationStartedInApp = nil
+                    }
+                }
+            }
+        }
+        guard paymentAttemptTracker.activeAttemptID == paymentAttemptID,
+              let paymentCancellable, !paymentCancellable.completed else { return cancelIntent() }
+        paymentCancellable.cancel { [self] error in
+            if let error {
+                _ = Self.logAndDecodeError(error)
+            } else {
+                self.paymentCancellable = nil
+            }
+            // Collection can finish before its cancellation callback. The intent must still be canceled.
+            cancelIntent()
+        }
+    }
+
     func createPaymentIntent(_ parameters: PaymentIntentParameters,
                              paymentAttemptID: UUID) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
@@ -767,6 +768,7 @@ private extension StripeCardReaderService {
 
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe(with: cardReaderMetadata) else {
+                self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
                 promise(.failure(CardReaderServiceError.intentCreation()))
                 return
             }
@@ -779,25 +781,21 @@ private extension StripeCardReaderService {
                     return
                 }
 
-                self?.activePaymentIntent = intent
-                let wasCanceled = self?.paymentAttemptTracker.isCanceled(paymentAttemptID) ?? false
-
-                if let intent {
-                    guard wasCanceled == false else {
-                        Terminal.shared.cancelPaymentIntent(intent) { [weak self] _, error in
-                            if let error {
-                                _ = Self.logAndDecodeError(error)
-                            } else {
-                                self?.activePaymentIntent = nil
-                            }
-                            self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
-                        }
-                        promise(.failure(CardReaderServiceError.paymentMethodCollection(
-                            underlyingError: .commandCancelled(from: .app))))
-                        return
-                    }
-                    promise(.success(intent))
+                guard let self, let intent else {
+                    self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
+                    return promise(.failure(CardReaderServiceError.intentCreation()))
                 }
+                let wasCanceled = self.paymentAttemptTracker.isCanceled(paymentAttemptID)
+                    || self.paymentAttemptTracker.activeAttemptID != paymentAttemptID
+                if self.paymentAttemptTracker.activeAttemptID == paymentAttemptID {
+                    self.activePaymentIntent = intent
+                }
+                guard !wasCanceled else {
+                    self.cancelPaymentIntent(intent: intent, paymentAttemptID: paymentAttemptID)
+                    return promise(.failure(CardReaderServiceError.paymentMethodCollection(
+                        underlyingError: .commandCancelled(from: .app))))
+                }
+                promise(.success(intent))
             }
         }
     }
@@ -810,9 +808,10 @@ private extension StripeCardReaderService {
                 return promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: .internalServiceError)))
             }
 
-            if let paymentAttemptID, self.paymentAttemptTracker.isCanceled(paymentAttemptID) {
-                return promise(.failure(CardReaderServiceError.paymentMethodCollection(
-                    underlyingError: .commandCancelled(from: .app))))
+            do {
+                try self.validatePaymentAttempt(paymentAttemptID)
+            } catch {
+                return promise(.failure(error))
             }
 
             /// Collect Payment method returns a cancellable
@@ -841,6 +840,12 @@ private extension StripeCardReaderService {
                 }
 
                 if let intent {
+                    if let paymentAttemptID,
+                       self?.paymentAttemptTracker.isCanceled(paymentAttemptID) == true
+                        || self?.paymentAttemptTracker.activeAttemptID != paymentAttemptID {
+                        return promise(.failure(CardReaderServiceError.paymentMethodCollection(
+                            underlyingError: .commandCancelled(from: .app))))
+                    }
                     self?.paymentCancellable = nil
                     self?.activePaymentIntent = intent
                     self?.sendReaderEvent(.cardDetailsCollected)
@@ -891,13 +896,25 @@ private extension StripeCardReaderService {
         }
     }
 
+    func validatePaymentAttempt(_ attemptID: UUID?) throws {
+        if let attemptID, paymentAttemptTracker.isCanceled(attemptID) || paymentAttemptTracker.activeAttemptID != attemptID {
+            throw CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .app))
+        }
+    }
+
     func prepareForPaymentConfirmation(
         intent: StripeTerminal.PaymentIntent,
+        paymentAttemptID: UUID? = nil,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
+        let paymentAttemptID = paymentAttemptID ?? paymentAttemptTracker.activeAttemptID
         do {
+            try validatePaymentAttempt(paymentAttemptID)
             return beforePaymentConfirmation(try Self.capturedPaymentIntent(from: intent))
-                .map { intent }
+                .tryMap { [self] in
+                    try validatePaymentAttempt(paymentAttemptID)
+                    return intent
+                }
                 .eraseToAnyPublisher()
         } catch {
             return Fail(error: error).eraseToAnyPublisher()

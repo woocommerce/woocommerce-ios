@@ -8,6 +8,11 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 
 @MainActor
 final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
+    @Published var paymentSessionState: CardPresentPaymentSessionState = .idle
+    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
+        $paymentSessionState.eraseToAnyPublisher()
+    }
+
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> = Just(.idle).eraseToAnyPublisher()
 
     @Published var readerConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected

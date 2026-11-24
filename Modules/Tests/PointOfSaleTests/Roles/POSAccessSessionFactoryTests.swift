@@ -48,6 +48,26 @@ struct POSAccessSessionFactoryTests {
         #expect(session.allows(.manageStoreSettings))
     }
 
+    @Test func test_make_when_flag_is_off_and_payment_is_unresolved_then_remains_unrestricted() async throws {
+        // Given
+        let flags = StubPOSFeatureFlagProviding(enabledFlags: [])
+        var lockCallbackCount = 0
+
+        // When
+        let session = try await POSAccessSessionFactory.make(siteID: 123, featureFlags: flags,
+                                                             isPaymentUnresolved: { true },
+                                                             onLock: { lockCallbackCount += 1 })
+        try await session.signIn(withPIN: "1234")
+        session.lock()
+
+        // Then
+        #expect(session is UnrestrictedPOSAccessSession)
+        #expect(!session.isLocked)
+        #expect(!session.isPINProtectionEnabled)
+        #expect(POSCapability.allCases.allSatisfy { session.allows($0) })
+        #expect(lockCallbackCount == 0)
+    }
+
     @Test func test_make_when_flag_is_on_and_no_pin_then_returns_current_unprotected_session() async throws {
         // Given
         let sut = makeSUT()
@@ -79,6 +99,64 @@ struct POSAccessSessionFactoryTests {
         #expect(second.currentStaff == POSLocalRole.cashier.staff)
         #expect(!second.allows(.manageStoreSettings))
         #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)) == false)
+    }
+
+    @Test func test_make_when_launch_lock_is_off_and_payment_is_unresolved_then_does_not_resume_retained_operator() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        try sut.store.setPIN("5678", for: .cashier)
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false)
+        try await first.signIn(withPIN: "5678")
+        first.endSession()
+
+        // When
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentUnresolved: { true })
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+        #expect(!second.allows(.processSales))
+        await #expect(throws: POSAuthError.unknown) { try await second.signIn(withPIN: "5678") }
+        #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)))
+    }
+
+    @Test func test_make_when_session_ends_with_unresolved_payment_then_does_not_retain_operator_after_resolution() async throws {
+        // Given
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        var isPaymentUnresolved = false
+        let first = try await makeReplacement(sut, locksWhenPOSOpens: false, isPaymentUnresolved: { isPaymentUnresolved })
+        try await first.signIn(withPIN: "1234")
+
+        // When
+        isPaymentUnresolved = true
+        first.endSession()
+        isPaymentUnresolved = false
+        let second = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(second.isLocked)
+        #expect(second.currentStaff == nil)
+        try await second.signIn(withPIN: "1234")
+        #expect(!second.isLocked)
+        #expect(second.currentStaff == POSLocalRole.admin.staff)
+    }
+
+    @Test func test_make_when_only_persisted_unlocked_marker_exists_then_does_not_restore_operator() async throws {
+        // Given: a new store has no operator retained in this process.
+        let sut = makeSUT(siteID: uniqueSiteID())
+        try sut.store.setPIN("1234", for: .admin)
+        sut.defaultsScope.defaults.set(false, forKey: POSLockStateKey.key(for: sut.siteID))
+
+        // When
+        let session = try await makeReplacement(sut, locksWhenPOSOpens: false)
+
+        // Then
+        #expect(session.isLocked)
+        #expect(session.currentStaff == nil)
+        #expect(!session.allows(.processSales))
+        #expect(sut.defaultsScope.defaults.bool(forKey: POSLockStateKey.key(for: sut.siteID)))
     }
 
     @Test func test_make_when_launch_lock_is_on_then_locks_after_unlocked_session() async throws {
@@ -492,13 +570,15 @@ private extension POSAccessSessionFactoryTests {
 
     func makeReplacement(_ sut: SUT,
                          locksWhenPOSOpens: Bool = true,
+                         isPaymentUnresolved: @escaping @MainActor () -> Bool = { false },
                          now: @escaping @MainActor () -> Date = Date.init,
                          shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         POSLockSettings(siteID: sut.siteID, userDefaults: sut.defaultsScope.defaults).update { $0.locksWhenPOSOpens = locksWhenPOSOpens }
         return try await POSAccessSessionFactory.make(siteID: sut.siteID,
                                                       featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
                                                       credentialProvider: sut.store, rateLimiter: sut.limiter,
-                                                      userDefaults: sut.defaultsScope.defaults, now: now, shouldCreate: shouldCreate)
+                                                      userDefaults: sut.defaultsScope.defaults,
+                                                      isPaymentUnresolved: isPaymentUnresolved, now: now, shouldCreate: shouldCreate)
     }
 
     /// The factory keeps unlocked operators per store in memory, so each launch-lock test uses its own store.

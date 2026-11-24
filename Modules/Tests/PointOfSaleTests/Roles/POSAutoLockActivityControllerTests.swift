@@ -5,6 +5,39 @@ import Testing
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSAutoLockActivityControllerTests {
+    @Test func test_payment_lifetime_when_ui_clears_before_confirmation_then_timer_stays_paused() {
+        // Given
+        let session = MockPOSAccessSession(currentStaff: makeStaff())
+        let clock = ClockHandle()
+        var ownerState = CardPresentPaymentSessionState.active
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 60,
+                                                now: clock.now, isPaymentUnresolved: { ownerState.isPending })
+        defer { sut.stop() }
+
+        // When
+        sut.handlePaymentSessionStateChange(.active)
+        clock.advance(by: 600)
+        ownerState = .unresolved
+        sut.handlePaymentSessionStateChange(.unresolved)
+        sut.handlePaymentStateChange(from: .init(card: .processingPayment, cash: .idle), to: .idle, locksAfterSale: true)
+        sut.handleTimerFire()
+
+        // Then
+        #expect(session.lockCallCount == 0)
+
+        // When
+        ownerState = .idle
+        sut.handlePaymentSessionStateChange(.idle)
+        clock.advance(by: 59)
+        sut.handleTimerFire()
+
+        // Then
+        #expect(session.lockCallCount == 0)
+        clock.advance(by: 1)
+        sut.handleTimerFire()
+        #expect(session.lockCallCount == 1)
+    }
+
     @Test func test_handleTimerFire_when_isPINProtectionEnabled_is_false_then_does_not_lock() {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: false, isPINProtectionEnabled: false)

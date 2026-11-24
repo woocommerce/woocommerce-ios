@@ -20,6 +20,73 @@ struct DefaultPOSAccessSessionTests {
         try await sut.limiter.checkAllowed(token: sut.limiter.sessionTokens.current())
     }
 
+    @Test func test_signIn_when_payment_is_unresolved_then_rejects_without_authenticating() async {
+        // Given
+        let authenticator = MockPOSPINAuthenticator()
+        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { true })
+        let lockedScope = sut.session.accessScope
+
+        // When / Then
+        await #expect(throws: POSAuthError.unknown) {
+            try await sut.session.signIn(withPIN: "1234")
+        }
+        #expect(authenticator.authenticatedPINs.isEmpty)
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.session.isLocked)
+        #expect(sut.session.accessScope == lockedScope)
+        #expect(!sut.session.allows(.processSales))
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test func test_signIn_when_payment_becomes_unresolved_during_authentication_then_rejects_late_authority() async {
+        // Given
+        let authenticator = MockPOSPINAuthenticator()
+        var isPaymentUnresolved = false
+        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { isPaymentUnresolved })
+        let lockedScope = sut.session.accessScope
+        authenticator.onAuthenticate = {
+            await Task.yield()
+            isPaymentUnresolved = true
+        }
+
+        // When / Then
+        await #expect(throws: POSAuthError.unknown) {
+            try await sut.session.signIn(withPIN: "1234")
+        }
+        #expect(authenticator.authenticatedPINs == ["1234"])
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.session.isLocked)
+        #expect(sut.session.accessScope == lockedScope)
+        #expect(!sut.session.allows(.processSales))
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test func test_signIn_when_payment_resolves_after_rejected_authentication_then_allows_fresh_authentication() async throws {
+        // Given
+        let staff = makeStaff()
+        let authenticator = MockPOSPINAuthenticator(authenticateResult: .success(staff))
+        var isPaymentUnresolved = false
+        let sut = makeSUT(authenticator: authenticator, isPaymentUnresolved: { isPaymentUnresolved })
+        authenticator.onAuthenticate = { isPaymentUnresolved = true }
+        await #expect(throws: POSAuthError.unknown) {
+            try await sut.session.signIn(withPIN: "1234")
+        }
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.session.isLocked)
+
+        // When
+        isPaymentUnresolved = false
+        authenticator.onAuthenticate = nil
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(authenticator.authenticatedPINs == ["1234", "1234"])
+        #expect(sut.session.currentStaff == staff)
+        #expect(!sut.session.isLocked)
+        #expect(sut.session.allows(.processSales))
+        #expect(!sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
     @Test func test_signIn_when_pin_is_invalid_then_throws_invalidPIN_and_records_failure() async {
         // Given
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
@@ -164,6 +231,32 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.isLocked == true)
         #expect(sut.session.currentStaff == nil)
         #expect(sut.session.allows(.processSales) == false)
+    }
+
+    @Test func test_lock_when_called_then_invokes_callback_after_clearing_authority() async throws {
+        // Given
+        weak var session: DefaultPOSAccessSession?
+        var signedInScope: POSPINSessionTokens.Token?
+        var callbackCount = 0
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), onLock: {
+            callbackCount += 1
+            #expect(session?.currentStaff == nil)
+            #expect(session?.isLocked == true)
+            #expect(session?.allows(.processSales) == false)
+            #expect(session?.allows(.manageStoreSettings) == false)
+            #expect(session?.accessScope != signedInScope)
+        })
+        session = sut.session
+        try await sut.session.signIn(withPIN: "1234")
+        signedInScope = sut.session.accessScope
+        #expect(sut.session.allows(.manageStoreSettings))
+
+        // When
+        sut.session.lock()
+
+        // Then
+        #expect(callbackCount == 1)
+        #expect(sut.session.accessScope != signedInScope)
     }
 
     @Test func test_requestManagerApproval_when_authenticator_fails_then_throws_unknown() async {
@@ -500,7 +593,9 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
-                 credentials: Result<[POSPINCredential], POSPINStoreError>? = nil) -> SUT {
+                 credentials: Result<[POSPINCredential], POSPINStoreError>? = nil,
+                 isPaymentUnresolved: @escaping @MainActor () -> Bool = { false },
+                 onLock: @escaping @MainActor () -> Void = {}) -> SUT {
         let scope = UserDefaultsTestScope()
         let credentialProvider = MockPOSPINCredentialProvider(credentialsResult: credentials ?? .success([makeAdminCredential()]))
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
@@ -509,7 +604,9 @@ private extension DefaultPOSAccessSessionTests {
             authenticator: authenticator,
             rateLimiter: limiter,
             credentialProvider: credentialProvider,
-            userDefaults: scope.defaults
+            userDefaults: scope.defaults,
+            isPaymentUnresolved: isPaymentUnresolved,
+            onLock: onLock
         )
         return SUT(session: session, limiter: limiter, scope: scope, credentialProvider: credentialProvider)
     }

@@ -169,6 +169,7 @@ protocol PointOfSaleAggregateModelProtocol {
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
+         accessSession: (any POSAccessSession)? = nil,
          customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences()) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
@@ -198,6 +199,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.paymentModel = POSPaymentModel(
             cardPresentPaymentService: cardPresentPaymentService,
             orderProvider: POSCartPaymentOrderProvider(orderController: orderController),
+            accessSession: accessSession,
             cashPaymentHandler: POSCartCashPaymentHandler(orderController: orderController),
             scanToPayHandler: POSCartScanToPayHandler(orderController: orderController),
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
@@ -293,6 +295,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
+        guard !paymentModel.isCardPaymentUnresolved else { return }
         collectOrderPaymentAnalyticsTracker.resetCheckoutTiming()
         removeAllItemsFromCart()
         orderController.clearOrder()
@@ -301,6 +304,10 @@ extension PointOfSaleAggregateModel {
     }
 
     private func setStateForEditing() {
+        guard !paymentModel.isCardPaymentUnresolved else {
+            paymentModel.reset()
+            return
+        }
         checkoutGeneration += 1
         orderStage = .building
         paymentModel.reset()
@@ -709,7 +716,7 @@ extension PointOfSaleAggregateModel {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         checkoutGeneration += 1
-        orderController.clearOrder()
+        if !paymentModel.isCardPaymentUnresolved { orderController.clearOrder() }
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.

@@ -16,6 +16,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private var generation: POSPINSessionTokens.Token
     @ObservationIgnored private var hasKnownProtection: Bool
+    @ObservationIgnored private let isPaymentUnresolved: @MainActor () -> Bool
+    @ObservationIgnored private let onLock: @MainActor () -> Void
     @ObservationIgnored private let onEnd: @MainActor (POSStaff?) -> Void
 
     init(siteID: Int64,
@@ -24,6 +26,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
          credentialProvider: POSPINCredentialProviding,
          userDefaults: UserDefaults = .standard,
          resumingStaff: POSStaff? = nil,
+         isPaymentUnresolved: @escaping @MainActor () -> Bool = { false },
+         onLock: @escaping @MainActor () -> Void = {},
          onEnd: @escaping @MainActor (POSStaff?) -> Void = { _ in }) {
         self.credentialProvider = credentialProvider
         self.siteID = siteID
@@ -31,13 +35,16 @@ final class DefaultPOSAccessSession: POSAccessSession {
         self.rateLimiter = rateLimiter
         self.generation = rateLimiter.sessionTokens.invalidate()
         self.userDefaults = userDefaults
+        self.onLock = onLock
         self.onEnd = onEnd
+        self.isPaymentUnresolved = isPaymentUnresolved
         let credentials = try? credentialProvider.credentials()
         let hasCredentials = credentials.map { !$0.isEmpty }
         self.hasKnownProtection = hasCredentials == true
         let isProtected = hasCredentials ?? true
         self.isPINProtectionEnabled = isProtected
         let resumedStaff = resumingStaff.flatMap { staff -> POSStaff? in
+            guard !isPaymentUnresolved() else { return nil }
             let hasPIN = credentials?.contains { $0.staff == staff } == true
             let wasLeftUnlocked = !userDefaults.bool(forKey: POSLockStateKey.key(for: siteID))
             return hasPIN && wasLeftUnlocked ? staff : nil
@@ -95,9 +102,10 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {
+        guard !isPaymentUnresolved() else { throw .unknown }
         let request = generation
         let staff = try await rateLimiter.authenticate(pin: pin, using: authenticator, token: request)
-        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled, !isPaymentUnresolved() else { throw .unknown }
         accessScope = POSPINSessionTokens.Token()
         currentStaff = staff
         isLocked = false
@@ -115,6 +123,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
         accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         isLocked = true
+        onLock()
         guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
         generation = request
         persistLockState(true)

@@ -5,6 +5,8 @@ final class PaymentAttemptCancellationTracker {
     private let lock = NSLock()
     private var storedActiveAttemptID: UUID?
     private var canceledAttemptIDs: Set<UUID> = []
+    private var cancellationIDs: [UUID: UUID] = [:]
+    private var cancellationCompletions: [UUID: [(Result<Void, Error>) -> Void]] = [:]
 
     var activeAttemptID: UUID? {
         lock.lock()
@@ -20,12 +22,43 @@ final class PaymentAttemptCancellationTracker {
         return attemptID
     }
 
-    func cancelActiveAttempt() -> UUID? {
+    func cancelActiveAttempt(completion: ((Result<Void, Error>) -> Void)? = nil) -> UUID? {
         lock.lock()
         defer { lock.unlock() }
         guard let activeAttemptID = storedActiveAttemptID else { return nil }
         canceledAttemptIDs.insert(activeAttemptID)
+        if let completion {
+            cancellationCompletions[activeAttemptID, default: []].append(completion)
+        }
         return activeAttemptID
+    }
+
+    func beginCancellation(_ attemptID: UUID) -> UUID? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard cancellationIDs[attemptID] == nil else { return nil }
+        let cancellationID = UUID()
+        cancellationIDs[attemptID] = cancellationID
+        return cancellationID
+    }
+
+    func completeCancellation(_ attemptID: UUID, cancellationID: UUID, result: Result<Void, Error>, beforeCompletion: () -> Void = {}) {
+        lock.lock()
+        guard cancellationIDs[attemptID] == cancellationID else {
+            lock.unlock()
+            return
+        }
+        cancellationIDs[attemptID] = nil
+        let completions = cancellationCompletions.removeValue(forKey: attemptID) ?? []
+        if case .success = result {
+            canceledAttemptIDs.remove(attemptID)
+            if storedActiveAttemptID == attemptID {
+                storedActiveAttemptID = nil
+            }
+        }
+        lock.unlock()
+        beforeCompletion()
+        completions.forEach { $0(result) }
     }
 
     func isCanceled(_ attemptID: UUID) -> Bool {
@@ -36,10 +69,12 @@ final class PaymentAttemptCancellationTracker {
 
     func finishAttempt(_ attemptID: UUID) {
         lock.lock()
-        defer { lock.unlock() }
+        let completions = cancellationCompletions.removeValue(forKey: attemptID) ?? []
         canceledAttemptIDs.remove(attemptID)
         if storedActiveAttemptID == attemptID {
             storedActiveAttemptID = nil
         }
+        lock.unlock()
+        completions.forEach { $0(.success(())) }
     }
 }

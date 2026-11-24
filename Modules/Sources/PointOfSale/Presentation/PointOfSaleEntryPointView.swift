@@ -226,9 +226,12 @@ public struct PointOfSaleEntryPointView: View {
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
             // Session initialization persists lock state, so it must run once, before content is exposed.
+            weak var paymentModel: POSPaymentModel?
             let session: POSAccessSession
             do {
                 session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
+                                                                 isPaymentUnresolved: { cardPresentPaymentService.paymentSessionState.isPending },
+                                                                 onLock: { paymentModel?.cancelPaymentForLock() },
                                                                  shouldCreate: { posModel == nil })
             } catch {
                 return
@@ -266,7 +269,9 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large,
+                accessSession: session)
+            paymentModel = posModel?.paymentModel
 
             let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()

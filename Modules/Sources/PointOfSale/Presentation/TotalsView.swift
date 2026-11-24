@@ -420,6 +420,16 @@ private struct MaxHeightProposalLayout: Layout {
     }
 }
 
+/// Shared with the order details totals so both breakdowns use the same label.
+extension TotalsView {
+    enum SharedLocalization {
+        static let customAmountsTotal = NSLocalizedString(
+            "pos.totalsView.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
+    }
+}
+
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
@@ -459,10 +469,6 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
-        static let customAmountsTotal = NSLocalizedString(
-            "pos.totalsView.customAmountsTotal",
-            value: "Custom amounts",
-            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
         static let connectCardReaderButtonTitle = NSLocalizedString(
             "pos.totalsView.connectCardReader.button.title.1",
             value: "Connect card reader",
@@ -533,7 +539,7 @@ private struct TotalsFieldsContent: View {
 
             if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(
-                    title: TotalsView.Localization.customAmountsTotal,
+                    title: TotalsView.SharedLocalization.customAmountsTotal,
                     formattedPrice: orderTotals?.customAmountsTotal,
                     shimmeringActive: totalsLoading
                 )

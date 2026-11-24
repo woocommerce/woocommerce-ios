@@ -191,12 +191,17 @@ extension POSMenuButton where Label == Text {
 
 private struct POSMenuButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.colorScheme) private var colorScheme
     let isHighlighted: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(isEnabled && (configuration.isPressed || isHighlighted) ? Color.posSurface : .clear)
+            .background(isEnabled && (configuration.isPressed || isHighlighted) ? highlightColor : .clear)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+    }
+
+    private var highlightColor: Color {
+        colorScheme == .dark ? .posOutlineVariant : .posSurface
     }
 }
 

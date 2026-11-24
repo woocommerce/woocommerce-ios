@@ -7,6 +7,38 @@ import Testing
 struct POSLocalPINStoreTests {
     private let storage = InMemoryPOSSecureStorage()
 
+    @Test(arguments: [POSLocalRole.admin, .cashier])
+    func test_preparePIN_when_replacing_then_retains_old_credentials_until_commit(role: POSLocalRole) throws {
+        // Given
+        let sut = makeSUT()
+        try sut.setPIN("1234", for: .admin)
+        try sut.setPIN("5678", for: .cashier)
+        let before = try sut.credentials()
+
+        // When
+        let commit = try sut.preparePIN("2468", for: role)
+
+        // Then
+        #expect(try sut.credentials() == before)
+        try commit()
+        #expect(try sut.credentials().first { $0.staff == role.staff }?.pinHash.matches("2468") == true)
+        let otherRole: POSLocalRole = role == .admin ? .cashier : .admin
+        #expect(try sut.credentials().first { $0.staff == otherRole.staff } == before.first { $0.staff == otherRole.staff })
+    }
+
+    @Test func test_commit_when_store_changes_after_preparation_then_does_not_overwrite_new_credentials() throws {
+        // Given
+        let sut = makeSUT()
+        try sut.setPIN("1234", for: .admin)
+        let commit = try sut.preparePIN("5678", for: .cashier)
+        try sut.setPIN("5678", for: .admin)
+        let before = try sut.credentials()
+
+        // When / Then
+        #expect(throws: POSPINStoreError.storageFailure) { try commit() }
+        #expect(try sut.credentials() == before)
+    }
+
     @Test func test_validatePIN_when_new_or_existing_role_is_valid_then_does_not_write() throws {
         // Given
         let sut = makeSUT()

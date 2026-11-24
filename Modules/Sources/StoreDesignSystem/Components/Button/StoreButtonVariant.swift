@@ -33,4 +33,12 @@ public struct StoreButtonVariant: Sendable {
     public static let outlined = StoreButtonVariant(
         enabled: Appearance(background: nil, foreground: .storeOnSecondaryContainer, border: .storeSecondaryContainer)
     )
+
+    static func filled(background: Color, foreground: Color) -> StoreButtonVariant {
+        StoreButtonVariant(enabled: Appearance(background: background, foreground: foreground, border: nil))
+    }
+
+    static func outlined(foreground: Color, border: Color) -> StoreButtonVariant {
+        StoreButtonVariant(enabled: Appearance(background: nil, foreground: foreground, border: border))
+    }
 }

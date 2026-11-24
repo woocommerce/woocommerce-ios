@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Fakes
 import Networking
+import WooFoundation
 @testable import Yosemite
 @testable import Hardware
 
@@ -94,6 +95,29 @@ struct ReceiptContentAssemblerTests {
         // Then
         let discountLine = try #require(content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) })
         #expect(discountLine.amount == "-$1.19")
+    }
+
+    @Test func test_makeContent_when_currency_symbol_is_right_to_left_then_formats_discount_as_negative_amount() throws {
+        // Given
+        let parameters = try makeReceiptParameters(currency: "aed")
+        let currencySettings = CurrencySettings(currencyCode: .AED,
+                                                currencyPosition: .right,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let assembler = ReceiptContentAssembler(currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+        let coupons = [OrderCouponLine(couponID: 123, code: "6dunup65", discount: "1.19", discountTax: "0.00")]
+        let order = makeOrder(discountTotal: "1.1900000", coupons: coupons)
+
+        // When
+        let content = assembler.makeContent(order: order, parameters: parameters)
+
+        // Then
+        let discountLine = try #require(content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) })
+        let expectedAmount = BidirectionalText.rightToLeftMark
+            + BidirectionalText.isolateLeftToRight("-1.19")
+            + currencySettings.symbol(from: .AED)
+        #expect(discountLine.amount == expectedAmount)
     }
 
     @Test func test_makeContent_when_order_has_no_discount_or_coupons_then_excludes_discount_line() throws {
@@ -245,8 +269,8 @@ private extension ReceiptContentAssemblerTests {
         Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
     }
 
-    func makeReceiptParameters(amount: UInt = 100) throws -> CardPresentReceiptParameters {
-        let intent = PaymentIntent.fake().copy(amount: amount, charges: [Self.cardPresentCharge])
+    func makeReceiptParameters(amount: UInt = 100, currency: String = "usd") throws -> CardPresentReceiptParameters {
+        let intent = PaymentIntent.fake().copy(amount: amount, currency: currency, charges: [Self.cardPresentCharge])
         return try #require(intent.receiptParameters())
     }
 

@@ -95,10 +95,7 @@ private extension ReceiptContentAssembler {
     }
 
     func discountLineAmount(order: Order, value: Decimal, currency: String) -> String {
-        guard let formattedAmount = currencyFormatter.formatAmount(order.discountTotal, with: currency) else {
-            return ""
-        }
-        return value > 0 ? "-" + formattedAmount : formattedAmount
+        currencyFormatter.formatAmount(order.discountTotal, with: currency, isNegative: value > 0) ?? ""
     }
 
     func feesLineAmount(fees: [OrderFeeLine]) -> String {

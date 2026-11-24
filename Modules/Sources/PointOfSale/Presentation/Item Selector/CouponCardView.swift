@@ -10,7 +10,7 @@ struct CouponCardView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
-        Constants.imageSize(metrics: metrics, scale: scale, dynamicTypeSize: dynamicTypeSize)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(coupon: POSCoupon, isApplied: Bool = false) {
@@ -19,10 +19,10 @@ struct CouponCardView: View {
     }
 
     var body: some View {
-        POSItemCardLayout {
+        HStack(spacing: metrics.spacing.none) {
             POSCouponImageView(size: dimension,
                                state: imageState)
-        } details: {
+
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(coupon.code)
                     .foregroundStyle(titleColor)
@@ -42,6 +42,9 @@ struct CouponCardView: View {
                 }
             }
             .multilineTextAlignment(.leading)
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
+            Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(cardBackgroundColor)

@@ -11,7 +11,7 @@ struct SearchResultVariationCardView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
-        Constants.imageSize(metrics: metrics, scale: scale, dynamicTypeSize: dynamicTypeSize)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(variation: POSVariation, parentProduct: POSVariableParentProduct) {
@@ -20,14 +20,14 @@ struct SearchResultVariationCardView: View {
     }
 
     var body: some View {
-        POSItemCardLayout {
+        HStack(spacing: metrics.spacing.none) {
             POSItemImageView(
                 imageSource: variation.productImageSource ?? parentProduct.productImageSource,
                 imageSize: dimension,
                 scale: 1
             )
             .frame(width: dimension, height: dimension)
-        } details: {
+
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(parentProduct.name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
@@ -45,6 +45,10 @@ struct SearchResultVariationCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
+
+            Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)

@@ -5,9 +5,9 @@ import Storage
 /// Retrieves the locally stored state name of an address.
 ///
 final class LocallyStoredStateNameRetriever {
-    // WooCommerce countries whose state codes all contain digits (e.g. CN24), unreadable to merchants.
+    // WooCommerce countries with mostly or all numeric state codes (e.g. CN24), unreadable to merchants.
     static let countriesWithNumericStateCodes: Set<String> = [
-        "AL", "BD", "BG", "CN", "DO", "DZ", "HR", "JM", "JP", "KE", "TH", "TR", "TZ", "UA", "UG", "UM", "ZM"
+        "AL", "BD", "BG", "CN", "DO", "DZ", "HR", "JM", "JP", "KE", "KN", "PA", "PY", "RS", "TH", "TR", "TZ", "UA", "UG", "UM", "ZM"
     ]
 
     private let storageManager: StorageManagerType
@@ -27,6 +27,11 @@ final class LocallyStoredStateNameRetriever {
     ///
     func retrieveLocallyStoredStateName(of address: Address) -> String? {
         retrieveLocallyStoredStateName(for: address.state, countryCode: address.country)
+    }
+
+    func hasLocallyStoredStates(forCountryCode countryCode: String) -> Bool {
+        let predicate = NSPredicate(format: "relationship.code LIKE[c] %@", countryCode)
+        return sharedDerivedStorage.countObjects(ofType: Storage.StateOfACountry.self, matching: predicate) > 0
     }
 }
 

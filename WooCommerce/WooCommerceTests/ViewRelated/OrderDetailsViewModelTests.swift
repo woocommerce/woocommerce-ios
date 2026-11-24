@@ -1146,6 +1146,37 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
     }
+
+    func test_syncEverything_when_numeric_code_country_has_empty_state_then_does_not_synchronize_countries() {
+        // Given
+        // An empty state never gets a name, so fetching would repeat on every refresh.
+        let address = Address.fake().copy(state: "", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_state_code_is_unknown_but_country_states_are_stored_then_does_not_synchronize_countries() {
+        // Given
+        // The stored CN list is complete, so a refetch would not add CN99 and would repeat on every refresh.
+        let address = Address.fake().copy(state: "CN99", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "CN", name: "China", states: [StateOfACountry(code: "CN24", name: "Sichuan")])
+        ])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
 }
 
 private extension OrderDetailsViewModelTests {

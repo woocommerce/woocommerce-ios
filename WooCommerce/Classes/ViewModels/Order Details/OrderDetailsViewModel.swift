@@ -844,7 +844,8 @@ extension OrderDetailsViewModel {
         let retriever = LocallyStoredStateNameRetriever(storageManager: storageManager)
         let needsStateNames = [order.billingAddress, order.shippingAddress].compactMap { $0 }.contains { address in
             LocallyStoredStateNameRetriever.countriesWithNumericStateCodes.contains(address.country)
-            && retriever.retrieveLocallyStoredStateName(of: address) == nil
+            && !address.state.isEmpty
+            && !retriever.hasLocallyStoredStates(forCountryCode: address.country)
         }
         guard needsStateNames else {
             onCompletion()

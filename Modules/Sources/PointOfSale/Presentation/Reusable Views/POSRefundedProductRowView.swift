@@ -13,10 +13,12 @@ struct POSRefundedProductRowView: View {
                 CustomAmountAvatar(name: item.name)
                     .frame(width: Constants.imageSize, height: Constants.imageSize)
                     .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                    .posItemCardImage()
             } else {
                 POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.imageSize, scale: 1)
                     .frame(width: Constants.imageSize, height: Constants.imageSize)
                     .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                    .posItemCardImage()
             }
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
@@ -38,6 +40,7 @@ struct POSRefundedProductRowView: View {
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
+        .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel ?? defaultAccessibilityLabel)
     }

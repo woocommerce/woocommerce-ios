@@ -266,6 +266,7 @@ private extension POSOrderDetailsView {
                     }
                 }
             }
+            .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
         }
         .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
@@ -278,6 +279,7 @@ private extension POSOrderDetailsView {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .posItemCardImage()
 
             Text(customAmount.name)
                 .font(.posBodyLargeBold)
@@ -348,6 +350,7 @@ private extension POSOrderDetailsView {
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
+                .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
@@ -358,6 +361,7 @@ private extension POSOrderDetailsView {
 
             POSPlaceholderText(.redactedPlaceholder(length: 4), font: .posBodyMediumRegular())
         }
+        .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
     }
 
     @ViewBuilder
@@ -457,6 +461,7 @@ private extension POSOrderDetailsView {
         POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
             .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .posItemCardImage()
     }
 
     @ViewBuilder

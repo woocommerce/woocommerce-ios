@@ -101,3 +101,49 @@ extension View {
         }
     }
 }
+
+// MARK: - Autofocus
+
+extension View {
+    /// Focuses the field once per appearance. On phone it focuses as soon as the field is in a window, so the keyboard
+    /// rises together with the presentation slide; the delayed focus is only a fallback there.
+    func posAutofocus(_ isFocused: FocusState<Bool>.Binding) -> some View {
+        modifier(POSAutofocusModifier(isFocused: isFocused))
+    }
+}
+
+private struct POSAutofocusModifier: ViewModifier {
+    @FocusState.Binding var isFocused: Bool
+    @State private var hasBeenFocused = false
+
+    func body(content: Content) -> some View {
+        content
+            .configureUnderlyingTextField { textField in
+                guard UIDevice.current.userInterfaceIdiom == .phone, !hasBeenFocused else {
+                    return
+                }
+                if textField.becomeFirstResponder() {
+                    hasBeenFocused = true
+                }
+            }
+            .onChange(of: isFocused, initial: true) { _, focused in
+                if focused {
+                    hasBeenFocused = true
+                }
+            }
+            .task {
+                do {
+                    try await Task.sleep(for: .milliseconds(600))
+                } catch {
+                    return
+                }
+                guard !hasBeenFocused else {
+                    return
+                }
+                isFocused = true
+            }
+            .onDisappear {
+                hasBeenFocused = false
+            }
+    }
+}

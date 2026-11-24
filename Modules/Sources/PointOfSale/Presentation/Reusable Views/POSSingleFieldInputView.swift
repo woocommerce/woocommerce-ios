@@ -73,14 +73,7 @@ struct POSSingleFieldInputView: View {
                         .focused($isTextFieldFocused)
                         .submitLabel(submitLabel)
                         .accessibilityIdentifier(textFieldAccessibilityIdentifier)
-                        .task {
-                            do {
-                                try await Task.sleep(for: .milliseconds(600))
-                            } catch {
-                                return
-                            }
-                            isTextFieldFocused = true
-                        }
+                        .posAutofocus($isTextFieldFocused)
                         .onChange(of: isTextFieldFocused) { _, focused in
                             if focused && selectAllOnFocus {
                                 selection = TextSelection(range: text.startIndex..<text.endIndex)

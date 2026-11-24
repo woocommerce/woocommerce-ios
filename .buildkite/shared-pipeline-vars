@@ -26,7 +26,7 @@ export CLAUDE_PLUGIN="iangmaia/claude-summarize#ce99c67dd57cdf236c3daca82b86a335
 if command -v pr_changed_files >/dev/null 2>&1; then
     for job_type in build prototype-build validation localization; do
         skip_var="SKIP_$(echo "$job_type" | tr 'a-z-' 'A-Z_')"
-        export "$skip_var=$("$SCRIPT_DIR/commands/should-skip-job.sh" --job-type "$job_type")"
+        export "$skip_var=$("$SCRIPT_DIR/commands/should-skip-job.sh" "$job_type")"
         echo "$skip_var=${!skip_var}"
     done
 fi

@@ -156,8 +156,9 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingBarcodeScannerSetup = false
             }
         }
-        .onChange(of: posModel.paymentState.cash) { _, newValue in
-            if newValue != .collectingCash {
+        .onChange(of: posModel.paymentState.cash) { oldValue, newValue in
+            // Cleared on entry rather than exit, so the cash screen keeps its amount while it slides away.
+            if newValue == .collectingCash, oldValue != .collectingCash {
                 viewStateCoordinator.cashAmountInput = .init()
             }
         }

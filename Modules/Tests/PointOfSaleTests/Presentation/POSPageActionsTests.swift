@@ -3,73 +3,53 @@ import Testing
 
 @MainActor
 struct POSPageActionsTests {
-    @Test func test_compactLayout_when_there_are_no_actions_then_returns_none() {
+    @Test func test_allActions_when_there_are_no_actions_then_is_empty() {
         // Given
         let actions = POSPageActions.none
 
         // When
-        let layout = actions.compactLayout
+        let ids = actions.allActions.map(\.id)
 
         // Then
-        #expect(Self.summary(of: layout) == .none)
+        #expect(ids.isEmpty)
     }
 
-    @Test(arguments: [
-        (secondaryCount: 0, expected: LayoutSummary.stacked(primary: "primary", secondary: [])),
-        (secondaryCount: 1, expected: LayoutSummary.stacked(primary: "primary", secondary: ["secondary-0"])),
-        (secondaryCount: 2, expected: LayoutSummary.overflow(primary: "primary", menu: ["secondary-0", "secondary-1"]))
-    ])
-    func test_compactLayout_when_primary_is_set_then_overflows_above_two_actions(secondaryCount: Int, expected: LayoutSummary) {
+    @Test func test_allActions_when_primary_and_secondary_are_set_then_lists_primary_first() {
         // Given
-        let actions = POSPageActions(primary: Self.action("primary"), secondary: Self.secondaryActions(count: secondaryCount))
+        let actions = POSPageActions(primary: Self.action("refund"), secondary: [Self.action("email"), Self.action("print")])
 
         // When
-        let layout = actions.compactLayout
+        let ids = actions.allActions.map(\.id)
 
         // Then
-        #expect(Self.summary(of: layout) == expected)
+        #expect(ids == ["refund", "email", "print"])
     }
 
-    @Test(arguments: [
-        (secondaryCount: 1, expected: LayoutSummary.stacked(primary: nil, secondary: ["secondary-0"])),
-        (secondaryCount: 2, expected: LayoutSummary.stacked(primary: nil, secondary: ["secondary-0", "secondary-1"])),
-        (secondaryCount: 3, expected: LayoutSummary.overflow(primary: nil, menu: ["secondary-0", "secondary-1", "secondary-2"]))
-    ])
-    func test_compactLayout_when_primary_is_nil_then_keeps_every_secondary_action(secondaryCount: Int, expected: LayoutSummary) {
+    @Test func test_allActions_when_only_primary_is_set_then_lists_primary() {
         // Given
-        let actions = POSPageActions(primary: nil, secondary: Self.secondaryActions(count: secondaryCount))
+        let actions = POSPageActions(primary: Self.action("email"))
 
         // When
-        let layout = actions.compactLayout
+        let ids = actions.allActions.map(\.id)
 
         // Then
-        #expect(Self.summary(of: layout) == expected)
+        #expect(ids == ["email"])
+    }
+
+    @Test func test_allActions_when_primary_is_nil_then_lists_secondary() {
+        // Given
+        let actions = POSPageActions(primary: nil, secondary: [Self.action("email")])
+
+        // When
+        let ids = actions.allActions.map(\.id)
+
+        // Then
+        #expect(ids == ["email"])
     }
 }
 
-extension POSPageActionsTests {
-    enum LayoutSummary: Equatable {
-        case none
-        case stacked(primary: String?, secondary: [String])
-        case overflow(primary: String?, menu: [String])
-    }
-
-    static func summary(of layout: POSPageActions.CompactLayout) -> LayoutSummary {
-        switch layout {
-        case .none:
-            return .none
-        case .stacked(let primary, let secondary):
-            return .stacked(primary: primary?.id, secondary: secondary.map(\.id))
-        case .overflow(let primary, let menu):
-            return .overflow(primary: primary?.id, menu: menu.map(\.id))
-        }
-    }
-
+private extension POSPageActionsTests {
     static func action(_ id: String) -> POSPageAction {
-        POSPageAction(id: id, title: id, action: {})
-    }
-
-    static func secondaryActions(count: Int) -> [POSPageAction] {
-        (0..<count).map { action("secondary-\($0)") }
+        POSPageAction(id: id, title: id, accessibilityHint: id, action: {})
     }
 }

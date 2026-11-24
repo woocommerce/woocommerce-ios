@@ -2,7 +2,7 @@ import SwiftUI
 
 struct POSPINEntryView: View {
     enum Style: Equatable {
-        case standard
+        case approval
         case lockScreen(keySize: CGFloat)
         case setup(keySize: CGFloat, page: POSPINEntryPage, feedback: String?, feedbackMessages: [String])
     }
@@ -29,13 +29,13 @@ struct POSPINEntryView: View {
 
     init(state: POSPINEntryState,
          pinLength: Int = 4,
-         style: Style = .standard,
+         style: Style,
          onComplete: @escaping (String) async -> Bool) {
         self.state = state
         self.pinLength = pinLength
         self.style = style
         self.onComplete = onComplete
-        self._attempt = State(initialValue: POSPINAttempt(defersFailureMessage: style != .standard))
+        self._attempt = State(initialValue: POSPINAttempt())
         self._attemptPageID = State(initialValue: Self.page(for: style)?.id)
     }
 
@@ -44,7 +44,7 @@ struct POSPINEntryView: View {
         .onAppear {
             handleStateChange(state)
             #if DEBUG
-            if let previewEnteredPIN { attempt = POSPINAttempt(pin: previewEnteredPIN, defersFailureMessage: style != .standard) }
+            if let previewEnteredPIN { attempt = POSPINAttempt(pin: previewEnteredPIN) }
             #endif
         }
         .onChange(of: state) { oldState, newState in
@@ -72,17 +72,9 @@ private extension POSPINEntryView {
         return false
     }
 
-    var animatesLoadingDots: Bool {
-        isLoading && lockScreenKeySize == nil
-    }
-
-    var showsInvalidPINMessage: Bool {
-        state == .error(kind: .invalidPIN) && attempt.pin.isEmpty
-    }
-
     var lockScreenKeySize: CGFloat? {
         switch style {
-        case .standard:
+        case .approval:
             nil
         case .lockScreen(let keySize), .setup(let keySize, _, _, _):
             keySize
@@ -119,7 +111,7 @@ private extension POSPINEntryView {
 
     var contentSpacing: CGFloat {
         switch style {
-        case .standard:
+        case .approval:
             Self.contentSpacing
         case .lockScreen:
             metrics.spacing.xLarge
@@ -138,78 +130,42 @@ private extension POSPINEntryView {
         .frame(maxWidth: .infinity)
     }
 
-    @ViewBuilder
-    var statusRow: some View {
-        if lockScreenKeySize != nil {
-            lockScreenStatusRow
-        } else {
-            standardStatusRow
-        }
-    }
-
-    @ViewBuilder
-    var standardStatusRow: some View {
-        switch state {
-        case .waiting(let seconds):
-            statusMessage(helper.lockoutMessage(remainingSeconds: seconds))
-        case .unavailable:
-            statusMessage(Localization.unavailableMessage)
-        case .error where showsInvalidPINMessage:
-            statusMessage(Localization.message(for: .invalidPIN))
-                .modifier(ShakeEffect(animatableData: shakeAmount))
-        case .idle, .checkingLockout, .loading, .error:
-            dotsRow
-        }
-    }
-
     var dotsRow: some View {
-        TimelineView(.animation(paused: !animatesLoadingDots)) { context in
-            HStack(spacing: dotSpacing) {
-                ForEach(0..<pinLength, id: \.self) { index in
-                    dot(filled: isLoading || index < enteredPIN.count,
-                        yOffset: waveOffset(index: index, date: context.date))
-                }
+        HStack(spacing: dotSpacing) {
+            ForEach(0..<pinLength, id: \.self) { index in
+                dot(filled: isLoading || index < enteredPIN.count)
             }
-            .modifier(ShakeEffect(animatableData: shakeAmount))
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Localization.dotsAccessibilityLabel)
-            .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
+        .modifier(ShakeEffect(animatableData: shakeAmount))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.dotsAccessibilityLabel)
+        .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         .frame(height: statusRowHeight)
     }
 
-    @ViewBuilder
-    func dot(filled: Bool, yOffset: CGFloat) -> some View {
-        if lockScreenKeySize != nil {
-            Circle()
-                .strokeBorder(Color.posOutline, lineWidth: LockScreenConstants.dotBorderWidth)
-                .overlay {
-                    if filled {
-                        Circle()
-                            .fill(Color.posOnSurface)
-                            .transition(reduceMotion ? .identity : .asymmetric(
-                                insertion: .scale(scale: LockScreenConstants.dotPopScale).animation(LockScreenConstants.dotPopAnimation),
-                                removal: .opacity
-                            ))
-                    }
+    func dot(filled: Bool) -> some View {
+        Circle()
+            .strokeBorder(Color.posOutline, lineWidth: lockScreenKeySize == nil ? Constants.dotBorderWidth : LockScreenConstants.dotBorderWidth)
+            .overlay {
+                if filled {
+                    Circle()
+                        .fill(Color.posOnSurface)
+                        .transition(reduceMotion ? .identity : .asymmetric(
+                            insertion: .scale(scale: LockScreenConstants.dotPopScale).animation(LockScreenConstants.dotPopAnimation),
+                            removal: .opacity
+                        ))
                 }
-                .transaction { transaction in
-                    if setupPage != nil && !filled && enteredPIN.isEmpty {
-                        transaction.animation = nil
-                    }
+            }
+            .transaction { transaction in
+                if setupPage != nil && !filled && enteredPIN.isEmpty {
+                    transaction.animation = nil
                 }
-                .frame(width: LockScreenConstants.dotSize, height: LockScreenConstants.dotSize)
-                .offset(y: yOffset)
-        } else {
-            Circle()
-                .fill(filled ? Color.posOnSurface : Color.clear)
-                .overlay(
-                    Circle().strokeBorder(filled ? Color.posOnSurface : Color.posOutline,
-                                          lineWidth: Constants.dotBorderWidth)
-                )
-                .frame(width: Constants.dotSize, height: Constants.dotSize)
-                .offset(y: yOffset)
-        }
+            }
+            .frame(width: dotSize, height: dotSize)
+    }
+
+    var dotSize: CGFloat {
+        lockScreenKeySize == nil ? Constants.dotSize : LockScreenConstants.dotSize
     }
 
     var dotSpacing: CGFloat {
@@ -218,14 +174,6 @@ private extension POSPINEntryView {
 
     var statusRowHeight: CGFloat {
         lockScreenKeySize == nil ? Constants.statusRowHeight : LockScreenConstants.statusRowHeight
-    }
-
-    func waveOffset(index: Int, date: Date) -> CGFloat {
-        guard animatesLoadingDots else {
-            return 0
-        }
-        let time = date.timeIntervalSinceReferenceDate
-        return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
     func statusMessage(_ text: String) -> some View {
@@ -297,31 +245,55 @@ private extension POSPINEntryView {
     }
 }
 
-// MARK: - Lock screen status
+// MARK: - PIN feedback
 
 private extension POSPINEntryView {
-    var lockScreenStatusMessage: POSPINStatusMessage? {
+    var statusMessage: POSPINStatusMessage? {
         attempt.isMessageDeferred ? nil : helper.statusMessage(for: state, enteredPIN: attempt.pin)
     }
 
-    var lockScreenStatusRow: some View {
-        let message = lockScreenStatusMessage
+    var statusRow: some View {
+        let message = statusMessage
         return ZStack {
+            if style == .approval {
+                // Measure every message up front so errors and countdown ticks cannot move the keys.
+                ForEach(approvalFeedbackMessages, id: \.self) { text in
+                    statusMessage(text).hidden()
+                }
+            }
             lockScreenDots
                 .opacity(message == nil ? 1 : 0)
             if let message {
-                lockScreenMessage(message)
-                    .transition(.opacity)
+                Group {
+                    if style == .approval {
+                        statusMessage(approvalText(for: message))
+                    } else {
+                        lockScreenMessage(message)
+                    }
+                }
+                .transition(.opacity)
             }
         }
         .frame(minHeight: lockScreenStatusMinHeight)
-        .animation(LockScreenConstants.feedbackAnimation, value: message == nil)
+        .animation(style == .approval && reduceMotion ? nil : LockScreenConstants.feedbackAnimation, value: message == nil)
         // One stable element keeps VoiceOver focus in place while the dots and messages swap.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Localization.dotsAccessibilityLabel)
         .accessibilityValue(setupFeedback ?? message.map(accessibilityText(for:)) ?? entryCountText)
         // The countdown changes every second; VoiceOver should read it on request rather than on each change.
         .accessibilityAddTraits(isWaiting ? .updatesFrequently : [])
+    }
+
+    var approvalFeedbackMessages: [String] {
+        [Localization.invalidPINMessage, Localization.genericErrorMessage, Localization.unavailableMessage,
+         helper.lockoutMessage(remainingSeconds: Constants.feedbackMeasurementWaitSeconds)]
+    }
+
+    func approvalText(for message: POSPINStatusMessage) -> String {
+        switch message {
+        case .lockout(let seconds): helper.lockoutMessage(remainingSeconds: seconds)
+        default: accessibilityText(for: message)
+        }
     }
 
     var isWaiting: Bool {
@@ -446,13 +418,8 @@ private extension POSPINEntryView {
         guard isInputEnabled, let digit = key.first else {
             return
         }
-        let submittedGeneration: Int?
-        if lockScreenKeySize != nil {
-            submittedGeneration = withAnimation(reduceMotion ? nil : LockScreenConstants.dotPopAnimation) {
-                attempt.enter(digit, length: pinLength)
-            }
-        } else {
-            submittedGeneration = attempt.enter(digit, length: pinLength)
+        let submittedGeneration = withAnimation(reduceMotion ? nil : LockScreenConstants.dotPopAnimation) {
+            attempt.enter(digit, length: pinLength)
         }
         haptics.digitEntered()
         guard let submittedGeneration else {
@@ -462,7 +429,7 @@ private extension POSPINEntryView {
         let pin = attempt.pin
         Task {
             let succeeded = await onComplete(pin)
-            guard lockScreenKeySize == nil || attempt.isCurrent(submittedGeneration) else { return }
+            guard attempt.isCurrent(submittedGeneration) else { return }
             if succeeded {
                 attempt.succeed(generation: submittedGeneration)
             } else {
@@ -487,13 +454,6 @@ private extension POSPINEntryView {
 
     func handleFailedAttempt(generation: Int) {
         haptics.attemptFailed()
-        guard lockScreenKeySize != nil else {
-            attempt.clear()
-            withAnimation(.linear(duration: Constants.shakeDuration)) {
-                shakeAmount += 1
-            }
-            return
-        }
         guard !reduceMotion else {
             attempt.revealFailure(generation: generation)
             return
@@ -505,16 +465,15 @@ private extension POSPINEntryView {
         }
     }
 
-    /// The lock screen's focus stays on the keypad, so the entered count is spoken there. The PIN itself never is.
+    /// Speaks only the entered count while focus stays on the keypad, never the PIN itself.
     func announceEntryCount() {
-        guard lockScreenKeySize != nil else { return }
         AccessibilityNotification.Announcement(entryCountText).post()
     }
 
     /// Announces from the new value: a task started by a key press still holds the state from before the check.
     func announceStateChange(from oldState: POSPINEntryState, to newState: POSPINEntryState) {
         let text: String
-        switch helper.announcement(from: oldState, to: newState, announcesWaits: lockScreenKeySize != nil) {
+        switch helper.announcement(from: oldState, to: newState) {
         case .status(let message): text = accessibilityText(for: message)
         case .entryAvailable: text = Localization.entryAvailableMessage
         case nil: return
@@ -582,9 +541,7 @@ private extension POSPINEntryView {
             + keySpacing * CGFloat(POSPINEntryViewHelper.keypadRows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
-        static let waveHeight: CGFloat = 6
-        static let waveSpeed: Double = 5.0
-        static let wavePhase: Double = 0.7
+        static let feedbackMeasurementWaitSeconds = 59 * 60 + 59
         static let emptyKey = ""
         static let deleteKey = "delete"
     }
@@ -679,38 +636,38 @@ extension POSPINEntryView {
     func previewing(enteredPIN: String) -> Self {
         var view = self
         view.previewEnteredPIN = enteredPIN
-        view._attempt = State(initialValue: POSPINAttempt(pin: enteredPIN, defersFailureMessage: style != .standard))
+        view._attempt = State(initialValue: POSPINAttempt(pin: enteredPIN))
         return view
     }
 }
 
 #Preview("Idle") {
-    POSPINEntryView(state: .idle, onComplete: { _ in true })
+    POSPINEntryView(state: .idle, style: .approval, onComplete: { _ in true })
         .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Error") {
-    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in false })
+    POSPINEntryView(state: .error(kind: .invalidPIN), style: .approval, onComplete: { _ in false })
         .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Waiting") {
-    POSPINEntryView(state: .waiting(remainingSeconds: 30), onComplete: { _ in true })
+    POSPINEntryView(state: .waiting(remainingSeconds: 30), style: .approval, onComplete: { _ in true })
         .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Loading") {
-    POSPINEntryView(state: .loading, onComplete: { _ in true })
+    POSPINEntryView(state: .loading, style: .approval, onComplete: { _ in true })
         .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Interactive (wrong PIN)") {
     @Previewable @State var state: POSPINEntryState = .idle
-    POSPINEntryView(state: state, onComplete: { _ in
+    POSPINEntryView(state: state, style: .approval, onComplete: { _ in
         state = .loading
         return await withCheckedContinuation { continuation in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {

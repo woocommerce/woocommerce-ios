@@ -1256,6 +1256,42 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
+    func test_collect_trial_payment_when_payment_screen_releases_view_model_then_still_completes_after_refresh() async throws {
+        // Given
+        let order = Order.fake().copy(status: .pending)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        let refreshStarted = expectation(description: "Started the order refresh")
+        let paymentFinished = expectation(description: "Completed the trial payment flow")
+        var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrderRemotely(_, _, completion) = action {
+                completeRefresh = completion
+                refreshStarted.fulfill()
+            }
+        }
+        var viewModel: PaymentMethodsViewModel? = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .tapToPayTryAPayment,
+                                                                          channel: .storeManagement,
+                                                                          dependencies: Dependencies(stores: stores, storage: storage))
+        var closeReceipt: (() -> Void)?
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()), onSuccessfulPayment: { paymentCompleted, flowCompleted in
+            closeReceipt = flowCompleted
+            paymentCompleted()
+        })
+        try XCTUnwrap(viewModel).collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase,
+                                                onSuccess: { paymentFinished.fulfill() },
+                                                onFailure: { XCTFail("Expected a successful trial payment") })
+        await fulfillment(of: [refreshStarted], timeout: 2)
+
+        // When
+        try XCTUnwrap(closeReceipt)()
+        XCTAssertEqual(viewModel?.showLoadingIndicator, true)
+        viewModel = nil
+        try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed, datePaid: .some(Date()))))
+
+        // Then
+        await fulfillment(of: [paymentFinished], timeout: 2)
+    }
+
     func test_collect_payment_when_retry_order_check_fails_then_awaits_refresh_before_returning() async throws {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())

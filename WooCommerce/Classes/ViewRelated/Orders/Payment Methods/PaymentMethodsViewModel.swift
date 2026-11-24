@@ -301,7 +301,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                 guard let self else { return }
 
                 trackFlowFailed()
-                // A PIN-required Tap to Pay decline leaves the payment methods available.
+                // Keep the payment picker open so the merchant can choose another method.
                 guard shouldReturnToOrderDetails(for: discoveryMethod, error: error) else { return }
 
                 returnToOrderDetails(after: refreshOrder(), onCompletion: onFailure)
@@ -549,9 +549,9 @@ private extension PaymentMethodsViewModel {
     @MainActor
     func returnToOrderDetails(after refreshTask: Task<Void, Never>, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
-        Task { @MainActor [weak self] in
+        // A trial payment needs its completion to start the refund even after the payment screen closes.
+        Task { @MainActor in
             await refreshTask.value
-            guard let self else { return }
             showLoadingIndicator = false
             onCompletion()
         }

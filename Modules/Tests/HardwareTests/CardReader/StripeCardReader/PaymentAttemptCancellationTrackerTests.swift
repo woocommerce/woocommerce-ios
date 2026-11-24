@@ -61,7 +61,7 @@ struct PaymentAttemptCancellationTrackerTests {
         // When: creation returns an intent, and Stripe later confirms its cancellation.
         let cancellationID = try #require(tracker.beginCancellation(attemptID))
         #expect(results.isEmpty)
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .success(()))
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .success(()))?()
 
         // Then
         #expect(results.count == 1)
@@ -86,14 +86,14 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(completionCount == 0)
 
         // When
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .success(()))
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .success(()))
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .success(()))?()
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .success(()))?()
 
         // Then
         #expect(completionCount == 2)
     }
 
-    @Test func test_completeCancellation_when_stripe_fails_then_returns_error_and_keeps_attempt_unresolved() throws {
+    @Test func test_resolveCancellation_when_stripe_fails_then_returns_error_and_keeps_attempt_unresolved() throws {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let attemptID = tracker.beginAttempt()
@@ -102,7 +102,7 @@ struct PaymentAttemptCancellationTrackerTests {
         let cancellationID = try #require(tracker.beginCancellation(attemptID))
 
         // When
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))?()
 
         // Then
         #expect(throws: TestError.cancellationFailed) { try #require(result).get() }
@@ -110,19 +110,19 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.isCanceled(attemptID))
     }
 
-    @Test func test_completeCancellation_when_old_callback_arrives_during_retry_then_does_not_resolve_retry() throws {
+    @Test func test_resolveCancellation_when_old_callback_arrives_during_retry_then_does_not_resolve_retry() throws {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let attemptID = tracker.beginAttempt()
         _ = tracker.cancelActiveAttempt()
         let oldCancellationID = try #require(tracker.beginCancellation(attemptID))
-        tracker.completeCancellation(attemptID, cancellationID: oldCancellationID, result: .failure(TestError.cancellationFailed))
+        tracker.resolveCancellation(attemptID, cancellationID: oldCancellationID, result: .failure(TestError.cancellationFailed))?()
         var completionCount = 0
         _ = tracker.cancelActiveAttempt { _ in completionCount += 1 }
         let retryCancellationID = try #require(tracker.beginCancellation(attemptID))
 
         // When
-        tracker.completeCancellation(attemptID, cancellationID: oldCancellationID, result: .success(()))
+        tracker.resolveCancellation(attemptID, cancellationID: oldCancellationID, result: .success(()))?()
 
         // Then
         #expect(completionCount == 0)
@@ -130,7 +130,7 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.isCanceled(attemptID))
 
         // When
-        tracker.completeCancellation(attemptID, cancellationID: retryCancellationID, result: .success(()))
+        tracker.resolveCancellation(attemptID, cancellationID: retryCancellationID, result: .success(()))?()
 
         // Then
         #expect(completionCount == 1)
@@ -152,7 +152,7 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.activeAttemptID == nil)
     }
 
-    @Test func test_completeCancellation_when_waiter_reenters_then_service_state_is_cleared_before_callback() throws {
+    @Test func test_resolveCancellation_when_waiter_reenters_then_service_state_is_cleared_before_callback() throws {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let attemptID = tracker.beginAttempt()
@@ -165,9 +165,9 @@ struct PaymentAttemptCancellationTrackerTests {
         let cancellationID = try #require(tracker.beginCancellation(attemptID))
 
         // When
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .success(())) {
-            intentIsActive = false
-        }
+        let notify = try #require(tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .success(())))
+        intentIsActive = false
+        notify()
 
         // Then
         #expect(tracker.activeAttemptID != nil)
@@ -212,8 +212,8 @@ struct PaymentAttemptCancellationTrackerTests {
 
         // When
         let result: Result<Void, Error> = cancellationSucceeds ? .success(()) : .failure(TestError.cancellationFailed)
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: result)
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: result)
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: result)?()
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: result)?()
 
         // Then
         #expect(results.count == 2)
@@ -236,7 +236,7 @@ struct PaymentAttemptCancellationTrackerTests {
         var results: [Result<Void, Error>] = []
         _ = tracker.cancelActiveAttempt { results.append($0) }
         let cancellationID = try #require(tracker.beginCancellation(attemptID))
-        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))
+        tracker.resolveCancellation(attemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))?()
         #expect(tracker.activeAttemptID == attemptID)
         #expect(tracker.isCanceled(attemptID))
 
@@ -260,7 +260,7 @@ struct PaymentAttemptCancellationTrackerTests {
 
         // When
         tracker.finishAttempt(oldAttemptID)
-        tracker.completeCancellation(oldAttemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))
+        tracker.resolveCancellation(oldAttemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))?()
 
         // Then
         #expect(tracker.activeAttemptID == nextAttemptID)

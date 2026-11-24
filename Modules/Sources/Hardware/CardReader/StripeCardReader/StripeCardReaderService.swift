@@ -742,16 +742,16 @@ private extension StripeCardReaderService {
                 } else {
                     result = .failure(CardReaderServiceError.paymentCancellation())
                 }
-                paymentAttemptTracker.completeCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) {
-                    if case .success = result,
-                       paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID,
-                       activePaymentIntent?.stripeId == intentID {
-                        activePaymentIntent = nil
-                    }
-                    if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
-                        cancellationStartedInApp = nil
-                    }
+                guard let notify = paymentAttemptTracker.resolveCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) else { return }
+                if case .success = result,
+                   paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID,
+                   activePaymentIntent?.stripeId == intentID {
+                    activePaymentIntent = nil
                 }
+                if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
+                    cancellationStartedInApp = nil
+                }
+                notify()
             }
         }
         guard paymentAttemptTracker.activeAttemptID == paymentAttemptID,

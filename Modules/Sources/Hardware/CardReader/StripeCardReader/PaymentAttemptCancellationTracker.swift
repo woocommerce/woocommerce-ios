@@ -43,11 +43,12 @@ final class PaymentAttemptCancellationTracker {
         return cancellationID
     }
 
-    func completeCancellation(_ attemptID: UUID, cancellationID: UUID, result: Result<Void, Error>, beforeCompletion: () -> Void = {}) {
+    // The owner clears SDK state before it delivers the returned notification.
+    func resolveCancellation(_ attemptID: UUID, cancellationID: UUID, result: Result<Void, Error>) -> (() -> Void)? {
         lock.lock()
         guard cancellationIDs[attemptID] == cancellationID else {
             lock.unlock()
-            return
+            return nil
         }
         cancellationIDs[attemptID] = nil
         let completions = cancellationCompletions.removeValue(forKey: attemptID) ?? []
@@ -62,8 +63,7 @@ final class PaymentAttemptCancellationTracker {
             break
         }
         lock.unlock()
-        beforeCompletion()
-        completions.forEach { $0(result) }
+        return { completions.forEach { $0(result) } }
     }
 
     func isCanceled(_ attemptID: UUID) -> Bool {

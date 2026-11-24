@@ -484,14 +484,17 @@ private extension Binding where Value == Touch {
     }
 }
 
+@MainActor
 private func block(_ width: CGFloat, _ height: CGFloat, _ color: Color, radius: CGFloat = POSCornerRadiusStyle.full.value) -> some View {
     RoundedRectangle(cornerRadius: radius).fill(color).frame(width: width, height: height)
 }
 
+@MainActor
 private func card(width: CGFloat, height: CGFloat) -> some View {
     block(width, height, .posSurfaceBright, radius: POSCornerRadiusStyle.medium.value)
 }
 
+@MainActor
 private func label(_ text: String, size: CGFloat, weight: Font.Weight = .regular, color: Color = .posOnSurface, width: CGFloat) -> some View {
     let scale = size / 14
     return Text(text)
@@ -690,7 +693,7 @@ private enum Constants {
     static let activeMessageDelay: Duration = .milliseconds(600)
     static let activeMessageHold: Duration = .seconds(5)
     static let powerRestartDelay: Duration = .seconds(3)
-    static let sceneTransition = AnyTransition.opacity.combined(with: .scale(scale: 0.94))
+    static var sceneTransition: AnyTransition { .opacity.combined(with: .scale(scale: 0.94)) }
     // Stays visible on both the device and its cards in light mode, where the dim surfaces match the background.
     static let fill = Color.posOutlineVariant.opacity(0.5)
     // The palette has no token for the blue of the Accessibility icon and of links in iOS Settings.

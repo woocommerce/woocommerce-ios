@@ -223,6 +223,12 @@ final class ProductListViewModel {
         }
     }
 
+    /// Opens the same inventory sheet as the camera, so it follows the same Square plugin rule.
+    @MainActor
+    var isHardwareScanToUpdateInventoryAvailable: Bool {
+        !isPluginActive(.wooSquare)
+    }
+
     // The feature breaks if the Square plugin is active, since modifies inventory management logic
     // If the plugin is active, we'll hide the inventory scanner button
     // More details: https://wp.me/pdfdoF-2Nq

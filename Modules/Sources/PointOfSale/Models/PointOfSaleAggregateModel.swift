@@ -10,6 +10,7 @@ import struct Yosemite.Order
 import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
+import enum Hardware.HIDBarcodeParserError
 import struct Yosemite.POSCustomAmount
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction

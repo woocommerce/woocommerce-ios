@@ -59,7 +59,7 @@ public final class OrdersScreen: ScreenObject {
         XCTAssertEqual(orders.count, ordersTableView.cells.count, "Expecting '\(orders.count)' orders, got '\(ordersTableView.cells.count)' instead!")
         ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
         ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
-        ordersTableView.element.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+        ordersTableView.element.assertTextVisibilityCount(textToFind: orders[0].billing.first_name, expectedCount: 1)
 
         return self
     }

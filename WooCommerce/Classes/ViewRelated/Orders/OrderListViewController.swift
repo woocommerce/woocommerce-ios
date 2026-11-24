@@ -5,6 +5,7 @@ import Yosemite
 import WordPressUI
 import SafariServices
 import SwiftUI
+import StoreDesignSystem
 import WooFoundation
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
@@ -22,6 +23,14 @@ protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+
+    /// Called when the hosted order-list header requests the filters flow.
+    ///
+    func orderListViewControllerDidRequestFilters(_ viewController: OrderListViewController)
+
+    /// Called when the hosted order-list header's content or height changes.
+    ///
+    func orderListViewControllerHeaderDidChange(_ viewController: OrderListViewController)
 
     /// Called when a user press a clear filters button. Eg. the clear filters button in the empty screen.
     ///
@@ -80,9 +89,13 @@ final class OrderListViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
+    private lazy var storeFooterSpinnerView = StoreOrderListFooterView()
+
     /// The view shown if the list is empty.
     ///
     private lazy var emptyStateView = ListEmptyView()
+
+    private lazy var storeEmptyStateView = StoreOrderListFooterView(fillsAvailableHeight: true)
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -97,6 +110,7 @@ final class OrderListViewController: UIViewController {
         }
         set {
             OrderListSyncBackgroundTask.latestSyncDate = newValue
+            updateStoreHeader()
             delegate?.orderListViewControllerSyncTimestampChanged(newValue)
         }
     }
@@ -116,6 +130,12 @@ final class OrderListViewController: UIViewController {
     private let siteID: Int64
 
     private let stores: StoresManager
+
+    private let usesStoreDesignSystem: Bool
+
+    lazy var storeHeaderView = StoreOrderListHeaderView(frame: .zero)
+
+    private var isStoreBannerExpanded = true
 
     /// Current top banner that is displayed.
     ///
@@ -143,10 +163,12 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
+         usesStoreDesignSystem: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          switchDetailsHandler: @escaping SelectOrderDetails) {
         self.siteID = siteID
         self.viewModel = viewModel
+        self.usesStoreDesignSystem = usesStoreDesignSystem
         self.stores = stores
         self.switchDetailsHandler = switchDetailsHandler
 
@@ -168,6 +190,7 @@ final class OrderListViewController: UIViewController {
         registerTableViewHeadersAndCells()
         configureTableView()
         configureLiquidGlassTabBarUnderlap()
+        configureDynamicTypeUpdates()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -220,7 +243,9 @@ final class OrderListViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
+        if !usesStoreDesignSystem {
+            tableView.updateHeaderHeight()
+        }
         updateEmptyStateHeight()
 
         // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
@@ -255,6 +280,11 @@ final class OrderListViewController: UIViewController {
     private func makeCellProvider() -> UITableViewDiffableDataSource<Section, Item>.CellProvider {
         return { [weak self] tableView, indexPath, item in
             if case .placeholder = item {
+                if self?.usesStoreDesignSystem == true {
+                    let cell = tableView.dequeueReusableCell(StoreOrderListTableViewCell.self, for: indexPath)
+                    cell.configurePlaceholder()
+                    return cell
+                }
                 let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
                 cell.stopGhostAnimation()
                 cell.isUserInteractionEnabled = false
@@ -264,8 +294,18 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
-            cell.configureCell(viewModel: item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) })
+            let viewModel = item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) }
+            guard self?.usesStoreDesignSystem == true else {
+                let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
+                cell.configureCell(viewModel: viewModel)
+                cell.layoutIfNeeded()
+                return cell
+            }
+
+            let cell = tableView.dequeueReusableCell(StoreOrderListTableViewCell.self, for: indexPath)
+            cell.configure(viewModel: viewModel,
+                           isFirstInSection: indexPath.row == 0,
+                           isLastInSection: indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1)
             cell.layoutIfNeeded()
             return cell
         }
@@ -338,17 +378,33 @@ private extension OrderListViewController {
         tableView.delegate = self
         tableView.dataSource = dataSource
 
-        view.backgroundColor = .listBackground
+        let backgroundColor = usesStoreDesignSystem ? UIColor(Color.storeSurface) : .listBackground
+        view.backgroundColor = backgroundColor
         tableView.accessibilityIdentifier = "orders-table-view"
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = backgroundColor
+        tableView.separatorStyle = usesStoreDesignSystem ? .none : .singleLine
         tableView.refreshControl = refreshControl
-        tableView.tableFooterView = footerSpinnerView
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: false))
+            storeFooterSpinnerView.show(in: tableView)
+        } else {
+            tableView.tableFooterView = footerSpinnerView
+        }
         tableView.estimatedSectionHeaderHeight = Constants.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.allowsFocus = supportsFocus()
+        updateStoreHeader()
+    }
+
+    func configureDynamicTypeUpdates() {
+        guard usesStoreDesignSystem else { return }
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (controller: OrderListViewController, _: UITraitCollection) in
+            controller.delegate?.orderListViewControllerHeaderDidChange(controller)
+            controller.updateEmptyStateHeight()
+        }
     }
 
     func configureLiquidGlassTabBarUnderlap() {
@@ -365,17 +421,29 @@ private extension OrderListViewController {
     ///
     func registerTableViewHeadersAndCells() {
         tableView.registerNib(for: OrderTableViewCell.self)
+        tableView.register(StoreOrderListTableViewCell.self)
         // Keep loading cells separate so their skeleton layout never inherits an order's content.
         tableView.register(OrderTableViewCell.loadNib(), forCellReuseIdentifier: Constants.loadingCellIdentifier)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
+        tableView.register(StoreOrderListSectionHeaderView.self,
+                           forHeaderFooterViewReuseIdentifier: StoreOrderListSectionHeaderView.reuseIdentifier)
     }
 }
 
 // MARK: - Actions
 //
 extension OrderListViewController {
+    func updateFilters(_ filters: FilterOrderListViewModel.Filters?) {
+        viewModel.updateFilters(filters: filters)
+        updateStoreHeader()
+    }
+
+    func requestFilters() {
+        delegate?.orderListViewControllerDidRequestFilters(self)
+    }
+
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
@@ -525,6 +593,54 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         tableView.updateHeaderHeight()
         updateEmptyStateHeight()
     }
+
+    func updateStoreHeader(topBanner: OrderListViewModel.TopBanner? = nil) {
+        guard usesStoreDesignSystem, isViewLoaded else { return }
+
+        storeHeaderView.configure(state: makeStoreHeaderState(topBanner: topBanner ?? viewModel.topBanner),
+                                  onFilter: { [weak self] in self?.requestFilters() },
+                                  onToggleBanner: { [weak self] in self?.toggleStoreBannerExpansion() },
+                                  onTroubleshoot: { [weak self] in self?.troubleshootTopBannerError() },
+                                  onContactSupport: { [weak self] in self?.showTopBannerSupport() },
+                                  onRetryCurrency: { [weak self] in self?.viewModel.retryStoreCurrencySync() })
+        delegate?.orderListViewControllerHeaderDidChange(self)
+        updateEmptyStateHeight()
+    }
+
+    func toggleStoreBannerExpansion() {
+        guard usesStoreDesignSystem,
+              let state = storeHeaderView.state,
+              case .error = state.banner else {
+            return
+        }
+
+        isStoreBannerExpanded.toggle()
+        updateStoreHeader()
+    }
+
+    func makeStoreHeaderState(topBanner: OrderListViewModel.TopBanner) -> StoreOrderListHeaderState {
+        let lastUpdatedText: String? = {
+            guard lastFullSyncTimestamp != .distantPast else { return nil }
+            let formatter = lastFullSyncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+            return OrderListLocalization.lastUpdatedText(time: formatter.string(from: lastFullSyncTimestamp))
+        }()
+
+        let banner: StoreOrderListHeaderState.Banner
+        switch topBanner {
+        case .none:
+            banner = .none
+        case .currencyUnavailable:
+            banner = .currencyUnavailable
+        case .error(let error):
+            let errorType = ErrorTopBannerFactory.ErrorType(error: error)
+            banner = .error(title: errorType.title, message: errorType.info)
+        }
+
+        return StoreOrderListHeaderState(activeFilterCount: viewModel.filters?.numberOfActiveFilters ?? 0,
+                                         lastUpdatedText: lastUpdatedText,
+                                         banner: banner,
+                                         isBannerExpanded: isStoreBannerExpanded)
+    }
 }
 
 // MARK: - Spinner Helpers
@@ -538,7 +654,12 @@ extension OrderListViewController {
             return
         }
 
-        footerSpinnerView.startAnimating()
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: true))
+            storeFooterSpinnerView.updateHeight(in: tableView)
+        } else {
+            footerSpinnerView.startAnimating()
+        }
     }
 
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
@@ -554,7 +675,12 @@ extension OrderListViewController {
     /// Stops animating the Footer Spinner.
     ///
     private func ensureFooterSpinnerIsStopped() {
-        footerSpinnerView.stopAnimating()
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: false))
+            storeFooterSpinnerView.updateHeight(in: tableView)
+        } else {
+            footerSpinnerView.stopAnimating()
+        }
     }
 }
 
@@ -712,6 +838,16 @@ extension OrderListViewController {
 private extension OrderListViewController {
     func configureEmptyStateView() {
         guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
+            if usesStoreDesignSystem {
+                storeEmptyStateView.setContent(StoreOrderListEmptyView(title: Localization.allOrdersEmptyStateMessage,
+                                                                       titleIsStrong: true,
+                                                                       emphasizedTitle: nil,
+                                                                       details: Localization.allOrdersEmptyStateDetail,
+                                                                       image: .boxesImage,
+                                                                       actionTitle: Localization.learnMore,
+                                                                       action: showLearnMore))
+                return
+            }
             emptyStateView.configure(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                                      image: .boxesImage,
                                      details: Localization.allOrdersEmptyStateDetail,
@@ -719,6 +855,18 @@ private extension OrderListViewController {
                 guard let self else { return }
                 WebviewHelper.launch(WooConstants.URLs.blog.asURL(), with: self)
             }
+            return
+        }
+
+        if usesStoreDesignSystem {
+            let title = String.localizedStringWithFormat(Localization.filteredOrdersEmptyStateMessage, filters.readableString)
+            storeEmptyStateView.setContent(StoreOrderListEmptyView(title: title,
+                                                                   titleIsStrong: false,
+                                                                   emphasizedTitle: filters.readableString,
+                                                                   details: nil,
+                                                                   image: .magnifyingGlassNotFound,
+                                                                   actionTitle: Localization.clearButton,
+                                                                   action: clearFilters))
             return
         }
 
@@ -736,7 +884,19 @@ private extension OrderListViewController {
     }
 
     func updateEmptyStateHeight() {
-        emptyStateView.updateHeight(in: tableView)
+        if usesStoreDesignSystem {
+            storeEmptyStateView.updateHeight(in: tableView)
+        } else {
+            emptyStateView.updateHeight(in: tableView)
+        }
+    }
+
+    func showLearnMore() {
+        WebviewHelper.launch(WooConstants.URLs.blog.asURL(), with: self)
+    }
+
+    func clearFilters() {
+        delegate?.clearFilters()
     }
 }
 
@@ -786,8 +946,10 @@ extension OrderListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
         if case .placeholder = item {
-            cell.layoutIfNeeded()
-            cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            if !usesStoreDesignSystem {
+                cell.layoutIfNeeded()
+                cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            }
             return
         }
         guard let objectID = item.objectID,
@@ -799,11 +961,22 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.stopGhostAnimation()
+        if !usesStoreDesignSystem {
+            cell.stopGhostAnimation()
+        }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard case .orders(let sectionIdentifier) = dataSource?.sectionIdentifier(for: section) else { return nil }
+        if usesStoreDesignSystem {
+            let reuseIdentifier = StoreOrderListSectionHeaderView.reuseIdentifier
+            guard let title = viewModel.sectionTitleFor(sectionIdentifier: sectionIdentifier),
+                  let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? StoreOrderListSectionHeaderView else {
+                return nil
+            }
+            header.configure(title: title)
+            return header
+        }
         let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
             return nil
@@ -842,7 +1015,7 @@ extension OrderListViewController: UITableViewDelegate {
             self?.markOrderAsCompleted(resultID: objectID)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
-        markAsCompletedAction.backgroundColor = .brand
+        markAsCompletedAction.backgroundColor = usesStoreDesignSystem ? UIColor(Color.storePrimary) : .brand
         markAsCompletedAction.image = .checkmarkImage
 
         return UISwipeActionsConfiguration(actions: [markAsCompletedAction])
@@ -867,7 +1040,8 @@ private extension OrderListViewController {
     func updateTableContent() {
         guard let dataSource else { return }
 
-        let existingItems = Set(dataSource.snapshot().itemIdentifiers)
+        let previousSnapshot = dataSource.snapshot()
+        let existingItems = Set(previousSnapshot.itemIdentifiers)
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         if state == .placeholder {
             snapshot.appendSections([.placeholder])
@@ -878,7 +1052,11 @@ private extension OrderListViewController {
                 snapshot.appendItems(ordersSnapshot.itemIdentifiers(inSection: section).map(Item.order), toSection: .orders(section))
             }
             let updatedItems = ordersSnapshot.reloadedItemIdentifiers + ordersSnapshot.reconfiguredItemIdentifiers
-            snapshot.reconfigureItems(Array(Set(updatedItems.map(Item.order)).intersection(existingItems)))
+            var itemsToReconfigure = Set(updatedItems.map(Item.order)).intersection(existingItems)
+            if usesStoreDesignSystem {
+                itemsToReconfigure.formUnion(Self.itemsWithChangedSectionBoundaries(from: previousSnapshot, to: snapshot))
+            }
+            snapshot.reconfigureItems(Array(itemsToReconfigure))
         }
 
         let hadOrders = existingItems.contains { $0.objectID != nil }
@@ -886,8 +1064,14 @@ private extension OrderListViewController {
 
         if state == .empty {
             configureEmptyStateView()
-            emptyStateView.show(in: tableView)
-        } else if tableView.tableFooterView !== footerSpinnerView {
+            if usesStoreDesignSystem {
+                storeEmptyStateView.show(in: tableView)
+            } else {
+                emptyStateView.show(in: tableView)
+            }
+        } else if usesStoreDesignSystem, tableView.tableFooterView !== storeFooterSpinnerView {
+            storeFooterSpinnerView.show(in: tableView)
+        } else if !usesStoreDesignSystem, tableView.tableFooterView !== footerSpinnerView {
             tableView.tableFooterView = footerSpinnerView
         }
         ensureFooterSpinnerIsStopped()
@@ -924,9 +1108,40 @@ private extension OrderListViewController {
     }
 }
 
+extension OrderListViewController {
+    static func itemsWithChangedSectionBoundaries<SectionIdentifier: Hashable, ItemIdentifier: Hashable>(
+        from previousSnapshot: NSDiffableDataSourceSnapshot<SectionIdentifier, ItemIdentifier>,
+        to snapshot: NSDiffableDataSourceSnapshot<SectionIdentifier, ItemIdentifier>
+    ) -> Set<ItemIdentifier> {
+        let previousItems = Set(previousSnapshot.itemIdentifiers)
+        let currentItems = Set(snapshot.itemIdentifiers)
+        let survivingItems = previousItems.intersection(currentItems)
+
+        let previousFirstItems = Set(previousSnapshot.sectionIdentifiers.compactMap { previousSnapshot.itemIdentifiers(inSection: $0).first })
+        let previousLastItems = Set(previousSnapshot.sectionIdentifiers.compactMap { previousSnapshot.itemIdentifiers(inSection: $0).last })
+        let currentFirstItems = Set(snapshot.sectionIdentifiers.compactMap { snapshot.itemIdentifiers(inSection: $0).first })
+        let currentLastItems = Set(snapshot.sectionIdentifiers.compactMap { snapshot.itemIdentifiers(inSection: $0).last })
+        let boundaryItems = previousFirstItems.union(previousLastItems).union(currentFirstItems).union(currentLastItems)
+
+        return boundaryItems.intersection(survivingItems).filter { item in
+            previousFirstItems.contains(item) != currentFirstItems.contains(item) ||
+                previousLastItems.contains(item) != currentLastItems.contains(item)
+        }
+    }
+}
+
 // MARK: Top Banner Factories
 private extension OrderListViewController {
     func renderTopBanner(_ topBanner: OrderListViewModel.TopBanner) {
+        if usesStoreDesignSystem {
+            let nextBanner = makeStoreHeaderState(topBanner: topBanner).banner
+            if storeHeaderView.state?.banner != nextBanner {
+                isStoreBannerExpanded = true
+            }
+            updateStoreHeader(topBanner: topBanner)
+            return
+        }
+
         switch topBanner {
         case .none:
             hideTopBannerView()
@@ -945,33 +1160,40 @@ private extension OrderListViewController {
             self?.view.setNeedsLayout()
         },
         onTroubleshootButtonPressed: { [weak self] in
-            guard let self else { return }
-
-            if self.ordersSnapshot.numberOfItems == 0 {
-                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
-                return
-            }
-
-            ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
-            let connectivityToolViewController = ConnectivityToolViewController()
-            self.show(connectivityToolViewController, sender: self)
+            self?.troubleshootTopBannerError()
         },
         onContactSupportButtonPressed: { [weak self] in
-            guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
-            supportForm.show(from: self)
+            self?.showTopBannerSupport()
         })
         showTopBannerView()
+    }
+
+    func troubleshootTopBannerError() {
+        guard case .error(let error) = viewModel.topBanner else { return }
+
+        if ordersSnapshot.numberOfItems == 0 {
+            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            return
+        }
+
+        ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+        let connectivityToolViewController = ConnectivityToolViewController()
+        show(connectivityToolViewController, sender: self)
+    }
+
+    func showTopBannerSupport() {
+        let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
+        supportForm.show(from: self)
     }
 
     /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
     ///
     func setCurrencyUnavailableTopBanner() {
-        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+        let retryAction = TopBannerViewModel.ActionButton(title: OrderListLocalization.currencyUnavailableRetry) { [weak self] _ in
             self?.viewModel.retryStoreCurrencySync()
         }
-        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
-                                                 infoText: Localization.currencyUnavailableInfo,
+        let bannerViewModel = TopBannerViewModel(title: OrderListLocalization.currencyUnavailableTitle,
+                                                 infoText: OrderListLocalization.currencyUnavailableInfo,
                                                  icon: .infoOutlineImage,
                                                  isExpanded: true,
                                                  shouldResizeInfo: false,
@@ -1006,24 +1228,6 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
-
-        static let currencyUnavailableTitle = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.title",
-            value: "Store currency unavailable",
-            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableInfo = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.info",
-            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
-            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableRetry = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.retry",
-            value: "Retry",
-            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
-        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

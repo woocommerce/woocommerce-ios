@@ -141,12 +141,6 @@ final class DevicesRemoteTests: XCTestCase {
         XCTAssertEqual(registration, SelfDrivenPushRegistration(tokenID: 123, blogID: 456))
     }
 
-    func test_tokenIDMapper_normalizes_non_positive_blogID_to_nil() throws {
-        let response = Data(#"{"id":123,"blog_id":0}"#.utf8)
-
-        XCTAssertNil(try TokenIDMapper().map(response: response).blogID)
-    }
-
     /// Verifies that registerForSelfDrivenPushNotifications parses a "Failure" Backend Response.
     ///
     func test_registerForSelfDrivenPushNotifications_parses_failure_response() async {

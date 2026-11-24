@@ -6,6 +6,6 @@ public struct SelfDrivenPushRegistration: Equatable, Sendable {
 
     public init(tokenID: Int64, blogID: Int64?) {
         self.tokenID = tokenID
-        self.blogID = blogID.flatMap { $0 > 0 ? $0 : nil }
+        self.blogID = blogID
     }
 }

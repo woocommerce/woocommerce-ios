@@ -149,7 +149,7 @@ struct DebugPanelView: View {
         #if DEBUG
         .fullScreenCover(isPresented: $isPOSOnboardingGuidePresented, onDismiss: { posOnboardingGuideResult = posOnboardingGuideAction }) {
             POSOnboardingGuideDebugView { step in
-                dismissPOSOnboardingGuide(message: "Start selling tapped on step \(step)")
+                dismissPOSOnboardingGuide(message: "Enter POS tapped on step \(step)")
             } onExit: { step in
                 dismissPOSOnboardingGuide(message: "Exit POS tapped on step \(step)")
             }

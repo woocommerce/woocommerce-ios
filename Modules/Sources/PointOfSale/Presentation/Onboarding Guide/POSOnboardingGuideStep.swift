@@ -41,7 +41,7 @@ enum POSOnboardingGuideStep: Int, CaseIterable, Identifiable {
         }
     }
 
-    static let saleSteps = [Localization.saleStepAddProducts, Localization.saleStepCheckOut, Localization.saleStepTapCard]
+    static let saleSteps = [Localization.saleStepAddProducts, Localization.saleStepCheckOut, Localization.saleStepGetPaid]
 }
 
 private extension POSOnboardingGuideStep {
@@ -52,18 +52,18 @@ private extension POSOnboardingGuideStep {
             comment: "Title of the first step of the POS onboarding guide shown on iPhone."
         )
         static let checkoutMessage = NSLocalizedString(
-            "pos.onboardingGuide.checkout.message.v2",
-            value: "Add products, take payment with Tap to Pay or cash, and you're done.",
+            "pos.onboardingGuide.checkout.message.v3",
+            value: "Take payments with Tap to Pay on iPhone, a card reader or cash.",
             comment: "Message of the first step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreTitle = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.title.v2",
-            value: "Synced with your store",
+            "pos.onboardingGuide.oneStore.title.v3",
+            value: "One store for every sale",
             comment: "Title of the second step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreMessage = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.message.v2",
-            value: "Products, prices and stock come from your store, and every sale is recorded there.",
+            "pos.onboardingGuide.oneStore.message.v3",
+            value: "POS uses your store's products, prices and stock, and records every sale there. Nothing to reconcile.",
             comment: "Message of the second step of the POS onboarding guide shown on iPhone."
         )
         static let howASaleWorksTitle = NSLocalizedString(
@@ -81,11 +81,10 @@ private extension POSOnboardingGuideStep {
             value: "Check out",
             comment: "Second of three short labels for the steps of a sale in the POS onboarding guide."
         )
-        static let saleStepTapCard = NSLocalizedString(
-            "pos.onboardingGuide.howASaleWorks.tapCard",
-            value: "Tap card",
-            comment: "Third of three short labels for the steps of a sale in the POS onboarding guide: " +
-                "the customer taps their card or phone on the merchant's iPhone."
+        static let saleStepGetPaid = NSLocalizedString(
+            "pos.onboardingGuide.howASaleWorks.getPaid",
+            value: "Get paid",
+            comment: "Third of three short labels for the steps of a sale in the POS onboarding guide: the customer pays."
         )
     }
 }

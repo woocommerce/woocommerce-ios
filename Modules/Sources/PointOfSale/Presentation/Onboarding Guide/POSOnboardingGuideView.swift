@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Full-screen guide shown on iPhone when POS opens, until the merchant taps Start selling.
-/// It has no close button: the merchant either starts selling or exits POS.
+/// Full-screen guide shown on iPhone when POS opens, until the merchant taps Enter POS.
+/// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -225,8 +225,8 @@ private struct POSOnboardingGuideSaleStepBadge: View {
 private extension POSOnboardingGuideView {
     enum Localization {
         static let startSelling = NSLocalizedString(
-            "pos.onboardingGuide.startSellingButton",
-            value: "Start selling",
+            "pos.onboardingGuide.enterPOSButton",
+            value: "Enter POS",
             comment: "Primary button in the POS onboarding guide. Closes the guide and opens POS."
         )
         static let exit = NSLocalizedString(

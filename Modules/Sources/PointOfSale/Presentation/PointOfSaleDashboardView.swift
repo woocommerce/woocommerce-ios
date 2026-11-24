@@ -201,7 +201,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            POSSettingsView(settingsController: posModel.settingsController)
+            POSSettingsView(settingsController: posModel.settingsController, startsInSecurity: session.hasPendingAdminPINChange)
         }
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
@@ -216,6 +216,11 @@ struct PointOfSaleDashboardView: View {
             guard !newValue, oldValue else { return }
             Task {
                 await posModel.checkStaleSyncStatus()
+            }
+        }
+        .onChange(of: session.hasPendingAdminPINChange, initial: true) { _, hasPendingAdminPINChange in
+            if hasPendingAdminPINChange {
+                showSettings = true
             }
         }
         .onChange(of: session.isLocked) { _, isLocked in

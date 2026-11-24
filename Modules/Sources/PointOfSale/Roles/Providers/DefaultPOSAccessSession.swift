@@ -8,6 +8,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
     private(set) var isLocked: Bool
     private(set) var isPINProtectionEnabled: Bool
     @ObservationIgnored private(set) var accessScope = POSPINSessionTokens.Token()
+    private var recoveredAccessScope: POSPINSessionTokens.Token?
+
+    var hasPendingAdminPINChange: Bool {
+        !isLocked && currentStaff == POSLocalRole.admin.staff && recoveredAccessScope == accessScope
+    }
 
     @ObservationIgnored private let credentialProvider: POSPINCredentialProviding
     @ObservationIgnored private let siteID: Int64
@@ -125,6 +130,32 @@ final class DefaultPOSAccessSession: POSAccessSession {
         accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         _ = rateLimiter.sessionTokens.invalidate(ifCurrent: generation)
+    }
+
+    func recoverAdminAccess(using authenticate: POSPINRecoveryAuthentication) async -> POSPINRecoveryResult {
+        guard isLocked, isPINProtectionEnabled, !Task.isCancelled else { return .failed }
+        let request = generation
+        let result = await authenticate(siteID)
+        guard result == .verified(siteID: siteID) else { return result == .canceled ? .canceled : .failed }
+        guard rateLimiter.sessionTokens.isCurrent(request), isLocked, !Task.isCancelled else { return .failed }
+        do {
+            try await rateLimiter.resetAfterRecovery(token: request)
+        } catch {
+            return .failed
+        }
+        guard rateLimiter.sessionTokens.isCurrent(request), isLocked, !Task.isCancelled else { return .failed }
+        accessScope = POSPINSessionTokens.Token()
+        currentStaff = POSLocalRole.admin.staff
+        isLocked = false
+        persistLockState(false)
+        recoveredAccessScope = accessScope
+        return result
+    }
+
+    func consumeAdminPINChangeAuthorization() -> Bool {
+        guard hasPendingAdminPINChange, allows(.manageStoreSettings) else { return false }
+        recoveredAccessScope = nil
+        return true
     }
 
     func checkLockoutState() async throws(POSAuthError) {

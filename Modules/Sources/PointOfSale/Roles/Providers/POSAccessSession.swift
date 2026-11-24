@@ -21,4 +21,17 @@ protocol POSAccessSession: AnyObject, Sendable {
     func endSession()
     func saveElapsedTime() async
     func checkLockoutState() async throws(POSAuthError)
+    func recoverAdminAccess(using authenticate: POSPINRecoveryAuthentication) async -> POSPINRecoveryResult
+    var hasPendingAdminPINChange: Bool { get }
+    func consumeAdminPINChangeAuthorization() -> Bool
+}
+
+extension POSAccessSession {
+    var hasPendingAdminPINChange: Bool { false }
+
+    func consumeAdminPINChangeAuthorization() -> Bool { false }
+
+    func recoverAdminAccess(using authenticate: POSPINRecoveryAuthentication) async -> POSPINRecoveryResult {
+        .failed
+    }
 }

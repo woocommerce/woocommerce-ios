@@ -24,7 +24,9 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     /// Main web view
     private lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero)
+        let configuration = WKWebViewConfiguration()
+        configuration.websiteDataStore = websiteDataStore
+        let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
@@ -57,6 +59,7 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     }()
 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
+    private let websiteDataStore: WKWebsiteDataStore
     private var subscriptions: Set<AnyCancellable> = []
     private var webViewInitialLoad = true
     private var authorizationURL: String?
@@ -69,8 +72,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
              controller.present(alert, animated: true, completion: completion)
          },
          onCancel: @escaping () -> Void = {},
+         websiteDataStore: WKWebsiteDataStore = .default(),
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
+        self.websiteDataStore = websiteDataStore
         self.previousViewController = previousViewController
         self.onSuccess = onSuccess
         self.analytics = analytics

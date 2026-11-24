@@ -54,8 +54,9 @@ extension View {
 
     func posDialog<Item: Identifiable & Equatable>(item: Binding<Item?>,
                                                    onDismiss: (() -> Void)? = nil,
+                                                   onDismissCompleted: ((Item) -> Void)? = nil,
                                                    dialog: @escaping (Item) -> POSDialog) -> some View {
-        posModal(item: item, compactStyle: .dialog, onDismiss: onDismiss) { item in
+        posModal(item: item, compactStyle: .dialog, onDismiss: onDismiss, onDismissCompleted: onDismissCompleted) { item in
             POSDialogView(dialog: dialog(item))
         }
     }

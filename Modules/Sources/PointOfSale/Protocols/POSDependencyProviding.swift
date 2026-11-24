@@ -74,4 +74,9 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     @MainActor var externalNavigation: POSExternalNavigationProviding { get }
     @MainActor var externalViews: POSExternalViewProviding { get }
+    @MainActor var pinRecovery: POSPINRecoveryProviding? { get }
+}
+
+public extension POSDependencyProviding {
+    @MainActor var pinRecovery: POSPINRecoveryProviding? { nil }
 }

@@ -126,8 +126,7 @@ struct WPComEmailLoginView: View {
 private extension WPComEmailLoginView {
     @ViewBuilder
     var headerView: some View {
-        switch viewModel.flow {
-        case .jetpackSetup:
+        if case .jetpackSetup = viewModel.flow {
             JetpackInstallHeaderView()
         }
     }

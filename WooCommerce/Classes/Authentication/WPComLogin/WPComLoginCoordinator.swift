@@ -6,10 +6,12 @@ import WooFoundation
 
 enum WPComLoginFlow {
     case jetpackSetup(requiresConnectionOnly: Bool)
+    case posPINRecovery
 
-    var pendingAuthFlow: PendingAuthFlow {
+    var pendingAuthFlow: PendingAuthFlow? {
         switch self {
         case .jetpackSetup: .jetpackSetup
+        case .posPINRecovery: nil
         }
     }
 }
@@ -26,6 +28,7 @@ final class WPComLoginCoordinator {
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: (Credentials) -> Void
+    private var recoveryLinkRunner: WPComMagicLinkAuthRunner?
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
@@ -60,11 +63,17 @@ final class WPComLoginCoordinator {
         navigationController.show(emailLoginController, sender: self)
     }
 
-    func start(with email: String) async {
+    func start(with email: String, username: String? = nil) async {
         do {
             let passwordless = try await checkPasswordlessAccount(email: email)
-            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+            guard !Task.isCancelled else { return }
+            if passwordless {
+                await handleMagicLink(email: email)
+            } else {
+                showPasswordUIForLogin(email: email, username: username)
+            }
         } catch {
+            guard !Task.isCancelled else { return }
             showAlert(message: error.localizedDescription)
         }
     }
@@ -72,26 +81,23 @@ final class WPComLoginCoordinator {
 
 // MARK: - Login steps
 private extension WPComLoginCoordinator {
-    func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
-        if isPasswordlessAccount {
-            await handleMagicLink(email: email)
-        } else {
-            showPasswordUIForLogin(email: email)
-        }
-    }
-
     func handleMagicLink(email: String) async {
         do {
             try await requestAuthenticationLink(email: email)
+            if case .posPINRecovery = flow {
+                guard !Task.isCancelled, navigationController.presentingViewController != nil else { return }
+            }
             showMagicLinkSentUI(email: email)
         } catch {
+            guard !Task.isCancelled else { return }
             showAlert(message: error.localizedDescription)
         }
     }
 
-    func showPasswordUIForLogin(email: String) {
+    func showPasswordUIForLogin(email: String, username: String? = nil) {
         let viewModel = WPComPasswordLoginViewModel(
             email: email,
+            username: username,
             onMagicLinkRequest: { [weak self] email in
                 await self?.handleMagicLink(email: email)
             },
@@ -104,7 +110,7 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.completeLogin(username: email, authToken: authToken)
+                self?.completeLogin(username: username ?? email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             title: title,
@@ -157,12 +163,39 @@ private extension WPComLoginCoordinator {
     ///
     func showMagicLinkSentUI(email: String) {
         let storage = PendingAuthFlowStorage()
-        storage.updateCurrentFlow(flow.pendingAuthFlow)
+        if let pendingAuthFlow = flow.pendingAuthFlow {
+            storage.updateCurrentFlow(pendingAuthFlow)
+        }
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
                                                              flow: flow,
                                                              isSignup: false)
+        if case .posPINRecovery = flow {
+            viewController.rootView.onPasteSignInLink = { [weak self] url in
+                self?.openRecoveryLink(url, email: email)
+            }
+        }
         navigationController.show(viewController, sender: self)
+    }
+
+    func openRecoveryLink(_ url: URL, email: String) {
+        let scheme = Bundle.main.dotcomAuthScheme
+        guard recoveryLinkRunner == nil else { return }
+        guard POSPINRecoveryMagicLink.isSignInLink(url, callbackScheme: scheme), let window = navigationController.view.window else {
+            return showAlert(message: Localization.invalidRecoveryLink)
+        }
+        let runner = WPComMagicLinkAuthRunner(anchor: window) { [weak self] callback in
+            guard let self else { return }
+            recoveryLinkRunner = nil
+            guard let token = POSPINRecoveryMagicLink.token(from: callback, callbackScheme: scheme) else {
+                return showAlert(message: Localization.invalidRecoveryLink)
+            }
+            completeLogin(username: email, authToken: token)
+        } onCancel: { [weak self] in
+            self?.recoveryLinkRunner = nil
+        }
+        recoveryLinkRunner = runner
+        runner.start(url: url, callbackURLScheme: scheme)
     }
 
     func showWPComUsernameLogin() {
@@ -223,6 +256,11 @@ private extension WPComLoginCoordinator {
 
 private extension WPComLoginCoordinator {
     enum Localization {
+        static let invalidRecoveryLink = NSLocalizedString(
+            "wpComLoginCoordinator.posPINRecovery.invalidLink",
+            value: "Copy the WordPress.com sign-in link from your email and try again.",
+            comment: "Alert shown when an invalid WordPress.com link is pasted during POS PIN recovery."
+        )
         static let login = NSLocalizedString(
             "wpComLoginCoordinator.title",
             value: "Log In",
@@ -233,5 +271,32 @@ private extension WPComLoginCoordinator {
             value: "Cancel",
             comment: "Button to dismiss an error alert in the WPCom login flow"
         )
+    }
+}
+
+enum POSPINRecoveryMagicLink {
+    static func isSignInLink(_ url: URL, callbackScheme: String) -> Bool {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.scheme == "https", components.host == "wordpress.com", components.path == "/wp-login.php",
+              components.user == nil, components.password == nil, components.port == nil else { return false }
+        let items = components.queryItems ?? []
+        return value("action", in: items) == "magic-login"
+            && value("scheme", in: items) == callbackScheme
+            && value("token", in: items) != nil
+    }
+
+    static func token(from url: URL, callbackScheme: String) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.scheme == callbackScheme, components.host == "magic-login", components.path.isEmpty,
+              components.user == nil, components.password == nil, components.port == nil else { return nil }
+        let items = components.queryItems ?? []
+        guard items.allSatisfy({ $0.name != "flow" }) || value("flow", in: items) == "login" else { return nil }
+        return value("token", in: items)
+    }
+
+    private static func value(_ name: String, in items: [URLQueryItem]) -> String? {
+        let matches = items.filter { $0.name == name }
+        guard matches.count == 1, let value = matches.first?.value, !value.isEmpty else { return nil }
+        return value
     }
 }

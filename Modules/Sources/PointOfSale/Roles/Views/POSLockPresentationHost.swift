@@ -74,6 +74,7 @@ final class POSLockPresentationCoordinator: NSObject {
     private weak var sourceWindow: UIWindow?
     private weak var previousKeyWindow: UIWindow?
     private var lockWindow: UIWindow?
+    private let lockPresenter = POSLockPresenter()
     private var sourceAccessibilityHidden = false
     private var session: POSAccessSession?
     private var observationID = UUID()
@@ -98,8 +99,9 @@ final class POSLockPresentationCoordinator: NSObject {
     func update(session: POSAccessSession, content: AnyView) {
         let sessionChanged = self.session !== session
         self.session = session
-        self.content = content
+        self.content = AnyView(content.environment(\.posLockPresenter, lockPresenter))
         if sessionChanged {
+            lockPresenter.cancelRecovery()
             synchronizationTask?.cancel()
             observeLock()
         }
@@ -161,6 +163,7 @@ final class POSLockPresentationCoordinator: NSObject {
         sourceAccessibilityHidden = sourceWindow.accessibilityElementsHidden
         sourceWindow.accessibilityElementsHidden = true
         let controller = UIHostingController(rootView: content)
+        lockPresenter.controller = controller
         controller.view.backgroundColor = UIColor(Color.posSurfaceContainerLow)
         controller.view.accessibilityViewIsModal = true
         let window = UIWindow(windowScene: scene)
@@ -178,6 +181,7 @@ final class POSLockPresentationCoordinator: NSObject {
         let wasKey = window.isKeyWindow
         let scene = window.windowScene
         lockWindow = nil
+        lockPresenter.removeController()
         sourceWindow?.accessibilityElementsHidden = sourceAccessibilityHidden
         window.isHidden = true
         window.rootViewController = nil

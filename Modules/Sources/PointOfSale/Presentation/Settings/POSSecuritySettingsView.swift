@@ -47,7 +47,12 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving || presentation.isTransitioning)
-        .onAppear { controller.load() }
+        .onAppear {
+            controller.load()
+            if let flow = controller.takeRecoveredAdminPINChangeFlow() {
+                presentation.present(.editor(flow))
+            }
+        }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in
             if let request {

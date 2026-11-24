@@ -3,10 +3,12 @@ import SwiftUI
 struct POSLockScreenOverlay<Content: View>: View {
     private let content: Content
     private let session: POSAccessSession
+    private let recovery: POSPINRecoveryProviding?
 
-    init(session: POSAccessSession, @ViewBuilder content: () -> Content) {
+    init(session: POSAccessSession, recovery: POSPINRecoveryProviding? = nil, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.session = session
+        self.recovery = recovery
     }
 
     var body: some View {
@@ -17,7 +19,7 @@ struct POSLockScreenOverlay<Content: View>: View {
             .opacity(session.isLocked ? 0 : 1)
             .animation(nil, value: session.isLocked)
             .background(POSLockPresentationHost(session: session,
-                                                 lockContent: POSLockScreenView(session: session).id(ObjectIdentifier(session))))
+                                                 lockContent: POSLockScreenView(session: session, recovery: recovery).id(ObjectIdentifier(session))))
             .overlay {
                 if session.isLocked {
                     // Keep the source opaque before its scene window is attached.
@@ -29,9 +31,10 @@ struct POSLockScreenOverlay<Content: View>: View {
 
 private struct POSLockScreenOverlayModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
+    @Environment(\.posPINRecovery) private var recovery
 
     func body(content: Content) -> some View {
-        POSLockScreenOverlay(session: session) {
+        POSLockScreenOverlay(session: session, recovery: recovery) {
             content
         }
     }

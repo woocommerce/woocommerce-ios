@@ -293,6 +293,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posPINRecovery, services.pinRecovery)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)

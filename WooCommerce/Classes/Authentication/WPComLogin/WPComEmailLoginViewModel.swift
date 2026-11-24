@@ -22,6 +22,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
         switch flow {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        case .posPINRecovery:
+            ""
         }
     }
 
@@ -29,12 +31,14 @@ final class WPComEmailLoginViewModel: ObservableObject {
         switch flow {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        case .posPINRecovery:
+            ""
         }
     }
 
     var primaryButtonTitle: String {
         switch flow {
-        case .jetpackSetup:
+        case .jetpackSetup, .posPINRecovery:
             titleString
         }
     }
@@ -79,6 +83,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
                 switch flow {
                 case .jetpackSetup:
                     String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                case .posPINRecovery:
+                    ""
                 }
             }()
 

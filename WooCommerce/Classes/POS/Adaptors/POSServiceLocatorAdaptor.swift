@@ -12,6 +12,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
+import protocol PointOfSale.POSPINRecoveryProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
@@ -39,6 +40,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     @MainActor var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
+    }
+
+    @MainActor var pinRecovery: POSPINRecoveryProviding? {
+        POSPINRecoveryAdaptor()
     }
 }
 

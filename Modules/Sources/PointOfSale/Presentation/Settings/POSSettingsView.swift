@@ -6,6 +6,11 @@ struct POSSettingsView: View {
 
     let settingsController: POSSettingsControllerProtocol
 
+    init(settingsController: POSSettingsControllerProtocol, startsInSecurity: Bool = false) {
+        self.settingsController = settingsController
+        _selection = State(initialValue: startsInSecurity ? .security : nil)
+    }
+
     var body: some View {
         POSNavigationSplitView(selection: $selection) { selection in
             POSSettingsListView(selection: selection, settingsController: settingsController)

@@ -19,25 +19,27 @@ struct ProductVariationDetailsFactory {
                                         forceReadOnly: Bool,
                                         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                         onCompletion: @escaping (UIViewController) -> Void) {
-        let vc = productVariationDetails(productVariation: productVariation,
-                                         parentProduct: parentProduct,
-                                         presentationStyle: presentationStyle,
-                                         currencySettings: currencySettings,
-                                         isEditProductsEnabled: forceReadOnly ? false: true,
-                                         productImageUploader: productImageUploader)
-        onCompletion(vc)
+        productVariationDetails(productVariation: productVariation,
+                                parentProduct: parentProduct,
+                                presentationStyle: presentationStyle,
+                                formType: forceReadOnly ? .readonly: .edit,
+                                eventLogger: ProductFormEventLogger(),
+                                currencySettings: currencySettings,
+                                productImageUploader: productImageUploader,
+                                onCompletion: onCompletion)
     }
-}
 
-private extension ProductVariationDetailsFactory {
+    /// Creates a product variation details view controller for a specific form type.
     @MainActor
     static func productVariationDetails(productVariation: ProductVariation,
                                         parentProduct: Product,
                                         presentationStyle: ProductFormPresentationStyle,
-                                        currencySettings: CurrencySettings,
-                                        isEditProductsEnabled: Bool,
-                                        productImageUploader: ProductImageUploaderProtocol) -> UIViewController {
-        let vc: UIViewController
+                                        formType: ProductFormType,
+                                        eventLogger: ProductFormEventLoggerProtocol,
+                                        currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                                        productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+                                        onVariationDeletion: @escaping (ProductVariation) -> Void = { _ in },
+                                        onCompletion: @escaping (UIViewController) -> Void) {
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   parentProductType: parentProduct.productType,
                                                                   allAttributes: parentProduct.attributesForVariations,
@@ -48,20 +50,22 @@ private extension ProductVariationDetailsFactory {
                                       productOrVariationID: .variation(productID: productVariation.productID, variationID: productVariation.productVariationID),
                                       isLocalID: !productVariationModel.existsRemotely),
                            originalStatuses: productVariationModel.imageStatuses)
-        let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributesForVariations,
                                                       parentProductSKU: parentProduct.sku,
                                                       parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities,
                                                       formType: formType,
                                                       productImageActionHandler: productImageActionHandler)
-        vc = ProductFormViewController(viewModel: viewModel,
-                                       eventLogger: ProductFormEventLogger(),
-                                       productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle,
-                                       onDuplicateCompletion: { _, _ in })
+        viewModel.onVariationDeletion = onVariationDeletion
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: eventLogger,
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currencySettings.symbol(from: currencySettings.currencyCode),
+                                                       presentationStyle: presentationStyle,
+                                                       productImageUploader: productImageUploader,
+                                                       onDuplicateCompletion: { _, _ in })
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        vc.hidesBottomBarWhenPushed = true
-        return vc
+        viewController.hidesBottomBarWhenPushed = true
+        onCompletion(viewController)
     }
 }

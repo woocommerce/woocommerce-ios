@@ -11,15 +11,10 @@ public final class TwoFAScreen {
         $0.buttons["Continue Button"]
     }
 
-    private let myStoreTabGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
-    }
-
     public let app: XCUIApplication
 
     private var twoFAField: XCUIElement { twoFAFieldGetter(app) }
     private var continueButton: XCUIElement { continueButtonGetter(app) }
-    private var myStoreTab: XCUIElement { myStoreTabGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         self.app = app
@@ -41,10 +36,8 @@ public final class TwoFAScreen {
     public func enterValidTwoFACode() throws -> MyStoreScreen {
         try proceedWith(twoFACode: "123456")
 
-        // The app asks for notifications permission once the store loads, and the prompt blocks the tab bar until answered.
-        if myStoreTab.waitForExistence(timeout: 30) {
-            app.dismissNotificationsPermissionPromptIfNeeded()
-        }
+        // The notification prompt can block store queries while the app finishes logging in.
+        app.dismissNotificationsPermissionPromptIfNeeded(timeout: 10)
 
         let myStoreTitle = app.staticTexts["my-store-title"]
         guard app.dismissSavePasswordPromptIfNeeded(timeout: 30,
@@ -58,7 +51,7 @@ public final class TwoFAScreen {
 
     public func proceedWith(twoFACode: String) throws {
         enterTwoFACode(twoFACode)
-        submitTwoFACode()
+        try submitTwoFACode()
     }
 
     private func enterTwoFACode(_ twoFACode: String) {
@@ -112,163 +105,32 @@ public final class TwoFAScreen {
         return twoFAField.value as? String == expectedCode
     }
 
-    private func submitTwoFACode() {
-        if hasAdvancedPastTwoFA() {
+    private func submitTwoFACode() throws {
+        guard app.dismissSavePasswordPromptIfNeeded(timeout: 5) else {
+            throw TwoFAScreenError.timedOut
+        }
+
+        guard continueButton.waitForExistence(timeout: 5),
+              continueButton.isEnabled,
+              !continueButton.frame.isEmpty else {
+            XCTFail("Continue button should be enabled and visible after entering the 2FA code.")
+            throw TwoFAScreenError.timedOut
+        }
+
+        // Submit once. The code field can lose focus or disappear while the next screen loads.
+        if continueButton.isHittable {
+            continueButton.tap()
             return
         }
 
-        // On iPad/iOS 26 the numeric keypad can keep the on-screen CTA non-hittable,
-        // while submitting from the focused field advances reliably.
-        if submitFromFocusedFieldIfPossible() {
-            return
-        }
-
-        XCTAssertTrue(waitForContinueButtonReady(timeout: 5), "Continue button should be enabled after entering the 2FA code.")
-        tapContinueButton()
-    }
-
-    private func waitForContinueButtonReady(timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-
-        while Date() < deadline {
-            if hasAdvancedPastTwoFA() {
-                return true
-            }
-
-            if continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty {
-                return true
-            }
-
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.2))
-        }
-
-        if hasAdvancedPastTwoFA() {
-            return true
-        }
-
-        return continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty
-    }
-
-    private func submitFromFocusedFieldIfPossible() -> Bool {
-        guard app.keyboards.firstMatch.exists else {
-            return false
-        }
-
+        // On iPad the numeric keyboard can make the on-screen Continue button non-hittable.
         let keyboardContinueButton = app.keyboards.buttons["Continue"].firstMatch
         if keyboardContinueButton.exists && keyboardContinueButton.isHittable {
             keyboardContinueButton.tap()
-            if waitForSubmissionToStart(timeout: 1) {
-                return true
-            }
-        }
-
-        app.typeText("\n")
-        if waitForSubmissionToStart(timeout: 1) {
-            return true
-        }
-
-        if hasAdvancedPastTwoFA() {
-            return true
-        }
-
-        guard twoFAField.exists else {
-            return hasAdvancedPastTwoFA()
-        }
-
-        twoFAField.typeText("\n")
-        return waitForSubmissionToStart(timeout: 1)
-    }
-
-    private func waitForSubmissionToStart(timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-
-        while Date() < deadline {
-            if hasAdvancedPastTwoFA() || !twoFAField.exists {
-                return true
-            }
-
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.2))
-        }
-
-        return hasAdvancedPastTwoFA() || !twoFAField.exists
-    }
-
-    private func hasAdvancedPastTwoFA() -> Bool {
-        myStoreTab.exists || app.staticTexts["my-store-title"].exists
-    }
-
-    private func tapContinueButton() {
-        if hasAdvancedPastTwoFA() {
-            return
-        }
-
-        if tapContinueButtonIfReady() {
-            return
-        }
-
-        dismissKeyboardIfNeeded()
-        if hasAdvancedPastTwoFA() {
-            return
-        }
-
-        if tapContinueButtonIfReady() {
-            return
-        }
-
-        XCTAssertTrue(continueButton.waitForExistence(timeout: 5), "Continue button should exist after entering the 2FA code.")
-        XCTAssertTrue(continueButton.isEnabled, "Continue button should be enabled after entering the 2FA code.")
-        XCTAssertFalse(continueButton.frame.isEmpty, "Continue button should have a tappable frame after entering the 2FA code.")
-        XCTFail("2FA submission should start after tapping Continue.")
-    }
-
-    private func tapContinueButtonIfReady() -> Bool {
-        if hasAdvancedPastTwoFA() {
-            return true
-        }
-
-        guard continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty else {
-            return false
-        }
-
-        if continueButton.isHittable {
-            continueButton.tap()
+        } else if app.keyboards.firstMatch.exists {
+            app.typeText("\n")
         } else {
             continueButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
-
-        return waitForSubmissionToStart(timeout: 3)
-    }
-
-    private func dismissKeyboardIfNeeded() {
-        guard app.keyboards.firstMatch.exists else {
-            return
-        }
-
-        let keyboardDismissButtons = ["Done", "Hide keyboard"]
-        for label in keyboardDismissButtons {
-            let button = app.keyboards.buttons[label].firstMatch
-            if button.exists && button.isHittable {
-                button.tap()
-                waitForKeyboardToDismiss(timeout: 1)
-                if !app.keyboards.firstMatch.exists {
-                    return
-                }
-            }
-        }
-
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.1)).tap()
-        waitForKeyboardToDismiss(timeout: 1)
-    }
-
-    private func waitForKeyboardToDismiss(timeout: TimeInterval) {
-        let deadline = Date().addingTimeInterval(timeout)
-
-        while Date() < deadline {
-            if !app.keyboards.firstMatch.exists {
-                return
-            }
-
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         }
     }
 

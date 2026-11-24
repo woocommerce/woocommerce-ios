@@ -95,6 +95,7 @@ extension LastOrderDashboardRow {
         let customerName: String
         let total: String
         let statusDescription: String
+        let status: OrderStatusEnum
         let statusBackgroundColor: Color
         let fulfillmentBadgeText: String?
         let fulfillmentBadgeBackgroundColor: Color?
@@ -138,6 +139,7 @@ struct LastOrderDashboardRowViewModel {
             customerName: customerName,
             total: total,
             statusDescription: statusDescription,
+            status: order.status,
             statusBackgroundColor: statusBackgroundColor,
             fulfillmentBadgeText: nil,
             fulfillmentBadgeBackgroundColor: nil,

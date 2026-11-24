@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 import Yosemite
 import WooFoundation
 
@@ -183,7 +183,7 @@ private extension DefaultProductFormTableViewModel {
 
 private extension DefaultProductFormTableViewModel {
     func priceSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.priceImage
+        let icon = ProductFormSection.SettingsRow.Icon.price
 
         var priceDetails = [String]()
 
@@ -244,25 +244,25 @@ private extension DefaultProductFormTableViewModel {
                                    isEditable: Bool,
                                    hideSeparator: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let priceViewModel = priceSettingsRow(product: productVariation, isEditable: isEditable)
-        let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
+        let tint = productVariation.isEnabledAndMissingPrice ? ProductFormSection.SettingsRow.Tint.warning: nil
         return .init(icon: priceViewModel.icon,
                      title: priceViewModel.title,
                      details: priceViewModel.details,
-                     tintColor: tintColor,
+                     tint: tint,
                      isActionable: priceViewModel.isActionable,
                      hideSeparator: hideSeparator)
     }
 
     func customFieldsRow() -> ProductFormSection.SettingsRow.ViewModel {
         return ProductFormSection.SettingsRow.ViewModel(
-            icon: UIImage.customFieldsImage,
+            icon: .customFields,
             title: Localization.customFieldsRowTitle,
             details: Localization.customFieldsRowDetails
         )
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.productReviewsImage
+        let icon = ProductFormSection.SettingsRow.Icon.reviews
         let title = Localization.reviewsTitle
         var details = Localization.emptyReviews
         if product.ratingCount > 0 {
@@ -281,7 +281,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func inventorySettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.inventoryImage
+        let icon = ProductFormSection.SettingsRow.Icon.inventory
         let title = Localization.inventorySettingsTitle
 
         var inventoryDetails = [String]()
@@ -314,7 +314,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func productTypeRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.productImage
+        let icon = ProductFormSection.SettingsRow.Icon.product
         let title = Localization.productTypeTitle
 
         let typeID = BottomSheetProductType(productType: product.productType, isVirtual: product.virtual).id
@@ -344,7 +344,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func shippingSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.shippingImage
+        let icon = ProductFormSection.SettingsRow.Icon.shipping
         let title = Localization.shippingSettingsTitle
 
         var shippingDetails = [String]()
@@ -400,27 +400,27 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func addOnsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.addOutlineImage
+        let icon = ProductFormSection.SettingsRow.Icon.add
         let title = Localization.addOnsTitle
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: nil, isActionable: true)
     }
 
     func categoriesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.categoriesIcon
+        let icon = ProductFormSection.SettingsRow.Icon.categories
         let title = Localization.categoriesTitle
         let details = product.categoriesDescription() ?? Localization.categoriesPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     func tagsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.tagsIcon
+        let icon = ProductFormSection.SettingsRow.Icon.tags
         let title = Localization.tagsTitle
         let details = product.tagsDescription() ?? Localization.tagsPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     func shortDescriptionRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.shortDescriptionImage
+        let icon = ProductFormSection.SettingsRow.Icon.shortDescription
         let title = Localization.shortDescriptionTitle
         let details = product.trimmedShortDescription?.isNotEmpty == true ? product.trimmedShortDescription: Localization.shortDescriptionPlaceholder
 
@@ -434,7 +434,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Affiliate products only
 
     func externalURLRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.linkImage
+        let icon = ProductFormSection.SettingsRow.Icon.link
         let title = product.externalURL?.isNotEmpty == true ? Localization.externalURLTitle: Localization.addExternalURLTitle
         let details = product.externalURL
 
@@ -446,7 +446,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func simplifiedInventoryRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.inventoryImage
+        let icon = ProductFormSection.SettingsRow.Icon.inventory
         let title = Localization.inventorySettingsTitle
         var inventoryDetails = [String]()
 
@@ -468,7 +468,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Grouped products only
 
     func groupedProductsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.widgetsImage
+        let icon = ProductFormSection.SettingsRow.Icon.widgets
         let title = product.groupedProducts.isEmpty ? Localization.addGroupedProductsTitle: Localization.groupedProductsTitle
         let details: String
 
@@ -491,7 +491,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Variable products only
 
     func variationsRow(product: Product, hideSeparator: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.variationsImage
+        let icon = ProductFormSection.SettingsRow.Icon.variations
         let title = product.variations.isEmpty ? Localization.addVariationsTitle : Localization.variationsTitle
         let details = Localization.variationsDetail(count: product.variations.count)
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: true, hideSeparator: hideSeparator)
@@ -500,7 +500,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Product variation only
 
     func variationStatusRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.SwitchableViewModel {
-        let icon = UIImage.visibilityImage
+        let icon = ProductFormSection.SettingsRow.Icon.visibility
         let title = Localization.variationStatusTitle
         let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                                  title: title,
@@ -511,7 +511,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func noPriceWarningRow(isActionable: Bool) -> ProductFormSection.SettingsRow.WarningViewModel {
-        let icon = UIImage.infoOutlineImage
+        let icon = ProductFormSection.SettingsRow.Icon.information
         let title = Localization.noPriceWarningTitle
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
                                                                title: title,
@@ -519,7 +519,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.customizeImage
+        let icon = ProductFormSection.SettingsRow.Icon.customize
         let details = product.attributes
             .map { $0.options.isEmpty ? $0.name : String.localizedStringWithFormat(Localization.attributeDetailFormat,
                                                                                      $0.name,
@@ -529,7 +529,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.customizeImage
+        let icon = ProductFormSection.SettingsRow.Icon.customize
         let title = Localization.variationAttributesTitle
         let details = productVariation.name
 
@@ -539,7 +539,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Product downloads only
 
     func downloadsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.cloudImage
+        let icon = ProductFormSection.SettingsRow.Icon.cloud
         let title = Localization.downloadsTitle
         var details = Localization.emptyDownloads
 
@@ -561,7 +561,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Linked products only
 
     func linkedProductsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.linkedProductsImage
+        let icon = ProductFormSection.SettingsRow.Icon.linkedProducts
         let title = Localization.linkedProductsTitle
 
         let details = [
@@ -578,7 +578,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Bundle products only
 
     func bundledProductsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.widgetsImage
+        let icon = ProductFormSection.SettingsRow.Icon.widgets
         let title = Localization.bundledProductsTitle
         let details: String
 
@@ -600,7 +600,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Composite products only
 
     func componentsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.widgetsImage
+        let icon = ProductFormSection.SettingsRow.Icon.widgets
         let title = Localization.componentsTitle
         let details: String
 
@@ -622,7 +622,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Subscription products and variations only
 
     func subscriptionFreeTrialRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.hourglass
+        let icon = ProductFormSection.SettingsRow.Icon.hourglass
         let title = Localization.subscriptionFreeTrialTitle
 
         let details: String = {
@@ -638,7 +638,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func subscriptionExpiryRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.calendarClock
+        let icon = ProductFormSection.SettingsRow.Icon.calendarClock
         let title = Localization.subscriptionExpiryTitle
 
         let details: String = {
@@ -656,7 +656,7 @@ private extension DefaultProductFormTableViewModel {
     // MARK: Variable Subscription products only
 
     func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
-        let icon = UIImage.infoOutlineImage
+        let icon = ProductFormSection.SettingsRow.Icon.information
         let title = Localization.noVariationsWarningTitle
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
                                                                title: title,
@@ -664,7 +664,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func quantityRulesRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.productImage
+        let icon = ProductFormSection.SettingsRow.Icon.product
         let title = Localization.quantityRulesTitle
 
         var quantityDetails = [String]()

@@ -6,7 +6,6 @@ struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
-    @Environment(\.posAccessSession) private var session
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -107,17 +106,13 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, preservesOnLock: { true }, onDismiss: {
-            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-        }, content: { alertType in
-            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-        })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, preservesOnLock: { true }, onDismiss: {
-            posModel.cancelCardPaymentsOnboarding()
-        }, content: { viewContainer in
-            paymentsOnboardingView(from: viewContainer)
-        })
+        .posCardReaderAlert(item: $posModel.cardPresentPaymentAlertViewModel)
+        .posCardPaymentsOnboarding(item: $posModel.cardPresentPaymentOnboardingViewContainer,
+                                   onDismiss: posModel.cancelCardPaymentsOnboarding,
+                                   onSupportRequested: { [weak posModel, showSupport = $showSupport] in
+            posModel?.cancelCardPaymentsOnboarding()
+            showSupport.wrappedValue = true
+        }, onPresented: posModel.trackCardPaymentsOnboardingShown)
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -133,24 +128,6 @@ struct POSSettingsHardwareDetailView: View {
 
 // MARK: - Views
 private extension POSSettingsHardwareDetailView {
-    func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
-        let scope = session.accessScope
-        onboardingViewContainer.configuration.showSupport = {
-            guard session.isCurrent(scope) else { return }
-            posModel.cancelCardPaymentsOnboarding()
-            showSupport = true
-        }
-
-        return PointOfSaleCardPresentPaymentOnboardingView(
-            viewModel: .init(onboardingViewContainer: onboardingViewContainer,
-                             onDismissTap: {
-                                 posModel.cancelCardPaymentsOnboarding()
-                             }))
-        .onAppear {
-            posModel.trackCardPaymentsOnboardingShown()
-        }
-    }
-
     var supportForm: some View {
         NavigationStack {
             externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)

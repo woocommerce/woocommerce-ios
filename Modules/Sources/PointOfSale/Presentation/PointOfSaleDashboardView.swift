@@ -170,20 +170,13 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, preservesOnLock: { true }, onDismiss: {
-            posModel.cancelCardPaymentsOnboarding()
-        }) { factory in
-            paymentsOnboardingView(from: factory)
-        }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
-                  compactStyle: .cardReaderConnection,
-                  preservesOnLock: { true },
-                  onDismiss: {
-            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-        }) { alertType in
-            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-        }
+        .posCardPaymentsOnboarding(item: $posModel.cardPresentPaymentOnboardingViewContainer,
+                                   onDismiss: posModel.cancelCardPaymentsOnboarding,
+                                   onSupportRequested: { [weak posModel, showSupport = $showSupport] in
+            posModel?.cancelCardPaymentsOnboarding()
+            showSupport.wrappedValue = true
+        }, onPresented: posModel.trackCardPaymentsOnboardingShown)
+        .posCardReaderAlert(item: $posModel.cardPresentPaymentAlertViewModel)
         .posDialog(isPresented: $showExitPOSModal) {
             .exitPOS(exit: {
                 analytics.track(.pointOfSaleExitConfirmed)
@@ -348,7 +341,7 @@ struct PointOfSaleDashboardView: View {
         }
         .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
             // Auto-opens the cart sheet on scan
-            guard !session.isLocked, itemID != nil,
+            guard itemID != nil,
                   PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
                                                                           orderStage: posModel.orderStage) else {
                 return
@@ -535,7 +528,6 @@ struct PointOfSaleDashboardView: View {
         // coverManager interaction.
         var cart = CartView()
         cart.onPresentBarcodeScannerSetup = {
-            guard !session.isLocked else { return }
             let scope = session.accessScope
             phoneShowingCart = false
             // Tiny delay so the cart sheet finishes dismissing before the cover presents,
@@ -704,23 +696,6 @@ private extension PointOfSaleDashboardView {
 
     var documentationView: some View {
         SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
-    }
-
-    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewContainer) -> some View {
-        let scope = session.accessScope
-        factory.configuration.showSupport = { [weak posModel] in
-            guard session.isCurrent(scope) else { return }
-            posModel?.cancelCardPaymentsOnboarding()
-            showSupport = true
-        }
-
-        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewContainer: factory,
-                                                                            onDismissTap: {
-            posModel.cancelCardPaymentsOnboarding()
-        }))
-        .onAppear {
-            posModel.trackCardPaymentsOnboardingShown()
-        }
     }
 }
 

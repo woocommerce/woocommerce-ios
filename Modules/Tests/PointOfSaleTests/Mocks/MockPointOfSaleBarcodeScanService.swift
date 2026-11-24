@@ -3,8 +3,14 @@ import Yosemite
 
 class MockPointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     var errorToThrow: PointOfSaleBarcodeScanError?
+    private let onLookup: (@Sendable () async -> Void)?
+
+    init(onLookup: (@Sendable () async -> Void)? = nil) {
+        self.onLookup = onLookup
+    }
 
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+        await onLookup?()
         if let error = errorToThrow {
             throw error
         }

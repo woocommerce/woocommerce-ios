@@ -9,6 +9,42 @@ struct POSPrintReceiptCoordinatorTests {
     private let analytics = MockPOSAnalytics()
     private let spy = EffectsSpy()
 
+    @Test func test_commands_when_lock_replaces_the_session_then_ignore_queued_receipt_actions() async throws {
+        // Given
+        let session = MockPOSAccessSession()
+        let sut = makeCoordinator(session: session)
+
+        // When
+        session.lock()
+        try await session.signIn(withPIN: "1234")
+        await sut.printButtonTapped(isPrinterConnected: false)
+        await sut.setupModalVisibilityChanged(isPresented: false, isPrinterConnected: true)
+        await sut.failureActionSelected(.emailReceipt, isPrinterConnected: true)
+
+        // Then
+        #expect(spy.presentSetupCallCount == 0)
+        #expect(spy.presentEmailCallCount == 0)
+        #expect(spy.printCallCount == 0)
+        #expect(analytics.events.isEmpty)
+    }
+
+    @Test func test_print_when_session_locks_before_completion_then_resets_without_showing_failure() async {
+        // Given
+        let session = MockPOSAccessSession()
+        let sut = makeCoordinator(session: session, printReceipt: {
+            session.lock()
+            throw PrinterError.paperEmpty
+        })
+
+        // When
+        await sut.printButtonTapped(isPrinterConnected: true)
+
+        // Then
+        #expect(spy.buttonStates == [.loading, .idle])
+        #expect(spy.failures.isEmpty)
+        #expect(analytics.events.map(\.eventName) == ["receipt_print_tapped", "receipt_print_failed"])
+    }
+
     // MARK: - printButtonTapped
 
     @Test func test_printButtonTapped_when_printer_connected_then_prints_and_tracks_tapped_and_success() async {
@@ -187,8 +223,10 @@ struct POSPrintReceiptCoordinatorTests {
 }
 
 private extension POSPrintReceiptCoordinatorTests {
-    func makeCoordinator(printReceipt: (() async throws -> Void)? = nil) -> POSPrintReceiptCoordinator {
+    func makeCoordinator(session: POSAccessSession = UnrestrictedPOSAccessSession(),
+                         printReceipt: (() async throws -> Void)? = nil) -> POSPrintReceiptCoordinator {
         POSPrintReceiptCoordinator(analytics: analytics,
+                                   session: session,
                                    printReceipt: { [spy] in
                                        spy.printCallCount += 1
                                        try await printReceipt?()

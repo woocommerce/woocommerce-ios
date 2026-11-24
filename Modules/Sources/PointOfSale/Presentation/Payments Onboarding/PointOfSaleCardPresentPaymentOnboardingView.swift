@@ -3,7 +3,9 @@ import SwiftUI
 /// Displays the WooPayments onboarding UI based on the state.
 struct PointOfSaleCardPresentPaymentOnboardingView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.posAccessSession) private var session
     @ObservedObject var viewModel: PointOfSaleCardPresentPaymentOnboardingViewModel
+    var onSupportRequested: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: metrics.spacing.large) {
@@ -15,6 +17,27 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
         .posModalSizing()
+        .onChange(of: session.isLocked, initial: true) { _, _ in
+            if let onSupportRequested {
+                let context = POSExternalViewContext(session: session)
+                viewModel.onboardingViewContainer.configuration.showSupport = context.whileSessionIsCurrent(onSupportRequested)
+            }
+        }
+    }
+}
+
+extension View {
+    func posCardPaymentsOnboarding(item: Binding<CardPresentPaymentOnboardingViewContainer?>,
+                                   onDismiss: @escaping () -> Void,
+                                   onSupportRequested: (() -> Void)? = nil,
+                                   onPresented: @escaping () -> Void) -> some View {
+        posModal(item: item, compactStyle: .cardPaymentsOnboarding, preservesOnLock: { true }, onDismiss: onDismiss) { factory in
+            PointOfSaleCardPresentPaymentOnboardingView(
+                viewModel: .init(onboardingViewContainer: factory, onDismissTap: onDismiss),
+                onSupportRequested: onSupportRequested
+            )
+            .onAppear(perform: onPresented)
+        }
     }
 }
 

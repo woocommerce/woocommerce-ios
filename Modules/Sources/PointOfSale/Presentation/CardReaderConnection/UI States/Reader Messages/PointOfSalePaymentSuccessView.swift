@@ -39,20 +39,11 @@ struct PointOfSalePaymentSuccessView: View {
                 isTitleFocused = true
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
+        .posModal(isPresented: $showPrinterSetupModal,
+                  compactStyle: .receiptPrinterSetup,
+                  onDismiss: handlePrinterSetupDismissed) {
             if let controller = posModel.settingsController.printerConnectionController {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .printReceipt)
-            }
-        }
-        .onChange(of: showPrinterSetupModal) { _, isShowing in
-            // The setup modal auto-dismisses when a printer connects, so the modal closing with a
-            // printer connected means setup succeeded — print the receipt the merchant asked for.
-            guard !session.isLocked else { return }
-            let coordinator = printCoordinator
-            Task {
-                await coordinator.setupModalVisibilityChanged(
-                    isPresented: isShowing,
-                    isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
         .posDialog(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
@@ -75,29 +66,35 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var printCoordinator: POSPrintReceiptCoordinator {
-        let scope = session.accessScope
-        let canPresent = { session.isCurrent(scope) }
-        return POSPrintReceiptCoordinator(analytics: analytics,
-                                          printReceipt: { try await posModel.printReceipt() },
-                                          presentPrinterSetup: { if canPresent() { showPrinterSetupModal = true } },
-                                          presentEmailReceipt: { if canPresent() { router.pushEmailReceipt() } },
-                                          isOnSuccessScreen: { canPresent() && !router.isNavigated },
-                                          presentFailure: { printFailure = $0 },
-                                          updateButtonState: { printButtonState = $0 })
+        POSPrintReceiptCoordinator(analytics: analytics,
+                                   session: session,
+                                   printReceipt: { try await posModel.printReceipt() },
+                                   presentPrinterSetup: { showPrinterSetupModal = true },
+                                   presentEmailReceipt: { router.pushEmailReceipt() },
+                                   isOnSuccessScreen: { !router.isNavigated },
+                                   presentFailure: { printFailure = $0 },
+                                   updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
-        guard !session.isLocked, printButtonState == .idle else { return }
+        guard printButtonState == .idle else { return }
         let coordinator = printCoordinator
         Task {
             await coordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
+    private func handlePrinterSetupDismissed() {
+        let coordinator = printCoordinator
+        Task {
+            await coordinator.setupModalVisibilityChanged(isPresented: false, isPrinterConnected: posModel.isReceiptPrinterConnected)
+        }
+    }
+
     /// Acts on the merchant's choice only once the failure modal has closed: `POSModalManager` holds one
     /// modal, so presenting printer setup alongside this dismissal could lose the new modal.
     private func handlePrintFailureDismissed() {
-        guard !session.isLocked, let action = selectedFailureAction else { return }
+        guard let action = selectedFailureAction else { return }
         selectedFailureAction = nil
         let coordinator = printCoordinator
         Task {

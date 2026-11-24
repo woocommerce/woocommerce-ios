@@ -5,6 +5,18 @@ import Combine
 
 final class AddEditCouponViewModelTests: XCTestCase {
 
+    func test_pos_coupon_completion_when_editor_disappears_more_than_once_then_delivers_only_once() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        var completion = POSCouponCreationCompletion()
+
+        // When and Then
+        XCTAssertNil(completion.take(nil))
+        XCTAssertEqual(completion.take(coupon)?.couponID, coupon.couponID)
+        XCTAssertNil(completion.take(coupon))
+        XCTAssertNil(completion.take(coupon))
+    }
+
     func test_titleView_property_return_expected_values_on_creation() {
         let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent, onSuccess: { _ in })
         XCTAssertEqual(viewModel1.title, NSLocalizedString("Create coupon", comment: ""))

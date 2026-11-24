@@ -359,10 +359,9 @@ extension PointOfSaleAggregateModel {
     func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) -> Task<Void, Never> {
         let currentCheckoutGeneration = checkoutGeneration
         let accessScope = accessSession.accessScope
-        let wasUnlocked = !accessSession.isLocked
         return Task { [weak self] in
             // A queued result must still belong to this cart, even after returning to building.
-            guard let self, wasUnlocked, accessSession.isCurrent(accessScope),
+            guard let self, accessSession.isCurrent(accessScope),
                   orderStage == .building, checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
@@ -383,9 +382,18 @@ extension PointOfSaleAggregateModel {
             )
         )
 
+        let lookup: Result<POSItem, PointOfSaleBarcodeScanError>
         do throws(PointOfSaleBarcodeScanError) {
-            let item = try await barcodeScanService.getItem(barcode: barcode)
-            guard isCurrentScan(placeholderItemID, accessScope: accessScope) else { return }
+            lookup = .success(try await barcodeScanService.getItem(barcode: barcode))
+        } catch {
+            lookup = .failure(error)
+        }
+        guard accessSession.isCurrent(accessScope) else {
+            cart.removeItem(id: placeholderItemID)
+            return
+        }
+        switch lookup {
+        case .success(let item):
             if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
                 analytics.track(
                     event: .PointOfSale.addItemToCart(
@@ -397,21 +405,12 @@ extension PointOfSaleAggregateModel {
 
                 cart.accessibilityFocusedItemID = cartItem.id
             }
-        } catch {
-            guard isCurrentScan(placeholderItemID, accessScope: accessScope) else { return }
+        case .failure(let error):
             DDLogInfo("Failed to find item by barcode: \(error)")
             if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                 await handleErrorItemAdded(error)
             }
         }
-    }
-
-    private func isCurrentScan(_ loadingItemID: UUID, accessScope: POSPINSessionTokens.Token) -> Bool {
-        guard accessSession.isCurrent(accessScope) else {
-            cart.removeItem(id: loadingItemID)
-            return false
-        }
-        return true
     }
 
     private func handleFailedScan(error: Error) async {

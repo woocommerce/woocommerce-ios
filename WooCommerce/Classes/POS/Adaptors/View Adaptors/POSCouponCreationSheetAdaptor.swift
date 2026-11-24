@@ -10,6 +10,7 @@ import typealias Yosemite.CouponDiscountType
 @MainActor
 struct POSCouponCreationViewAdaptor: View {
     @StateObject private var viewModel: AddEditCouponViewModel
+    @State private var completion = POSCouponCreationCompletion()
     @Binding private var showTypeSelection: Bool
     private let onSuccess: (Coupon) -> Void
     private let dismissHandler: () -> Void
@@ -28,7 +29,7 @@ struct POSCouponCreationViewAdaptor: View {
         var view = AddEditCoupon(viewModel)
         view.dismissHandler = dismissHandler
         view.onDisappear = {
-            if let coupon = viewModel.coupon { onSuccess(coupon) }
+            if let coupon = completion.take(viewModel.coupon) { onSuccess(coupon) }
         }
         view.discountTypeHandler = { _ in
             showTypeSelection = true
@@ -36,6 +37,16 @@ struct POSCouponCreationViewAdaptor: View {
 
         return view
             .interactiveDismissDisabled()
+    }
+}
+
+struct POSCouponCreationCompletion {
+    private var didDeliverCoupon = false
+
+    mutating func take(_ coupon: Coupon?) -> Coupon? {
+        guard let coupon, !didDeliverCoupon else { return nil }
+        didDeliverCoupon = true
+        return coupon
     }
 }
 

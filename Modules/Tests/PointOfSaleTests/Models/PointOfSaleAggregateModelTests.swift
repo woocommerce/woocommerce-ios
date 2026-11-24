@@ -1535,6 +1535,26 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @Test(arguments: [true, false])
+        func test_barcode_when_session_changes_during_lookup_then_discards_the_result(isSuccess: Bool) async {
+            // Given
+            let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+            let service = MockPointOfSaleBarcodeScanService {
+                await session.lock()
+                try? await session.signIn(withPIN: "1234")
+            }
+            if !isSuccess { service.errorToThrow = .notFound(scannedCode: "123456") }
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: service, accessSession: session)
+
+            // When
+            await sut.barcodeScanned(.success("123456")).value
+
+            // Then
+            #expect(!session.isLocked)
+            #expect(session.lockCallCount == 1)
+            #expect(sut.cart.isEmpty)
+        }
+
+        @Test(arguments: [true, false])
         func test_barcode_when_queued_before_checkout_then_does_not_change_checkout_cart(isSuccess: Bool) async throws {
             // Given
             let analytics = MockPOSAnalytics()

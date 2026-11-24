@@ -6,7 +6,6 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posExternalViews) private var externalViews
-    @Environment(\.posAccessSession) private var session
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,10 +23,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
 
             Spacer(minLength: metrics.spacing.large)
             let button = viewModel.primaryButtonViewModel(requiresEmbeddedSettingsWebView: externalViews.requiresEmbeddedSettingsWebView)
-            Button(button.title) {
-                guard !session.isLocked else { return }
-                button.actionHandler()
-            }
+            Button(button.title, action: button.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }

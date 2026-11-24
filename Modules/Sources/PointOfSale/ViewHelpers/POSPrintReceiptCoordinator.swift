@@ -18,6 +18,7 @@ enum POSPrintReceiptFailureAction {
 struct POSPrintReceiptCoordinator {
     private let analytics: POSAnalyticsProviding
     private let printReceipt: () async throws -> Void
+    private let isCurrentSession: @MainActor () -> Bool
     private let presentPrinterSetup: @MainActor () -> Void
     private let presentEmailReceipt: @MainActor () -> Void
     private let isOnSuccessScreen: @MainActor () -> Bool
@@ -25,6 +26,7 @@ struct POSPrintReceiptCoordinator {
     private let updateButtonState: @MainActor (POSButtonState) -> Void
 
     init(analytics: POSAnalyticsProviding,
+         session: POSAccessSession = UnrestrictedPOSAccessSession(),
          printReceipt: @escaping () async throws -> Void,
          presentPrinterSetup: @escaping @MainActor () -> Void,
          presentEmailReceipt: @escaping @MainActor () -> Void,
@@ -33,6 +35,8 @@ struct POSPrintReceiptCoordinator {
          updateButtonState: @escaping @MainActor (POSButtonState) -> Void) {
         self.analytics = analytics
         self.printReceipt = printReceipt
+        let scope = session.accessScope
+        self.isCurrentSession = { session.isCurrent(scope) }
         self.presentPrinterSetup = presentPrinterSetup
         self.presentEmailReceipt = presentEmailReceipt
         self.isOnSuccessScreen = isOnSuccessScreen
@@ -43,6 +47,7 @@ struct POSPrintReceiptCoordinator {
     /// Merchant tapped Print. Prints immediately when a printer is connected, otherwise presents
     /// the printer setup flow via the injected closure.
     func printButtonTapped(isPrinterConnected: Bool) async {
+        guard isCurrentSession() else { return }
         analytics.track(.receiptPrintTapped)
         await printOrPresentSetup(isPrinterConnected: isPrinterConnected)
     }
@@ -61,6 +66,7 @@ struct POSPrintReceiptCoordinator {
     /// Setup modal visibility changed. Auto-prints when the modal closed because the merchant
     /// completed the setup they opened by tapping Print.
     func setupModalVisibilityChanged(isPresented: Bool, isPrinterConnected: Bool) async {
+        guard isCurrentSession() else { return }
         if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
             isPresented: isPresented,
             isPrinterConnected: isPrinterConnected) == .print {
@@ -71,6 +77,7 @@ struct POSPrintReceiptCoordinator {
     /// Merchant chose how to continue after a failed print. Retry follows the Print button path, so a
     /// printer that dropped its connection goes through setup instead of failing again.
     func failureActionSelected(_ action: POSPrintReceiptFailureAction, isPrinterConnected: Bool) async {
+        guard isCurrentSession() else { return }
         switch action {
         case .retry:
             analytics.track(.receiptPrintRetryTapped)
@@ -86,13 +93,13 @@ struct POSPrintReceiptCoordinator {
         do {
             try await printReceipt()
             analytics.track(.receiptPrintSuccess)
-            updateButtonState(.success)
+            updateButtonState(isCurrentSession() ? .success : .idle)
         } catch {
             DDLogError("⛔️ POS receipt print failed: \(error)")
             analytics.track(.receiptPrintFailed, parameters: [:], error: error)
             updateButtonState(.idle)
             // A print can fail after the merchant moved on to emailing the receipt, which must not be interrupted.
-            if isOnSuccessScreen() {
+            if isCurrentSession(), isOnSuccessScreen() {
                 presentFailure(POSPrintReceiptFailure(error: error))
             }
         }

@@ -33,6 +33,23 @@ struct POSPaymentModelTests {
         #expect(sut.isLockSuppressed)
     }
 
+    @Test(arguments: [CardPresentPaymentSessionState.active, .cancelling, .unresolved]) @MainActor
+    func test_payment_controls_when_owner_is_pending_then_only_active_collection_allows_method_switch(
+        state: CardPresentPaymentSessionState
+    ) {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        paymentState: .init(card: .acceptingCard, cash: .idle))
+
+        // When
+        service.paymentSessionState = state
+
+        // Then
+        #expect(sut.isLockSuppressed)
+        #expect(sut.isCardPaymentStartPending == (state != .active))
+    }
+
     @Test @MainActor
     func test_reset_when_payment_is_unresolved_then_preserves_sale_and_blocks_reentry() async {
         // Given

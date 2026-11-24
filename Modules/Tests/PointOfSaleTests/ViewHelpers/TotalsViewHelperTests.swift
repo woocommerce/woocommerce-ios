@@ -271,6 +271,47 @@ struct TotalsViewHelperTests {
 
     // MARK: - Bottom control state tests
 
+    @Test(arguments: [POSTapToPayAvailabilityState.available, .unknown, .unavailable(reason: .deviceNotSupported)])
+    func test_bottomControlState_when_card_is_idle_and_reader_connected_then_offers_explicit_restart(
+        availability: POSTapToPayAvailabilityState
+    ) {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: loadedOrderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .connected(.init(name: "Reader", batteryLevel: nil)),
+                                              tapToPayAvailabilityState: availability,
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: true)
+
+        // Then
+        #expect(state == .readerAndOtherMethods)
+    }
+
+    @Test(arguments: [PointOfSaleOrderState.syncing,
+                      .loaded(.init(cartTotal: "0", orderTotal: "0", taxTotal: "0", orderTotalDecimal: 0))])
+    func test_bottomControlState_when_order_cannot_take_card_payment_then_does_not_offer_reader_restart(
+        orderState: PointOfSaleOrderState
+    ) {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: orderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .connected(.init(name: "Reader", batteryLevel: nil)),
+                                              tapToPayAvailabilityState: .unavailable(reason: .deviceNotSupported),
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: true)
+
+        // Then
+        #expect(state != .readerAndOtherMethods)
+    }
+
     @Test
     func test_bottomControlState_when_tapToPay_unknown_and_reader_disconnected_then_returns_checkout_methods() {
         // Given

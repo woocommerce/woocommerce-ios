@@ -75,7 +75,7 @@ struct POSCheckoutPaymentButtonsRow: View {
     }
 }
 
-private extension POSCheckoutPaymentButtonsRow {
+extension POSCheckoutPaymentButtonsRow {
     enum Localization {
         static let tapToPay = NSLocalizedString(
             "pos.checkout.paymentMethod.tapToPay",

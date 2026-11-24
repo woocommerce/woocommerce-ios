@@ -806,6 +806,7 @@ private extension TotalsView {
                 methods: methods,
                 onSelect: handlePaymentMethodSelection
             )
+            .disabled(isStartingPayment)
         case .hidden:
             EmptyView()
         }
@@ -935,7 +936,8 @@ private extension TotalsView {
         Button {
             handlePaymentMethodSelection(.cardReader)
         } label: {
-            Text(Localization.connectCardReaderButtonTitle)
+            Text(cardReaderConnectionStatus.isConnected ?
+                 POSCheckoutPaymentButtonsRow.Localization.cardReader : Localization.connectCardReaderButtonTitle)
                 .font(POSFontStyle.posBodyLargeBold)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))

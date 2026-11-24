@@ -89,7 +89,7 @@ final class POSPaymentModel {
 
     var isCardPaymentUnresolved: Bool { cardPaymentSessionState.isPending }
     var isLockSuppressed: Bool {
-        isCardPaymentStartPending || paymentState.isAutoLockSuppressing
+        isCardPaymentUnresolved || isCardPaymentStartPending || paymentState.isAutoLockSuppressing
     }
     var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
         cardPresentPaymentService.paymentSessionStatePublisher
@@ -128,7 +128,8 @@ final class POSPaymentModel {
 
     /// Pending SDK outcomes block another start even after reader preparation or payment UI has cleared.
     var isCardPaymentStartPending: Bool {
-        isCardPaymentUnresolved || connectCardReaderTask != nil || paymentStartConnectTask != nil ||
+        cardPaymentSessionState == .cancelling || cardPaymentSessionState == .unresolved ||
+        connectCardReaderTask != nil || paymentStartConnectTask != nil ||
         (currentPaymentMethod == .tapToPay && paymentState.card == .idle)
     }
 

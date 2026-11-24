@@ -85,6 +85,14 @@ struct TotalsViewHelper {
             return .cashAndOtherMethods
         }
 
+        if paymentState.activePaymentMethod == .card,
+           paymentState.card == .idle,
+           case .connected = cardReaderConnectionStatus,
+           case .loaded(let totals) = orderState,
+           !totals.orderTotalDecimal.isZero {
+            return .readerAndOtherMethods
+        }
+
         guard shouldShowCollectCashPaymentButton(orderState: orderState,
                                                  paymentState: paymentState,
                                                  cardReaderConnectionStatus: cardReaderConnectionStatus) else {

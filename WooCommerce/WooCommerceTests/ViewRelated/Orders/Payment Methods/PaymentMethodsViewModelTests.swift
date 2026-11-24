@@ -278,58 +278,6 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
-    func test_cash_payment_when_card_refresh_is_pending_then_waits_before_updating_order() async throws {
-        // Given
-        let order = Order.fake().copy(status: .pending)
-        storage.insertSampleOrder(readOnlyOrder: order)
-        let refreshStarted = expectation(description: "Starts the failed card refresh")
-        var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
-        var cashUpdateRequested = false
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            switch action {
-            case let .retrieveOrderRemotely(_, _, completion):
-                completeRefresh = completion
-                refreshStarted.fulfill()
-            case let .updateOrder(_, updatedOrder, _, _, _, completion):
-                cashUpdateRequested = true
-                completion(.success(updatedOrder))
-            case let .retrieveOrder(_, _, completion):
-                completion(order.copy(status: .completed), nil)
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-        let viewModel = PaymentMethodsViewModel(siteID: order.siteID, orderID: order.orderID,
-                                                total: "12", formattedTotal: "$12.00", flow: .simplePayment,
-                                                channel: .storeManagement,
-                                                dependencies: Dependencies(stores: stores, storage: storage))
-        let error: CardReaderServiceError = .paymentCapture(
-            underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
-        viewModel.collectPayment(using: .tapToPay, on: UIViewController(),
-                                 useCase: MockCollectOrderPaymentUseCase(onCollectResult: .failure(error)),
-                                 onSuccess: {}, onFailure: { XCTFail("Should stay on payment methods") })
-        await fulfillment(of: [refreshStarted], timeout: 2)
-        let cashStarted = expectation(description: "Starts the cash payment")
-        viewModel.$showLoadingIndicator.first(where: { $0 }).sink { _ in
-            cashStarted.fulfill()
-        }.store(in: &subscriptions)
-
-        // When
-        let cashPayment = Task { await viewModel.markOrderAsPaidByCash(with: nil) }
-        await fulfillment(of: [cashStarted], timeout: 2)
-
-        // Then
-        XCTAssertFalse(cashUpdateRequested, "The older card response must be saved before the cash update")
-
-        // When
-        try XCTUnwrap(completeRefresh)(.success(order))
-        await cashPayment.value
-
-        // Then
-        XCTAssertTrue(cashUpdateRequested)
-        XCTAssertFalse(viewModel.showLoadingIndicator)
-    }
-
     func test_completed_event_is_tracked_after_marking_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -1220,49 +1168,6 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(calledOnSuccess)
     }
 
-    func test_collect_payment_without_receipt_when_order_is_paid_then_refreshes_once() async {
-        // Given
-        let order = Order.fake().copy(status: .pending)
-        storage.insertSampleOrder(readOnlyOrder: order)
-
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
-                onCompletion(PaymentGatewayAccount.fake())
-            }
-        }
-
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
-        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-                                        stores: stores,
-                                        storage: storage)
-        let viewModel = PaymentMethodsViewModel(total: "12",
-                                                formattedTotal: "$12.00",
-                                                flow: .simplePayment,
-                                                channel: .storeManagement,
-                                                dependencies: dependencies)
-
-        var refreshCount = 0
-        let returned = expectation(description: "Returns after the refresh")
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case let .retrieveOrderRemotely(siteID, orderID, completion) = action else {
-                return XCTFail("Unexpected action: \(action)")
-            }
-            XCTAssertEqual(siteID, order.siteID)
-            XCTAssertEqual(orderID, order.orderID)
-            refreshCount += 1
-            completion(.success(order.copy(datePaid: .some(Date()))))
-        }
-
-        // When
-        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase,
-                                 onSuccess: { returned.fulfill() }, onFailure: {})
-        await fulfillment(of: [returned], timeout: 2)
-
-        // Then
-        XCTAssertEqual(refreshCount, 1)
-    }
-
     func test_collect_payment_when_paid_update_is_delayed_then_details_opens_with_paid_order() async throws {
         // Given
         let pendingOrder = Order.fake().copy(status: .pending)
@@ -1274,7 +1179,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let refreshStarted = expectation(description: "Started the order refresh")
         let returnedToDetails = expectation(description: "Returned to order details")
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case let .retrieveOrderRemotely(_, _, completion) = action else { return }
+            guard case let .retrieveOrderRemotely(siteID, orderID, completion) = action else {
+                return XCTFail("Expected a remote order refresh")
+            }
+            XCTAssertEqual(siteID, pendingOrder.siteID)
+            XCTAssertEqual(orderID, pendingOrder.orderID)
             finishRefresh = completion
             refreshStarted.fulfill()
         }
@@ -1302,195 +1211,52 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
-    func test_collect_payment_when_receipt_is_open_then_refresh_starts_before_continuing() async throws {
+    func test_collect_payment_when_receipt_closes_during_refresh_then_waits_for_the_same_request() async throws {
         // Given
         let order = Order.fake().copy(status: .pending)
         storage.insertSampleOrder(readOnlyOrder: order)
-        var refreshCount = 0
         let refreshStarted = expectation(description: "Refreshes while the receipt is open")
-        let finalRefreshStarted = expectation(description: "Refreshes receipt-time changes after continuing")
+        let returned = expectation(description: "Returns after continuing and refreshing")
         var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case let .retrieveOrderRemotely(_, _, completion) = action {
-                refreshCount += 1
+            guard case let .retrieveOrderRemotely(_, _, completion) = action else { return }
+            if completeRefresh == nil {
                 completeRefresh = completion
-                if refreshCount == 1 {
-                    refreshStarted.fulfill()
-                } else {
-                    finalRefreshStarted.fulfill()
-                }
+                refreshStarted.fulfill()
+            } else {
+                XCTFail("Expected one refresh for the payment")
+                completion(.success(order))
             }
         }
         let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderCreation,
                                                 channel: .storeManagement,
                                                 dependencies: Dependencies(stores: stores, storage: storage))
-        var paymentCompletion: (() -> Void)?
-        var flowCompletion: (() -> Void)?
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()), onSuccessfulPayment: {
-            paymentCompletion = $0
-            flowCompletion = $1
+        var closeReceipt: (() -> Void)?
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()), onSuccessfulPayment: { paymentCompleted, flowCompleted in
+            closeReceipt = flowCompleted
+            paymentCompleted()
         })
-        let returned = expectation(description: "Returns after continuing and refreshing")
-        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase,
-                                 onSuccess: { returned.fulfill() }, onFailure: {})
-
-        // When
-        try XCTUnwrap(paymentCompletion)()
-        await fulfillment(of: [refreshStarted], timeout: 2)
-
-        // Then
-        XCTAssertEqual(refreshCount, 1)
-        XCTAssertFalse(viewModel.showLoadingIndicator)
-
-        // When
-        try XCTUnwrap(flowCompletion)()
-
-        // Then
-        XCTAssertEqual(refreshCount, 1, "The final refresh must wait for the in-flight refresh")
-        XCTAssertTrue(viewModel.showLoadingIndicator)
-
-        // When
-        try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed, datePaid: .some(Date()))))
-        await fulfillment(of: [returned, finalRefreshStarted], timeout: 2)
-
-        // Then
-        XCTAssertFalse(viewModel.showLoadingIndicator)
-        XCTAssertEqual(refreshCount, 2, "Receipt-time changes are refreshed without blocking the return")
-        if refreshCount == 2 {
-            try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed, datePaid: .some(Date()))))
-        }
-    }
-
-    func test_collect_payment_when_receipt_refresh_still_reports_unpaid_then_waits_for_second_refresh() async throws {
-        // Given
-        let order = Order.fake().copy(status: .pending, datePaid: .some(nil))
-        storage.insertSampleOrder(readOnlyOrder: order)
-        let firstRefresh = expectation(description: "Starts the refresh while the receipt is open")
-        let secondRefresh = expectation(description: "Checks for the paid order again after the receipt closes")
-        var completions: [@Sendable (Result<Order, Error>) -> Void] = []
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case let .retrieveOrderRemotely(_, _, completion) = action else { return }
-            completions.append(completion)
-            (completions.count == 1 ? firstRefresh : secondRefresh).fulfill()
-        }
-        var finishReceipt: (() -> Void)?
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()), onSuccessfulPayment: { completePayment, completeFlow in
-            completePayment()
-            finishReceipt = completeFlow
-        })
-        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderCreation,
-                                                channel: .storeManagement,
-                                                dependencies: Dependencies(stores: stores, storage: storage))
-        let returned = expectation(description: "Returns after the second refresh")
         var returnedToDetails = false
         viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase,
                                  onSuccess: {
             returnedToDetails = true
             returned.fulfill()
         }, onFailure: { XCTFail("Expected successful payment") })
+        await fulfillment(of: [refreshStarted], timeout: 2)
+        XCTAssertFalse(viewModel.showLoadingIndicator)
 
         // When
-        await fulfillment(of: [firstRefresh], timeout: 2)
-        try XCTUnwrap(completions.first)(.success(order))
-        try XCTUnwrap(finishReceipt)()
-        await fulfillment(of: [secondRefresh], timeout: 2)
+        try XCTUnwrap(closeReceipt)()
 
         // Then
-        XCTAssertFalse(returnedToDetails)
         XCTAssertTrue(viewModel.showLoadingIndicator)
-        if completions.count == 2 {
-            completions[1](.success(order.copy(status: .completed, datePaid: .some(Date()))))
-        }
+        XCTAssertFalse(returnedToDetails)
+        try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed, datePaid: .some(Date()))))
         await fulfillment(of: [returned], timeout: 2)
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
-    func test_collect_payment_when_previous_attempt_is_refreshing_then_success_waits_for_its_own_refresh() async throws {
-        // Given
-        let order = Order.fake().copy(status: .pending)
-        storage.insertSampleOrder(readOnlyOrder: order)
-        var refreshCompletions: [@Sendable (Result<Order, Error>) -> Void] = []
-        let firstRefreshStarted = expectation(description: "Refreshes after the failed attempt")
-        let secondRefreshStarted = expectation(description: "Refreshes after the successful attempt")
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case let .retrieveOrderRemotely(_, _, completion) = action {
-                refreshCompletions.append(completion)
-                if refreshCompletions.count == 1 {
-                    firstRefreshStarted.fulfill()
-                }
-                if refreshCompletions.count == 2 {
-                    secondRefreshStarted.fulfill()
-                } else if refreshCompletions.count == 3 {
-                    completion(.success(order))
-                }
-            }
-        }
-        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderCreation,
-                                                channel: .storeManagement,
-                                                dependencies: Dependencies(stores: stores, storage: storage))
-        let paymentError: CardReaderServiceError = .paymentCapture(
-            underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
-        viewModel.collectPayment(using: .tapToPay, on: UIViewController(),
-                                 useCase: MockCollectOrderPaymentUseCase(onCollectResult: .failure(paymentError)),
-                                 onSuccess: {}, onFailure: { XCTFail("Should stay on payment methods") })
-        await fulfillment(of: [firstRefreshStarted], timeout: 2)
-        var paymentCompletion: (() -> Void)?
-        var flowCompletion: (() -> Void)?
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()), onSuccessfulPayment: {
-            paymentCompletion = $0
-            flowCompletion = $1
-        })
-        let returned = expectation(description: "Returns after the successful attempt refresh")
-        var returnedToOrder = false
-
-        // When
-        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase,
-                                 onSuccess: { returnedToOrder = true; returned.fulfill() }, onFailure: {})
-        try XCTUnwrap(paymentCompletion)()
-        try XCTUnwrap(flowCompletion)()
-        try XCTUnwrap(refreshCompletions.first)(.success(order))
-        await fulfillment(of: [secondRefreshStarted], timeout: 1)
-
-        // Then
-        XCTAssertFalse(returnedToOrder)
-        XCTAssertEqual(refreshCompletions.count, 2)
-
-        // When
-        let completeRefresh = try XCTUnwrap(refreshCompletions.count == 2 ? refreshCompletions[1] : nil)
-        completeRefresh(.success(order.copy(status: .completed, datePaid: .some(Date()))))
-        await fulfillment(of: [returned], timeout: 2)
-
-        // Then
-        XCTAssertTrue(returnedToOrder)
-    }
-
-    func test_collect_payment_when_preflight_refresh_fails_then_failure_does_not_refetch() {
-        // Given
-        storage.insertSampleOrder(readOnlyOrder: .fake())
-        let error = CollectOrderPaymentUseCaseError.couldNotRefreshOrder(NSError(domain: "Test", code: 1))
-        var refreshCount = 0
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case .retrieveOrderRemotely = action {
-                refreshCount += 1
-            }
-        }
-        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderCreation,
-                                                channel: .storeManagement,
-                                                dependencies: Dependencies(stores: stores, storage: storage))
-        var returnedToOrder = false
-
-        // When
-        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(),
-                                 useCase: MockCollectOrderPaymentUseCase(onCollectResult: .failure(error)),
-                                 onSuccess: {}, onFailure: { returnedToOrder = true })
-
-        // Then
-        XCTAssertTrue(returnedToOrder)
-        XCTAssertEqual(refreshCount, 0)
-        XCTAssertFalse(viewModel.showLoadingIndicator)
-    }
-
-    func test_collectPayment_when_ttp_payment_error_then_onFailure_called() async throws {
+    func test_collect_payment_when_retry_order_check_fails_then_awaits_refresh_before_returning() async throws {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
         let refreshStarted = expectation(description: "Refreshes after the payment failure")
@@ -1507,7 +1273,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+        let retryError = CollectOrderPaymentUseCaseError.couldNotRefreshOrder(NSError(domain: "Retry", code: 1))
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(retryError))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
@@ -1539,57 +1306,29 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
-    func test_collectPayment_when_ttp_payment_error_requiresFallbackPaymentMethod_then_onFailure_not_called() async throws {
+    func test_collect_payment_when_tap_to_pay_requires_a_pin_then_stays_on_methods_without_refreshing() async {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
-        let refreshStarted = expectation(description: "Refreshes while payment methods remain available")
-        var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
+        let refreshed = expectation(description: "Does not start a refresh after the PIN decline")
+        refreshed.isInverted = true
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             if case let .retrieveOrderRemotely(_, _, completion) = action {
-                completeRefresh = completion
-                refreshStarted.fulfill()
+                refreshed.fulfill()
+                completion(.success(.fake()))
             }
         }
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
-                onCompletion(PaymentGatewayAccount.fake())
-            }
-        }
-
         let error: CardReaderServiceError = .paymentCapture(underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
-        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(error))
-        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let dependencies = Dependencies(
-            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-            stores: stores,
-            storage: storage)
-        let viewModel = PaymentMethodsViewModel(total: "12",
-                                                formattedTotal: "$12.00",
-                                                flow: .simplePayment,
-                                                channel: .storeManagement,
-                                                dependencies: dependencies)
-
-        let returned = expectation(description: "Does not return to order details")
-        returned.isInverted = true
-        var onFailureCalled = false
+        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .simplePayment, channel: .storeManagement,
+                                                dependencies: Dependencies(stores: stores, storage: storage))
 
         // When
-        viewModel.collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
-            onFailureCalled = true
-            returned.fulfill()
-        })
-        await fulfillment(of: [refreshStarted], timeout: 2)
+        viewModel.collectPayment(using: .tapToPay, on: UIViewController(),
+                                 useCase: MockCollectOrderPaymentUseCase(onCollectResult: .failure(error)),
+                                 onSuccess: { XCTFail("Expected a declined payment") },
+                                 onFailure: { XCTFail("Expected the payment methods to remain open") })
 
         // Then
-        XCTAssertFalse(onFailureCalled)
-        XCTAssertFalse(viewModel.showLoadingIndicator)
-
-        // When
-        try XCTUnwrap(completeRefresh)(.success(.fake()))
-        await fulfillment(of: [returned], timeout: 1)
-
-        // Then
-        XCTAssertFalse(onFailureCalled)
+        await fulfillment(of: [refreshed], timeout: 0.1)
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 

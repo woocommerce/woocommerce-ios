@@ -48,6 +48,17 @@ public extension String {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    /// Replaces each decimal digit of any script with its ASCII digit, leaving other characters unchanged.
+    var withASCIIDigits: String {
+        map { character in
+            guard character.unicodeScalars.first?.properties.generalCategory == .decimalNumber,
+                  let digit = character.wholeNumberValue else {
+                return String(character)
+            }
+            return String(digit)
+        }.joined()
+    }
 }
 
 #if !os(watchOS)

@@ -77,7 +77,7 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
         let inputMethods: Yosemite.CardReaderInput = [.tap, .swipe, .insert]
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: inputMethods, cancelPayment: {})))
 
-        try await Task.sleep(nanoseconds: 3_000_000_000) // 3 seconds, give it some time for the screenshot
+        try await Task.sleep(nanoseconds: UInt64(mockCardWaitInterval * 1_000_000_000))
         guard paymentAttemptID == attemptID else { return .cancellation }
 
         return .success(CardPresentPaymentTransaction())
@@ -86,6 +86,16 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
     func cancelPayment() { finishMockPayment() }
 
     func cancelPayment() async throws { finishMockPayment() }
+
+    private var mockCardWaitInterval: TimeInterval {
+        #if DEBUG
+        if let value = ProcessInfo.processInfo.environment["POS_MOCK_CARD_PAYMENT_WAIT_SECONDS"],
+           let interval = TimeInterval(value), interval.isFinite, (1...300).contains(interval) {
+            return interval
+        }
+        #endif
+        return 3
+    }
 
     private func finishMockPayment() {
         paymentAttemptID = nil

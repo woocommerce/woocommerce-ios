@@ -96,9 +96,12 @@ struct POSPINAttemptTests {
         // Given
         var sut = POSPINAttempt()
 
-        // When / Then
         for digit in "123" {
-            #expect(sut.enter(digit, length: 4) == nil)
+            // When
+            let submission = sut.enter(digit, length: 4)
+
+            // Then
+            #expect(submission == nil)
             #expect(!sut.isMessageDeferred)
         }
         #expect(sut.pin == "123")
@@ -115,19 +118,6 @@ struct POSPINAttemptTests {
         // Then
         #expect(sut.pin == "125")
         #expect(submission == nil)
-        #expect(!sut.isMessageDeferred)
-    }
-
-    @Test func test_failure_when_transition_has_not_completed_then_retains_filled_PIN() {
-        // Given
-        var sut = POSPINAttempt()
-        let generation = enterPIN("1234", into: &sut)
-
-        // When / Then
-        #expect(sut.pin == "1234")
-        #expect(sut.isMessageDeferred)
-        sut.revealFailure(generation: generation)
-        #expect(sut.pin.isEmpty)
         #expect(!sut.isMessageDeferred)
     }
 

@@ -6,9 +6,13 @@ struct POSPageHeaderActionButton: View {
     var imageColor: Color = .posOnSurface
     let action: () -> Void
 
+    @Environment(\.posLayoutScale) private var layoutScale
     @ScaledMetric private var scaledButtonSize: CGFloat = POSHeaderLayoutConstants.minHeight
     private var constrainedButtonSize: CGFloat {
-        max(POSHeaderLayoutConstants.minHeight, min(scaledButtonSize, POSHeaderLayoutConstants.minHeight * 1.2))
+        guard layoutScale == .regular else {
+            return POSHeaderLayoutConstants.minHeight
+        }
+        return max(POSHeaderLayoutConstants.minHeight, min(scaledButtonSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     var body: some View {

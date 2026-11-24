@@ -31,11 +31,6 @@ struct PointOfSaleDashboardView: View {
         self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
-    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
-    /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
-    /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
-    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
-
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
     }
@@ -477,16 +472,11 @@ struct PointOfSaleDashboardView: View {
                         .foregroundColor(.posOnSurface)
                         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
-                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
+                .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-compact-overflow-menu")
-    }
-
-    private var phoneOverflowMenuConstrainedSize: CGFloat {
-        max(POSHeaderLayoutConstants.minHeight,
-            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     private var phoneCartItemsCount: Int {

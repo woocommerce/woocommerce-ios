@@ -38,9 +38,6 @@ class BuildWarningBaselineFixture
     %w[build-warning-baseline.sh count-build-warnings.rb].each { |name| FileUtils.cp(File.join(COMMANDS, name), commands) }
     FileUtils.mkdir_p(File.join(@checkout, 'fastlane/helpers'))
     FileUtils.cp(HELPER, File.join(@checkout, 'fastlane/helpers'))
-    skip = File.join(commands, 'should-skip-job.sh')
-    File.write(skip, "#!/bin/bash\nexit 1\n")
-    File.chmod(0o755, skip)
   end
 
   def run

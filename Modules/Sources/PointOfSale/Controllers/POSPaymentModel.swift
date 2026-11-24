@@ -744,6 +744,7 @@ extension POSPaymentModel {
         cardPresentPaymentOnboardingViewContainer = nil
         onOnboardingCancellation?()
         cancelConnectCardReaderTask()
+        endIdleTapToPaySession()
     }
 
     func trackCardPaymentsOnboardingShown() {

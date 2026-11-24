@@ -237,6 +237,40 @@ struct POSPaymentModelTests {
     }
 
     @Test @MainActor
+    func test_cancelCardPaymentsOnboarding_when_tap_to_pay_start_shows_onboarding_then_session_ends() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        var finishConnect: CheckedContinuation<Void, Never>?
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        await fireOnce { fire in
+            service.connectReaderOverride = {
+                service.paymentEvent = .showOnboarding(
+                    factory: CardPresentPaymentOnboardingViewContainer(configuration: MockOnboardingViewContainerConfiguration()),
+                    onCancel: {})
+                await withCheckedContinuation { continuation in
+                    finishConnect = continuation
+                    fire()
+                }
+                return .canceled
+            }
+            Task { await sut.startCardPayment(with: .tapToPay) }
+        }
+        #expect(sut.cardPresentPaymentOnboardingViewContainer != nil)
+        #expect(sut.isCardPaymentStartPending)
+
+        // When
+        sut.cancelCardPaymentsOnboarding()
+
+        // Then
+        #expect(!sut.isCardPaymentStartPending)
+        #expect(!sut.isPaymentSessionActive)
+
+        finishConnect?.resume()
+    }
+
+    @Test @MainActor
     func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {
         // Given
         let service = MockCardPresentPaymentService()

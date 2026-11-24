@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 /// Full-screen guide shown on iPhone when POS opens, until the merchant taps Start selling.
 /// It has no close button: the merchant either starts selling or exits POS.
@@ -9,6 +8,7 @@ struct POSOnboardingGuideView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric private var contentMaxWidth = POSStatusButtonsLayout.maxWidth
+    @State private var tallestStepHeight: CGFloat = 0
 
     @Binding var currentStep: POSOnboardingGuideStep
     let onStartSelling: () -> Void
@@ -20,30 +20,26 @@ struct POSOnboardingGuideView: View {
                 TabView(selection: $currentStep) {
                     ForEach(POSOnboardingGuideStep.allCases) { step in
                         page(for: step)
-                            .frame(maxWidth: contentMaxWidth)
-                            .frame(maxWidth: .infinity)
-                            .posContentPadding(.horizontal, metrics.padding.medium)
-                            .scrollVerticallyIfNeeded()
                             .tag(step)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .accessibilityIdentifier("pos-onboarding-guide")
 
-                POSOnboardingGuidePageIndicator(currentPage: currentPage,
-                                                totalPages: POSOnboardingGuideStep.allCases.count)
+                POSOnboardingGuidePageIndicator(currentStep: $currentStep)
                     .posPadding(.top, \.medium)
                     .accessibilityIdentifier("pos-onboarding-guide-page-indicator")
 
-                POSFlowButtonsView(configuration: buttonConfiguration)
-                    // Side by side in landscape, so the buttons leave room for the step.
-                    .environment(\.horizontalSizeClass, verticalSizeClass == .compact ? .regular : horizontalSizeClass)
+                buttons
+                    // With large text, titles wrap instead of being truncated.
+                    .fixedSize(horizontal: false, vertical: true)
                     .posStatusButtonsWidth(addsHorizontalPadding: false)
                     .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom,
                                                                                              metrics: metrics))
             }
         }
         .background(Color.posSurface.ignoresSafeArea())
+        .interactiveDismissDisabled()
     }
 
     /// The hero gives its space to the text in landscape and with accessibility text sizes.
@@ -51,22 +47,43 @@ struct POSOnboardingGuideView: View {
         verticalSizeClass != .compact && !dynamicTypeSize.isAccessibilitySize
     }
 
+    /// Titles stay in place while swiping: every page takes the height of the tallest step, or, when that doesn't fit,
+    /// every step scrolls from the top, so no step scrolls into empty space.
     private func page(for step: POSOnboardingGuideStep) -> some View {
-        ZStack(alignment: .top) {
-            if showsHero {
-                // Every page takes the height of the tallest step, so the hero stays in place while swiping.
-                ForEach(POSOnboardingGuideStep.allCases) {
-                    POSOnboardingGuideStepView(step: $0, showsHero: true)
-                        .hidden()
-                }
+        GeometryReader { geometry in
+            let tallestStepFits = tallestStepHeight <= geometry.size.height
+            ScrollView(.vertical) {
+                POSOnboardingGuideStepView(step: step, showsHero: showsHero)
+                    .frame(maxWidth: .infinity, minHeight: tallestStepFits ? tallestStepHeight : nil, alignment: .top)
+                    .background {
+                        tallestStepMeasurement
+                    }
+                    .modifier(PageContentWidth(maxWidth: contentMaxWidth))
+                    .frame(minHeight: geometry.size.height, alignment: tallestStepFits ? .center : .top)
             }
-            POSOnboardingGuideStepView(step: step, showsHero: showsHero)
+            .scrollBounceBehavior(.basedOnSize)
+            // Shows that the step continues below.
+            .scrollIndicatorsFlash(onAppear: true)
+            .scrollIndicatorsFlash(trigger: currentStep)
         }
     }
 
-    private var currentPage: Binding<Int> {
-        Binding(get: { currentStep.rawValue },
-                set: { currentStep = POSOnboardingGuideStep(rawValue: $0) ?? currentStep })
+    private var tallestStepMeasurement: some View {
+        ZStack {
+            ForEach(POSOnboardingGuideStep.allCases) {
+                POSOnboardingGuideStepView(step: $0, showsHero: showsHero)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .hidden()
+        .accessibilityHidden(true)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tallestStepHeight = $0 }
+    }
+
+    /// Side by side in landscape, so the buttons leave room for the step.
+    private var buttons: some View {
+        POSFlowButtonsView(configuration: buttonConfiguration)
+            .environment(\.horizontalSizeClass, verticalSizeClass == .compact ? .regular : horizontalSizeClass)
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -76,6 +93,19 @@ struct POSOnboardingGuideView: View {
               secondaryButton: .init(title: Localization.exit,
                                      accessibilityIdentifier: "pos-onboarding-guide-exit-button",
                                      action: onExit))
+    }
+}
+
+private struct PageContentWidth: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
+
+    let maxWidth: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: maxWidth)
+            .frame(maxWidth: .infinity)
+            .posContentPadding(.horizontal, metrics.padding.medium)
     }
 }
 
@@ -96,7 +126,7 @@ private struct POSOnboardingGuideStepView: View {
                     .accessibilityHidden(true)
             }
 
-            VStack(spacing: metrics.spacing.medium) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(step.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -131,25 +161,36 @@ private struct POSOnboardingGuideStepView: View {
 
 private struct POSOnboardingGuideSaleStepRow: View {
     @Environment(\.posMetrics) private var metrics
-    @ScaledMetric(relativeTo: .body) private var badgeSize: CGFloat = 32
 
     let number: Int
     let text: String
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.medium) {
-            Text(number.formatted())
-                .font(.posBodyMediumBold)
-                .foregroundStyle(Color.posOnPrimaryContainer)
-                .frame(width: badgeSize, height: badgeSize)
-                .background(Circle().fill(Color.posPrimaryContainer))
+            POSOnboardingGuideSaleStepBadge(number: number)
+                // Larger badges would squeeze the text to a word per line.
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             Text(text)
                 .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct POSOnboardingGuideSaleStepBadge: View {
+    @ScaledMetric(relativeTo: .body) private var size: CGFloat = 32
+
+    let number: Int
+
+    var body: some View {
+        Text(number.formatted())
+            .font(.posBodyMediumBold)
+            .foregroundStyle(Color.posOnPrimaryContainer)
+            .frame(width: size, height: size)
+            .background(Circle().fill(Color.posPrimaryContainer))
     }
 }
 

@@ -1,44 +1,46 @@
 import SwiftUI
 
-/// Page dots for the onboarding guide. VoiceOver users change the page by swiping up or down on it.
+/// Page dots for the onboarding guide. VoiceOver users change the step by swiping up or down on it,
+/// and hear the new step's title.
 struct POSOnboardingGuidePageIndicator: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    @Binding var currentPage: Int
-    let totalPages: Int
+    @Binding var currentStep: POSOnboardingGuideStep
 
     private static let dotSize: CGFloat = 8
+    private let steps = POSOnboardingGuideStep.allCases
 
     var body: some View {
         HStack(spacing: metrics.spacing.small) {
-            ForEach(0..<totalPages, id: \.self) { index in
+            ForEach(steps) { step in
                 Circle()
-                    .fill(index == currentPage ? Color.posPrimary : Color.posOnSurfaceVariantLowest)
+                    .fill(step == currentStep ? Color.posPrimary : Color.posOnSurfaceVariantLowest)
                     .frame(width: Self.dotSize, height: Self.dotSize)
             }
         }
         .accessibilityElement()
         .accessibilityLabel(Localization.label)
-        .accessibilityValue(String.localizedStringWithFormat(Localization.value, currentPage + 1, totalPages))
+        .accessibilityValue(String.localizedStringWithFormat(Localization.value, currentStep.title, currentStep.rawValue + 1, steps.count))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment:
-                showPage(currentPage + 1)
+                show(POSOnboardingGuideStep(rawValue: currentStep.rawValue + 1))
             case .decrement:
-                showPage(currentPage - 1)
+                show(POSOnboardingGuideStep(rawValue: currentStep.rawValue - 1))
             @unknown default:
                 break
             }
         }
     }
 
-    private func showPage(_ page: Int) {
-        guard (0..<totalPages).contains(page) else {
+    /// `nil` past the first or last step, where the step stays as it is.
+    private func show(_ step: POSOnboardingGuideStep?) {
+        guard let step else {
             return
         }
         withAnimation(reduceMotion ? nil : .default) {
-            currentPage = page
+            currentStep = step
         }
     }
 }
@@ -51,10 +53,11 @@ private extension POSOnboardingGuidePageIndicator {
             comment: "Accessibility label of the page dots in the POS onboarding guide."
         )
         static let value = NSLocalizedString(
-            "pos.onboardingGuide.pageIndicator.value",
-            value: "%1$d of %2$d",
-            comment: "Accessibility value of the page dots in the POS onboarding guide. " +
-                "%1$d is the number of the current page, %2$d is the number of pages. Example: 1 of 3"
+            "pos.onboardingGuide.pageIndicator.stepValue",
+            value: "%1$@, %2$d of %3$d",
+            comment: "Accessibility value of the page dots in the POS onboarding guide, read after changing the page. " +
+                "%1$@ is the title of the current page, %2$d is its number, %3$d is the number of pages. " +
+                "Example: One store, online and in person, 2 of 3"
         )
     }
 }
@@ -62,9 +65,9 @@ private extension POSOnboardingGuidePageIndicator {
 #if DEBUG
 #Preview {
     VStack(spacing: POSMetrics.regular.spacing.large) {
-        POSOnboardingGuidePageIndicator(currentPage: .constant(0), totalPages: 3)
-        POSOnboardingGuidePageIndicator(currentPage: .constant(1), totalPages: 3)
-        POSOnboardingGuidePageIndicator(currentPage: .constant(2), totalPages: 3)
+        POSOnboardingGuidePageIndicator(currentStep: .constant(.checkout))
+        POSOnboardingGuidePageIndicator(currentStep: .constant(.oneStore))
+        POSOnboardingGuidePageIndicator(currentStep: .constant(.howASaleWorks))
     }
 }
 #endif

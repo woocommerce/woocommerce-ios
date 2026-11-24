@@ -4,7 +4,7 @@ struct POSPINEntryView: View {
     enum Style: Equatable {
         case standard
         case lockScreen(keySize: CGFloat)
-        case setup(keySize: CGFloat, page: POSPINEntryPage, feedback: String?)
+        case setup(keySize: CGFloat, page: POSPINEntryPage, feedback: String?, feedbackMessages: [String])
     }
 
     @Environment(\.posMetrics) private var metrics
@@ -84,7 +84,7 @@ private extension POSPINEntryView {
         switch style {
         case .standard:
             nil
-        case .lockScreen(let keySize), .setup(let keySize, _, _):
+        case .lockScreen(let keySize), .setup(let keySize, _, _, _):
             keySize
         }
     }
@@ -94,14 +94,14 @@ private extension POSPINEntryView {
     }
 
     static func page(for style: Style) -> POSPINEntryPage? {
-        guard case .setup(_, let page, _) = style else {
+        guard case .setup(_, let page, _, _) = style else {
             return nil
         }
         return page
     }
 
     var setupFeedback: String? {
-        guard case .setup(_, _, let feedback) = style, enteredPIN.isEmpty else {
+        guard case .setup(_, _, let feedback, _) = style, enteredPIN.isEmpty else {
             return nil
         }
         return feedback
@@ -110,6 +110,11 @@ private extension POSPINEntryView {
     /// A new setup page starts empty in the same update that slides it in.
     var enteredPIN: String {
         attemptPageID == setupPage?.id ? attempt.pin : ""
+    }
+
+    var setupFeedbackMessages: [String] {
+        guard case .setup(_, _, _, let messages) = style else { return [] }
+        return messages
     }
 
     var contentSpacing: CGFloat {
@@ -188,13 +193,18 @@ private extension POSPINEntryView {
                             ))
                     }
                 }
+                .transaction { transaction in
+                    if setupPage != nil && !filled && enteredPIN.isEmpty {
+                        transaction.animation = nil
+                    }
+                }
                 .frame(width: LockScreenConstants.dotSize, height: LockScreenConstants.dotSize)
                 .offset(y: yOffset)
         } else {
             Circle()
-                .fill(filled ? Color.posPrimary : Color.clear)
+                .fill(filled ? Color.posOnSurface : Color.clear)
                 .overlay(
-                    Circle().strokeBorder(filled ? Color.posPrimary : Color.posOutline,
+                    Circle().strokeBorder(filled ? Color.posOnSurface : Color.posOutline,
                                           lineWidth: Constants.dotBorderWidth)
                 )
                 .frame(width: Constants.dotSize, height: Constants.dotSize)
@@ -321,7 +331,7 @@ private extension POSPINEntryView {
         return false
     }
 
-    /// Reserve lock-screen feedback space; setup feedback participates in its own layout at accessibility sizes.
+    /// Reserve lock-screen feedback space; setup reserves its own error slot at accessibility sizes.
     var lockScreenStatusMinHeight: CGFloat {
         setupPage == nil && dynamicTypeSize.isAccessibilitySize ? lockScreenStatusLineHeight * 2 : LockScreenConstants.statusRowHeight
     }
@@ -344,8 +354,14 @@ private extension POSPINEntryView {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(spacing: metrics.spacing.small) {
                     setupPageDots(setupPage)
-                    if let setupFeedback {
-                        setupFeedbackMessage(setupFeedback)
+                    ZStack {
+                        // Large-text errors need layout space without shifting the title or resizing the keypad.
+                        ForEach(setupFeedbackMessages, id: \.self) { message in
+                            setupFeedbackMessage(message).hidden()
+                        }
+                        if let setupFeedback {
+                            setupFeedbackMessage(setupFeedback)
+                        }
                     }
                 }
             } else {

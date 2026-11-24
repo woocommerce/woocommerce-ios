@@ -235,6 +235,29 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
+    /// A site-credentials login that fails a later check keeps the manager authenticated with no store
+    /// while the login screens stay up, and the merchant can start a QR login from them.
+    ///
+    func test_dispatch_QR_login_scan_when_authenticated_with_site_credentials_and_no_store_then_completion_is_called() throws {
+        // Given
+        let manager = DefaultStoresManager.testingInstance
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+        XCTAssertTrue(manager.needsDefaultStore)
+
+        // URLSession rejects this scheme without a network request, so the scan fails right away.
+        let siteURL = try XCTUnwrap(URL(string: "unsupported-scheme://shop.example"))
+        let device = QRLoginScanDevice(os: "iOS", osVersion: "26.0", model: "iPhone", brand: "Apple", appVersion: "26.0")
+        let completionCalled = expectation(description: "QR login scan completion is called")
+
+        // When
+        manager.dispatch(QRLoginAction.selfHostedScan(siteURL: siteURL, token: "token", device: device) { _ in
+            completionCalled.fulfill()
+        })
+
+        // Then
+        wait(for: [completionCalled], timeout: 5)
+    }
+
 
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///

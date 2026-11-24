@@ -33,6 +33,8 @@ struct POSOrderMapper {
             .filter { !$0.isDeleted }
             .map { map(fee: $0, currency: order.currency) }
 
+        let formattedCustomAmountsTotal = mapFormattedCustomAmountsTotal(customAmounts: posCustomAmounts, currency: order.currency)
+
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
 
         let formattedTotal = try mapFormattedTotal(order: order)
@@ -66,6 +68,7 @@ struct POSOrderMapper {
             status: order.status,
             formattedTotal: formattedTotal,
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
+            formattedCustomAmountsTotal: formattedCustomAmountsTotal,
             customerEmail: customerEmail,
             paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
@@ -93,6 +96,16 @@ struct POSOrderMapper {
             throw POSOrderMappingError.totalTaxFormattingFailed(orderID: order.orderID, totalTax: order.totalTax, currency: order.currency)
         }
         return formattedTotalTax
+    }
+
+    /// Fee lines are excluded from the items subtotal, so the totals breakdown needs their sum
+    /// on a separate row for the rows to add up to the order total.
+    private func mapFormattedCustomAmountsTotal(customAmounts: [POSOrderCustomAmount], currency: String) -> String? {
+        let total = customAmounts.reduce(Decimal.zero) { $0 + $1.total }
+        guard total != .zero else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(total, with: currency)
     }
 
     private func mapFormattedPaymentTotal(order: NetworkingCore.Order, formattedTotal: String) -> String {

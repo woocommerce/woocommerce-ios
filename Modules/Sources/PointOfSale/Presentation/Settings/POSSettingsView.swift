@@ -53,11 +53,11 @@ extension POSSettingsView {
                     categoryCard(.store)
                     categoryCard(.hardware)
                     categoryCard(.payments)
-                    if settingsController.securityController?.isVisible == true {
-                        categoryCard(.security)
-                    }
                     if settingsController.isLocalCatalogEligible {
                         categoryCard(.localCatalog)
+                    }
+                    if settingsController.securityController?.isVisible == true {
+                        categoryCard(.security)
                     }
                     Spacer()
 

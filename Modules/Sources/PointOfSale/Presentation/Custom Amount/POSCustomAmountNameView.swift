@@ -28,7 +28,6 @@ struct POSCustomAmountNameView: View {
                                 submitLabel: .done,
                                 textFieldAccessibilityIdentifier: "pos-custom-amount-name-field",
                                 submitButtonAccessibilityIdentifier: "pos-custom-amount-name-save-button",
-                                horizontalPadding: \.xLarge,
                                 fillsAvailableHeight: true)
         .posEdgeSwipeBackAction(onBack: onBack)
     }

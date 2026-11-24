@@ -37,6 +37,12 @@ struct CartViewHelper {
         return paymentState.markAsPaid != .idle
     }
 
+    /// A compact cart lives in a sheet that is only open while the order is being built and is dismissed
+    /// when checkout starts, so it keeps the building look instead of changing while it slides away.
+    func displayedOrderStage(orderStage: PointOfSaleOrderStage, isCompact: Bool) -> PointOfSaleOrderStage {
+        isCompact ? .building : orderStage
+    }
+
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
         cart.isNotEmpty && orderStage == .building
     }

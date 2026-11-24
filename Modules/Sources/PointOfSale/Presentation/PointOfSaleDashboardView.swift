@@ -274,6 +274,11 @@ struct PointOfSaleDashboardView: View {
             onBack: { posModel.addMoreToCart() }
         ) {
             GeometryReader { geometry in
+                let showsCartButton = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                    cartIsEmpty: posModel.cart.isEmpty,
+                    floatingControlSuppressed: floatingControlSuppressed,
+                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible
+                )
                 VStack(spacing: metrics.spacing.none) {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
@@ -286,15 +291,12 @@ struct PointOfSaleDashboardView: View {
                             ))
                         }
                     )
-                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                        cartIsEmpty: posModel.cart.isEmpty,
-                        floatingControlSuppressed: floatingControlSuppressed
-                    ) {
+                    if showsCartButton {
                         phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
-                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: showsCartButton)
             }
         } pushed: { stage in
             if stage != nil {
@@ -420,6 +422,8 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private func phoneOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
+        let paymentModel = posModel.paymentModel
+        let staff = session.currentStaff
         POSMenu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
@@ -443,10 +447,13 @@ struct PointOfSaleDashboardView: View {
             }
             if session.isPINProtectionEnabled {
                 POSMenuButton {
+                    // The menu can stay open while a payment starts.
+                    guard !paymentModel.paymentState.isAutoLockSuppressing else { return }
                     session.lock()
                 } label: {
                     Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
                 }
+                .disabled(paymentModel.paymentState.isAutoLockSuppressing)
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
             POSMenuButton {
@@ -456,6 +463,11 @@ struct PointOfSaleDashboardView: View {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
             .accessibilityIdentifier("pos-exit-menu-item")
+            if let staff {
+                Divider()
+                POSStaffMenuRow(staff: staff)
+                    .posPadding(\.medium)
+            }
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)

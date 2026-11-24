@@ -71,6 +71,19 @@ class CurrencyFormatterTests: XCTestCase {
         assertEqual(expectedResult, actualResult)
     }
 
+    func test_convertToDecimal_when_string_has_persian_digits_then_returns_their_decimal_value() {
+        // Given
+        let formatter = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+
+        // When
+        let wholeNumber = formatter.convertToDecimal("۱۰")
+        let fractionalNumber = formatter.convertToDecimal("۴۵,۴۱")
+
+        // Then
+        XCTAssertEqual(wholeNumber, NSDecimalNumber(string: "10"))
+        XCTAssertEqual(fractionalNumber, NSDecimalNumber(string: "45.41"))
+    }
+
     /// This is where a float-to-decimal unit test would go.
     /// It's not here because we don't allow using floats for currency.
     /// Be Responsible. Friends don't let friends use `float` or `double` for currency.

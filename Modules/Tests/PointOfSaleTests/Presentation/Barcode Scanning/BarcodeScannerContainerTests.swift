@@ -2,6 +2,7 @@ import Testing
 import UIKit
 import GameController
 @testable import PointOfSale
+import enum Hardware.HIDBarcodeParserError
 
 @MainActor
 struct BarcodeScannerContainerTests {

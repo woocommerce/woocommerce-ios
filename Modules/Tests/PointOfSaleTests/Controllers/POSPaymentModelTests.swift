@@ -1313,26 +1313,33 @@ struct POSPaymentModelTests {
     @Test("confirmMarkAsPaidPayment reuses currentOrder when one is already cached")
     @MainActor
     func confirmMarkAsPaidPayment_when_currentOrderCached_then_doesNotCallProvideOrder() async throws {
-        // Given a SUT that has already taken a payment path which cached `currentOrder`
-        // (we simulate this by collecting cash first — both flows share the same cache).
+        // Given a cached order from a confirmed canceled card attempt.
         let cachedOrder = Order.fake().copy(orderID: 999, total: "10.00")
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = cachedOrder
         orderProvider.totalDecimalToReturn = 10
-
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = .init(name: "Reader", batteryLevel: 1)
+        service.collectPaymentOverride = {
+            service.paymentSessionState = .active
+            service.paymentSessionState = .cancelling
+            service.paymentSessionState = .idle
+            return .cancellation
+        }
         let handler = MockPOSMarkAsPaidHandler()
-        let sut = makePaymentController(
-            orderProvider: orderProvider,
-            markAsPaidHandler: handler)
-
-        // Prime the cache via cash: collectCashPayment populates `currentOrder`.
-        try await sut.collectCashPayment(changeDueAmount: nil)
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: orderProvider,
+                                        markAsPaidHandler: handler)
+        await sut.startPayment()
         #expect(orderProvider.provideOrderCallCount == 1)
+        #expect(!sut.paymentState.isSuccess)
+        #expect(!sut.isCardPaymentUnresolved)
 
         // When
+        sut.startMarkAsPaidPayment()
         try await sut.confirmMarkAsPaidPayment()
 
-        // Then: provideOrder was NOT called again — the cached order was reused.
+        // Then
         #expect(orderProvider.provideOrderCallCount == 1)
         #expect(handler.markOrderAsPaidReceivedOrder?.orderID == cachedOrder.orderID)
     }
@@ -2600,43 +2607,52 @@ struct POSPaymentModelTests {
         }
     }
 
-    @Test("TTP: cancelledOnReader resets card state to idle and re-arms the gate")
+    @Test("TTP: confirmed reader cancellation resets card state and re-arms the gate")
     @MainActor
-    func cancelledOnReader_TTP_when_event_arrives_then_card_state_resets_and_gate_re_arms() async {
+    func test_cancelledOnReader_when_cancellation_is_confirmed_then_resets_card_state_and_rearms_gate() async {
         // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: orderProvider,
+                                        preferredConnectionMethod: .tapToPay)
+        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+            }
+            Task { await sut.startPaymentWithMethod(.tapToPay) }
+        }
+        #expect(sut.paymentState.card == .acceptingCard)
 
-        let sut = makePaymentController(
-            cardPresentPaymentService: service,
-            orderProvider: orderProvider,
-            preferredConnectionMethod: .tapToPay)
+        // When
+        await fireOnce { confirmed in
+            service.onCancelPaymentCalled = {
+                service.paymentSessionState = .cancelling
+                #expect(sut.paymentState.card == .acceptingCard)
+                #expect(sut.isCardPaymentUnresolved)
+                finishCollection?.resume(returning: .cancellation)
+                finishCollection = nil
+                service.paymentSessionState = .idle
+                confirmed()
+            }
+            service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+            #expect(sut.paymentState.card == .acceptingCard)
+        }
 
-        await sut.startPayment()
-
-        // Open the gate: merchant taps Tap to Pay. (Don't await — see the
-        // sibling test above for why.) Drive state to a terminal value by
-        // sending a `paymentSuccess` directly through the now-open gate.
-        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
-        await Task.yield()
-        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-        #expect(sut.paymentState.card == .cardPaymentSuccessful)
-
-        // When: merchant cancels on reader
-        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
-
-        // Then: card state resets to idle AND inline message is cleared.
-        // The cancelledOnReader sink runs unconditionally on the TTP path
-        // (no gate check), so cancellation resets even a terminal state.
+        // Then
         #expect(sut.paymentState.card == .idle)
         #expect(sut.cardPresentPaymentInlineMessage == nil)
-
-        // And the gate is re-armed: events are suppressed again until next explicit tap
-        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
-            inputMethods: [.tap, .swipe, .insert],
-            cancelPayment: {}))
+        #expect(!sut.isCardPaymentUnresolved)
+        #expect(sut.currentPaymentMethod == nil)
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
         #expect(sut.paymentState.card == .idle)
     }
 
@@ -2668,60 +2684,64 @@ struct POSPaymentModelTests {
 
     // MARK: - Subscriber Ordering Regression
 
-    @Test("TTP: after cancelledOnReader a subsequent startPaymentWithMethod opens the gate cleanly")
+    @Test("TTP: a new explicit start opens the gate after confirmed reader cancellation")
     @MainActor
-    func cancelledOnReader_TTP_when_subsequent_startPaymentWithMethod_then_gate_is_open_not_stale() async {
-        // This test is a regression guard for the subscriber-ordering invariant in
-        // subscribeToPaymentSessionEvents: the cancelledOnReader sink MUST close the
-        // gate (isAwaitingExplicitPaymentStart = true) before the card-state sink
-        // evaluates shouldPropagatePaymentEvent. If the two sinks are ever reordered,
-        // the card-state sink would run first and the cancelledOnReader event would
-        // advance paymentState.card to a non-idle state before the gate closes,
-        // causing the subsequent startPaymentWithMethod to see a stale (open) gate.
-
+    func test_cancelledOnReader_when_next_payment_starts_then_opens_gate_after_confirmed_cancellation() async {
         // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
-
-        let sut = makePaymentController(
-            cardPresentPaymentService: service,
-            orderProvider: orderProvider,
-            preferredConnectionMethod: .tapToPay)
-
-        await sut.startPayment()
-
-        // Round 1: open gate, drive to terminal state via a direct paymentSuccess
-        // event, then cancel on reader. (Don't await `startPaymentWithMethod` —
-        // the BT-as-one-shot architecture's disconnect-then-reconnect path
-        // blocks on connection status the mock doesn't drive. Gate side-effects
-        // happen before the first await; sending the success event after
-        // yielding once proves the gate is open.)
-        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
-        await Task.yield()
-        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-        #expect(sut.paymentState.card == .cardPaymentSuccessful)
-
-        // When: merchant cancels on reader — gate must close and state must reset
-        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
-
-        // Then: state is idle immediately
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: orderProvider,
+                                        preferredConnectionMethod: .tapToPay)
+        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+            }
+            Task { await sut.startPaymentWithMethod(.tapToPay) }
+        }
+        await fireOnce { confirmed in
+            service.onCancelPaymentCalled = {
+                service.paymentSessionState = .cancelling
+                finishCollection?.resume(returning: .cancellation)
+                finishCollection = nil
+                service.paymentSessionState = .idle
+                confirmed()
+            }
+            service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+        }
         #expect(sut.paymentState.card == .idle)
+        #expect(sut.currentPaymentMethod == nil)
 
-        // Round 2: subsequent startPaymentWithMethod must re-open the gate cleanly.
-        // If subscriber ordering were inverted — card-state sink before
-        // cancelledOnReader sink — `cancelledOnReader` would have advanced
-        // `paymentState.card` past `.idle` before the gate closed, and the
-        // `paymentState.card != .idle` guard in `startPaymentWithMethod` would
-        // have short-circuited Round 2, leaving `currentPaymentMethod` unset.
-        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
-        await Task.yield()
+        // When
+        service.onCancelPaymentCalled = nil
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+            }
+            Task { await sut.startPaymentWithMethod(.tapToPay) }
+        }
+
+        // Then
+        #expect(service.spyCollectPaymentMethods == [.tapToPay, .tapToPay])
         #expect(sut.currentPaymentMethod == .tapToPay)
-
-        // And a second paymentSuccess event propagates through the re-opened gate.
-        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+        #expect(sut.paymentState.card == .acceptingCard)
+        service.paymentSessionState = .cancelling
+        finishCollection?.resume(returning: .cancellation)
+        finishCollection = nil
+        service.paymentSessionState = .idle
     }
 
     @Test("connectCardReader skips a second call while the first is in flight")
@@ -3710,41 +3730,62 @@ struct POSPaymentModelTests {
         #expect(sut.currentPaymentMethod == .bluetooth)
     }
 
-    @Test("startPaymentWithMethod cancels the current payment when switching to a different method")
+    @Test("startPaymentWithMethod cancels the current payment before collecting with a different method")
     @MainActor
     func test_startPaymentWithMethod_when_switching_methods_then_cancels_current_payment() async {
-        // Given — an active BT session.
+        // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
         service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
-        let sut = makePaymentController(
-            cardPresentPaymentService: service,
-            orderProvider: orderProvider,
-            preferredConnectionMethod: .bluetooth)
-        await fireOnce { fire in
-            service.onCollectPaymentCalled = { fire() }
-            Task { @MainActor in await sut.startPayment() }
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: orderProvider,
+                                        preferredConnectionMethod: .bluetooth)
+        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
+        var firstCollection: Task<Void, Never>?
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+            }
+            firstCollection = Task { await sut.startPayment() }
         }
         service.cancelPaymentCalled = false
+        service.onCancelPaymentCalled = {
+            service.paymentSessionState = .cancelling
+            #expect(service.spyCollectPaymentMethods == [.bluetooth])
+            finishCollection?.resume(returning: .cancellation)
+            finishCollection = nil
+            await firstCollection?.value
+            service.paymentSessionState = .idle
+        }
 
-        // When — merchant picks Tap to Pay from the Other payment methods sheet
-        // while BT is mid-collection. `await task.value` is the most robust
-        // wait we have here — `startPaymentWithMethod` returns deterministically
-        // in the test environment (cancel → disconnect-then-reconnect → kick
-        // a fire-and-forget connectReader Task → set up the
-        // startPaymentOnCardReaderConnection one-shot subscription → return).
-        // Better than `withObservationTracking { _ = sut.currentPaymentMethod }`,
-        // which would hang to the test-suite timeout if a future change ever
-        // emitted an intermediate `currentPaymentMethod` value before
-        // `.tapToPay` and the observation missed the final flip.
-        let task = Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
-        await task.value
+        // When
+        await fireOnce { started in
+            service.collectPaymentOverride = {
+                await withCheckedContinuation { continuation in
+                    finishCollection = continuation
+                    service.paymentSessionState = .active
+                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+                    started()
+                }
+            }
+            Task { await sut.startPaymentWithMethod(.tapToPay) }
+        }
 
-        // Then — the BT collect was cancelled and the active method flipped.
-        #expect(service.cancelPaymentCalled == true)
+        // Then
+        #expect(service.cancelPaymentCalled)
+        #expect(service.spyCollectPaymentMethods == [.bluetooth, .tapToPay])
         #expect(sut.currentPaymentMethod == .tapToPay)
+        service.paymentSessionState = .cancelling
+        finishCollection?.resume(returning: .cancellation)
+        finishCollection = nil
+        service.paymentSessionState = .idle
     }
 }
 

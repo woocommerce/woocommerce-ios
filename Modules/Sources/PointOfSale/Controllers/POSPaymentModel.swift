@@ -89,8 +89,7 @@ final class POSPaymentModel {
 
     var isCardPaymentUnresolved: Bool { cardPaymentSessionState.isPending }
     var isLockSuppressed: Bool {
-        isCardPaymentStartPending || paymentState.isAutoLockSuppressing ||
-        (currentPaymentMethod != nil && paymentState.card == .idle)
+        isCardPaymentStartPending || paymentState.isAutoLockSuppressing
     }
     var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
         cardPresentPaymentService.paymentSessionStatePublisher
@@ -705,13 +704,14 @@ extension POSPaymentModel {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
         let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
         if case .success(let transaction) = result {
+            guard currentOrder?.orderID == order.orderID else { return }
             paymentState.cash = .idle
             paymentState.scanToPay = .idle
             paymentState.markAsPaid = .idle
             stopScanToPayPolling()
             if let cardDetails = transaction.cardDetails { cardPaymentDetails = (order.orderID, cardDetails) }
             paymentState.card = .cardPaymentSuccessful
-        } else {
+        } else if !isCardPaymentUnresolved {
             currentPaymentMethod = nil
             paymentState.card = .idle
             cardPresentPaymentInlineMessage = nil
@@ -964,6 +964,7 @@ extension POSPaymentModel {
     /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
     /// the merchant verified the payment out-of-band.
     func completeScanToPayPayment() async throws {
+        guard paymentState.scanToPay != .paymentSuccess else { return }
         let scope = accessSession?.accessScope
         await cardPaymentCancelTask?.value
         guard !isCardPaymentUnresolved, !paymentState.isSuccess, canProcessPayment(in: scope) else { throw CancellationError() }

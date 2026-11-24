@@ -312,8 +312,8 @@ public struct PointOfSaleEntryPointView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard lockSettings.preferences.locksInBackground,
-                  accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
+            guard lockSettings.preferences.locksInBackground, accessSession.isPINProtectionEnabled else { return }
+            guard accessSession.currentStaff != nil || posModel?.paymentModel.isCardPaymentUnresolved == true else { return }
             accessSession.lock()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in

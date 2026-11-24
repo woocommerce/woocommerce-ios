@@ -22,6 +22,8 @@ struct POSOrderDetailsView: View {
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
@@ -44,6 +46,10 @@ struct POSOrderDetailsView: View {
             return controller.orderDetailsItemsState
         }
         return lastItemsState
+    }
+
+    private var shouldShowBackButton: Bool {
+        horizontalSizeClass == .compact
     }
 
     private var dateFormatter: DateFormatter {
@@ -73,14 +79,21 @@ struct POSOrderDetailsView: View {
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
         let order = orderListModel.ordersController.selectedOrder ?? lastSelectedOrder ?? self.order
-        POSPage(
-            title: POSOrderListView.Localization.orderTitle(order.number),
-            compactBackAction: onBack,
-            actions: pageActions(for: order),
-            headerBottomContent: {
-                headerBottomContent(for: order)
-            }
-        ) {
+        VStack(spacing: metrics.spacing.none) {
+            POSPageHeaderView(
+                title: POSOrderListView.Localization.orderTitle(order.number),
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                trailingContent: {
+                    POSPageHeaderActions(actions: pageActions(for: order))
+                },
+                bottomContent: {
+                    headerBottomContent(for: order)
+                }
+            )
+            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : metrics.padding.none)
+            .fixedSize(horizontal: false, vertical: true)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
             ScrollView {
                 VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     switch itemsState {

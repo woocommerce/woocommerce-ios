@@ -3,6 +3,7 @@ import SwiftUI
 
 enum PointOfSaleItemListCardConstants {
     static let maximumCardSizeMultiplier: CGFloat = 2
+    static let maximumDynamicTypeSize: DynamicTypeSize = .accessibility3
     static let itemTitleFont: POSFontStyle = .posBodyLargeBold
     static let itemDetailFont: POSFontStyle = .posBodyLargeRegular()
     static let backgroundColor: Color = .posSurfaceContainerLowest

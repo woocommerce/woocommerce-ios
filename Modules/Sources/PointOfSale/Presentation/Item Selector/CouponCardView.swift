@@ -22,6 +22,7 @@ struct CouponCardView: View {
         HStack(spacing: metrics.spacing.none) {
             POSCouponImageView(size: dimension,
                                state: imageState)
+            .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(coupon.code)
@@ -42,8 +43,7 @@ struct CouponCardView: View {
                 }
             }
             .multilineTextAlignment(.leading)
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
+            .posItemCardTextPadding()
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

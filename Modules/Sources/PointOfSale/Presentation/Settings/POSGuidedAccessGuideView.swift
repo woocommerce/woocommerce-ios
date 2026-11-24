@@ -250,7 +250,7 @@ private extension POSGuidedAccessGuideView {
     }
 
     enum Constants {
-        static let cardSize = CGSize(width: 721, height: 700)
+        static let cardSize = CGSize(width: 721, height: 720)
         static let illustrationAreaSize = CGSize(width: 447, height: 320)
         static let maximumCompactScale: CGFloat = 1.25
         static let minimumIllustrationHeight: CGFloat = 180

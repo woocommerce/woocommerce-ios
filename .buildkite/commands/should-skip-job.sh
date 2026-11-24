@@ -55,9 +55,9 @@ fi
 if [[ "${BUILDKITE_PULL_REQUEST-false}" =~ ^[0-9]+$ ]]; then
   changed_files_command=(pr_changed_files)
 elif [[ "${BUILDKITE_PULL_REQUEST-false}" == false && "${BUILDKITE_BRANCH:-}" == trunk && "$job_type" != prototype-build ]]; then
-  # The pipeline upload step's toolkit may not have commit_changed_files yet: run the job.
-  command -v commit_changed_files >/dev/null 2>&1 || run_job
-  changed_files_command=(commit_changed_files)
+  # The pipeline upload step's toolkit may not have check_changed_files yet: run the job.
+  command -v check_changed_files >/dev/null 2>&1 || run_job
+  changed_files_command=(check_changed_files)
   if [[ -n "${CI_CHANGED_FILES_BASE:-}" ]]; then
     changed_files_command+=(--base "$CI_CHANGED_FILES_BASE")
   else

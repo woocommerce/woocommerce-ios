@@ -6,6 +6,7 @@ final class PaymentAttemptCancellationTracker {
     private var storedActiveAttemptID: UUID?
     private var canceledAttemptIDs: Set<UUID> = []
     private var cancellationIDs: [UUID: UUID] = [:]
+    private var terminalAttemptIDs: Set<UUID> = []
     private var cancellationCompletions: [UUID: [(Result<Void, Error>) -> Void]] = [:]
 
     var activeAttemptID: UUID? {
@@ -50,11 +51,15 @@ final class PaymentAttemptCancellationTracker {
         }
         cancellationIDs[attemptID] = nil
         let completions = cancellationCompletions.removeValue(forKey: attemptID) ?? []
-        if case .success = result {
+        let isTerminal = terminalAttemptIDs.remove(attemptID) != nil
+        switch (isTerminal, result) {
+        case (true, _), (_, .success):
             canceledAttemptIDs.remove(attemptID)
             if storedActiveAttemptID == attemptID {
                 storedActiveAttemptID = nil
             }
+        default:
+            break
         }
         lock.unlock()
         beforeCompletion()
@@ -69,6 +74,12 @@ final class PaymentAttemptCancellationTracker {
 
     func finishAttempt(_ attemptID: UUID) {
         lock.lock()
+        // Confirmed payment completion cannot release callers while an SDK cancellation callback is still pending.
+        if cancellationIDs[attemptID] != nil {
+            terminalAttemptIDs.insert(attemptID)
+            lock.unlock()
+            return
+        }
         let completions = cancellationCompletions.removeValue(forKey: attemptID) ?? []
         canceledAttemptIDs.remove(attemptID)
         if storedActiveAttemptID == attemptID {

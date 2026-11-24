@@ -174,6 +174,100 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.activeAttemptID != attemptID)
     }
 
+    @Test func test_finishAttempt_when_payment_succeeds_without_cancellation_then_clears_attempt_for_next_payment() {
+        // Given
+        let tracker = PaymentAttemptCancellationTracker()
+        let attemptID = tracker.beginAttempt()
+
+        // When
+        tracker.finishAttempt(attemptID)
+
+        // Then
+        #expect(tracker.activeAttemptID == nil)
+        #expect(tracker.cancelActiveAttempt() == nil)
+        let nextAttemptID = tracker.beginAttempt()
+        #expect(nextAttemptID != attemptID)
+        #expect(tracker.activeAttemptID == nextAttemptID)
+    }
+
+    @Test(arguments: [false, true])
+    func test_finishAttempt_when_payment_succeeds_during_cancellation_then_waits_for_real_callback(cancellationSucceeds: Bool) throws {
+        // Given
+        let tracker = PaymentAttemptCancellationTracker()
+        let attemptID = tracker.beginAttempt()
+        var results: [Result<Void, Error>] = []
+        _ = tracker.cancelActiveAttempt { results.append($0) }
+        let cancellationID = try #require(tracker.beginCancellation(attemptID))
+
+        // When
+        tracker.finishAttempt(attemptID)
+        let repeatedAttemptID = tracker.cancelActiveAttempt { results.append($0) }
+
+        // Then
+        #expect(results.isEmpty)
+        #expect(repeatedAttemptID == attemptID)
+        #expect(tracker.activeAttemptID == attemptID)
+        #expect(tracker.isCanceled(attemptID))
+        #expect(tracker.beginCancellation(attemptID) == nil)
+
+        // When
+        let result: Result<Void, Error> = cancellationSucceeds ? .success(()) : .failure(TestError.cancellationFailed)
+        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: result)
+        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: result)
+
+        // Then
+        #expect(results.count == 2)
+        for result in results {
+            if cancellationSucceeds {
+                try result.get()
+            } else {
+                #expect(throws: TestError.cancellationFailed) { try result.get() }
+            }
+        }
+        #expect(tracker.activeAttemptID == nil)
+        #expect(!tracker.isCanceled(attemptID))
+        #expect(tracker.cancelActiveAttempt() == nil)
+    }
+
+    @Test func test_finishAttempt_when_payment_succeeds_after_failed_cancellation_then_retires_attempt_without_repeating_callback() throws {
+        // Given
+        let tracker = PaymentAttemptCancellationTracker()
+        let attemptID = tracker.beginAttempt()
+        var results: [Result<Void, Error>] = []
+        _ = tracker.cancelActiveAttempt { results.append($0) }
+        let cancellationID = try #require(tracker.beginCancellation(attemptID))
+        tracker.completeCancellation(attemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))
+        #expect(tracker.activeAttemptID == attemptID)
+        #expect(tracker.isCanceled(attemptID))
+
+        // When
+        tracker.finishAttempt(attemptID)
+
+        // Then
+        #expect(results.count == 1)
+        #expect(throws: TestError.cancellationFailed) { try #require(results.first).get() }
+        #expect(tracker.activeAttemptID == nil)
+        #expect(!tracker.isCanceled(attemptID))
+    }
+
+    @Test func test_finishAttempt_when_old_payment_succeeds_during_cancellation_then_preserves_newer_attempt() throws {
+        // Given
+        let tracker = PaymentAttemptCancellationTracker()
+        let oldAttemptID = tracker.beginAttempt()
+        _ = tracker.cancelActiveAttempt()
+        let cancellationID = try #require(tracker.beginCancellation(oldAttemptID))
+        let nextAttemptID = tracker.beginAttempt()
+
+        // When
+        tracker.finishAttempt(oldAttemptID)
+        tracker.completeCancellation(oldAttemptID, cancellationID: cancellationID, result: .failure(TestError.cancellationFailed))
+
+        // Then
+        #expect(tracker.activeAttemptID == nextAttemptID)
+        #expect(!tracker.isCanceled(oldAttemptID))
+        #expect(!tracker.isCanceled(nextAttemptID))
+    }
+
     private enum TestError: Error, Equatable {
         case cancellationFailed
     }

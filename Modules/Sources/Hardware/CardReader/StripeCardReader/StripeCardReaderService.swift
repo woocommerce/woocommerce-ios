@@ -366,7 +366,7 @@ extension StripeCardReaderService: CardReaderService {
                                                    paymentAttemptID: paymentAttemptID,
                                                    beforePaymentConfirmation: beforePaymentConfirmation)
             }.flatMap { intent in
-                self.processPayment(intent: intent)
+                self.processPayment(intent: intent, paymentAttemptID: paymentAttemptID)
             }
             .tryMap { intent in
                 try Self.capturedPaymentIntent(from: intent)
@@ -389,7 +389,7 @@ extension StripeCardReaderService: CardReaderService {
                                                        beforePaymentConfirmation: beforePaymentConfirmation)
                 }
                 .flatMap { intent in
-                    self.processPayment(intent: intent)
+                    self.processPayment(intent: intent, paymentAttemptID: paymentAttemptID)
                 }
                 .tryMap { intent in
                     try Self.capturedPaymentIntent(from: intent)
@@ -407,18 +407,26 @@ extension StripeCardReaderService: CardReaderService {
                 }
                 .eraseToAnyPublisher()
         case .requiresConfirmation:
-            return prepareForPaymentConfirmation(intent: activePaymentIntent, beforePaymentConfirmation: beforePaymentConfirmation)
+            let paymentAttemptID = paymentAttemptTracker.activeAttemptID ?? paymentAttemptTracker.beginAttempt()
+            return prepareForPaymentConfirmation(intent: activePaymentIntent,
+                                                 paymentAttemptID: paymentAttemptID,
+                                                 beforePaymentConfirmation: beforePaymentConfirmation)
                 .flatMap { intent in
-                    self.processPayment(intent: intent)
+                    self.processPayment(intent: intent, paymentAttemptID: paymentAttemptID)
                 }
                 .tryMap { intent in
                     try Self.capturedPaymentIntent(from: intent)
                 }
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            return Result { try Self.capturedPaymentIntent(from: activePaymentIntent) }
-                .publisher
-                .eraseToAnyPublisher()
+            let paymentAttemptID = paymentAttemptTracker.activeAttemptID ?? paymentAttemptTracker.beginAttempt()
+            return Result {
+                let paymentIntent = try Self.capturedPaymentIntent(from: activePaymentIntent)
+                finishPaymentAttempt(paymentAttemptID, intentID: activePaymentIntent.stripeId)
+                return paymentIntent
+            }
+            .publisher
+            .eraseToAnyPublisher()
         case .processing:
             return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
                 .eraseToAnyPublisher()
@@ -735,7 +743,9 @@ private extension StripeCardReaderService {
                     result = .failure(CardReaderServiceError.paymentCancellation())
                 }
                 paymentAttemptTracker.completeCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) {
-                    if case .success = result, activePaymentIntent?.stripeId == intentID {
+                    if case .success = result,
+                       paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID,
+                       activePaymentIntent?.stripeId == intentID {
                         activePaymentIntent = nil
                     }
                     if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
@@ -905,10 +915,9 @@ private extension StripeCardReaderService {
 
     func prepareForPaymentConfirmation(
         intent: StripeTerminal.PaymentIntent,
-        paymentAttemptID: UUID? = nil,
+        paymentAttemptID: UUID,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        let paymentAttemptID = paymentAttemptID ?? paymentAttemptTracker.activeAttemptID
         do {
             try validatePaymentAttempt(paymentAttemptID)
             return beforePaymentConfirmation(try Self.capturedPaymentIntent(from: intent))
@@ -922,7 +931,15 @@ private extension StripeCardReaderService {
         }
     }
 
-    func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+    func finishPaymentAttempt(_ attemptID: UUID, intentID: String?) {
+        if paymentAttemptTracker.activeAttemptID == attemptID, activePaymentIntent?.stripeId == intentID {
+            activePaymentIntent = nil
+        }
+        paymentAttemptTracker.finishAttempt(attemptID)
+    }
+
+    func processPayment(intent: StripeTerminal.PaymentIntent, paymentAttemptID: UUID) -> Future<StripeTerminal.PaymentIntent, Error> {
+        let intentID = intent.stripeId
         return Future() { [weak self] promise in
             Terminal.shared.confirmPaymentIntent(intent) { intent, error in
                 guard let self else { return }
@@ -933,11 +950,13 @@ private extension StripeCardReaderService {
                         return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
 
-                    self.activePaymentIntent = paymentIntent
+                    if self.paymentAttemptTracker.activeAttemptID == paymentAttemptID {
+                        self.activePaymentIntent = paymentIntent
+                    }
                     switch (paymentIntent.status, (try? PaymentIntent(intent: paymentIntent))?.paymentMethod()) {
                     case (.requiresCapture, _):
                         // This payment intent can be used, we lost context to get an error with a PI that requires capture
-                        self.activePaymentIntent = nil
+                        self.finishPaymentAttempt(paymentAttemptID, intentID: intentID)
                         return promise(.success(paymentIntent))
                     case (_, .some(let paymentMethod)):
                         return promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
@@ -948,7 +967,7 @@ private extension StripeCardReaderService {
                 }
 
                 if let intent {
-                    self.activePaymentIntent = nil
+                    self.finishPaymentAttempt(paymentAttemptID, intentID: intentID)
                     return promise(.success(intent))
                 }
             }

@@ -182,7 +182,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
                 configuration: CardPresentPaymentsConfiguration(country: .US),
                 alertsPresenter: alertsPresenter,
                 paymentEventSubject: events,
-                channel: .storeManagement
+                channel: .storeManagement,
+                onProcessingCompletion: {}
             )
             preflightController.onStart = {
                 continuation.resume(returning: task)

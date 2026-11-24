@@ -70,17 +70,22 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         Self.paymentSessionStateSubject.eraseToAnyPublisher()
     }
     private var paymentAttemptID: UUID?
-    private var completedPaymentAttemptID: UUID?
+    private enum PaymentAttemptPhase {
+        case collecting
+        case awaitingCapture
+        case completed
+    }
+    private var paymentAttemptPhase: PaymentAttemptPhase?
     private var cancellationTask: Task<Void, Error>?
 
-    private let paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel)
+    private let paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel, @escaping @MainActor () -> Void)
         -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>)?
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
     private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
 
     @MainActor
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
-         paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel)
+         paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel, @escaping @MainActor () -> Void)
             -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>)? = nil) async {
         self.siteID = siteID
         self.paymentTaskFactory = paymentTaskFactory
@@ -206,6 +211,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         guard !paymentSessionState.isPending else { throw CardPresentPaymentServiceError.couldNotCancelPayment }
         let attemptID = UUID()
         paymentAttemptID = attemptID
+        paymentAttemptPhase = .collecting
         Self.pendingPaymentOwner = self
         Self.paymentSessionStateSubject.send(.active)
         collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
@@ -224,8 +230,13 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         let adaptor = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(
             paymentEventPublisher: paymentEventPublisher,
+            stores: stores,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        let paymentTask = paymentTaskFactory?(order, connectionMethod, channel) ?? adaptor.collectPaymentTask(
+        let onProcessingCompletion: @MainActor () -> Void = { [weak self] in
+            guard let self, self.paymentAttemptID == attemptID, self.paymentAttemptPhase != .completed else { return }
+            self.paymentAttemptPhase = .awaitingCapture
+        }
+        let paymentTask = paymentTaskFactory?(order, connectionMethod, channel, onProcessingCompletion) ?? adaptor.collectPaymentTask(
             for: order,
             using: connectionMethod,
             siteID: siteID,
@@ -233,14 +244,15 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: alertsPresenter,
             paymentEventSubject: attemptEvents,
-            channel: channel)
+            channel: channel,
+            onProcessingCompletion: onProcessingCompletion)
 
         self.paymentTask = paymentTask
 
         do {
             let result = try await paymentTask.value
             guard paymentAttemptID == attemptID else { throw CancellationError() }
-            completedPaymentAttemptID = attemptID
+            paymentAttemptPhase = .completed
             if cancellationTask == nil { resolvePayment(attemptID) }
             switch result {
             case .success(let cardDetails):
@@ -285,11 +297,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                    case CardReaderServiceError.paymentCancellation(.noActivePaymentIntent) = error { return }
                 if let attemptID, self.paymentAttemptID == attemptID {
                     switch error {
-                    case CardReaderServiceError.paymentCancellation(.noActivePaymentIntent):
+                    // The SDK clears its intent before backend capture finishes, so absence alone cannot settle that outcome.
+                    case CardReaderServiceError.paymentCancellation(.noActivePaymentIntent) where self.paymentAttemptPhase != .awaitingCapture:
                         self.resolvePayment(attemptID)
                         return
                     default:
-                        if self.completedPaymentAttemptID == attemptID {
+                        if self.paymentAttemptPhase == .completed {
                             self.resolvePayment(attemptID)
                         } else {
                             Self.paymentSessionStateSubject.send(.unresolved)
@@ -306,7 +319,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private func resolvePayment(_ attemptID: UUID) {
         guard paymentAttemptID == attemptID else { return }
         paymentAttemptID = nil
-        completedPaymentAttemptID = nil
+        paymentAttemptPhase = nil
         paymentTask = nil
         if Self.pendingPaymentOwner === self { Self.pendingPaymentOwner = nil }
         Self.paymentSessionStateSubject.send(.idle)

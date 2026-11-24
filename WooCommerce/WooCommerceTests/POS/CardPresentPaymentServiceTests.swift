@@ -7,12 +7,61 @@ import Yosemite
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(5)))
 struct CardPresentPaymentServiceTests {
+    @Test(arguments: [true, false])
+    func test_cancel_when_reader_confirmed_but_capture_is_unknown_then_no_active_intent_is_not_proof(captureSucceeds: Bool) async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let processingCompleted = AsyncStream<Void>.makeStream()
+        var finishCapture: CheckedContinuation<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
+        let service = await CardPresentPaymentService(siteID: 123, stores: stores,
+            collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
+            paymentTaskFactory: { _, _, _, onProcessingCompletion in Task { @MainActor in
+                try await withCheckedThrowingContinuation { continuation in
+                    finishCapture = continuation
+                    onProcessingCompletion()
+                    processingCompleted.continuation.yield(())
+                }
+            } })
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case .cancelPayment(let complete) = action else { return }
+            complete?(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
+        }
+        let collection = Task { try await service.collectPayment(for: .fake(), using: .bluetooth, channel: .pos) }
+        var iterator = processingCompleted.stream.makeAsyncIterator()
+        _ = await iterator.next()
+
+        // When
+        await #expect(throws: (any Error).self) { try await service.cancelPayment() }
+
+        // Then
+        #expect(service.paymentSessionState == .unresolved)
+        await #expect(throws: (any Error).self) {
+            try await service.collectPayment(for: .fake(), using: .tapToPay, channel: .pos)
+        }
+
+        // When
+        if captureSucceeds {
+            finishCapture?.resume(returning: .success(cardDetails: nil))
+        } else {
+            finishCapture?.resume(throwing: CancellationError())
+        }
+        _ = try? await collection.value
+
+        // Then
+        #expect(service.paymentSessionState == (captureSucceeds ? .idle : .unresolved))
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case .cancelPayment(let complete) = action else { return }
+            complete?(.success(()))
+        }
+        try await service.cancelPayment()
+    }
+
     @Test func test_collect_when_task_stops_without_proof_then_preserves_unresolved_lifetime_and_blocks_reentry() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in Task { throw CancellationError() } })
+            paymentTaskFactory: { _, _, _, _ in Task { throw CancellationError() } })
 
         // When
         _ = try? await service.collectPayment(for: .fake(), using: .bluetooth, channel: .pos)
@@ -42,7 +91,7 @@ struct CardPresentPaymentServiceTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in Task { throw CancellationError() } })
+            paymentTaskFactory: { _, _, _, _ in Task { throw CancellationError() } })
         _ = try? await service.collectPayment(for: .fake(), using: .bluetooth, channel: .pos)
         var cancellationCount = 0
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
@@ -84,7 +133,7 @@ struct CardPresentPaymentServiceTests {
         }
         service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in Task { @MainActor in
+            paymentTaskFactory: { _, _, _, _ in Task { @MainActor in
                 cancellation = Task { try await service.cancelPayment() }
                 repeatedCancellation = Task {
                     repeatedRequestStarted.continuation.yield(())
@@ -118,7 +167,7 @@ struct CardPresentPaymentServiceTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in Task { .success(cardDetails: nil) } })
+            paymentTaskFactory: { _, _, _, _ in Task { .success(cardDetails: nil) } })
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             guard case .cancelPayment(let complete) = action else { return }
             complete?(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
@@ -149,7 +198,7 @@ struct CardPresentPaymentServiceTests {
         }
         service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in
+            paymentTaskFactory: { _, _, _, _ in
                 invocation += 1
                 if invocation == 1 {
                     return Task { @MainActor in
@@ -191,7 +240,7 @@ struct CardPresentPaymentServiceTests {
         var finishCollection: (() -> Void)?
         let service = await CardPresentPaymentService(siteID: 123, stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            paymentTaskFactory: { _, _, _ in Task { @MainActor in
+            paymentTaskFactory: { _, _, _, _ in Task { @MainActor in
                 try await withCheckedThrowingContinuation { continuation in
                     finishCollection = { continuation.resume(throwing: CancellationError()) }
                     started.continuation.yield(())

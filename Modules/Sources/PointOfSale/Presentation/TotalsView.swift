@@ -936,7 +936,7 @@ private extension TotalsView {
         Button {
             handlePaymentMethodSelection(.cardReader)
         } label: {
-            Text(cardReaderConnectionStatus.isConnected ?
+            Text(posModel.cardReaderConnectionStatus.isConnected ?
                  POSCheckoutPaymentButtonsRow.Localization.cardReader : Localization.connectCardReaderButtonTitle)
                 .font(POSFontStyle.posBodyLargeBold)
         }

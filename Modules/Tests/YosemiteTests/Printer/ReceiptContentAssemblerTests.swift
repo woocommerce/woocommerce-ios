@@ -79,7 +79,21 @@ struct ReceiptContentAssemblerTests {
 
         // Then
         let discountLine = content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) }
-        #expect(discountLine?.amount == "-5.00")
+        #expect(discountLine?.amount == "-$5.00")
+    }
+
+    @Test func test_makeContent_when_discount_total_has_api_precision_then_formats_discount_with_store_currency() throws {
+        // Given
+        let parameters = try makeReceiptParameters()
+        let coupons = [OrderCouponLine(couponID: 123, code: "6dunup65", discount: "1.19", discountTax: "0.00")]
+        let order = makeOrder(discountTotal: "1.1900000", coupons: coupons)
+
+        // When
+        let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
+
+        // Then
+        let discountLine = try #require(content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) })
+        #expect(discountLine.amount == "-$1.19")
     }
 
     @Test func test_makeContent_when_order_has_no_discount_or_coupons_then_excludes_discount_line() throws {
@@ -107,7 +121,7 @@ struct ReceiptContentAssemblerTests {
         // Then
         let discountLine = try #require(content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) })
         #expect(discountLine.description.contains("(FreeShipping)"))
-        #expect(discountLine.amount == "0.00")
+        #expect(discountLine.amount == "$0.00")
     }
 
     @Test func test_makeContent_when_order_has_multiple_coupons_then_lists_all_coupon_codes() throws {

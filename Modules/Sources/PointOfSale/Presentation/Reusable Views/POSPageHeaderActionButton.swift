@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSPageHeaderActionButton: View {
     let systemName: String
+    let title: String
     var backgroundColor: Color = .posSurfaceContainerLow
     var imageColor: Color = .posOnSurface
     let action: () -> Void
@@ -28,5 +29,9 @@ struct POSPageHeaderActionButton: View {
                 .frame(width: constrainedButtonSize, height: constrainedButtonSize)
         }
         .fixedSize()
+        .accessibilityLabel(title)
+        .accessibilityShowsLargeContentViewer {
+            Label(title, systemImage: systemName)
+        }
     }
 }

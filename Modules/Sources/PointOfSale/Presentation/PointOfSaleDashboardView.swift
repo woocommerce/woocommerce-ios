@@ -476,6 +476,9 @@ struct PointOfSaleDashboardView: View {
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
+        .accessibilityShowsLargeContentViewer {
+            Label(Localization.phoneMenuAccessibilityLabel, systemImage: "ellipsis")
+        }
         .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 

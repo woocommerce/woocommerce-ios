@@ -383,7 +383,7 @@ private extension ItemListView {
                             createCouponButton
                         }
 
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                        POSPageHeaderActionButton(systemName: "magnifyingglass", title: Localization.searchButtonTitle) {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
@@ -444,7 +444,7 @@ private extension ItemListView {
 private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
-        POSPageHeaderActionButton(systemName: "plus") {
+        POSPageHeaderActionButton(systemName: "plus", title: Localization.createCouponButtonTitle) {
             analytics.track(.pointOfSaleCouponsCreateTapped)
             requestCouponCreationPermission()
         }
@@ -573,6 +573,20 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let searchButtonTitle = NSLocalizedString(
+            "pos.itemlistview.searchButton.title",
+            value: "Search",
+            comment: "Accessibility label of the search button at the top of the Point of Sale item list, " +
+            "also shown when the button is long pressed at large text sizes."
+        )
+
+        static let createCouponButtonTitle = NSLocalizedString(
+            "pos.itemlistview.createCouponButton.title",
+            value: "Create coupon",
+            comment: "Accessibility label of the button at the top of the Point of Sale coupon list that creates a new coupon, " +
+            "also shown when the button is long pressed at large text sizes."
         )
 
         static let couponOverrideDescription = NSLocalizedString(

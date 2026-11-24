@@ -29,6 +29,13 @@ struct CouponCardView: View {
                     .foregroundStyle(titleColor)
                     .font(Constants.itemTitleFont)
 
+                if imageState == .applied && dynamicTypeSize.isAccessibilitySize {
+                    Label(Localization.appliedAccessibilityValue, systemImage: "checkmark")
+                        .foregroundStyle(Color.posSuccess)
+                        .font(Constants.itemDetailFont)
+                        .accessibilityHidden(true)
+                }
+
                 Text(coupon.summary)
                     .foregroundStyle(summaryColor)
                     .font(Constants.itemDetailFont)
@@ -67,7 +74,8 @@ private extension CouponCardView {
         static let appliedAccessibilityValue = NSLocalizedString(
             "couponCardView.appliedAccessibilityValue",
             value: "Applied",
-            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart."
+            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. " +
+            "Also shown on the card at large text sizes."
         )
 
         static let appliedAccessibilityHint = NSLocalizedString(

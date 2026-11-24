@@ -115,69 +115,97 @@ private struct POSOnboardingGuideStepView: View {
     let step: POSOnboardingGuideStep
     let showsHero: Bool
 
-    private static let heroSize: CGFloat = 96
+    /// Matches the access control onboarding illustration.
+    private static let illustrationSize: CGFloat = 140
 
     var body: some View {
-        VStack(spacing: metrics.spacing.large) {
+        VStack(spacing: metrics.spacing.xLarge) {
             if showsHero {
-                Image(systemName: step.heroSystemImage)
-                    .font(.system(size: Self.heroSize, weight: .regular))
-                    .foregroundStyle(Color.posPrimary)
-                    .accessibilityHidden(true)
+                step.illustration.decorativeImage
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: Self.illustrationSize, height: Self.illustrationSize)
             }
 
             VStack(spacing: metrics.spacing.small) {
                 Text(step.title)
-                    .font(.posHeadingBold)
+                    .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
                 if let message = step.message {
                     Text(message)
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                        .multilineTextAlignment(.center)
-                }
-
-                if !step.saleSteps.isEmpty {
-                    saleStepsList
+                } else {
+                    POSOnboardingGuideSaleSteps()
+                        .posPadding(.top, \.small)
                 }
             }
+            .multilineTextAlignment(.center)
         }
         .fixedSize(horizontal: false, vertical: true)
         .posPadding(.vertical, \.medium)
     }
-
-    private var saleStepsList: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
-            ForEach(Array(step.saleSteps.enumerated()), id: \.offset) { index, text in
-                POSOnboardingGuideSaleStepRow(number: index + 1, text: text)
-            }
-        }
-        .fixedSize(horizontal: false, vertical: true)
-    }
 }
 
-private struct POSOnboardingGuideSaleStepRow: View {
+/// The steps of a sale as a row of numbered, equally short labels joined by a line.
+/// With accessibility text sizes the labels don't fit side by side, so the steps stack.
+private struct POSOnboardingGuideSaleSteps: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    let number: Int
-    let text: String
+    private let steps = POSOnboardingGuideStep.saleSteps
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.medium) {
-            POSOnboardingGuideSaleStepBadge(number: number)
-                // Larger badges would squeeze the text to a word per line.
-                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-
-            Text(text)
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: metrics.spacing.medium) {
+                ForEach(Array(steps.enumerated()), id: \.offset) { index, label in
+                    HStack(spacing: metrics.spacing.medium) {
+                        badge(number: index + 1)
+                        self.label(label)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+        } else {
+            HStack(alignment: .top, spacing: metrics.spacing.none) {
+                ForEach(Array(steps.enumerated()), id: \.offset) { index, label in
+                    VStack(spacing: metrics.spacing.small) {
+                        HStack(spacing: metrics.spacing.none) {
+                            connector(visible: index > 0)
+                            badge(number: index + 1)
+                            connector(visible: index < steps.count - 1)
+                        }
+                        self.label(label)
+                            .posPadding(.horizontal, \.xSmall)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .combine)
+                }
+            }
         }
-        .accessibilityElement(children: .combine)
     }
+
+    private func badge(number: Int) -> some View {
+        POSOnboardingGuideSaleStepBadge(number: number)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    }
+
+    private func label(_ text: String) -> some View {
+        Text(text)
+            .font(.posBodyMediumRegular())
+            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+    }
+
+    private func connector(visible: Bool) -> some View {
+        Rectangle()
+            .fill(visible ? Color.posOutlineVariant : .clear)
+            .frame(height: Self.connectorHeight)
+            .frame(maxWidth: .infinity)
+    }
+
+    private static let connectorHeight: CGFloat = 2
 }
 
 private struct POSOnboardingGuideSaleStepBadge: View {

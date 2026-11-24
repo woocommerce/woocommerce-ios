@@ -1,8 +1,5 @@
 import SwiftUI
 import Yosemite
-#if DEBUG
-import PointOfSale
-#endif
 
 struct DebugPanelView: View {
     @Environment(\.dismiss) private var dismiss
@@ -13,12 +10,6 @@ struct DebugPanelView: View {
     @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
 
     @State private var manualSignificantChangeID: String = UserDefaults.standard[.debugManualSignificantChangeID] ?? ""
-
-    #if DEBUG
-    @State private var isPOSOnboardingGuidePresented = false
-    @State private var posOnboardingGuideAction: String?
-    @State private var posOnboardingGuideResult: String?
-    #endif
 
     var body: some View {
         List {
@@ -49,14 +40,6 @@ struct DebugPanelView: View {
             #if DEBUG || ALPHA
             NavigationLink("Design System") {
                 DesignSystemDemoView()
-            }
-            #endif
-
-            #if DEBUG
-            // Until WOOMOB-4727 shows the guide when POS opens on iPhone.
-            Button("Present POS Onboarding Guide") {
-                posOnboardingGuideAction = nil
-                isPOSOnboardingGuidePresented = true
             }
             #endif
 
@@ -146,19 +129,6 @@ struct DebugPanelView: View {
             })
             .ignoresSafeArea()
         }
-        #if DEBUG
-        .fullScreenCover(isPresented: $isPOSOnboardingGuidePresented, onDismiss: { posOnboardingGuideResult = posOnboardingGuideAction }) {
-            POSOnboardingGuideDebugView { step in
-                dismissPOSOnboardingGuide(message: "Enter POS tapped on step \(step)")
-            } onExit: { step in
-                dismissPOSOnboardingGuide(message: "Exit POS tapped on step \(step)")
-            }
-        }
-        .alert(posOnboardingGuideResult ?? "", isPresented: Binding(get: { posOnboardingGuideResult != nil },
-                                                                    set: { if !$0 { posOnboardingGuideResult = nil } })) {
-            Button("OK") {}
-        }
-        #endif
     }
 
     private func fetchTestAnnouncement() {
@@ -173,13 +143,6 @@ struct DebugPanelView: View {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
-    #if DEBUG
-    private func dismissPOSOnboardingGuide(message: String) {
-        posOnboardingGuideAction = message
-        isPOSOnboardingGuidePresented = false
-    }
-    #endif
 
     private func resetAnnouncementState() {
         announcementError = nil

@@ -107,9 +107,9 @@ struct POSSingleFieldInputView: View {
                     .accessibilityIdentifier(submitButtonAccessibilityIdentifier)
                 }
                 .padding(.horizontal, metrics.padding[keyPath: horizontalPadding])
-                .padding(.bottom, fillsAvailableHeight ? metrics.padding.medium : keyboardFrame.height)
+                .padding(.bottom, pinsButtonAboveKeyboard ? metrics.padding.medium : keyboardFrame.height)
             }
-            .frame(minHeight: fillsAvailableHeight ? availableHeight : nil)
+            .frame(minHeight: pinsButtonAboveKeyboard ? availableHeight : nil)
             .animation(.easeInOut, value: errorMessage)
             .onChange(of: text) {
                 errorMessage = nil
@@ -128,6 +128,10 @@ struct POSSingleFieldInputView: View {
 // MARK: - Helpers
 
 private extension POSSingleFieldInputView {
+    var pinsButtonAboveKeyboard: Bool {
+        fillsAvailableHeight || UIDevice.current.userInterfaceIdiom == .phone
+    }
+
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
             return metrics.spacing.xSmall

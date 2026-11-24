@@ -348,9 +348,9 @@ private final class POSPINRecoverySignInModel {
                 let identity = await POSPINRecoveryIdentity.verifySiteCredentials(endpoints: provenEndpoints, session: session, expectedLogin: username)
                 session.invalidateAndCancel()
                 Self.clear(cookieJar)
-                guard !Task.isCancelled, modal.isPresenting else { return }
+                guard !Task.isCancelled, self.modal.isPresenting else { return }
                 if identity == .sameEligibleAccount {
-                    modal.finish(.verified)
+                    self.modal.finish(.verified)
                 } else {
                     self.fail(identity.errorMessage)
                 }

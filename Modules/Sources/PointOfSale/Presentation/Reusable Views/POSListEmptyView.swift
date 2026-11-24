@@ -30,9 +30,7 @@ struct POSListEmptyView: View {
     var body: some View {
         POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
-                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
-
-                if shouldShowIcon {
+                if !dynamicTypeSize.isAccessibilitySize {
                     icon
 
                     Spacer().frame(height: metrics.spacing.medium)
@@ -80,14 +78,8 @@ struct POSListEmptyView: View {
         viewModel.icon
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .frame(width: metrics.statusIllustrationSize, height: metrics.statusIllustrationSize)
             .foregroundColor(.posOnSurfaceVariantHighest)
-    }
-}
-
-private extension POSListEmptyView {
-    enum Constants {
-        static let iconSize: CGFloat = 88
     }
 }
 
@@ -189,13 +181,13 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text appearing on screen when a POS product search returns no results."
         )
         static let emptyProductsSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3",
-            value: "We couldn't find any matching products. Try adjusting your search term.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.4",
+            value: "Try a different search.",
             comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
         )
         static let emptyProductsSearchHint = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint",
-            value: "Variation names can't be searched, so use the parent product name.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint.2",
+            value: "To find a variation, search for its parent product.",
             comment: "Text providing additional search tips when no products are found in the POS product search."
         )
         static let emptyVariableParentProductTitle = NSLocalizedString(

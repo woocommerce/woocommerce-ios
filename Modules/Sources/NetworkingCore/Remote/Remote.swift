@@ -288,7 +288,10 @@ open class Remote: NSObject, @unchecked Sendable {
                 // read, an expired token or an unknown blog has to reach the notifications the rest of
                 // the app listens for.
                 handleResponseError(error: error, for: request)
-                DDLogDebug("Response body error on a headers-only request: \(String(reflecting: error))")
+                if !(error is DotcomError) {
+                    // `validateResponse` already logged the DotcomError.
+                    DDLogDebug("Response body error on a headers-only request: \(String(reflecting: error))")
+                }
             }
             return headers ?? [:]
         } catch {
@@ -372,7 +375,7 @@ private extension Remote {
                     self?.logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
                     self?.handleResponseError(error: error, for: request)
                     self?.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                    DDLogError("<> Mapping Error: \(String(reflecting: error))")
+                    Self.logMappingErrorIfNeeded(error)
                 }
                 completion(result)
             }
@@ -389,10 +392,18 @@ private extension Remote {
                                            outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
-            DDLogError("<> Mapping Error: \(String(reflecting: error))")
+            Self.logMappingErrorIfNeeded(error)
             handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
             throw error
         }
+    }
+
+    /// Skips DotcomErrors: only `DotcomValidator` makes them in `validateAndMap`, and `validateResponse` logs each one.
+    static func logMappingErrorIfNeeded(_ error: Error) {
+        guard !(error is DotcomError) else {
+            return
+        }
+        DDLogError("<> Mapping Error: \(String(reflecting: error))")
     }
 }
 

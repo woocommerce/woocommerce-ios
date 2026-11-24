@@ -344,6 +344,35 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    func test_woo_checks_when_overlapping_requests_succeed_then_triggers_on_success_once() {
+        // Given
+        let roleCheckUseCase = DuplicateSuccessRoleEligibilityUseCase()
+        let checker = PostSiteCredentialLoginChecker(
+            applicationPasswordUseCase: MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword),
+            roleEligibilityUseCase: roleCheckUseCase,
+            stores: stores,
+            previousViewController: nil
+        )
+        var siteInfoCompletions: [(Result<Site, Error>) -> Void] = []
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            guard case .fetchSiteInfo(_, _, let completion) = action else { return }
+            siteInfoCompletions.append(completion)
+        }
+        var successCallCount = 0
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            successCallCount += 1
+        }
+        XCTAssertEqual(siteInfoCompletions.count, 2)
+
+        // When
+        siteInfoCompletions.forEach {
+            $0(.success(.fake().copy(isWooCommerceActive: true)))
+        }
+
+        // Then
+        XCTAssertEqual(successCallCount, 1)
+    }
+
     func test_error_alert_is_displayed_if_the_site_does_not_have_active_woo() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -693,6 +722,13 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
     func deletePassword(locally: Bool) async throws {
         throw mockDeletionError ?? NetworkError.notFound()
+    }
+}
+
+private final class DuplicateSuccessRoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
+        completion(.success(()))
+        completion(.success(()))
     }
 }
 

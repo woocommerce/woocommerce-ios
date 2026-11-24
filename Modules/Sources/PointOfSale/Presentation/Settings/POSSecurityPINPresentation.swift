@@ -15,10 +15,10 @@ final class POSSecurityPINPresentation {
             }
         }
 
-        func compactStyle(editorTitle: String) -> POSModalCompactStyle {
+        var compactStyle: POSModalCompactStyle {
             switch self {
             case .approval: .managerApproval
-            case .editor: .fullScreen(title: editorTitle)
+            case .editor: .fullScreen(title: "")
             }
         }
 

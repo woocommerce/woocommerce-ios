@@ -619,7 +619,10 @@ extension Remote {
                 return "other"
             }
         }()
-        return "<> DotcomError: \(String(reflecting: error)), site_id=\(siteID), path=\(path), connection=\(connection)"
+        // Only the case label, since `.unknown` carries the free-form server message.
+        let caseName = Mirror(reflecting: error).children.first?.label ?? "unknown"
+        let code = error.rawCode ?? "none"
+        return "<> DotcomError: case=\(caseName), code=\(code), site_id=\(siteID), path=\(path), connection=\(connection)"
     }
 }
 

@@ -1720,7 +1720,8 @@ final class RemoteTests: XCTestCase {
         let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: true)
 
         // Then
-        XCTAssertTrue(message.contains("unknown_token"))
+        XCTAssertTrue(message.contains("case=jetpackNotConnected"))
+        XCTAssertTrue(message.contains("code=unknown_token"))
         XCTAssertTrue(message.contains("site_id=123"))
         XCTAssertTrue(message.contains("path=something"))
         XCTAssertTrue(message.contains("connection=jetpack_tunnel"))
@@ -1734,7 +1735,7 @@ final class RemoteTests: XCTestCase {
         let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: false)
 
         // Then
-        XCTAssertTrue(message.contains("invalid_blog"))
+        XCTAssertTrue(message.contains("code=invalid_blog"))
         XCTAssertTrue(message.contains("site_id=123"))
         XCTAssertTrue(message.contains("connection=application_password"))
     }
@@ -1751,6 +1752,31 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(message.contains("site_id=none"))
         XCTAssertTrue(message.contains("path=mock"))
         XCTAssertTrue(message.contains("connection=wpcom"))
+    }
+
+    func test_dotcomErrorLogMessage_when_error_is_unknown_then_names_case_and_code_without_message() {
+        // Given
+        let error = DotcomError.unknown(code: "invalid_device_token", message: "Invalid device token.", data: nil)
+
+        // When
+        let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: true)
+
+        // Then
+        XCTAssertTrue(message.contains("case=unknown"))
+        XCTAssertTrue(message.contains("code=invalid_device_token"))
+        XCTAssertFalse(message.contains("Invalid device token."))
+    }
+
+    func test_dotcomErrorLogMessage_when_error_has_no_raw_code_then_logs_code_none() {
+        // Given
+        let error = DotcomError.jetpackNotConnected(code: nil)
+
+        // When
+        let message = Remote.dotcomErrorLogMessage(error, request: request, tunneled: true)
+
+        // Then
+        XCTAssertTrue(message.contains("case=jetpackNotConnected"))
+        XCTAssertTrue(message.contains("code=none"))
     }
 }
 

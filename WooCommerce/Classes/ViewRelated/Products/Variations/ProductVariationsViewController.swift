@@ -534,41 +534,25 @@ private extension ProductVariationsViewController {
     }
 
     private func navigateToVariationDetail(for productVariation: ProductVariation) {
-        let model = EditableProductVariationModel(productVariation: productVariation,
-                                                  parentProductType: parentProductType,
-                                                  allAttributes: allAttributes,
-                                                  parentProductSKU: parentProductSKU,
-                                                  parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
+        ProductVariationDetailsFactory.productVariationDetails(
+            productVariation: productVariation,
+            parentProduct: product,
+            presentationStyle: .navigationStack,
+            formType: viewModel.formType,
+            eventLogger: ProductVariationFormEventLogger(),
+            productImageUploader: productImageUploader,
+            onVariationDeletion: { [weak self] variation in
+                guard let self else { return }
 
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: productVariation.siteID,
-                                      productOrVariationID: .variation(productID: productVariation.productID, variationID: productVariation.productVariationID),
-                                      isLocalID: !model.existsRemotely),
-                           originalStatuses: model.imageStatuses)
-
-        let viewModel = ProductVariationFormViewModel(productVariation: model,
-                                                      allAttributes: allAttributes,
-                                                      parentProductSKU: parentProductSKU,
-                                                      parentProductDisablesQuantityRules: parentProductDisablesQuantityRules,
-                                                      formType: self.viewModel.formType,
-                                                      productImageActionHandler: productImageActionHandler)
-        viewModel.onVariationDeletion = { [weak self] variation in
-            guard let self else { return }
-
-            // Remove deleted variation from variations array
-            let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
-            let updatedProduct = self.product.copy(variations: variationsUpdated)
-            self.product = updatedProduct
-        }
-        let viewController = ProductFormViewController(viewModel: viewModel,
-                                                       eventLogger: ProductVariationFormEventLogger(),
-                                                       productImageActionHandler: productImageActionHandler,
-                                                       currency: currency,
-                                                       presentationStyle: .navigationStack,
-                                                       onDuplicateCompletion: { _, _ in })
-        navigationController?.pushViewController(viewController, animated: true)
+                // Remove deleted variation from variations array
+                let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
+                let updatedProduct = self.product.copy(variations: variationsUpdated)
+                self.product = updatedProduct
+            },
+            onCompletion: { [weak self] viewController in
+                self?.navigationController?.pushViewController(viewController, animated: true)
+            }
+        )
     }
 }
 

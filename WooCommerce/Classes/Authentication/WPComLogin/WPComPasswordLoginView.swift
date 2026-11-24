@@ -70,11 +70,6 @@ struct WPComPasswordLoginView: View {
                 // Avatar and email
                 WPComLoginGravatarView(email: viewModel.email, gravatarURL: viewModel.avatarURL)
 
-                if case .posPINRecovery = flow {
-                    Text(Localization.recoveryInstructions)
-                        .bodyStyle()
-                }
-
                 // Password field
                 AuthenticationFormFieldView(viewModel: .init(
                     header: Localization.passwordLabel,
@@ -137,11 +132,6 @@ private extension WPComPasswordLoginView {
     }
 
     enum Localization {
-        static let recoveryInstructions = NSLocalizedString(
-            "wpcomPasswordLoginView.posPINRecovery.instructions",
-            value: "Use the same sign-in method you used for this account in the WooCommerce app.",
-            comment: "Instructions shown above the password field during WordPress.com POS PIN recovery."
-        )
         static let passwordLabel = NSLocalizedString(
             "wpcomPasswordLoginView.password",
             value: "Password",

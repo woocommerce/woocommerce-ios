@@ -1,7 +1,7 @@
-import StoreDesignSystem
 import SwiftUI
 import UIKit
 import WebKit
+import WordPressAuthenticator
 import Yosemite
 import protocol PointOfSale.POSPINRecoveryProviding
 import enum PointOfSale.POSPINRecoveryResult
@@ -28,10 +28,8 @@ final class POSPINRecoveryAdaptor: POSPINRecoveryProviding {
         let outcome: POSPINRecoveryOutcome
         switch credentials {
         case let .wporg(username, _, siteAddress):
-            let model = POSPINRecoverySignInModel(siteURL: siteAddress,
-                                                  username: username,
-                                                  endpoints: sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
-            outcome = await model.present(from: presenter)
+            let endpoints = sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
+            outcome = await POSPINRecoverySiteSignIn(siteURL: siteAddress, username: username, endpoints: endpoints).present(from: presenter)
         case let .applicationPassword(username, _, siteAddress):
             outcome = await POSPINRecoveryBrowserSignIn(siteURL: siteAddress, username: username).present(from: presenter)
         case .wpcom:
@@ -54,6 +52,7 @@ final class POSPINRecoveryAdaptor: POSPINRecoveryProviding {
 private enum POSPINRecoveryOutcome {
     case verified
     case canceled
+    case failed
 }
 
 private extension POSPINRecoveryIdentity {
@@ -179,8 +178,7 @@ private final class POSPINRecoveryWPComSignIn: POSPINRecoveryModalFlow {
         let placeholder = UIHostingController(rootView: ProgressView().accessibilityLabel(POSPINRecoveryIdentity.Localization.signingIn))
         placeholder.title = POSPINRecoveryIdentity.Localization.title
         startupController = placeholder
-        let coordinator = WPComLoginCoordinator(title: POSPINRecoveryIdentity.Localization.title,
-                                                flow: .posPINRecovery,
+        let coordinator = WPComLoginCoordinator(flow: .posPINRecovery,
                                                 navigationController: navigationController) { [weak self] credentials in
             self?.verify(credentials)
         }
@@ -195,6 +193,7 @@ private final class POSPINRecoveryWPComSignIn: POSPINRecoveryModalFlow {
     override func willFinish() {
         startupTask?.cancel()
         verificationTask?.cancel()
+        coordinator?.cancelRecoveryLink()
         coordinator = nil
     }
 
@@ -298,22 +297,12 @@ private final class POSPINRecoveryBrowserSignIn: POSPINRecoveryModalFlow {
 }
 
 @MainActor
-@Observable
-private final class POSPINRecoverySignInModel {
-    let siteURL: String
-    let username: String
-    var password = ""
-    private(set) var isSigningIn = false
-    private(set) var errorMessage: String?
-
-    var canSignIn: Bool {
-        !isSigningIn && !password.isEmpty
-    }
-
-    @ObservationIgnored private let endpoints: CookieNonceAuthenticationEndpoints?
-    @ObservationIgnored private let modal = POSPINRecoveryModalFlow()
-    @ObservationIgnored private var useCase: SiteCredentialLoginUseCase?
-    @ObservationIgnored private var eligibilityTask: Task<Void, Never>?
+private final class POSPINRecoverySiteSignIn: POSPINRecoveryModalFlow {
+    private let siteURL: String
+    private let username: String
+    private let endpoints: CookieNonceAuthenticationEndpoints?
+    private var useCase: SiteCredentialLoginUseCase?
+    private var verificationTask: Task<Void, Never>?
 
     init(siteURL: String, username: String, endpoints: CookieNonceAuthenticationEndpoints?) {
         self.siteURL = siteURL
@@ -322,130 +311,46 @@ private final class POSPINRecoverySignInModel {
     }
 
     func present(from presenter: UIViewController) async -> POSPINRecoveryOutcome {
-        let controller = UIHostingController(rootView: POSPINRecoverySignInView(model: self))
-        controller.title = POSPINRecoveryIdentity.Localization.title
-        let outcome = await modal.present(root: controller, from: presenter)
-        modal.navigationController.setViewControllers([], animated: false)
-        useCase?.cancel()
-        eligibilityTask?.cancel()
-        password = ""
-        return outcome
+        let controller = WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: siteURL,
+                                                                                  username: username) { [weak self] username, password, onFailure in
+            self?.signIn(username: username, password: password, onFailure: onFailure)
+        }
+        guard let controller else { return .failed }
+        return await present(root: controller, from: presenter)
     }
 
-    func signIn() {
-        guard canSignIn, modal.isPresenting else { return }
-        isSigningIn = true
-        errorMessage = nil
+    override func willFinish() {
+        useCase?.cancel()
+        verificationTask?.cancel()
+    }
+
+    private func signIn(username: String, password: String, onFailure: @escaping @MainActor (String) -> Void) {
+        guard isPresenting, useCase == nil else { return }
         let cookieJar = SiteCredentialLoginUseCase.makePrivateCookieJar()
         let useCase = SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, cookieJar: cookieJar)
         useCase.setupHandlers(onLoginSuccess: { [weak self] provenEndpoints in
-            guard let self, modal.isPresenting else {
-                Self.clear(cookieJar)
-                return
-            }
-            eligibilityTask = Task { @MainActor [username] in
+            guard let self, isPresenting else { return }
+            verificationTask = Task { @MainActor [weak self, expectedLogin = self.username] in
                 let session = URLSession(configuration: SiteCredentialLoginUseCase.makeSessionConfiguration(cookieJar: cookieJar))
-                let identity = await POSPINRecoveryIdentity.verifySiteCredentials(endpoints: provenEndpoints, session: session, expectedLogin: username)
+                let identity = await POSPINRecoveryIdentity.verifySiteCredentials(endpoints: provenEndpoints,
+                                                                                  session: session, expectedLogin: expectedLogin)
                 session.invalidateAndCancel()
-                Self.clear(cookieJar)
-                guard !Task.isCancelled, self.modal.isPresenting else { return }
+                cookieJar.cookies?.forEach(cookieJar.deleteCookie)
+                guard let self, !Task.isCancelled, isPresenting else { return }
                 if identity == .sameEligibleAccount {
-                    self.modal.finish(.verified)
+                    finish(.verified)
                 } else {
-                    self.fail(identity.errorMessage)
+                    self.useCase = nil
+                    onFailure(identity.errorMessage)
                 }
             }
         }, onLoginFailure: { [weak self] error, _, _ in
-            Self.clear(cookieJar)
-            self?.fail(error.errorMessage.isEmpty ? POSPINRecoveryIdentity.failed.errorMessage : error.errorMessage)
+            cookieJar.cookies?.forEach(cookieJar.deleteCookie)
+            guard let self, isPresenting else { return }
+            self.useCase = nil
+            onFailure(error.errorMessage.isEmpty ? POSPINRecoveryIdentity.failed.errorMessage : error.errorMessage)
         })
         self.useCase = useCase
         useCase.handleLogin(username: username, password: password)
-    }
-
-    private func fail(_ message: String) {
-        isSigningIn = false
-        password = ""
-        errorMessage = message
-        if modal.isPresenting { AccessibilityNotification.Announcement(message).post() }
-    }
-
-    private static func clear(_ cookieJar: HTTPCookieStorage) {
-        cookieJar.cookies?.forEach(cookieJar.deleteCookie)
-    }
-}
-
-private struct POSPINRecoverySignInView: View {
-    @Bindable var model: POSPINRecoverySignInModel
-    @FocusState private var isPasswordFocused: Bool
-
-    var body: some View {
-        Form {
-            Section {
-                Text(model.siteURL)
-                    .storeTextStyle(.bodyMedium)
-                    .foregroundStyle(Color.storeOnSectionBackgroundVariant)
-                LabeledContent(Localization.username, value: model.username)
-                    .storeTextStyle(.bodyLarge)
-                    .accessibilityIdentifier("pos-pin-recovery-username")
-            } footer: {
-                Text(Localization.explanation)
-                    .storeTextStyle(.bodyMedium)
-                    .foregroundStyle(Color.storeOnSectionBackgroundVariant)
-            }
-            Section {
-                SecureField(Localization.password, text: $model.password)
-                    .storeTextStyle(.bodyLarge)
-                    .focused($isPasswordFocused)
-                    .onSubmit { model.signIn() }
-                    .accessibilityIdentifier("pos-pin-recovery-password")
-            } footer: {
-                if let errorMessage = model.errorMessage {
-                    Text(errorMessage)
-                        .storeTextStyle(.bodyMedium)
-                        .foregroundStyle(Color.storeError)
-                        .accessibilityIdentifier("pos-pin-recovery-error")
-                }
-            }
-            Section {
-                if model.isSigningIn {
-                    ProgressView()
-                        .accessibilityLabel(POSPINRecoveryIdentity.Localization.signingIn)
-                        .tint(Color.storePrimary)
-                        .frame(maxWidth: .infinity)
-                } else {
-                    StoreButton(Localization.signIn, isFullWidth: true, action: model.signIn)
-                        .disabled(!model.canSignIn)
-                        .accessibilityIdentifier("pos-pin-recovery-sign-in")
-                }
-            }
-        }
-        .foregroundStyle(Color.storeOnSectionBackground)
-        .scrollContentBackground(.hidden)
-        .background(Color.storeSectionBackground)
-        .onAppear { isPasswordFocused = true }
-    }
-
-    enum Localization {
-        static let explanation = NSLocalizedString(
-            "pos.pinRecovery.signIn.explanation.sameAccount",
-            value: "Enter the password for the account that is signed in to the app. You stay signed in.",
-            comment: "Explanation in the POS PIN recovery sign-in modal."
-        )
-        static let username = NSLocalizedString(
-            "pos.pinRecovery.signIn.username",
-            value: "Username",
-            comment: "Label for the signed-in username in the POS PIN recovery sign-in modal."
-        )
-        static let password = NSLocalizedString(
-            "pos.pinRecovery.signIn.password",
-            value: "Password",
-            comment: "Password field in the POS PIN recovery sign-in modal."
-        )
-        static let signIn = NSLocalizedString(
-            "pos.pinRecovery.signIn.button",
-            value: "Sign in",
-            comment: "Sign-in button in the POS PIN recovery sign-in modal."
-        )
     }
 }

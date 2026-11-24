@@ -51,12 +51,6 @@ struct WPCom2FALoginView: View {
         self.viewModel = viewModel
     }
 
-    private var submitTitle: String {
-        if viewModel.isSecurityKeyMode { return Localization.securityKey }
-        if case .posPINRecovery = flow { return Localization.continueAction }
-        return title
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
@@ -137,7 +131,7 @@ struct WPCom2FALoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(submitTitle) {
+                Button(viewModel.isSecurityKeyMode ? Localization.securityKey : title) {
                     if viewModel.isSecurityKeyMode {
                         viewModel.loginWithSecurityKey()
                     } else {
@@ -164,7 +158,6 @@ private extension WPCom2FALoginView {
     }
 
     enum Localization {
-        static let continueAction = NSLocalizedString("wpCom2FALoginView.continue", value: "Continue", comment: "Submits the verification code.")
         static let subtitleString = NSLocalizedString(
             "wpCom2FALoginView.subtitleString",
             value: "Almost there! Please enter the verification code from your Authentication app",

@@ -327,7 +327,7 @@ private extension QRLoginCoordinator {
     /// unwinds the QR surface so they can retry.
     func openMagicLink(_ url: URL) {
         let window = navigationController.view.window
-        let runner = WPComMagicLinkAuthRunner(
+        let runner = QRLoginMagicLinkAuthRunner(
             anchor: window,
             onCallback: { [weak self] callbackURL in
                 self?.handleMagicLinkCallback(callbackURL)
@@ -594,7 +594,7 @@ private extension QRLoginCoordinator {
 
 // MARK: - Magic-link auth session
 
-/// Redeems a WordPress.com sign-in link inside an `ASWebAuthenticationSession`.
+/// Runs the wp.com QR magic-link handoff inside an `ASWebAuthenticationSession`.
 ///
 /// `ASWebAuthenticationSession` opens the magic link in an in-app Safari sheet
 /// and captures the `woocommerce://magic-login` callback itself — no external
@@ -602,15 +602,16 @@ private extension QRLoginCoordinator {
 ///
 /// The runner retains itself for the lifetime of the session and releases once
 /// it ends — delivering the captured callback URL (`onCallback`), or signalling
-/// cancellation (`onCancel`) if the merchant dismissed the sheet.
+/// cancellation (`onCancel`) if the merchant dismissed the sheet. The self-retain
+/// decouples the session's lifetime from the `QRLoginCoordinator`.
 @MainActor
-final class WPComMagicLinkAuthRunner: NSObject, ASWebAuthenticationPresentationContextProviding {
+private final class QRLoginMagicLinkAuthRunner: NSObject, ASWebAuthenticationPresentationContextProviding {
 
     private let anchor: ASPresentationAnchor?
     private let onCallback: @MainActor (URL) -> Void
     private let onCancel: @MainActor () -> Void
     private var session: ASWebAuthenticationSession?
-    private var retainedSelf: WPComMagicLinkAuthRunner?
+    private var retainedSelf: QRLoginMagicLinkAuthRunner?
 
     init(anchor: ASPresentationAnchor?,
          onCallback: @escaping @MainActor (URL) -> Void,
@@ -647,10 +648,7 @@ final class WPComMagicLinkAuthRunner: NSObject, ASWebAuthenticationPresentationC
         session.prefersEphemeralWebBrowserSession = true
         session.presentationContextProvider = self
         self.session = session
-        if session.start() == false {
-            retainedSelf = nil
-            onCancel()
-        }
+        session.start()
     }
 
     nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {

@@ -18,8 +18,7 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
                                                 flow: flow,
                                                 isSignup: isSignup,
                                                 viewModel: viewModel))
-        rootView.onOpenMail = { [weak self] in
-            guard let self else { return }
+        rootView.onOpenMail = {
             let linkMailPresenter = LinkMailPresenter(emailAddress: email)
             let appSelector = AppSelector(sourceView: self.view)
             linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)

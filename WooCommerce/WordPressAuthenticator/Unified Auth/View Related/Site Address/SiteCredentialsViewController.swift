@@ -32,6 +32,7 @@ final class SiteCredentialsViewController: LoginViewController {
     private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
     private let configuration: WordPressAuthenticatorConfiguration
+    var onSubmitCredentials: (@MainActor (String, String, @escaping @MainActor (String) -> Void) -> Void)?
 
     private var isWPCom: Bool {
         return loginFields.siteAddress == LoginFields.wpComSiteAddress
@@ -123,7 +124,7 @@ final class SiteCredentialsViewController: LoginViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if isBeingDismissed || navigationController?.isBeingDismissed == true {
+        if onSubmitCredentials == nil, isBeingDismissed || navigationController?.isBeingDismissed == true {
             WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
         }
     }
@@ -133,7 +134,9 @@ final class SiteCredentialsViewController: LoginViewController {
         guard parent == nil else {
             return
         }
-        WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
+        if onSubmitCredentials == nil {
+            WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
+        }
         // Not viewWillDisappear/isMovingFromParent: a cancelled back-swipe fires those and comes
         // back here, and `isWPCom` is read at submit time.
         loginFields.restoreSiteAddressAfterWPComFallback()
@@ -589,7 +592,15 @@ private extension SiteCredentialsViewController {
             return
         }
 
-        authenticateSiteCredentials(verifying: nil)
+        if let onSubmitCredentials {
+            configureViewLoading(true)
+            onSubmitCredentials(loginFields.username, loginFields.password) { [weak self] message in
+                self?.configureViewLoading(false)
+                self?.displayError(message: message, moveVoiceOverFocus: true)
+            }
+        } else {
+            authenticateSiteCredentials(verifying: nil)
+        }
     }
 
     /// Submits the address the merchant entered for the endpoint currently being recovered.
@@ -889,8 +900,7 @@ extension SiteCredentialsViewController {
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        if configuration.enableManualSiteCredentialLogin,
-           !isWPCom {
+        if onSubmitCredentials != nil || (configuration.enableManualSiteCredentialLogin && !isWPCom) {
             // asks the delegate to handle the login
             if recoveryEndpoint == nil {
                 validateFormAndTriggerDelegate()

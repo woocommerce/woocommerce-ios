@@ -16,6 +16,28 @@ class WordPressAuthenticatorTests: XCTestCase {
         )
     }
 
+    @MainActor
+    func test_siteCredentialEntry_when_submitted_then_uses_the_supplied_handler() throws {
+        // Given
+        var submittedUsername: String?
+        var submittedPassword: String?
+        let entry = WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: "https://example.com", username: "storeadmin") {
+            username, password, _ in
+            submittedUsername = username
+            submittedPassword = password
+        }
+        let controller = try XCTUnwrap(entry as? SiteCredentialsViewController)
+        controller.loadViewIfNeeded()
+        controller.loginFields.password = "fixture-password"
+
+        // When
+        controller.validateForm()
+
+        // Then
+        XCTAssertEqual(submittedUsername, "storeadmin")
+        XCTAssertEqual(submittedPassword, "fixture-password")
+    }
+
     func testBaseSiteURL() {
         var baseURL = "testsite.wordpress.com"
         var url = WordPressAuthenticator.baseSiteURL(string: "http://\(baseURL)")

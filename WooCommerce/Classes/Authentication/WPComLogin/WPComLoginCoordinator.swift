@@ -1,3 +1,4 @@
+import AuthenticationServices
 import UIKit
 import enum Yosemite.Credentials
 import protocol Yosemite.StoresManager
@@ -28,7 +29,7 @@ final class WPComLoginCoordinator {
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: (Credentials) -> Void
-    private var recoveryLinkRunner: WPComMagicLinkAuthRunner?
+    private var recoveryLinkSession: POSPINRecoveryLinkSession?
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
@@ -76,6 +77,12 @@ final class WPComLoginCoordinator {
             guard !Task.isCancelled else { return }
             showAlert(message: error.localizedDescription)
         }
+    }
+
+    func cancelRecoveryLink() {
+        let session = recoveryLinkSession
+        recoveryLinkSession = nil
+        session?.cancel()
     }
 }
 
@@ -180,22 +187,25 @@ private extension WPComLoginCoordinator {
 
     func openRecoveryLink(_ url: URL, email: String) {
         let scheme = Bundle.main.dotcomAuthScheme
-        guard recoveryLinkRunner == nil else { return }
+        guard recoveryLinkSession == nil else { return }
         guard POSPINRecoveryMagicLink.isSignInLink(url, callbackScheme: scheme), let window = navigationController.view.window else {
             return showAlert(message: Localization.invalidRecoveryLink)
         }
-        let runner = WPComMagicLinkAuthRunner(anchor: window) { [weak self] callback in
-            guard let self else { return }
-            recoveryLinkRunner = nil
+        let session = POSPINRecoveryLinkSession(anchor: window)
+        recoveryLinkSession = session
+        let started = session.start(url: url, callbackScheme: scheme) { [weak self, weak session] callback in
+            guard let self, let session, recoveryLinkSession === session else { return }
+            recoveryLinkSession = nil
+            guard let callback else { return }
             guard let token = POSPINRecoveryMagicLink.token(from: callback, callbackScheme: scheme) else {
                 return showAlert(message: Localization.invalidRecoveryLink)
             }
             completeLogin(username: email, authToken: token)
-        } onCancel: { [weak self] in
-            self?.recoveryLinkRunner = nil
         }
-        recoveryLinkRunner = runner
-        runner.start(url: url, callbackURLScheme: scheme)
+        if !started {
+            recoveryLinkSession = nil
+            showAlert(message: Localization.invalidRecoveryLink)
+        }
     }
 
     func showWPComUsernameLogin() {
@@ -298,5 +308,33 @@ enum POSPINRecoveryMagicLink {
         let matches = items.filter { $0.name == name }
         guard matches.count == 1, let value = matches.first?.value, !value.isEmpty else { return nil }
         return value
+    }
+}
+
+@MainActor
+private final class POSPINRecoveryLinkSession: NSObject, ASWebAuthenticationPresentationContextProviding {
+    private let anchor: ASPresentationAnchor
+    private var browser: ASWebAuthenticationSession?
+
+    init(anchor: ASPresentationAnchor) {
+        self.anchor = anchor
+    }
+
+    func start(url: URL, callbackScheme: String, completion: @escaping @MainActor @Sendable (URL?) -> Void) -> Bool {
+        let browser = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackScheme) { url, _ in
+            Task { @MainActor in completion(url) }
+        }
+        browser.presentationContextProvider = self
+        browser.prefersEphemeralWebBrowserSession = true
+        self.browser = browser
+        return browser.start()
+    }
+
+    func cancel() {
+        browser?.cancel()
+    }
+
+    nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        MainActor.assumeIsolated { anchor }
     }
 }

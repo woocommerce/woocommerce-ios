@@ -324,6 +324,42 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)) as? Bool, false)
     }
 
+    @MainActor
+    func test_deauthenticate_when_onboarding_guide_is_completed_then_clears_all_stores() throws {
+        // Given
+        let suiteName = "StoresManagerTests.onboardingGuide.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSOnboardingGuidePreferences(userDefaults: defaults)
+        preferences.markGuideCompleted(for: 123)
+        preferences.markGuideCompleted(for: 456)
+
+        // When
+        manager.deauthenticate()
+
+        // Then
+        XCTAssertFalse(preferences.hasCompletedGuide(for: 123))
+        XCTAssertFalse(preferences.hasCompletedGuide(for: 456))
+    }
+
+    @MainActor
+    func test_removeDefaultStore_when_onboarding_guide_is_completed_then_preserves_it() throws {
+        // Given
+        let suiteName = "StoresManagerTests.onboardingGuide.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSOnboardingGuidePreferences(userDefaults: defaults)
+        preferences.markGuideCompleted(for: 123)
+
+        // When
+        manager.removeDefaultStore()
+
+        // Then
+        XCTAssertTrue(preferences.hasCompletedGuide(for: 123))
+    }
+
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.
     ///
     func testDeauthenticate_invalidates_card_present_payment_onboarding_state_cache() {

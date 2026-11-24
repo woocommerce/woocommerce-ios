@@ -643,6 +643,30 @@ final class ProductListViewModelTests: XCTestCase {
         waitUntil { viewModel.products.map(\.productID) == [2] }
     }
 
+    func test_refresh_when_favorites_changed_and_sync_fails_then_lists_only_current_favorites() throws {
+        // Given
+        let storage = MockStorageManager()
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [1, 2]
+        let viewModel = makeViewModel(storage: storage, favoriteProductsUseCase: favoriteProductsUseCase)
+        insert(makeProducts(["A", "B"]), into: storage)
+        viewModel.filters = makeFilters(favorite: true)
+        waitUntil { viewModel.products.map(\.productID) == [1, 2] }
+
+        // When
+        favoriteProductsUseCase.favoriteProductIDsValue = [2]
+        waitForExpectation { expectation in
+            Task {
+                await viewModel.refresh {}
+                expectation.fulfill()
+            }
+        }
+        try XCTUnwrap(productSyncs.last).onCompletion(.failure(NSError(domain: "network", code: 0)))
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.productID), [2], "Rows must match the products that taps resolve against")
+    }
+
     func test_sync_when_sort_and_filters_are_set_then_requests_them_with_favorite_product_IDs() throws {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()

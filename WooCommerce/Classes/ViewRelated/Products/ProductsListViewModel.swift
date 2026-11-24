@@ -353,6 +353,8 @@ extension ProductListViewModel {
 
     func refresh(onCompletion: @escaping () -> Void) async {
         await updatePredicate(filters: filters)
+        // `performFetch` does not call the change callbacks, and a failed sync never replaces the rows.
+        products = presentableProducts(resultsController.listItems)
         paginationTracker.resync(onCompletion: onCompletion)
     }
 

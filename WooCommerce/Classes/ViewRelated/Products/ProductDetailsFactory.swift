@@ -19,45 +19,53 @@ struct ProductDetailsFactory {
                                productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                onDeleteCompletion: @escaping () -> Void = {},
                                onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
-        let vc = productDetails(product: product,
-                                presentationStyle: presentationStyle,
-                                currencySettings: currencySettings,
-                                isEditProductsEnabled: forceReadOnly ? false: true,
-                                productImageUploader: productImageUploader,
-                                onDeleteCompletion: onDeleteCompletion,
-                                onDuplicateCompletion: onDuplicateCompletion)
-        return vc
+        productDetails(product: product,
+                       presentationStyle: presentationStyle,
+                       formType: forceReadOnly ? .readonly: .edit,
+                       currencySettings: currencySettings,
+                       productImageUploader: productImageUploader,
+                       onDeleteCompletion: onDeleteCompletion,
+                       onDuplicateCompletion: onDuplicateCompletion)
     }
-}
 
-private extension ProductDetailsFactory {
+    /// Creates a product details view controller for a specific form type.
     @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
-                               currencySettings: CurrencySettings,
-                               isEditProductsEnabled: Bool,
-                               productImageUploader: ProductImageUploaderProtocol,
-                               onDeleteCompletion: @escaping () -> Void,
+                               formType: ProductFormType,
+                               isAIContent: Bool = false,
+                               isLocalProduct: Bool = false,
+                               currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                               productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+                               onProductCreated: @escaping (_ product: Product, _ canShareProduct: Bool) -> Void = { _, _ in },
+                               onDeleteCompletion: @escaping () -> Void = {},
                                onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
-        let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = productImageUploader
             .actionHandler(key: .init(siteID: product.siteID,
                                       productOrVariationID: .product(id: productModel.productID),
-                                      isLocalID: false),
+                                      isLocalID: isLocalProduct),
                            originalStatuses: productModel.imageStatuses)
-        let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductFormViewModel(product: productModel,
                                              formType: formType,
                                              productImageActionHandler: productImageActionHandler)
-        vc = ProductFormViewController(viewModel: viewModel,
-                                       eventLogger: ProductFormEventLogger(),
-                                       productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle,
-                                       onDeleteCompletion: onDeleteCompletion,
-                                       onDuplicateCompletion: onDuplicateCompletion)
+        viewModel.onProductCreated = { [weak viewModel] product in
+            guard let viewModel else {
+                return
+            }
+            onProductCreated(product, viewModel.canShareProduct())
+        }
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       isAIContent: isAIContent,
+                                                       eventLogger: ProductFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currencySettings.symbol(from: currencySettings.currencyCode),
+                                                       presentationStyle: presentationStyle,
+                                                       productImageUploader: productImageUploader,
+                                                       onDeleteCompletion: onDeleteCompletion,
+                                                       onDuplicateCompletion: onDuplicateCompletion)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        vc.hidesBottomBarWhenPushed = true
-        return vc
+        viewController.hidesBottomBarWhenPushed = true
+        return viewController
     }
 }

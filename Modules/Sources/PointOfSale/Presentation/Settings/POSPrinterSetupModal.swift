@@ -355,13 +355,7 @@ private extension POSPrinterSetupModal {
                 secondaryButton: .init(title: Localization.keepSearchingButton, action: {
                     controller.keepSearching(skipping: device)
                 }))
-        case .foundMultiple:
-            return .init(
-                primaryButton: nil,
-                secondaryButton: .init(title: Localization.cancelButton, action: {
-                    isPresented = false
-                }))
-        case .searching, .connecting:
+        case .foundMultiple, .searching, .connecting:
             return nil
         }
     }
@@ -427,11 +421,6 @@ private extension POSPrinterSetupModal {
             "pos.printerSetup.foundOne.keepSearchingButton",
             value: "Keep Searching",
             comment: "Button to skip the discovered receipt printer and keep searching in POS settings.")
-
-        static let cancelButton = NSLocalizedString(
-            "pos.printerSetup.foundMultiple.cancelButton",
-            value: "Cancel",
-            comment: "Button to close the receipt printer setup without connecting in POS settings.")
 
         static let searchAgainButton = NSLocalizedString(
             "pos.printerSetup.searchAgainButton",

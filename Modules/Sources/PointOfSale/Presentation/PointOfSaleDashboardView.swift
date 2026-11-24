@@ -412,6 +412,7 @@ struct PointOfSaleDashboardView: View {
             TotalsView()
         }
         .background(Color.posSurface)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbar(.hidden, for: .navigationBar)
     }
 

@@ -32,10 +32,7 @@ struct POSCustomAmountAmountView: View {
         VStack(spacing: 0) {
             POSPageHeaderView(
                 title: mode == .initial ? Localization.title : AddCustomAmountView.Localization.editAmount,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    isAmountFocused = false
-                    onBack()
-                })
+                backButtonConfiguration: .init(state: .enabled, action: goBack)
             )
 
             Spacer()
@@ -63,10 +60,15 @@ struct POSCustomAmountAmountView: View {
         .onAppear {
             amountInput = viewModel.makeAmountInputState()
         }
-        .posEdgeSwipeBackAction(onBack: onBack)
+        .posEdgeSwipeBackAction(onBack: goBack)
         .onChange(of: amountInput.inputDigits) { _, digits in
             viewModel.setAmount(digits: digits)
         }
+    }
+
+    private func goBack() {
+        isAmountFocused = false
+        onBack()
     }
 
     private func continueIfValid() {

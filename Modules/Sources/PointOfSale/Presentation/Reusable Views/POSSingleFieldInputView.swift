@@ -29,6 +29,8 @@ struct POSSingleFieldInputView: View {
     var submitButtonAccessibilityIdentifier: String = ""
     var horizontalPadding: KeyPath<POSMetrics.Scale, CGFloat> = \.medium
     var fillsAvailableHeight: Bool = false
+    var keyboardFollowsNavigationPop: Bool = false
+    var closesOnEdgeSwipe: Bool = false
 
     @State private var selection: TextSelection?
     @State private var availableHeight: CGFloat = 0
@@ -46,12 +48,7 @@ struct POSSingleFieldInputView: View {
                     title: title,
                     backButtonConfiguration: .init(
                         state: buttonState != .idle ? .disabled : .enabled,
-                        action: {
-                            withAnimation {
-                                onClose()
-                                isTextFieldFocused = false
-                            }
-                        }
+                        action: close
                     )
                 )
 
@@ -122,6 +119,7 @@ struct POSSingleFieldInputView: View {
         }
         .background(Color.posSurfaceBright)
         .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { availableHeight = $0 }
+        .posEdgeSwipeBackAction(isEnabled: closesOnEdgeSwipe && buttonState == .idle, onBack: close)
     }
 }
 
@@ -130,6 +128,15 @@ struct POSSingleFieldInputView: View {
 private extension POSSingleFieldInputView {
     var pinsButtonAboveKeyboard: Bool {
         fillsAvailableHeight || UIDevice.current.userInterfaceIdiom == .phone
+    }
+
+    func close() {
+        withAnimation {
+            onClose()
+            if !keyboardFollowsNavigationPop || UIDevice.current.userInterfaceIdiom != .phone {
+                isTextFieldFocused = false
+            }
+        }
     }
 
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {

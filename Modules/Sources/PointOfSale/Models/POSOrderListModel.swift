@@ -34,10 +34,6 @@ import struct Yosemite.POSOrder
 
     // MARK: - Refund Flow
 
-    var refundActionAvailability: RefundActionAvailability {
-        ordersController.selectedOrder?.refundActionAvailability ?? .unavailable
-    }
-
     var refundSelectableItems: [POSRefundSelectableItem] {
         refundController.selectableItems
     }

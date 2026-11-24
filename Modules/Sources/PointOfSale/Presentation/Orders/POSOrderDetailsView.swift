@@ -22,8 +22,6 @@ struct POSOrderDetailsView: View {
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
@@ -46,10 +44,6 @@ struct POSOrderDetailsView: View {
             return controller.orderDetailsItemsState
         }
         return lastItemsState
-    }
-
-    private var shouldShowBackButton: Bool {
-        horizontalSizeClass == .compact
     }
 
     private var dateFormatter: DateFormatter {
@@ -79,21 +73,14 @@ struct POSOrderDetailsView: View {
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
         let order = orderListModel.ordersController.selectedOrder ?? lastSelectedOrder ?? self.order
-        VStack(spacing: metrics.spacing.none) {
-            POSPageHeaderView(
-                title: POSOrderListView.Localization.orderTitle(order.number),
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: {
-                    actionsSection(setup: availableActionsSetup)
-                },
-                bottomContent: {
-                    headerBottomContent(for: order)
-                }
-            )
-            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : metrics.padding.none)
-            .fixedSize(horizontal: false, vertical: true)
-            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-
+        POSPage(
+            title: POSOrderListView.Localization.orderTitle(order.number),
+            compactBackAction: onBack,
+            actions: pageActions(for: order),
+            headerBottomContent: {
+                headerBottomContent(for: order)
+            }
+        ) {
             ScrollView {
                 VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     switch itemsState {
@@ -553,59 +540,29 @@ private extension POSOrderDetailsView {
         }
     }
 
-    struct OrderDetailsActionsSetup {
-        let primary: OrderDetailsAction?
-        let secondary: [OrderDetailsAction]
-    }
-
-    var availableActionsSetup: OrderDetailsActionsSetup {
-        let email: OrderDetailsAction = .emailReceipt
+    func pageActions(for order: POSOrder) -> POSPageActions {
+        let email = pageAction(for: .emailReceipt)
 
         switch order.status {
         case .refunded:
-            return .init(primary: email, secondary: [])
+            return .init(primary: email)
         case .completed:
-            switch orderListModel.refundActionAvailability {
+            switch order.refundActionAvailability {
             case .available:
-                return .init(primary: .issueRefund, secondary: [email])
-
+                return .init(primary: pageAction(for: .issueRefund), secondary: [email])
             case .unavailable:
-                return .init(primary: email, secondary: [])
+                return .init(primary: email)
             }
         default:
-            return .init(primary: nil, secondary: [])
+            return .none
         }
     }
 
-    @ViewBuilder
-    func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
-        if let primary = setup.primary {
-            HStack(spacing: metrics.spacing.large) {
-                Button(action: handler(for: primary)) {
-                    Text(primary.title)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                .accessibilityHint(primary.accessibilityHint)
-            }
-        }
-
-        if !setup.secondary.isEmpty {
-            POSMenu {
-                ForEach(setup.secondary) { action in
-                    POSMenuButton(action.title, action: handler(for: action))
-                        .accessibilityHint(action.accessibilityHint)
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .padding(metrics.padding.small)
-            }
-            .accessibilityLabel(POSMenuAccessibility.moreActions)
-        }
+    func pageAction(for action: OrderDetailsAction) -> POSPageAction {
+        POSPageAction(id: action.id,
+                      title: action.title,
+                      accessibilityHint: action.accessibilityHint,
+                      action: handler(for: action))
     }
 }
 

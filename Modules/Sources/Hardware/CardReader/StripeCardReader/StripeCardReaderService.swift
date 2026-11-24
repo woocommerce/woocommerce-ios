@@ -743,12 +743,14 @@ private extension StripeCardReaderService {
                     result = .failure(CardReaderServiceError.paymentCancellation())
                 }
                 guard let notify = paymentAttemptTracker.resolveCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) else { return }
+                let activeAttemptID = paymentAttemptTracker.activeAttemptID
+                let isCurrentAttempt = activeAttemptID == nil || activeAttemptID == paymentAttemptID
                 if case .success = result,
-                   paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID,
+                   isCurrentAttempt,
                    activePaymentIntent?.stripeId == intentID {
                     activePaymentIntent = nil
                 }
-                if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
+                if isCurrentAttempt {
                     cancellationStartedInApp = nil
                 }
                 notify()

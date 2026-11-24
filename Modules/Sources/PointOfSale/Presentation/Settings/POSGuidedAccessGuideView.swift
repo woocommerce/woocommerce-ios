@@ -56,6 +56,7 @@ struct POSGuidedAccessGuideView: View {
             }
         }
         .posModalFullScreen(usesAccessibilityFullScreen)
+        .posModalFlowHeaderTitle(Localization.title)
         .posModalFlowBackAction(enabled: isFullScreenFlow && slide.previous != nil) { show(slide.previous) }
         .accessibilityIdentifier("pos-guided-access-guide")
     }
@@ -230,7 +231,7 @@ private extension POSGuidedAccessGuideView {
     }
 
     func openSettings() {
-        // Public API only reaches this app's page in Settings; the Accessibility pane has no public URL.
+        // The public Settings URL requires manual navigation to Accessibility.
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         guide.isVisitingSettings = true
         Task {
@@ -272,8 +273,8 @@ extension POSGuidedAccessGuideView {
     enum Localization {
         static let title = NSLocalizedString("pos.guidedAccessGuide.title", value: "Set up Guided Access",
                                              comment: "Title of the guide that explains how to turn on iOS Guided Access.")
-        static let openSettingsCaption = NSLocalizedString("pos.guidedAccessGuide.openAppSettings.caption",
-                                                           value: "Open Settings, go back to its main screen, then choose Accessibility → Guided Access.",
+        static let openSettingsCaption = NSLocalizedString("pos.guidedAccessGuide.settingsPath.caption",
+                                                           value: "In Settings, go to Accessibility → Guided Access.",
                                                            comment: "First step of the Guided Access guide. Names the path in the iOS Settings app.")
         static let turnOnCaption = NSLocalizedString("pos.guidedAccessGuide.separatePasscode.caption",
                                                      value: "Turn on Guided Access and set its passcode. This is separate from your POS PIN.",
@@ -284,9 +285,9 @@ extension POSGuidedAccessGuideView {
                                                     comment: "Last step of the Guided Access guide.")
         static let openSettings = NSLocalizedString("pos.guidedAccessGuide.openSettings", value: "Open Settings",
                                                     comment: "Button in the Guided Access guide that opens the iOS Settings app.")
-        static let settingsDestination = NSLocalizedString("pos.guidedAccessGuide.settingsDestination",
-                                                            value: "Opens this app’s page in Settings.",
-                                                            comment: "Explains the supported Settings destination before the user opens it.")
+        static let settingsDestination = NSLocalizedString("pos.guidedAccessGuide.settingsDestinationHint",
+                                                            value: "Opens Settings. Go back to the main screen if needed.",
+                                                            comment: "Explains that Settings may open this app's page, requiring Back navigation first.")
         static let done = NSLocalizedString("pos.guidedAccessGuide.done", value: "Done", comment: "Button that closes the Guided Access guide.")
         static let close = NSLocalizedString("pos.guidedAccessGuide.close", value: "Close",
                                              comment: "Accessibility label of the button that closes the Guided Access guide.")

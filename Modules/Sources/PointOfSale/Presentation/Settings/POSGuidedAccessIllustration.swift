@@ -35,6 +35,7 @@ struct POSGuidedAccessIllustration: View {
             .overlay(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.extraLarge.value).strokeBorder(Color.posOutlineVariant))
             .offset(x: layout.origin.x, y: layout.origin.y)
             TouchIndicator(touch: powerTouch, pressOffset: layout.powerPressOffset)
+                .opacity(reduceMotion ? 0 : 1)
         }
         .frame(width: layout.size.width, height: layout.size.height, alignment: .topLeading)
         // The drawing keeps the coordinates of its design frames.
@@ -51,7 +52,7 @@ struct POSGuidedAccessIllustration: View {
     }
 
     private var hardwareButtons: some View {
-        let depth = powerTouch.isPressed ? Constants.pressedPowerDepth : Constants.powerDepth
+        let depth = powerTouch.isPressed && !reduceMotion ? Constants.pressedPowerDepth : Constants.powerDepth
         let color = isPowerHighlighted || reduceMotion ? Color.posPrimary : .posOutlineVariant
         return ZStack(alignment: .topLeading) {
             ForEach(layout.volumeButtons, id: \.self) { y in
@@ -137,6 +138,7 @@ private struct POSGuidedAccessSettingsScene: View {
                     .zIndex(1)
             }
             TouchIndicator(touch: touch)
+                .opacity(reduceMotion ? 0 : 1)
                 .zIndex(2)
         }
         .frame(width: layout.screen.width, height: layout.screen.height, alignment: .topLeading)
@@ -155,11 +157,11 @@ private struct POSGuidedAccessSettingsScene: View {
     }
 
     private var isPageShown: Bool {
-        shownStep > 0 && !isRewinding
+        shownStep > 0 && (reduceMotion || !isRewinding)
     }
 
     private var pressedKey: Int? {
-        touch.isPressed && flowStep > Constants.keypadStep ? Constants.passcodeKeys[flowStep - Constants.keypadStep - 1] : nil
+        !reduceMotion && touch.isPressed && flowStep > Constants.keypadStep ? Constants.passcodeKeys[flowStep - Constants.keypadStep - 1] : nil
     }
 
     private func playOpenSettings() async {

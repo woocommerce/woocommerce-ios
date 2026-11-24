@@ -11,7 +11,7 @@ struct ParentProductCardView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
-        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
+        Constants.imageSize(metrics: metrics, scale: scale, dynamicTypeSize: dynamicTypeSize)
     }
 
     init(name: String, imageSource: String?, detailText: String) {
@@ -21,12 +21,12 @@ struct ParentProductCardView: View {
     }
 
     var body: some View {
-        HStack(spacing: metrics.spacing.none) {
+        POSItemCardLayout {
             POSItemImageView(imageSource: imageSource,
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
-
+        } details: {
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
@@ -38,10 +38,7 @@ struct ParentProductCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
-            Spacer()
-
+        } accessory: {
             Image(systemName: "chevron.forward")
                 .accessibilityHidden(true)
                 .font(.posButtonSymbolSmall)

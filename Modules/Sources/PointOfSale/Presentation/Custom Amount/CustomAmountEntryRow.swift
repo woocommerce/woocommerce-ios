@@ -8,12 +8,12 @@ struct CustomAmountEntryRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var dimension: CGFloat {
-        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
+        Constants.imageSize(metrics: metrics, scale: scale, dynamicTypeSize: dynamicTypeSize)
     }
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: metrics.spacing.none) {
+            POSItemCardLayout {
                 ZStack {
                     Color.posSurfaceDim
 
@@ -30,7 +30,7 @@ struct CustomAmountEntryRow: View {
                         }
                 }
                 .frame(width: dimension, height: dimension)
-
+            } details: {
                 VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                     Text(Localization.title)
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
@@ -43,9 +43,6 @@ struct CustomAmountEntryRow: View {
                         .foregroundStyle(Constants.detailColor)
                         .font(Constants.itemDetailFont)
                 }
-                .padding(.horizontal, metrics.padding.medium * (1 / scale))
-                .padding(.vertical, metrics.padding.small * (1 / scale))
-                Spacer()
             }
             .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
             .background(Constants.backgroundColor)

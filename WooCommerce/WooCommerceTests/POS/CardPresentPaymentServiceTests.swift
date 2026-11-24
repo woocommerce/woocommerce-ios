@@ -152,7 +152,7 @@ struct CardPresentPaymentServiceTests {
     func test_collect_when_real_validation_finds_paid_order_then_requires_confirmed_cancellation(proof: AlreadyPaidCancellation) async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00", datePaid: .some(nil))
+        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", datePaid: .some(nil), total: "10.00")
         let preflight = MockCardPresentPaymentPreflightController()
         let preflightStarted = AsyncStream<Void>.makeStream()
         preflight.onStart = { preflightStarted.continuation.yield(()) }

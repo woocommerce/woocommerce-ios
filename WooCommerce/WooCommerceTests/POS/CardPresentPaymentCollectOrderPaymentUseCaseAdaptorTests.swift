@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import PointOfSale
 import Testing
 import WooFoundation
@@ -11,7 +12,7 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
     @Test func test_validation_when_order_is_already_paid_then_throws_typed_error_without_collecting() async throws {
         // Given
         let stores = makeStores()
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00", datePaid: .some(nil))
+        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", datePaid: .some(nil), total: "10.00")
         var validationCount = 0
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             guard case .retrieveOrderRemotely(_, _, let complete) = action else { return }

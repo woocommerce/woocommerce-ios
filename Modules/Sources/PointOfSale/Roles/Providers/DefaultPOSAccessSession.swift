@@ -123,9 +123,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
         accessScope = POSPINSessionTokens.Token()
         currentStaff = nil
         isLocked = true
-        onLock()
         guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
         generation = request
+        onLock()
         persistLockState(true)
     }
 

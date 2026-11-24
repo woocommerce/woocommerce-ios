@@ -87,6 +87,21 @@ struct DefaultPOSAccessSessionTests {
         #expect(!sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
     }
 
+    @Test func test_lock_when_session_has_ended_then_does_not_cancel_another_payment_owner() {
+        // Given
+        var cancellationRequests = 0
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), onLock: { cancellationRequests += 1 })
+        sut.session.endSession()
+
+        // When
+        sut.session.lock()
+
+        // Then
+        #expect(cancellationRequests == 0)
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.session.isLocked)
+    }
+
     @Test func test_signIn_when_pin_is_invalid_then_throws_invalidPIN_and_records_failure() async {
         // Given
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))

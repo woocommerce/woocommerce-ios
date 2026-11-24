@@ -29,9 +29,9 @@ final class LocallyStoredStateNameRetriever {
         retrieveLocallyStoredStateName(for: address.state, countryCode: address.country)
     }
 
-    func hasLocallyStoredStates(forCountryCode countryCode: String) -> Bool {
-        let predicate = NSPredicate(format: "relationship.code LIKE[c] %@", countryCode)
-        return sharedDerivedStorage.countObjects(ofType: Storage.StateOfACountry.self, matching: predicate) > 0
+    func hasLocallyStoredCountry(code: String) -> Bool {
+        let predicate = NSPredicate(format: "code LIKE[c] %@", code)
+        return sharedDerivedStorage.countObjects(ofType: Storage.Country.self, matching: predicate) > 0
     }
 }
 

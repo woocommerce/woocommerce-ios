@@ -1177,6 +1177,21 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
     }
+
+    func test_syncEverything_when_numeric_code_country_is_stored_without_states_then_does_not_synchronize_countries() {
+        // Given
+        // The store sent Croatia without states, so refetching can never add a name.
+        let address = Address.fake().copy(state: "HR-01", country: "HR")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "HR", name: "Croatia", states: [])])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        viewModel.syncEverything()
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
 }
 
 private extension OrderDetailsViewModelTests {

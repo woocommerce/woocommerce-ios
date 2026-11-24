@@ -723,6 +723,7 @@ private extension StripeCardReaderService {
     func cancelPaymentIntent(intent: StripeTerminal.PaymentIntent, paymentAttemptID: UUID) {
         guard let cancellationID = paymentAttemptTracker.beginCancellation(paymentAttemptID) else { return }
         if paymentAttemptTracker.activeAttemptID == paymentAttemptID { cancellationStartedInApp = true }
+        let intentID = intent.stripeId
         let cancelIntent = { [self] in
             Terminal.shared.cancelPaymentIntent(intent) { [self] canceledIntent, error in
                 let result: Result<Void, Error>
@@ -734,7 +735,7 @@ private extension StripeCardReaderService {
                     result = .failure(CardReaderServiceError.paymentCancellation())
                 }
                 paymentAttemptTracker.completeCancellation(paymentAttemptID, cancellationID: cancellationID, result: result) {
-                    if case .success = result, activePaymentIntent?.stripeId == intent.stripeId {
+                    if case .success = result, activePaymentIntent?.stripeId == intentID {
                         activePaymentIntent = nil
                     }
                     if paymentAttemptTracker.activeAttemptID == nil || paymentAttemptTracker.activeAttemptID == paymentAttemptID {
@@ -773,7 +774,7 @@ private extension StripeCardReaderService {
                 return
             }
 
-            Terminal.shared.createPaymentIntent(parameters) { intent, error in
+            Terminal.shared.createPaymentIntent(parameters) { [weak self] intent, error in
                 if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)

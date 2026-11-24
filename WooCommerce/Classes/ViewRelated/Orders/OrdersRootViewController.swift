@@ -58,8 +58,10 @@ final class OrdersRootViewController: UIViewController {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
-                filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
-                orderListViewModel.updateFilters(filters: filters)
+                if !featureFlagService.usesStoreDesignSystem {
+                    filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
+                }
+                ordersViewController.updateFilters(filters)
             }
         }
     }
@@ -162,7 +164,11 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-        updateTimeoutText()
+        if !featureFlagService.usesStoreDesignSystem {
+            updateTimeoutText()
+        } else {
+            ordersViewController.updateStoreHeader()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -453,19 +459,26 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        if #available(iOS 26.0, *) {
-            configureLiquidGlassHeaderOverlay()
-        } else {
-            // Display the filtered orders bar
-            stackView.addArrangedSubview(filtersBar)
+        if featureFlagService.usesStoreDesignSystem {
+            configureStickyHeader(ordersViewController.storeHeaderView)
+            return
         }
 
+        configureStickyHeader(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
     }
 
-    func configureLiquidGlassHeaderOverlay() {
+    func configureStickyHeader(_ headerView: UIView) {
+        if #available(iOS 26.0, *) {
+            configureLiquidGlassHeaderOverlay(headerView)
+        } else {
+            stackView.addArrangedSubview(headerView)
+        }
+    }
+
+    func configureLiquidGlassHeaderOverlay(_ headerView: UIView) {
         guard #available(iOS 26.0, *) else {
             return
         }
@@ -474,17 +487,17 @@ private extension OrdersRootViewController {
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 
-        filtersBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(filtersBar)
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(headerView)
 
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
-            filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            backgroundView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 
@@ -493,10 +506,16 @@ private extension OrdersRootViewController {
             return
         }
 
-        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
-        let height = filtersBar.systemLayoutSizeFitting(targetSize,
-                                                       withHorizontalFittingPriority: .required,
-                                                       verticalFittingPriority: .fittingSizeLevel).height
+        let headerView = featureFlagService.usesStoreDesignSystem ? ordersViewController.storeHeaderView : filtersBar
+        let height: CGFloat
+        if featureFlagService.usesStoreDesignSystem {
+            height = ordersViewController.storeHeaderView.fittingHeight(for: view.bounds.width)
+        } else {
+            let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+            height = headerView.systemLayoutSizeFitting(targetSize,
+                                                        withHorizontalFittingPriority: .required,
+                                                        verticalFittingPriority: .fittingSizeLevel).height
+        }
 
         guard height > 0 else {
             return
@@ -508,15 +527,16 @@ private extension OrdersRootViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
-            let previousContentOffset = tableView.contentOffset
+            let previousTopPosition = tableView.contentOffset.y + tableView.adjustedContentInset.top
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
             if !tableView.isTracking,
                !tableView.isDragging,
                !tableView.isDecelerating {
-                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
-                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
+                // Include changes to UIKit's navigation-bar inset when preserving the list's position.
+                tableView.layoutIfNeeded()
+                tableView.contentOffset.y = previousTopPosition - tableView.adjustedContentInset.top
             }
         }
 
@@ -605,7 +625,17 @@ extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
     }
 
     func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
-        updateTimeoutText()
+        if !featureFlagService.usesStoreDesignSystem {
+            updateTimeoutText()
+        }
+    }
+
+    func orderListViewControllerDidRequestFilters(_ viewController: OrderListViewController) {
+        filterButtonTapped()
+    }
+
+    func orderListViewControllerHeaderDidChange(_ viewController: OrderListViewController) {
+        view.setNeedsLayout()
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -640,8 +670,9 @@ extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
             return
         }
 
+        let headerView = featureFlagService.usesStoreDesignSystem ? ordersViewController.storeHeaderView : filtersBar
         OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
-                                                           headerViews: [filtersBar],
+                                                           headerViews: [headerView],
                                                            scrollView: scrollView)
     }
 }

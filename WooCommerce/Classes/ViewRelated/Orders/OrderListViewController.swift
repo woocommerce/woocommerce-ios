@@ -24,6 +24,14 @@ protocol OrderListViewControllerDelegate: AnyObject {
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
 
+    /// Called when the hosted order-list header requests the filters flow.
+    ///
+    func orderListViewControllerDidRequestFilters(_ viewController: OrderListViewController)
+
+    /// Called when the hosted order-list header's content or height changes.
+    ///
+    func orderListViewControllerHeaderDidChange(_ viewController: OrderListViewController)
+
     /// Called when a user press a clear filters button. Eg. the clear filters button in the empty screen.
     ///
     func clearFilters()
@@ -102,6 +110,7 @@ final class OrderListViewController: UIViewController {
         }
         set {
             OrderListSyncBackgroundTask.latestSyncDate = newValue
+            updateStoreHeader()
             delegate?.orderListViewControllerSyncTimestampChanged(newValue)
         }
     }
@@ -123,6 +132,10 @@ final class OrderListViewController: UIViewController {
     private let stores: StoresManager
 
     private let usesStoreDesignSystem: Bool
+
+    lazy var storeHeaderView = StoreOrderListHeaderView(frame: .zero)
+
+    private var isStoreBannerExpanded = true
 
     /// Current top banner that is displayed.
     ///
@@ -177,6 +190,7 @@ final class OrderListViewController: UIViewController {
         registerTableViewHeadersAndCells()
         configureTableView()
         configureLiquidGlassTabBarUnderlap()
+        configureDynamicTypeUpdates()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -229,7 +243,9 @@ final class OrderListViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
+        if !usesStoreDesignSystem {
+            tableView.updateHeaderHeight()
+        }
         updateEmptyStateHeight()
 
         // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
@@ -380,6 +396,15 @@ private extension OrderListViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.allowsFocus = supportsFocus()
+        updateStoreHeader()
+    }
+
+    func configureDynamicTypeUpdates() {
+        guard usesStoreDesignSystem else { return }
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (controller: OrderListViewController, _: UITraitCollection) in
+            controller.delegate?.orderListViewControllerHeaderDidChange(controller)
+            controller.updateEmptyStateHeight()
+        }
     }
 
     func configureLiquidGlassTabBarUnderlap() {
@@ -410,6 +435,15 @@ private extension OrderListViewController {
 // MARK: - Actions
 //
 extension OrderListViewController {
+    func updateFilters(_ filters: FilterOrderListViewModel.Filters?) {
+        viewModel.updateFilters(filters: filters)
+        updateStoreHeader()
+    }
+
+    func requestFilters() {
+        delegate?.orderListViewControllerDidRequestFilters(self)
+    }
+
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
@@ -558,6 +592,54 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         tableView.updateHeaderHeight()
         updateEmptyStateHeight()
+    }
+
+    func updateStoreHeader(topBanner: OrderListViewModel.TopBanner? = nil) {
+        guard usesStoreDesignSystem, isViewLoaded else { return }
+
+        storeHeaderView.configure(state: makeStoreHeaderState(topBanner: topBanner ?? viewModel.topBanner),
+                                  onFilter: { [weak self] in self?.requestFilters() },
+                                  onToggleBanner: { [weak self] in self?.toggleStoreBannerExpansion() },
+                                  onTroubleshoot: { [weak self] in self?.troubleshootTopBannerError() },
+                                  onContactSupport: { [weak self] in self?.showTopBannerSupport() },
+                                  onRetryCurrency: { [weak self] in self?.viewModel.retryStoreCurrencySync() })
+        delegate?.orderListViewControllerHeaderDidChange(self)
+        updateEmptyStateHeight()
+    }
+
+    func toggleStoreBannerExpansion() {
+        guard usesStoreDesignSystem,
+              let state = storeHeaderView.state,
+              case .error = state.banner else {
+            return
+        }
+
+        isStoreBannerExpanded.toggle()
+        updateStoreHeader()
+    }
+
+    func makeStoreHeaderState(topBanner: OrderListViewModel.TopBanner) -> StoreOrderListHeaderState {
+        let lastUpdatedText: String? = {
+            guard lastFullSyncTimestamp != .distantPast else { return nil }
+            let formatter = lastFullSyncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+            return OrderListLocalization.lastUpdatedText(time: formatter.string(from: lastFullSyncTimestamp))
+        }()
+
+        let banner: StoreOrderListHeaderState.Banner
+        switch topBanner {
+        case .none:
+            banner = .none
+        case .currencyUnavailable:
+            banner = .currencyUnavailable
+        case .error(let error):
+            let errorType = ErrorTopBannerFactory.ErrorType(error: error)
+            banner = .error(title: errorType.title, message: errorType.info)
+        }
+
+        return StoreOrderListHeaderState(activeFilterCount: viewModel.filters?.numberOfActiveFilters ?? 0,
+                                         lastUpdatedText: lastUpdatedText,
+                                         banner: banner,
+                                         isBannerExpanded: isStoreBannerExpanded)
     }
 }
 
@@ -1051,6 +1133,15 @@ extension OrderListViewController {
 // MARK: Top Banner Factories
 private extension OrderListViewController {
     func renderTopBanner(_ topBanner: OrderListViewModel.TopBanner) {
+        if usesStoreDesignSystem {
+            let nextBanner = makeStoreHeaderState(topBanner: topBanner).banner
+            if storeHeaderView.state?.banner != nextBanner {
+                isStoreBannerExpanded = true
+            }
+            updateStoreHeader(topBanner: topBanner)
+            return
+        }
+
         switch topBanner {
         case .none:
             hideTopBannerView()
@@ -1069,33 +1160,40 @@ private extension OrderListViewController {
             self?.view.setNeedsLayout()
         },
         onTroubleshootButtonPressed: { [weak self] in
-            guard let self else { return }
-
-            if self.ordersSnapshot.numberOfItems == 0 {
-                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
-                return
-            }
-
-            ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
-            let connectivityToolViewController = ConnectivityToolViewController()
-            self.show(connectivityToolViewController, sender: self)
+            self?.troubleshootTopBannerError()
         },
         onContactSupportButtonPressed: { [weak self] in
-            guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
-            supportForm.show(from: self)
+            self?.showTopBannerSupport()
         })
         showTopBannerView()
+    }
+
+    func troubleshootTopBannerError() {
+        guard case .error(let error) = viewModel.topBanner else { return }
+
+        if ordersSnapshot.numberOfItems == 0 {
+            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            return
+        }
+
+        ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+        let connectivityToolViewController = ConnectivityToolViewController()
+        show(connectivityToolViewController, sender: self)
+    }
+
+    func showTopBannerSupport() {
+        let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
+        supportForm.show(from: self)
     }
 
     /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
     ///
     func setCurrencyUnavailableTopBanner() {
-        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+        let retryAction = TopBannerViewModel.ActionButton(title: OrderListLocalization.currencyUnavailableRetry) { [weak self] _ in
             self?.viewModel.retryStoreCurrencySync()
         }
-        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
-                                                 infoText: Localization.currencyUnavailableInfo,
+        let bannerViewModel = TopBannerViewModel(title: OrderListLocalization.currencyUnavailableTitle,
+                                                 infoText: OrderListLocalization.currencyUnavailableInfo,
                                                  icon: .infoOutlineImage,
                                                  isExpanded: true,
                                                  shouldResizeInfo: false,
@@ -1130,24 +1228,6 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
-
-        static let currencyUnavailableTitle = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.title",
-            value: "Store currency unavailable",
-            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableInfo = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.info",
-            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
-            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableRetry = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.retry",
-            value: "Retry",
-            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
-        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

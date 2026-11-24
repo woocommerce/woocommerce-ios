@@ -26,6 +26,7 @@ struct POSPrinterSetupModal: View {
         modalCore
             .frame(maxWidth: modalMaxWidth, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false

@@ -23,6 +23,10 @@ struct OrderListCellViewModel {
         OrderListCellViewModelLocalization.title(orderNumber: order.number, customerName: customerName)
     }
 
+    var orderNumber: String {
+        "#\(order.number)"
+    }
+
     /// For example, Pamela Nguyen
     ///
     var customerName: String {

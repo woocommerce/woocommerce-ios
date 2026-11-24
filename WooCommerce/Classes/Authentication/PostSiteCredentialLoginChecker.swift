@@ -239,6 +239,7 @@ private extension PostSiteCredentialLoginChecker {
         case .success(let site):
             onRetryResult?(true)
             if site.isWooCommerceActive {
+                checkID = nil
                 onSuccess()
             } else {
                 self.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))

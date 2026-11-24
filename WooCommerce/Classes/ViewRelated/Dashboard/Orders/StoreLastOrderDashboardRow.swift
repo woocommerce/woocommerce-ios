@@ -24,8 +24,7 @@ struct StoreLastOrderDashboardRow: View {
                         CollapsibleHStack(horizontalAlignment: .trailing,
                                           spacing: StoreSpacing.s3) {
                             StoreBadge(data.statusDescription,
-                                       tone: .custom(background: data.statusBackgroundColor,
-                                                     foreground: .storePaletteBlack))
+                                       tone: data.status.storeBadgeTone)
                             if let fulfillmentText = data.fulfillmentBadgeText {
                                 StoreBadge(fulfillmentText,
                                            tone: .custom(background: data.fulfillmentBadgeBackgroundColor ?? .clear,

@@ -179,6 +179,7 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
             customerName: customerNameLabel(for: payload),
             total: total,
             statusDescription: statusEnum.description,
+            status: statusEnum,
             statusBackgroundColor: Color(uiColor: statusEnum.backgroundColor),
             fulfillmentBadgeText: nil,
             fulfillmentBadgeBackgroundColor: nil,

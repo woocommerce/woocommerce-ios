@@ -20,6 +20,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
+        usesStoreDesignSystem: featureFlagService.usesStoreDesignSystem,
         switchDetailsHandler: switchDetailsHandler
     )
 
@@ -179,16 +180,26 @@ final class OrdersRootViewController: UIViewController {
     @objc private func displaySearchOrders() {
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
-            storeID: siteID,
-            command: OrderSearchUICommand(siteID: siteID,
-                                          onSelectSearchResult: { [weak self] order, viewController in
-                                              guard let self else { return }
-                                              navigateToOrderDetail(order)
-                                              viewController.dismiss(animated: true)
-                                          }),
-            cellType: OrderTableViewCell.self,
-            cellSeparator: .singleLine)
+        let command = OrderSearchUICommand(siteID: siteID,
+                                           onSelectSearchResult: { [weak self] order, viewController in
+                                               guard let self else { return }
+                                               navigateToOrderDetail(order)
+                                               viewController.dismiss(animated: true)
+                                           })
+        let searchViewController: UIViewController
+        if featureFlagService.usesStoreDesignSystem {
+            searchViewController = SearchViewController<StoreOrderListTableViewCell, OrderSearchUICommand>(
+                storeID: siteID,
+                command: command,
+                cellType: StoreOrderListTableViewCell.self,
+                cellSeparator: .none)
+        } else {
+            searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
+                storeID: siteID,
+                command: command,
+                cellType: OrderTableViewCell.self,
+                cellSeparator: .singleLine)
+        }
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

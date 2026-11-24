@@ -8,6 +8,74 @@ import Storage
 @MainActor
 @Suite(.serialized)
 struct OrderListViewControllerTests {
+    @Test(arguments: [false, true])
+    func test_order_cell_when_design_system_flag_changes_then_uses_expected_cell_type(usesStoreDesignSystem: Bool) async throws {
+        // Given
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storageManager = MockStorageManager()
+        let order = MockOrders().empty().copy(siteID: siteID, orderID: 1, number: "1", status: .processing, dateCreated: .now)
+        try await insert([order], into: storageManager)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+        let viewController = OrderListViewController(siteID: siteID,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     usesStoreDesignSystem: usesStoreDesignSystem,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { _, _, _, _ in })
+
+        // When
+        viewController.loadViewIfNeeded()
+        let indexPath = IndexPath(row: 0, section: 0)
+        let cell = try #require(viewController.tableView.dataSource?.tableView(viewController.tableView,
+                                                                               cellForRowAt: indexPath))
+
+        // Then
+        #expect((cell is StoreOrderListTableViewCell) == usesStoreDesignSystem)
+        #expect((cell is OrderTableViewCell) != usesStoreDesignSystem)
+        #expect(cell.accessibilityIdentifier == "#1 Guest")
+    }
+
+    @Test
+    func test_store_order_cell_when_selected_or_highlighted_then_uses_selected_appearance() {
+        // Given
+        let order = MockOrders().empty().copy(orderID: 1, status: .processing, dateCreated: .now)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: .init())
+        let cell = StoreOrderListTableViewCell(style: .default,
+                                               reuseIdentifier: StoreOrderListTableViewCell.reuseIdentifier)
+        cell.configure(viewModel: viewModel)
+
+        // When / Then
+        cell.setSelected(true, animated: false)
+        cell.updateConfiguration(using: cell.configurationState)
+        #expect(cell.usesSelectedAppearance)
+
+        cell.setSelected(false, animated: false)
+        cell.setHighlighted(true, animated: false)
+        cell.updateConfiguration(using: cell.configurationState)
+        #expect(cell.usesSelectedAppearance)
+    }
+
+    @Test
+    func test_store_order_cell_when_used_as_search_result_then_registers_and_configures_the_cell() throws {
+        // Given
+        let order = MockOrders().empty().copy(orderID: 1, number: "1", status: .processing, dateCreated: .now)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: .init())
+        let tableView = UITableView()
+        StoreOrderListTableViewCell.register(for: tableView)
+
+        // When
+        let cell = try #require(tableView.dequeueReusableCell(withIdentifier: StoreOrderListTableViewCell.reuseIdentifier)
+                                as? StoreOrderListTableViewCell)
+        cell.configureCell(searchModel: viewModel)
+
+        // Then
+        #expect(cell.accessibilityIdentifier == "#1 Guest")
+    }
+
     @Test
     func test_restoreSelectedOrderDetails_when_second_order_is_selected_then_recreates_its_detail() async throws {
         // Given

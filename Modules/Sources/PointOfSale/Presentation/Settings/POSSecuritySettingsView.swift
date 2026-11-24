@@ -31,7 +31,7 @@ struct POSSecuritySettingsView: View {
                             lockSettingsCard(controller.lockPreferences)
                             deviceSecurityCard
                         } else {
-                            Button(Localization.retry) { controller.load() }
+                            Button(Localization.retry, action: loadSecurity)
                                 .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
                         }
                         if let error = controller.error {
@@ -47,12 +47,7 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving || presentation.isTransitioning)
-        .onAppear {
-            controller.load()
-            if let flow = controller.takeRecoveredAdminPINChangeFlow() {
-                presentation.present(.editor(flow))
-            }
-        }
+        .onAppear(perform: loadSecurity)
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in
             if let request {
@@ -84,6 +79,13 @@ struct POSSecuritySettingsView: View {
             }
         }
         .accessibilityIdentifier("pos-security-settings")
+    }
+
+    private func loadSecurity() {
+        controller.load()
+        if let flow = controller.takeRecoveredAdminPINChangeFlow() {
+            presentation.present(.editor(flow))
+        }
     }
 
     private var presentationBinding: Binding<POSSecurityPINPresentation.Destination?> {

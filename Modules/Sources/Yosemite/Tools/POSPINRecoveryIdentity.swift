@@ -28,10 +28,7 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
                                          parameters: ["context": "edit",
                                                       "fields": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"])
         let rolesResponse = try await response(for: rolesRequest.asURLRequest(), authorization: "Bearer " + authToken, session: session)
-        guard rolesResponse.statusCode != 403 else { return .notEligible }
-        guard rolesResponse.statusCode == 200 else { return .failed }
-        let user = try JSONDecoder().decode(SiteUser.self, from: rolesResponse.data)
-        return canOpenPOS(roles: user.roles) ? .sameEligibleAccount : .notEligible
+        return siteIdentity(statusCode: rolesResponse.statusCode, data: rolesResponse.data)
     }
 
     public static func verifySiteCredentials(endpoints: CookieNonceAuthenticationEndpoints,
@@ -45,8 +42,9 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
                   var userRequest = siteUserRequest(for: endpoints.siteURL) else { return .failed }
             userRequest.setValue(nonce, forHTTPHeaderField: "X-WP-Nonce")
             let userResponse = try await response(for: userRequest, session: session)
-            return siteIdentity(from: userResponse, expectedLogin: expectedLogin)
+            return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedLogin: expectedLogin)
         } catch {
+            DDLogError("⛔️ POS recovery could not verify site credentials")
             return .failed
         }
     }
@@ -65,10 +63,30 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
 
         // The approval returns an app_id. WordPress deletes the password by its own UUID.
         guard await removeApplicationPassword(from: site, appID: appID, authorization: authorization, session: session) else {
+            DDLogError("⛔️ POS recovery could not confirm temporary credential removal")
             return .cleanupFailed
         }
-        guard let userResponse else { return .failed }
-        return siteIdentity(from: userResponse, expectedLogin: expectedLogin)
+        guard let userResponse else {
+            DDLogError("⛔️ POS recovery could not verify browser authorization")
+            return .failed
+        }
+        return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedLogin: expectedLogin)
+    }
+
+    static func siteIdentity(statusCode: Int, data: Data, expectedLogin: String? = nil) -> Self {
+        if statusCode == 403, expectedLogin == nil { return .notEligible }
+        guard statusCode == 200, let user = try? JSONDecoder().decode(SiteUser.self, from: data) else { return .failed }
+        if let login = expectedLogin?.lowercased(), user.username?.lowercased() != login, user.email?.lowercased() != login {
+            return .differentAccount
+        }
+        return user.roles.compactMap(User.Role.init(rawValue:)).contains { $0.isEligible() } ? .sameEligibleAccount : .notEligible
+    }
+
+    static func applicationPasswordUUID(in data: Data, appID: String) -> String? {
+        guard let passwords = try? JSONDecoder().decode([StoredApplicationPassword].self, from: data),
+              let uuid = passwords.first(where: { $0.appID == appID })?.uuid,
+              UUID(uuidString: uuid) != nil else { return nil }
+        return uuid
     }
 }
 
@@ -110,17 +128,6 @@ private extension POSPINRecoveryIdentity {
         let data: Data
     }
 
-    static func canOpenPOS(roles: [String]) -> Bool {
-        roles.compactMap(User.Role.init(rawValue:)).contains { $0.isEligible() }
-    }
-
-    static func siteIdentity(from response: Response, expectedLogin: String) -> Self {
-        guard response.statusCode == 200, let user = try? JSONDecoder().decode(SiteUser.self, from: response.data) else { return .failed }
-        let login = expectedLogin.lowercased()
-        guard user.username?.lowercased() == login || user.email?.lowercased() == login else { return .differentAccount }
-        return canOpenPOS(roles: user.roles) ? .sameEligibleAccount : .notEligible
-    }
-
     static func siteUserRequest(for site: URL) -> URLRequest? {
         siteRequest(for: site, route: "/wp/v2/users/me", query: [
             URLQueryItem(name: "context", value: "edit"),
@@ -151,9 +158,8 @@ private extension POSPINRecoveryIdentity {
         guard let listRequest = siteRequest(for: site, route: route),
               let list = await cleanupResponse(for: listRequest, authorization: authorization, session: session),
               list.statusCode == 200,
-              let passwords = try? JSONDecoder().decode([StoredApplicationPassword].self, from: list.data),
-              let password = passwords.first(where: { $0.appID == appID }),
-              let deleteRequest = siteRequest(for: site, route: route + "/" + password.uuid, method: "DELETE"),
+              let uuid = applicationPasswordUUID(in: list.data, appID: appID),
+              let deleteRequest = siteRequest(for: site, route: route + "/" + uuid, method: "DELETE"),
               let result = await cleanupResponse(for: deleteRequest, authorization: authorization, session: session) else { return false }
         return result.statusCode == 200
     }

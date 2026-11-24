@@ -151,7 +151,7 @@ struct ReceiptContentAssemblerTests {
     }
 
     @Test(arguments: [nil, "", "   "] as [String?])
-    func test_makeContent_when_fee_has_no_name_then_labels_fee_line_as_unnamed_fee(name: String?) throws {
+    func test_makeContent_when_fee_has_no_name_then_labels_fee_line_with_default_name(name: String?) throws {
         // Given
         let parameters = try makeReceiptParameters()
         let order = makeOrder(fees: [makeFee(name: name, amount: "3.00")])
@@ -160,7 +160,7 @@ struct ReceiptContentAssemblerTests {
         let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
 
         // Then
-        let feeLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.unnamedFeeLineDescription }
+        let feeLine = content.cartTotals.first { $0.description == ReceiptContent.Localization.defaultFeeLineDescription }
         #expect(feeLine?.amount == "$3.00")
     }
 

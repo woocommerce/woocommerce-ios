@@ -105,7 +105,7 @@ private extension ReceiptContentAssembler {
     func feeLines(fees: [OrderFeeLine], currency: String) -> [ReceiptTotalLine?] {
         fees.map { fee in
             let name = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-            let description = name.isEmpty ? ReceiptContent.Localization.unnamedFeeLineDescription : name
+            let description = name.isEmpty ? ReceiptContent.Localization.defaultFeeLineDescription : name
             return lineIfNonZero(description: description, amount: fee.total, currency: currency)
         }
     }

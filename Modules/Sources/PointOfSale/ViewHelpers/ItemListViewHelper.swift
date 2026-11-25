@@ -36,4 +36,23 @@ struct ItemListViewHelper {
         guard isCustomAmountsFeatureEnabled else { return false }
         return !isSearching
     }
+
+    /// Whether the visible root list screen has its own primary button, so the compact Cart button would be a second one.
+    /// Pushed variations screens report this themselves.
+    func hidesCompactCartButton(rootState: ItemListState,
+                                isSearching: Bool,
+                                isShowingPreSearch: Bool) -> Bool {
+        guard !isShowingPreSearch else {
+            return false
+        }
+        switch rootState {
+        case .error:
+            return true
+        case .empty:
+            // The search empty screen has no button.
+            return !isSearching
+        case .initial, .loading, .loaded, .inlineError:
+            return false
+        }
+    }
 }

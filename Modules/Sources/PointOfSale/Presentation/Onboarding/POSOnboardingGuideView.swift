@@ -14,7 +14,7 @@ struct POSOnboardingGuideView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            VStack(spacing: metrics.spacing.none) {
+            ViewThatFits(in: .vertical) {
                 // Reserve every step's height, so the dots below keep their place between steps.
                 ZStack(alignment: .top) {
                     ForEach(POSOnboardingGuideStep.allCases) { step in
@@ -24,31 +24,20 @@ struct POSOnboardingGuideView: View {
                 .hidden()
                 .accessibilityHidden(true)
                 .overlay {
-                    TabView(selection: $currentStep) {
-                        ForEach(POSOnboardingGuideStep.allCases) { step in
-                            POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
-                                .frame(maxHeight: .infinity, alignment: .top)
-                                .tag(step)
-                        }
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    pager(scrollsSteps: false)
                 }
 
-                POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
-                                 currentPage: currentPage,
-                                 accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+                // When the steps don't fit (landscape, large text), each one scrolls above the dots.
+                pager(scrollsSteps: true)
+                    // Matches the steps' bottom padding, so clipped content doesn't run into the dots.
                     .posPadding(.bottom, \.medium)
-                Spacer(minLength: metrics.spacing.none)
             }
-            .scrollVerticallyIfNeeded()
-            // With large text, steps scroll under the buttons. Fading the edge keeps a clipped card from reading as a strip.
-            .mask {
-                VStack(spacing: metrics.spacing.none) {
-                    Color.black
-                    LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                        .frame(height: metrics.padding.xLarge)
-                }
-            }
+            .layoutPriority(1)
+
+            POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
+                             currentPage: currentPage,
+                             accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+            Spacer(minLength: metrics.spacing.none)
 
             POSFlowButtonsView(configuration: buttonConfiguration)
                 .posStatusButtonsWidth(addsHorizontalPadding: false)
@@ -59,6 +48,36 @@ struct POSOnboardingGuideView: View {
         .posFullScreenCover(isPresented: $isShowingVideo) {
             SafariView(url: POSConstants.URLs.pointOfSaleSaleVideo.asURL())
         }
+    }
+
+    private func pager(scrollsSteps: Bool) -> some View {
+        TabView(selection: $currentStep) {
+            ForEach(POSOnboardingGuideStep.allCases) { step in
+                let stepView = POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+                Group {
+                    if scrollsSteps {
+                        ScrollView {
+                            stepView
+                        }
+                        .scrollBounceBehavior(.basedOnSize)
+                        .scrollIndicatorsFlash(onAppear: true)
+                        // Fading the edge keeps a clipped card from reading as a strip.
+                        .mask {
+                            VStack(spacing: metrics.spacing.none) {
+                                Color.black
+                                LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                                    .frame(height: metrics.padding.xLarge)
+                            }
+                        }
+                    } else {
+                        stepView
+                            .frame(maxHeight: .infinity, alignment: .top)
+                    }
+                }
+                .tag(step)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 
     private var currentPage: Binding<Int> {
@@ -97,7 +116,8 @@ private struct POSOnboardingGuideStepView: View {
     private static let illustrationSize: CGFloat = 140
 
     var body: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
+        // In landscape, tighter spacing lets the last step fit above the buttons on larger phones.
+        VStack(spacing: verticalSizeClass == .compact ? metrics.spacing.medium : metrics.spacing.xLarge) {
             // In landscape and with accessibility text sizes, the illustration would leave little room for the text.
             if verticalSizeClass != .compact && !dynamicTypeSize.isAccessibilitySize {
                 step.illustration.decorativeImage
@@ -126,8 +146,9 @@ private struct POSOnboardingGuideStepView: View {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
-        .frame(maxWidth: POSStatusButtonsLayout.maxWidth)
-        .padding(metrics.padding.medium)
+        // Same column as the buttons, so the content is centred on their axis.
+        .posStatusButtonsWidth()
+        .posPadding(.vertical, \.medium)
     }
 }
 

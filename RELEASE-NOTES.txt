@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Cancel is no longer cut off to "Ca…" on payments setup, the admin role required screen and Blaze Edit Ad. [https://github.com/woocommerce/woocommerce-ios/pull/18470]
 - [*] POS: The recent search shadow is no longer cut on the search screen before typing, and that screen now has even gaps under the section titles, with more space between the sections. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
 - [*] POS: On iPhone, the Cart button no longer shows under Retry on the "Unable to load coupons" and "No supported variations found" screens. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
 - [*] POS: On iPhone, order details actions (Issue refund, Email receipt) are now in the ellipsis menu in the header, so the order number has more room. [https://github.com/woocommerce/woocommerce-ios/pull/18453]

@@ -32,7 +32,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
             .scrollDismissesKeyboard(.never)
 
             sizedButtons
-                .padding(.bottom, metrics.padding.medium)
+                .posFooterBottomPadding()
         }
         .padding(.bottom, floatingControlBottomPadding)
     }

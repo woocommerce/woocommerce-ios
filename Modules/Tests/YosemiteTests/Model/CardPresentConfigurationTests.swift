@@ -64,7 +64,7 @@ class CardPresentConfigurationTests: XCTestCase {
             XCTAssertEqual(configuration.currencies, [.EUR])
             XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
             XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
-            XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+            XCTAssertEqual(configuration.supportedReaders, [.wisepad3, .tapToPay])
             XCTAssertEqual(configuration.supportedPluginVersions, [
                 .init(plugin: .wcPay, minimumVersion: "4.4.0"),
                 .init(plugin: .stripe, minimumVersion: "6.2.0")
@@ -94,7 +94,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [.SGD])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
-        XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+        XCTAssertEqual(configuration.supportedReaders, [.wisepad3, .tapToPay])
         XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
         // SG isn't in Stripe Terminal's published contactless limit table, so we leave it nil.
         XCTAssertNil(configuration.contactlessLimitAmount)
@@ -106,7 +106,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [.NZD])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
-        XCTAssertEqual(configuration.supportedReaders, [.wisepad3])
+        XCTAssertEqual(configuration.supportedReaders, [.wisepad3, .tapToPay])
         XCTAssertEqual(configuration.minimumAllowedChargeAmount, NSDecimalNumber(string: "0.5"))
         // NZD 200 — Stripe Terminal contactless CVM limit.
         XCTAssertEqual(configuration.contactlessLimitAmount, 20000)

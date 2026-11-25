@@ -131,6 +131,76 @@ struct ItemListViewHelperTests {
         // Then
         #expect(result == false)
     }
+
+    @Test(arguments: [
+        ItemListState.error(.errorOnLoadingCoupons()),
+        .error(.errorOnLoadingProducts())
+    ])
+    func hidesCompactCartButton_when_root_shows_error_then_true(rootState: ItemListState) {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isSearching: false,
+                                                isShowingPreSearch: false)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func hidesCompactCartButton_when_root_list_is_empty_then_true() {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: .empty,
+                                                isSearching: false,
+                                                isShowingPreSearch: false)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func hidesCompactCartButton_when_search_has_no_results_then_false() {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: .empty,
+                                                isSearching: true,
+                                                isShowingPreSearch: false)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func hidesCompactCartButton_when_search_fails_then_true() {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: .error(.errorOnLoadingProducts()),
+                                                isSearching: true,
+                                                isShowingPreSearch: false)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func hidesCompactCartButton_when_root_error_is_behind_pre_search_then_false() {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: .error(.errorOnLoadingCoupons()),
+                                                isSearching: true,
+                                                isShowingPreSearch: true)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [
+        ItemListState.initial,
+        .loading([]),
+        .loaded([.coupon(POSCoupon(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "A", summary: "B"))], hasMoreItems: false),
+        .inlineError([], error: .errorOnRefreshingCoupons(), context: .refresh)
+    ])
+    func hidesCompactCartButton_when_root_shows_list_then_false(rootState: ItemListState) {
+        // When
+        let result = sut.hidesCompactCartButton(rootState: rootState,
+                                                isSearching: false,
+                                                isShowingPreSearch: false)
+
+        // Then
+        #expect(result == false)
+    }
 }
 
 private extension ItemListViewHelperTests {

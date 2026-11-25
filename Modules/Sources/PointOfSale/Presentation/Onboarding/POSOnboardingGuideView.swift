@@ -14,22 +14,33 @@ struct POSOnboardingGuideView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            TabView(selection: $currentStep) {
-                ForEach(POSOnboardingGuideStep.allCases) { step in
-                    // The dots sit right under each step's content, with the free space above the buttons.
-                    VStack(spacing: metrics.spacing.none) {
-                        POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
-                        POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
-                                         currentPage: currentPage,
-                                         accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
-                            .posPadding(.bottom, \.medium)
-                        Spacer(minLength: metrics.spacing.none)
+            VStack(spacing: metrics.spacing.none) {
+                // Reserve every step's height, so the dots below keep their place between steps.
+                ZStack(alignment: .top) {
+                    ForEach(POSOnboardingGuideStep.allCases) { step in
+                        POSOnboardingGuideStepView(step: step, onWatchVideo: {})
                     }
-                    .scrollVerticallyIfNeeded()
-                    .tag(step)
                 }
+                .hidden()
+                .accessibilityHidden(true)
+                .overlay {
+                    TabView(selection: $currentStep) {
+                        ForEach(POSOnboardingGuideStep.allCases) { step in
+                            POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+                                .frame(maxHeight: .infinity, alignment: .top)
+                                .tag(step)
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                }
+
+                POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
+                                 currentPage: currentPage,
+                                 accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+                    .posPadding(.bottom, \.medium)
+                Spacer(minLength: metrics.spacing.none)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
+            .scrollVerticallyIfNeeded()
 
             POSFlowButtonsView(configuration: buttonConfiguration)
                 .posStatusButtonsWidth()

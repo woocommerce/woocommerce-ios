@@ -1165,7 +1165,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
-        @Test func test_cancelThenCollectPayment_when_cancellation_fails_then_does_not_collect_payment() async throws {
+        @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             cardPresentPaymentService.connectedReader = .init(name: "Test Reader", batteryLevel: 0.5)
@@ -1185,8 +1185,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelThenCollectPayment()
 
             // Then
-            #expect(cardPresentPaymentService.cancelPaymentCalled)
-            #expect(!cardPresentPaymentService.collectPaymentWasCalled)
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
         }
 
         @Test func cancelThenCollectPayment_cancels_reconnection_first_when_reconnecting() async throws {
@@ -1310,37 +1309,30 @@ struct PointOfSaleAggregateModelTests {
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
 
             // When card payment succeeds
-            var checkout: Task<Void, Never>?
             await fireOnce { fire in
                 coordinator.onPerformIncrementalSyncCalled = { fire() }
-                checkout = Task { await sut.checkOut() }
+                Task { @MainActor in
+                    await sut.checkOut()
+                }
             }
-            await checkout?.value
 
             // Then
             #expect(coordinator.performIncrementalSyncSiteID == 456)
 
-            // Given a new sale for cash; the previous sale was already paid by card.
-            sut.startNewCart()
-            sut.addToCart(makePurchasableItem())
-            orderController.orderState = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1,
-                                                              order: Order.fake().copy(orderID: 2, total: "1.00"))
+            // Given
             coordinator.performIncrementalSyncSiteID = 0
 
             // When cash payment succeeds
-            var cashPayment: Task<Void, Error>?
             await fireOnce { fire in
                 coordinator.onPerformIncrementalSyncCalled = { fire() }
-                cashPayment = Task {
+                Task { @MainActor in
                     do {
                         try await sut.collectCashPayment(changeDueAmount: "0.00")
                     } catch {
-                        fire()
-                        throw error
+                        Issue.record(error)
                     }
                 }
             }
-            try await cashPayment?.value
 
             // Then
             #expect(coordinator.performIncrementalSyncSiteID == 456)

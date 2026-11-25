@@ -13,221 +13,40 @@ import enum WooFoundationCore.WooAnalyticsStat
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
-    @Test @MainActor
-    func test_manual_lock_when_menu_action_was_created_before_payment_then_rechecks_owner() {
+    @Test(arguments: [PointOfSaleCardPaymentState.acceptingCard, .processingPayment]) @MainActor
+    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_requests_cancellation_and_keeps_state(card: PointOfSaleCardPaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
-        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
-        let staleMenuAction = { sut.lockManually(session: session) }
-        #expect(!sut.isLockSuppressed)
-
-        // When
-        service.paymentSessionState = .active
-        staleMenuAction()
-        service.paymentSessionState = .unresolved
-        staleMenuAction()
-
-        // Then
-        #expect(session.lockCallCount == 0)
-        #expect(sut.isLockSuppressed)
-    }
-
-    @Test(arguments: [CardPresentPaymentSessionState.active, .cancelling, .unresolved]) @MainActor
-    func test_payment_controls_when_owner_is_pending_then_only_active_collection_allows_method_switch(
-        state: CardPresentPaymentSessionState
-    ) {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        paymentState: .init(card: .acceptingCard, cash: .idle))
-
-        // When
-        service.paymentSessionState = state
-
-        // Then
-        #expect(sut.isLockSuppressed)
-        #expect(sut.isCardPaymentStartPending == (state != .active))
-    }
-
-    @Test @MainActor
-    func test_reset_when_payment_is_unresolved_then_preserves_sale_and_blocks_reentry() async {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        paymentState: .init(card: .processingPayment, cash: .idle))
-        service.paymentSessionState = .unresolved
-
-        // When
-        sut.reset()
-        await sut.startPayment()
-        await sut.startPaymentWithMethod(.tapToPay)
-        await sut.selectCardPaymentRail(.tapToPay)
-
-        // Then
-        #expect(sut.paymentState.card == .processingPayment)
-        #expect(service.cancelPaymentCalled)
-        #expect(!service.collectPaymentWasCalled)
-        #expect(service.connectReaderCallCount == 0)
-        #expect(sut.isLockSuppressed)
-    }
-
-    @Test @MainActor
-    func test_manual_lock_when_payment_resolution_is_confirmed_then_allows_lock() {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
-        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
-        service.paymentSessionState = .unresolved
-
-        // When
-        service.paymentSessionState = .idle
-        sut.lockManually(session: session)
-
-        // Then
-        #expect(session.lockCallCount == 1)
-    }
-
-    @Test @MainActor
-    func test_collect_when_operator_changes_during_order_preparation_then_does_not_charge() async throws {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        let state = PointOfSalePaymentState(card: card, cash: .idle)
         let provider = MockPOSPaymentOrderProvider()
-        provider.onProvideOrder = {
-            session.lock()
-            try await session.signIn(withPIN: "1234")
-            return POSPaymentOrder(order: .fake(), formattedTotal: "$10", totalDecimal: 10)
-        }
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, accessSession: session)
-        await updateReaderConnectionStatus(observedBy: sut) {
-            service.connectedReader = .init(name: "Reader", batteryLevel: 1)
-        }
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, paymentState: state)
 
         // When
-        await sut.startPayment()
-
-        // Then
-        #expect(provider.provideOrderCallCount == 1)
-        #expect(!service.collectPaymentWasCalled)
-    }
-
-    @Test @MainActor
-    func test_owner_confirms_cancellation_when_reader_ui_is_stale_then_clears_reader_state() {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        paymentState: .init(card: .acceptingCard, cash: .idle))
-        service.paymentSessionState = .active
-        service.paymentSessionState = .cancelling
-        #expect(sut.isLockSuppressed)
-
-        // When
-        service.paymentSessionState = .idle
-
-        // Then
-        #expect(sut.paymentState.card == .idle)
-        #expect(!sut.isLockSuppressed)
-    }
-
-    @Test @MainActor
-    func test_reader_reconnection_when_session_locks_and_unlocks_then_original_observer_still_starts_payment() async throws {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        service.connectedReader = reader
-        service.collectPaymentOverride = { .cancellation }
-        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
-        let originalScope = session.accessScope
-        let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(orderID: 42, total: "10.00")
-        provider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, accessSession: session)
-        sut.observeReaderReconnection()
-
-        // When
-        sut.lockManually(session: session)
-        #expect(session.isLocked)
-        #expect(session.accessScope != originalScope)
         await fireOnce { canceled in
             service.onCancelPaymentCalled = { canceled() }
-            sut.cancelPaymentForLock()
+            sut.cancelCardPaymentForLock()
         }
-        service.onCancelPaymentCalled = nil
-        try await session.signIn(withPIN: "1234")
-        await updateReaderConnectionStatus(observedBy: sut) {
-            service.connectedReader = nil
-        }
-        await fireOnce { collected in
-            service.onCollectPaymentCalled = { collected() }
-            service.connectedReader = reader
-        }
-
-        // Then
-        #expect(session.lockCallCount == 1)
-        #expect(!session.isLocked)
-        #expect(session.accessScope != originalScope)
-        #expect(service.spyCollectPaymentMethods == [.bluetooth])
-        #expect(service.spyCollectPaymentOrders.map(\.orderID) == [42])
-    }
-
-    @Test @MainActor
-    func test_cancelPaymentForLock_when_owner_moves_directly_from_active_to_idle_then_clears_prompt_before_collect_returns() async throws {
-        // Given
-        let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(orderID: 42, total: "10.00")
-        provider.totalDecimalToReturn = 10
-        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
-        let printer = MockReceiptPrinterService()
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider,
-                                        accessSession: session, receiptPrinter: printer)
-        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
-        var originalCollectReturned = false
-        var collection: Task<Void, Never>?
-        defer { finishCollection?.resume(returning: .cancellation) }
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                let result = await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-                originalCollectReturned = true
-                return result
-            }
-            collection = Task { await sut.startPayment() }
-        }
-        #expect(sut.cardPresentPaymentInlineMessage != nil)
-        #expect(sut.paymentState.card == .acceptingCard)
-        service.onCancelPaymentCalled = {
-            #expect(!originalCollectReturned)
-            service.paymentSessionState = .idle
-        }
-
-        // When
-        session.lock()
-        sut.cancelPaymentForLock()
-        await waitUntil(false) { sut.cardPresentPaymentInlineMessage != nil }
 
         // Then
         #expect(service.cancelPaymentCalled)
-        #expect(!originalCollectReturned)
-        #expect(sut.currentPaymentMethod == nil)
-        #expect(sut.paymentState.card == .idle)
-        #expect(!sut.isCardPaymentPending)
-        #expect(provider.provideOrderCallCount == 1)
-        provider.orderToReturn = Order.fake().copy(orderID: 99, total: "20.00")
-        try await sut.printReceipt(storeInformation: .empty)
-        #expect(printer.printedOrder?.orderID == 42)
-        #expect(!originalCollectReturned)
+        #expect(sut.paymentState == state)
+        #expect(provider.provideOrderCallCount == 0)
+    }
 
-        finishCollection?.resume(returning: .cancellation)
-        finishCollection = nil
-        await collection?.value
-        #expect(originalCollectReturned)
+    @Test(arguments: [PointOfSalePaymentState.idle,
+                      PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash),
+                      PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)]) @MainActor
+    func test_cancelCardPaymentForLock_when_no_card_payment_is_active_then_does_not_request_cancellation(state: PointOfSalePaymentState) {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
+
+        // When
+        sut.cancelCardPaymentForLock()
+
+        // Then
+        #expect(!service.cancelPaymentCalled)
+        #expect(sut.paymentState == state)
     }
 
     // MARK: - Payment starts that end without a payment
@@ -581,8 +400,7 @@ struct POSPaymentModelTests {
         // Given
         let sut = makePaymentController()
         let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-        let autoLock = POSAutoLockActivityController(session: session, paymentStateProvider: { sut.paymentState }, timeout: nil,
-                                                isPaymentPending: { false })
+        let autoLock = POSAutoLockActivityController(session: session, paymentStateProvider: { sut.paymentState }, timeout: nil)
         var transitions: [PointOfSalePaymentState] = []
         let subscription = sut.paymentStateChanges.sink { change in
             transitions.append(change.newState)
@@ -1431,33 +1249,26 @@ struct POSPaymentModelTests {
     @Test("confirmMarkAsPaidPayment reuses currentOrder when one is already cached")
     @MainActor
     func confirmMarkAsPaidPayment_when_currentOrderCached_then_doesNotCallProvideOrder() async throws {
-        // Given a cached order from a confirmed canceled card attempt.
+        // Given a SUT that has already taken a payment path which cached `currentOrder`
+        // (we simulate this by collecting cash first — both flows share the same cache).
         let cachedOrder = Order.fake().copy(orderID: 999, total: "10.00")
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = cachedOrder
         orderProvider.totalDecimalToReturn = 10
-        let service = MockCardPresentPaymentService()
-        service.connectedReader = .init(name: "Reader", batteryLevel: 1)
-        service.collectPaymentOverride = {
-            service.paymentSessionState = .active
-            service.paymentSessionState = .cancelling
-            service.paymentSessionState = .idle
-            return .cancellation
-        }
+
         let handler = MockPOSMarkAsPaidHandler()
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        orderProvider: orderProvider,
-                                        markAsPaidHandler: handler)
-        await sut.startPayment()
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            markAsPaidHandler: handler)
+
+        // Prime the cache via cash: collectCashPayment populates `currentOrder`.
+        try await sut.collectCashPayment(changeDueAmount: nil)
         #expect(orderProvider.provideOrderCallCount == 1)
-        #expect(!sut.paymentState.isSuccess)
-        #expect(!sut.isCardPaymentPending)
 
         // When
-        sut.startMarkAsPaidPayment()
         try await sut.confirmMarkAsPaidPayment()
 
-        // Then
+        // Then: provideOrder was NOT called again — the cached order was reused.
         #expect(orderProvider.provideOrderCallCount == 1)
         #expect(handler.markOrderAsPaidReceivedOrder?.orderID == cachedOrder.orderID)
     }
@@ -2725,52 +2536,43 @@ struct POSPaymentModelTests {
         }
     }
 
-    @Test("TTP: confirmed reader cancellation resets card state and re-arms the gate")
+    @Test("TTP: cancelledOnReader resets card state to idle and re-arms the gate")
     @MainActor
-    func test_cancelledOnReader_when_cancellation_is_confirmed_then_resets_card_state_and_rearms_gate() async {
+    func cancelledOnReader_TTP_when_event_arrives_then_card_state_resets_and_gate_re_arms() async {
         // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        orderProvider: orderProvider,
-                                        preferredConnectionMethod: .tapToPay)
-        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-            }
-            Task { await sut.startPaymentWithMethod(.tapToPay) }
-        }
-        #expect(sut.paymentState.card == .acceptingCard)
 
-        // When
-        await fireOnce { confirmed in
-            service.onCancelPaymentCalled = {
-                service.paymentSessionState = .cancelling
-                #expect(sut.paymentState.card == .acceptingCard)
-                #expect(sut.isCardPaymentPending)
-                finishCollection?.resume(returning: .cancellation)
-                finishCollection = nil
-                service.paymentSessionState = .idle
-                confirmed()
-            }
-            service.paymentEvent = .show(eventDetails: .cancelledOnReader)
-            #expect(sut.paymentState.card == .acceptingCard)
-        }
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
 
-        // Then
+        await sut.startPayment()
+
+        // Open the gate: merchant taps Tap to Pay. (Don't await — see the
+        // sibling test above for why.) Drive state to a terminal value by
+        // sending a `paymentSuccess` directly through the now-open gate.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // When: merchant cancels on reader
+        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+
+        // Then: card state resets to idle AND inline message is cleared.
+        // The cancelledOnReader sink runs unconditionally on the TTP path
+        // (no gate check), so cancellation resets even a terminal state.
         #expect(sut.paymentState.card == .idle)
         #expect(sut.cardPresentPaymentInlineMessage == nil)
-        #expect(!sut.isCardPaymentPending)
-        #expect(sut.currentPaymentMethod == nil)
-        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+
+        // And the gate is re-armed: events are suppressed again until next explicit tap
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
         #expect(sut.paymentState.card == .idle)
     }
 
@@ -2802,64 +2604,60 @@ struct POSPaymentModelTests {
 
     // MARK: - Subscriber Ordering Regression
 
-    @Test("TTP: a new explicit start opens the gate after confirmed reader cancellation")
+    @Test("TTP: after cancelledOnReader a subsequent startPaymentWithMethod opens the gate cleanly")
     @MainActor
-    func test_cancelledOnReader_when_next_payment_starts_then_opens_gate_after_confirmed_cancellation() async {
+    func cancelledOnReader_TTP_when_subsequent_startPaymentWithMethod_then_gate_is_open_not_stale() async {
+        // This test is a regression guard for the subscriber-ordering invariant in
+        // subscribeToPaymentSessionEvents: the cancelledOnReader sink MUST close the
+        // gate (isAwaitingExplicitPaymentStart = true) before the card-state sink
+        // evaluates shouldPropagatePaymentEvent. If the two sinks are ever reordered,
+        // the card-state sink would run first and the cancelledOnReader event would
+        // advance paymentState.card to a non-idle state before the gate closes,
+        // causing the subsequent startPaymentWithMethod to see a stale (open) gate.
+
         // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        orderProvider: orderProvider,
-                                        preferredConnectionMethod: .tapToPay)
-        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-            }
-            Task { await sut.startPaymentWithMethod(.tapToPay) }
-        }
-        await fireOnce { confirmed in
-            service.onCancelPaymentCalled = {
-                service.paymentSessionState = .cancelling
-                finishCollection?.resume(returning: .cancellation)
-                finishCollection = nil
-                service.paymentSessionState = .idle
-                confirmed()
-            }
-            service.paymentEvent = .show(eventDetails: .cancelledOnReader)
-        }
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay)
+
+        await sut.startPayment()
+
+        // Round 1: open gate, drive to terminal state via a direct paymentSuccess
+        // event, then cancel on reader. (Don't await `startPaymentWithMethod` —
+        // the BT-as-one-shot architecture's disconnect-then-reconnect path
+        // blocks on connection status the mock doesn't drive. Gate side-effects
+        // happen before the first await; sending the success event after
+        // yielding once proves the gate is open.)
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        // When: merchant cancels on reader — gate must close and state must reset
+        service.paymentEvent = .show(eventDetails: .cancelledOnReader)
+
+        // Then: state is idle immediately
         #expect(sut.paymentState.card == .idle)
-        #expect(sut.currentPaymentMethod == nil)
 
-        // When
-        service.onCancelPaymentCalled = nil
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-            }
-            Task { await sut.startPaymentWithMethod(.tapToPay) }
-        }
-
-        // Then
-        #expect(service.spyCollectPaymentMethods == [.tapToPay, .tapToPay])
+        // Round 2: subsequent startPaymentWithMethod must re-open the gate cleanly.
+        // If subscriber ordering were inverted — card-state sink before
+        // cancelledOnReader sink — `cancelledOnReader` would have advanced
+        // `paymentState.card` past `.idle` before the gate closed, and the
+        // `paymentState.card != .idle` guard in `startPaymentWithMethod` would
+        // have short-circuited Round 2, leaving `currentPaymentMethod` unset.
+        Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await Task.yield()
         #expect(sut.currentPaymentMethod == .tapToPay)
-        #expect(sut.paymentState.card == .acceptingCard)
-        service.paymentSessionState = .cancelling
-        finishCollection?.resume(returning: .cancellation)
-        finishCollection = nil
-        service.paymentSessionState = .idle
+
+        // And a second paymentSuccess event propagates through the re-opened gate.
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
     }
 
     @Test("connectCardReader skips a second call while the first is in flight")
@@ -3848,62 +3646,41 @@ struct POSPaymentModelTests {
         #expect(sut.currentPaymentMethod == .bluetooth)
     }
 
-    @Test("startPaymentWithMethod cancels the current payment before collecting with a different method")
+    @Test("startPaymentWithMethod cancels the current payment when switching to a different method")
     @MainActor
     func test_startPaymentWithMethod_when_switching_methods_then_cancels_current_payment() async {
-        // Given
+        // Given — an active BT session.
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
         orderProvider.totalDecimalToReturn = 10
         service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        orderProvider: orderProvider,
-                                        preferredConnectionMethod: .bluetooth)
-        var finishCollection: CheckedContinuation<CardPresentPaymentResult, Never>?
-        var firstCollection: Task<Void, Never>?
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-            }
-            firstCollection = Task { await sut.startPayment() }
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .bluetooth)
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            Task { @MainActor in await sut.startPayment() }
         }
         service.cancelPaymentCalled = false
-        service.onCancelPaymentCalled = {
-            service.paymentSessionState = .cancelling
-            #expect(service.spyCollectPaymentMethods == [.bluetooth])
-            finishCollection?.resume(returning: .cancellation)
-            finishCollection = nil
-            await firstCollection?.value
-            service.paymentSessionState = .idle
-        }
 
-        // When
-        await fireOnce { started in
-            service.collectPaymentOverride = {
-                await withCheckedContinuation { continuation in
-                    finishCollection = continuation
-                    service.paymentSessionState = .active
-                    service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                    started()
-                }
-            }
-            Task { await sut.startPaymentWithMethod(.tapToPay) }
-        }
+        // When — merchant picks Tap to Pay from the Other payment methods sheet
+        // while BT is mid-collection. `await task.value` is the most robust
+        // wait we have here — `startPaymentWithMethod` returns deterministically
+        // in the test environment (cancel → disconnect-then-reconnect → kick
+        // a fire-and-forget connectReader Task → set up the
+        // startPaymentOnCardReaderConnection one-shot subscription → return).
+        // Better than `withObservationTracking { _ = sut.currentPaymentMethod }`,
+        // which would hang to the test-suite timeout if a future change ever
+        // emitted an intermediate `currentPaymentMethod` value before
+        // `.tapToPay` and the observation missed the final flip.
+        let task = Task { @MainActor in await sut.startPaymentWithMethod(.tapToPay) }
+        await task.value
 
-        // Then
-        #expect(service.cancelPaymentCalled)
-        #expect(service.spyCollectPaymentMethods == [.bluetooth, .tapToPay])
+        // Then — the BT collect was cancelled and the active method flipped.
+        #expect(service.cancelPaymentCalled == true)
         #expect(sut.currentPaymentMethod == .tapToPay)
-        service.paymentSessionState = .cancelling
-        finishCollection?.resume(returning: .cancellation)
-        finishCollection = nil
-        service.paymentSessionState = .idle
     }
 }
 
@@ -3913,7 +3690,6 @@ struct POSPaymentModelTests {
 private func makePaymentController(
     cardPresentPaymentService: CardPresentPaymentFacade? = nil,
     orderProvider: POSPaymentOrderProviding? = nil,
-    accessSession: (any POSAccessSession)? = nil,
     cashPaymentHandler: POSCashPaymentHandling? = nil,
     scanToPayHandler: POSScanToPayHandling? = nil,
     scanToPayVerifier: POSScanToPayVerifying? = nil,
@@ -3935,7 +3711,6 @@ private func makePaymentController(
     return POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
         orderProvider: orderProvider ?? MockPOSPaymentOrderProvider(),
-        accessSession: accessSession,
         cashPaymentHandler: cashPaymentHandler ?? MockPOSCashPaymentHandler(),
         scanToPayHandler: scanToPayHandler ?? MockPOSScanToPayHandler(),
         scanToPayVerifier: scanToPayVerifier,

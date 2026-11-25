@@ -8,7 +8,6 @@ final class MockPOSPaymentOrderProvider: POSPaymentOrderProviding {
     var totalDecimalToReturn: Decimal = 0
     var errorToThrow: Error?
     var provideOrderCallCount = 0
-    var onProvideOrder: (@MainActor () async throws -> POSPaymentOrder)?
     /// URL to expose via `provideOrderForScanToPay`. Defaults to nil so non-scan-to-pay
     /// tests are unaffected; set this in scan-to-pay-specific tests.
     var scanToPayPaymentURL: URL?
@@ -16,7 +15,6 @@ final class MockPOSPaymentOrderProvider: POSPaymentOrderProviding {
 
     func provideOrder() async throws -> POSPaymentOrder {
         provideOrderCallCount += 1
-        if let onProvideOrder { return try await onProvideOrder() }
         if let error = errorToThrow { throw error }
         guard let order = orderToReturn else { throw POSPaymentError.noOrder }
         return POSPaymentOrder(order: order,

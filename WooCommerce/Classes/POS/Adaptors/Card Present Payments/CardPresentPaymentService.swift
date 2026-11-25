@@ -4,8 +4,6 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
-import enum Yosemite.CardReaderServiceError
-import enum Yosemite.CollectOrderPaymentUseCaseError
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
 import enum Yosemite.CardReaderSoftwareUpdateState
@@ -14,27 +12,7 @@ import protocol Yosemite.StoresManager
 
 @MainActor
 final class CardPresentPaymentService: CardPresentPaymentFacade {
-    var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
-        onboardingAdaptor.onboardingScreenViewModelPublisher
-            .map { onboardingEvent -> CardPresentPaymentEvent in
-                switch onboardingEvent {
-                case let .showOnboarding(factory, onCancel):
-                    return .showOnboarding(factory: factory, onCancel: onCancel)
-                case .onboardingComplete:
-                    return .idle
-                }
-            }
-            .merge(with: paymentAlertsPresenterAdaptor.paymentEventPublisher)
-            .merge(with: paymentEventSubject)
-            .map { (nil as UUID?, $0) }
-            .merge(with: attemptEventSubject.map { (Optional($0.0), $0.1) })
-            .receive(on: DispatchQueue.main)
-            .compactMap { [weak self] attemptID, event in
-                if let attemptID, self?.canPresent(event, for: attemptID) != true { return nil }
-                return event
-            }
-            .eraseToAnyPublisher()
-    }
+    let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
 
@@ -43,8 +21,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
     private let reconnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
-
-    private let attemptEventSubject = PassthroughSubject<(UUID, CardPresentPaymentEvent), Never>()
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 
@@ -63,40 +39,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         CardPresentConfigurationLoader().configuration
     }
 
-    // Stripe Terminal has one payment owner across POS flows and store changes. A process restart has no owner.
-    private static var pendingPaymentOwner: CardPresentPaymentService?
-    private static let paymentSessionStateSubject = CurrentValueSubject<CardPresentPaymentSessionState, Never>(.idle)
-    var paymentSessionState: CardPresentPaymentSessionState { Self.paymentSessionStateSubject.value }
-    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
-        Self.paymentSessionStateSubject.eraseToAnyPublisher()
-    }
-    private var paymentAttemptID: UUID?
-    private var paymentEventAttemptID: UUID?
-    private var paymentEventSubscription: AnyCancellable?
-    private enum PaymentAttemptPhase {
-        case collecting
-        case awaitingCapture
-        case completed
-        case cancelled
-
-        var isTerminal: Bool { self == .completed || self == .cancelled }
-    }
-    private var paymentAttemptPhase: PaymentAttemptPhase?
-    private var cancellationTask: Task<Void, Error>?
-
-    private let paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel,
-                                               CardPresentPaymentsAlertPresenterAdaptor, @escaping @MainActor () -> Void)
-        -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>)?
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
     private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
 
     @MainActor
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
-         paymentTaskFactory: (@MainActor (Order, CardReaderConnectionMethod, PaymentChannel,
-                                         CardPresentPaymentsAlertPresenterAdaptor, @escaping @MainActor () -> Void)
-            -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>)? = nil) async {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
         self.siteID = siteID
-        self.paymentTaskFactory = paymentTaskFactory
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
@@ -109,6 +57,19 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             configuration: CardPresentConfigurationLoader().configuration,
             alertsPresenter: paymentAlertsPresenterAdaptor)
 
+        paymentEventPublisher = onboardingAdaptor.onboardingScreenViewModelPublisher
+            .map { onboardingEvent -> CardPresentPaymentEvent in
+                switch onboardingEvent {
+                case let .showOnboarding(factory, onCancel):
+                    return .showOnboarding(factory: factory, onCancel: onCancel)
+                case .onboardingComplete:
+                    return .idle
+                }
+            }
+            .merge(with: paymentAlertsPresenterAdaptor.paymentEventPublisher)
+            .merge(with: paymentEventSubject)
+            .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
+            .eraseToAnyPublisher()
 
         let connectedReaderPublisher = Self.createCardReaderConnectionPublisher(stores: stores)
         self.connectedReaderPublisher = connectedReaderPublisher
@@ -180,14 +141,13 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func disconnectReader() async {
+        readerConnectionStatusSubject.send(.disconnecting)
+
         do {
             try await cancelPayment()
         } catch {
             DDLogError("Attempting to cancel the payment has failed \(error)")
-            return
         }
-        guard !paymentSessionState.isPending else { return }
-        readerConnectionStatusSubject.send(.disconnecting)
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
@@ -215,169 +175,62 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
-        guard !paymentSessionState.isPending else { throw CardPresentPaymentServiceError.paymentPending }
-        clearPaymentPresentation()
-        let attemptID = UUID()
-        paymentAttemptID = attemptID
-        paymentEventAttemptID = attemptID
-        paymentAttemptPhase = .collecting
-        Self.pendingPaymentOwner = self
-        Self.paymentSessionStateSubject.send(.active)
+        paymentTask?.cancel()
         collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
 
         // What happens if `start` gets called while there's a connection ongoing but not finished?
         // Ideally, we'd adopt the connection attempt.
         // Since we're reusing the connection controllers, that's a good start, but it needs proper testing.
-        let alertsPresenter = CardPresentPaymentsAlertPresenterAdaptor()
-        let attemptEvents = PassthroughSubject<CardPresentPaymentEvent, Never>()
-        paymentEventSubscription = alertsPresenter.paymentEventPublisher.merge(with: attemptEvents)
-            .sink { [weak self] event in self?.attemptEventSubject.send((attemptID, event)) }
-        let preflightController = createPreflightController(alertsPresenter: alertsPresenter)
+        let preflightController = createPreflightController()
 
         // TODO: Update the connected reader subject when we get a connection here.
 
-        let adaptor = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(
-            paymentEventPublisher: paymentEventPublisher,
-            stores: stores,
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        let onProcessingCompletion: @MainActor () -> Void = { [weak self] in
-            guard let self, self.paymentAttemptID == attemptID, self.paymentAttemptPhase?.isTerminal != true else { return }
-            self.paymentAttemptPhase = .awaitingCapture
-        }
-        let paymentTask = paymentTaskFactory?(order, connectionMethod, channel, alertsPresenter, onProcessingCompletion) ?? adaptor.collectPaymentTask(
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher,
+                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
+        ).collectPaymentTask(
             for: order,
             using: connectionMethod,
             siteID: siteID,
             preflightController: preflightController,
             configuration: cardPresentPaymentsConfiguration,
-            alertsPresenter: alertsPresenter,
-            paymentEventSubject: attemptEvents,
-            channel: channel,
-            onProcessingCompletion: onProcessingCompletion)
+            alertsPresenter: paymentAlertsPresenterAdaptor,
+            paymentEventSubject: paymentEventSubject,
+            channel: channel)
 
         self.paymentTask = paymentTask
 
-        do {
-            let result = try await paymentTask.value
-            guard paymentAttemptID == attemptID else { throw CancellationError() }
-            if case .success = result {
-                paymentAttemptPhase = .completed
-            } else {
-                paymentAttemptPhase = .cancelled
-            }
-            if cancellationTask == nil { resolvePayment(attemptID) }
-            switch result {
-            case .success(let cardDetails):
-                return .success(CardPresentPaymentTransaction(cardDetails: cardDetails))
-            case .cancellation:
-                return .cancellation
-            }
-        } catch {
-            if paymentAttemptID == attemptID, case CollectOrderPaymentUseCaseError.orderAlreadyPaid = error {
-                try await cancelPayment()
-                guard paymentEventAttemptID == attemptID else { throw CancellationError() }
-                paymentAttemptPhase = .completed
-                attemptEventSubject.send((attemptID, .show(eventDetails: .paymentSuccess(done: {}))))
-                return .success(CardPresentPaymentTransaction())
-            }
-            if paymentAttemptID == attemptID, cancellationTask == nil {
-                if case CardPresentPaymentServiceError.invalidAmount = error {
-                    // The adaptor validates the amount before it creates the orchestrator or touches the SDK.
-                    resolvePayment(attemptID)
-                } else {
-                    Self.paymentSessionStateSubject.send(.unresolved)
-                }
-            }
-            throw error
+        switch try await paymentTask.value {
+        case .success(let cardDetails):
+            // TODO: fetch the receipt URL to return an accurate value.
+            let transaction = CardPresentPaymentTransaction(cardDetails: cardDetails)
+            return .success(transaction)
+        case .cancellation:
+            return .cancellation
         }
     }
 
     func cancelPayment() {
-        guard paymentSessionState.isPending else {
-            clearPaymentPresentation()
-            return
-        }
-        Task { @MainActor in
-            guard Self.pendingPaymentOwner === self else { return }
-            do { try await self.cancelPayment() }
-            catch { DDLogError("Failed to cancel POS payment: \(error)") }
-        }
+        cancelPaymentTask()
     }
 
+    @MainActor
     func cancelPayment() async throws {
-        if let owner = Self.pendingPaymentOwner, owner !== self { return try await owner.cancelPayment() }
-        if let cancellationTask { return try await cancellationTask.value }
-        let attemptID = paymentAttemptID
-        let task = Task { @MainActor in
-            if attemptID != nil {
-                Self.paymentSessionStateSubject.send(.cancelling)
-                // Invalidate startup before asking Hardware to cancel; no later preflight callback may start collection.
-                self.paymentTask?.cancel()
-            }
-            self.collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
-            do {
-                try await self.cancelSDKPayment()
-                self.cancellationTask = nil
-                if let attemptID { self.resolvePayment(attemptID) }
-            } catch {
-                self.cancellationTask = nil
-                if attemptID == nil, self.paymentSessionState == .idle,
-                   case CardReaderServiceError.paymentCancellation(.noActivePaymentIntent) = error { return }
-                if let attemptID, self.paymentAttemptID == attemptID {
-                    switch error {
-                    // The SDK clears its intent before backend capture finishes, so absence alone cannot settle that outcome.
-                    case CardReaderServiceError.paymentCancellation(.noActivePaymentIntent) where self.paymentAttemptPhase != .awaitingCapture:
-                        self.resolvePayment(attemptID)
-                        return
-                    default:
-                        if self.paymentAttemptPhase?.isTerminal == true {
-                            self.resolvePayment(attemptID)
-                        } else {
-                            Self.paymentSessionStateSubject.send(.unresolved)
-                        }
-                    }
-                }
-                throw error
-            }
-        }
-        cancellationTask = task
-        try await task.value
-    }
-
-    private func resolvePayment(_ attemptID: UUID) {
-        guard paymentAttemptID == attemptID else { return }
-        paymentAttemptID = nil
-        paymentTask = nil
-        if paymentAttemptPhase != .completed {
-            paymentAttemptPhase = nil
-            paymentEventSubscription = nil
-        }
-        if Self.pendingPaymentOwner === self { Self.pendingPaymentOwner = nil }
-        Self.paymentSessionStateSubject.send(.idle)
-    }
-
-    private func clearPaymentPresentation() {
-        paymentEventAttemptID = nil
-        paymentEventSubscription = nil
-        if paymentAttemptID == nil { paymentAttemptPhase = nil }
-    }
-
-    private func canPresent(_ event: CardPresentPaymentEvent, for attemptID: UUID) -> Bool {
-        if paymentAttemptID == attemptID { return true }
-        // Receipt eligibility can deliver success after capture releases the financial owner.
-        guard paymentEventAttemptID == attemptID, paymentAttemptPhase == .completed,
-              case .show(.paymentSuccess) = event else { return false }
-        return true
-    }
-
-    private func cancelSDKPayment() async throws {
+        collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
         try await withCheckedThrowingContinuation { continuation in
-            var pending: CheckedContinuation<Void, Error>? = continuation
-            stores.dispatch(CardPresentPaymentAction.cancelPayment { result in
-                pending?.resume(with: result)
-                pending = nil
-            })
+            var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
+            let action = CardPresentPaymentAction.cancelPayment { result in
+                nillableContinuation?.resume(with: result)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
         }
+    }
+
+    private func cancelPaymentTask() {
+        guard let paymentTask else { return }
+        collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
+        paymentTask.cancel()
+        self.paymentTask = nil
     }
 
     @MainActor
@@ -494,7 +347,7 @@ private extension CardPresentPaymentService {
         return publisher
     }
 
-    func createPreflightController(alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor? = nil) -> CardPresentPaymentPreflightController<
+    func createPreflightController() -> CardPresentPaymentPreflightController<
         CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
         CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
         CardPresentPaymentsAlertPresenterAdaptor> {
@@ -503,7 +356,7 @@ private extension CardPresentPaymentService {
                 siteID: siteID,
                 configuration: cardPresentPaymentsConfiguration,
                 rootViewController: NullViewControllerPresenting(),
-                alertsPresenter: alertsPresenter ?? paymentAlertsPresenterAdaptor,
+                alertsPresenter: paymentAlertsPresenterAdaptor,
                 onboardingPresenter: onboardingAdaptor,
                 tapToPayAlertProvider: alertProvider,
                 externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
@@ -519,5 +372,5 @@ enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
     case incompleteAddressConnectionError
-    case paymentPending
+    case couldNotCancelPayment
 }

@@ -33,8 +33,6 @@ enum POSAccessSessionFactory {
                      credentialProvider: POSPINCredentialProviding? = nil,
                      rateLimiter: POSLocalRateLimiter? = nil,
                      userDefaults: UserDefaults = .standard,
-                     isPaymentPending: @escaping @MainActor () -> Bool,
-                     onLock: @escaping @MainActor () -> Void,
                      now: @escaping @MainActor () -> Date = Date.init,
                      shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) else {
@@ -61,7 +59,7 @@ enum POSAccessSessionFactory {
         let preferences = POSLockSettings(siteID: siteID, userDefaults: userDefaults).preferences
         let retained = unlockedStaff.removeValue(forKey: siteID)
         let resumingStaff = retained.flatMap { retained -> POSStaff? in
-            if preferences.locksWhenPOSOpens || isPaymentPending() { return nil }
+            if preferences.locksWhenPOSOpens { return nil }
             if isAppInBackground && preferences.locksInBackground { return nil }
             if let timeout = preferences.inactivityTimeout.interval {
                 let elapsed = now().timeIntervalSince(retained.endedAt)
@@ -76,12 +74,10 @@ enum POSAccessSessionFactory {
             credentialProvider: credentialProvider,
             userDefaults: userDefaults,
             resumingStaff: resumingStaff,
-            isPaymentPending: isPaymentPending,
-            onLock: onLock,
             onEnd: { staff in
                 let preferences = POSLockSettings(siteID: siteID, userDefaults: userDefaults).preferences
                 // Cleanup can finish after the background notification has already cleared the cache.
-                guard let staff, !isPaymentPending(), !isAppInBackground || !preferences.locksInBackground else {
+                guard let staff, !isAppInBackground || !preferences.locksInBackground else {
                     unlockedStaff[siteID] = nil
                     return
                 }

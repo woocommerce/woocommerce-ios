@@ -45,7 +45,7 @@ struct CardPresentPaymentInvalidatablePaymentOrchestratorTests {
 
     @Test func test_collectPayment_when_payment_is_invalidated_then_completes_with_paymentInvalidated() {
         // Given
-        let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(onProcessingCompletion: {})
+        let sut = CardPresentPaymentInvalidatablePaymentOrchestrator()
         sut.invalidatePayment()
         var result: Result<CardPresentCapturedPaymentData, Error>?
 
@@ -71,41 +71,9 @@ struct CardPresentPaymentInvalidatablePaymentOrchestratorTests {
         #expect(isPaymentInvalidatedFailure(result))
     }
 
-    @Test func test_collectPayment_when_reader_confirms_then_notifies_owner_before_downstream_capture() {
-        // Given
-        var events: [String] = []
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            guard case let .collectPayment(_, _, _, _, _, _, onProcessingCompletion, _) = action else { return }
-            onProcessingCompletion(.fake())
-        }
-        let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(stores: stores,
-                                                                   onProcessingCompletion: { events.append("owner") })
-
-        // When
-        sut.collectPayment(for: .fake(),
-                           orderTotal: 1,
-                           paymentGatewayAccount: .fake(),
-                           readerType: .stripeM2,
-                           paymentMethodTypes: [.cardPresent],
-                           stripeSmallestCurrencyUnitMultiplier: 100,
-                           countryCode: .US,
-                           terminalPaymentPreparationEnabled: false,
-                           channel: .pos,
-                           onPreparingReader: {},
-                           onWaitingForInput: { _ in },
-                           onCardInserted: {},
-                           onProcessingMessage: {},
-                           onDisplayMessage: { _ in },
-                           onProcessingCompletion: { _ in events.append("capture") },
-                           onCompletion: { _ in })
-
-        // Then
-        #expect(events == ["owner", "capture"])
-    }
-
     @Test func test_retryPayment_when_payment_is_invalidated_from_a_nonisolated_context_then_completes_with_paymentInvalidated() async {
         // Given
-        let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(onProcessingCompletion: {})
+        let sut = CardPresentPaymentInvalidatablePaymentOrchestrator()
         await Task.detached {
             sut.invalidatePayment()
         }.value
@@ -123,8 +91,7 @@ private extension CardPresentPaymentInvalidatablePaymentOrchestratorTests {
     func collectPayment() async -> Result<CardPresentCapturedPaymentData, Error> {
         let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(
             stores: stores,
-            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration),
-            onProcessingCompletion: {})
+            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration))
 
         return await withCheckedContinuation { continuation in
             sut.collectPayment(for: .fake(),

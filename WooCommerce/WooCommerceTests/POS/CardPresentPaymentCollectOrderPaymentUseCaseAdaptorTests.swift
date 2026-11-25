@@ -1,5 +1,4 @@
 import Combine
-import Foundation
 import PointOfSale
 import Testing
 import WooFoundation
@@ -9,42 +8,6 @@ import Yosemite
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
-    @Test func test_validation_when_order_is_already_paid_then_throws_typed_error_without_collecting() async throws {
-        // Given
-        let stores = makeStores()
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", datePaid: .some(nil), total: "10.00")
-        var validationCount = 0
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case .retrieveOrderRemotely(_, _, let complete) = action else { return }
-            validationCount += 1
-            complete(.success(order.copy(datePaid: Date(timeIntervalSince1970: 1))))
-        }
-        let presenter = CardPresentPaymentsAlertPresenterAdaptor()
-        let (payment, preflight) = await startPayment(events: PassthroughSubject(), order: order,
-                                                     stores: stores, alertsPresenter: presenter)
-
-        // When
-        preflight.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
-        do {
-            _ = try await payment.value
-            Issue.record("Expected orderAlreadyPaid from the real validation path")
-        } catch {
-            switch error {
-            case CollectOrderPaymentUseCaseError.orderAlreadyPaid: break
-            default: Issue.record("Expected orderAlreadyPaid, got \(error)")
-            }
-        }
-
-        // Then
-        #expect(validationCount == 1)
-        #expect(presenter.onOrderAlreadyPaid == nil)
-        #expect(!stores.receivedActions.contains { action in
-            guard let action = action as? CardPresentPaymentAction else { return false }
-            if case .collectPayment = action { return true }
-            return false
-        })
-    }
-
     @Test func test_cancellation_when_cancelled_on_main_actor_then_event_action_runs_synchronously() async throws {
         // Given
         let events = PassthroughSubject<CardPresentPaymentEvent, Never>()
@@ -219,8 +182,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
                 configuration: CardPresentPaymentsConfiguration(country: .US),
                 alertsPresenter: alertsPresenter,
                 paymentEventSubject: events,
-                channel: .storeManagement,
-                onProcessingCompletion: {}
+                channel: .storeManagement
             )
             preflightController.onStart = {
                 continuation.resume(returning: task)

@@ -5,16 +5,10 @@ import PointOfSale
 
 @MainActor
 final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
-    @Published var paymentSessionState: CardPresentPaymentSessionState = .idle
-    var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> {
-        $paymentSessionState.eraseToAnyPublisher()
-    }
-
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
     let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>
 
-    private var paymentAttemptID: UUID?
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 
     init() {
@@ -57,50 +51,30 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
     }
 
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
-        guard paymentAttemptID == nil else { return .cancellation }
-        let attemptID = UUID()
-        paymentAttemptID = attemptID
-        paymentSessionState = .active
-        defer { if paymentAttemptID == attemptID { finishMockPayment() } }
 
         // 1. Validating order
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
         try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-        guard paymentAttemptID == attemptID else { return .cancellation }
 
         // 2. Preparing reader
         paymentEventSubject.send(.show(eventDetails: .preparingForPayment(cancelPayment: {})))
         try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-        guard paymentAttemptID == attemptID else { return .cancellation }
 
         // 3. Ready to accept card
         let inputMethods: Yosemite.CardReaderInput = [.tap, .swipe, .insert]
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: inputMethods, cancelPayment: {})))
 
-        try await Task.sleep(nanoseconds: UInt64(mockCardWaitInterval * 1_000_000_000))
-        guard paymentAttemptID == attemptID else { return .cancellation }
+        try await Task.sleep(nanoseconds: 3_000_000_000) // 3 seconds, give it some time for the screenshot
 
-        paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         return .success(CardPresentPaymentTransaction())
     }
 
-    func cancelPayment() { finishMockPayment() }
-
-    func cancelPayment() async throws { finishMockPayment() }
-
-    private var mockCardWaitInterval: TimeInterval {
-        #if DEBUG
-        if let value = ProcessInfo.processInfo.environment["POS_MOCK_CARD_PAYMENT_WAIT_SECONDS"],
-           let interval = TimeInterval(value), interval.isFinite, (1...300).contains(interval) {
-            return interval
-        }
-        #endif
-        return 3
+    func cancelPayment() {
+        // No-op for screenshots
     }
 
-    private func finishMockPayment() {
-        paymentAttemptID = nil
-        paymentSessionState = .idle
+    func cancelPayment() async throws {
+        // No-op for screenshots
     }
 
     func cancelReconnection() async {

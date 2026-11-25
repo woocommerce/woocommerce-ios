@@ -185,7 +185,6 @@ struct PointOfSaleDashboardView: View {
         }
         .posDialog(isPresented: $showExitPOSModal) {
             .exitPOS(exit: {
-                guard !posModel.paymentModel.isCardPaymentPending else { return }
                 analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
             }, close: {
@@ -449,11 +448,12 @@ struct PointOfSaleDashboardView: View {
             if session.isPINProtectionEnabled {
                 POSMenuButton {
                     // The menu can stay open while a payment starts.
-                    paymentModel.lockManually(session: session)
+                    guard !paymentModel.paymentState.isAutoLockSuppressing else { return }
+                    session.lock()
                 } label: {
                     Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
                 }
-                .disabled(paymentModel.isLockSuppressed)
+                .disabled(paymentModel.paymentState.isAutoLockSuppressing)
                 .accessibilityIdentifier("pos-lock-menu-item")
             }
             POSMenuButton {
@@ -738,16 +738,13 @@ private extension PointOfSaleDashboardView {
     }
 
     func presentOrders() {
-        guard !posModel.paymentModel.isCardPaymentPending else { return }
         posModel.leaveCheckout()
         showOrders = true
     }
 
     /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
     func requestExit(confirmingFirst: Bool) {
-        guard !posModel.paymentModel.isCardPaymentPending else { return }
         overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
-            guard !posModel.paymentModel.isCardPaymentPending else { return }
             switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
             case .showConfirmation:
                 showExitPOSModal = true

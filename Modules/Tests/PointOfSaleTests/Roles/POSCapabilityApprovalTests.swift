@@ -135,9 +135,7 @@ private extension POSCapabilityApprovalTests {
             authenticator: DefaultPOSPINAuthenticator(credentialProvider: provider),
             rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
             credentialProvider: provider,
-            userDefaults: defaultsScope.defaults,
-            isPaymentPending: { false },
-            onLock: {}
+            userDefaults: defaultsScope.defaults
         )
         try await session.signIn(withPIN: Constants.operatorPIN)
         return SUT(session: session, handler: POSManagerOverrideHandler(session: session), defaultsScope: defaultsScope)

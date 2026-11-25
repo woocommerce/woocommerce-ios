@@ -6,7 +6,6 @@ final class POSAutoLockActivityController {
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState
-    private let isPaymentPending: () -> Bool
     private var timeout: TimeInterval?
     private let now: () -> Date
 
@@ -16,9 +15,7 @@ final class POSAutoLockActivityController {
     init(session: any POSAccessSession,
          paymentStateProvider: @escaping () -> PointOfSalePaymentState,
          timeout: TimeInterval?,
-         now: @escaping () -> Date = Date.init,
-         isPaymentPending: @escaping () -> Bool) {
-        self.isPaymentPending = isPaymentPending
+         now: @escaping () -> Date = Date.init) {
         self.session = session
         self.paymentStateProvider = paymentStateProvider
         self.timeout = timeout
@@ -52,10 +49,7 @@ final class POSAutoLockActivityController {
     func handlePaymentStateChange(from oldState: PointOfSalePaymentState,
                                   to newState: PointOfSalePaymentState,
                                   locksAfterSale: Bool) {
-        guard !newState.isAutoLockSuppressing, !isPaymentPending() else {
-            stop()
-            return
-        }
+        guard !newState.isAutoLockSuppressing else { return }
         let leftCompletedSale = oldState.isSuccess && !newState.isSuccess
         if locksAfterSale, leftCompletedSale, hasUnlockedStaff {
             session.lock()
@@ -64,17 +58,13 @@ final class POSAutoLockActivityController {
         }
     }
 
-    func handlePaymentSessionStateChange(_ state: CardPresentPaymentSessionState) {
-        if state.isPending { stop() } else { noteActivity() }
-    }
-
     func handleTimerFire() {
         guard let timeout, hasUnlockedStaff else {
             stop()
             return
         }
-        if paymentStateProvider().isAutoLockSuppressing || isPaymentPending() {
-            stop()
+        if paymentStateProvider().isAutoLockSuppressing {
+            restartTimer()
             return
         }
         // Activity may have landed between Timer fire and the @MainActor hop.
@@ -93,7 +83,7 @@ private extension POSAutoLockActivityController {
 
     func restartTimer() {
         timer?.invalidate()
-        guard let timeout, !isPaymentPending(), !paymentStateProvider().isAutoLockSuppressing else {
+        guard let timeout else {
             timer = nil
             return
         }

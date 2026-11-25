@@ -5,39 +5,6 @@ import Testing
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSAutoLockActivityControllerTests {
-    @Test func test_payment_lifetime_when_ui_clears_before_confirmation_then_timer_stays_paused() {
-        // Given
-        let session = MockPOSAccessSession(currentStaff: makeStaff())
-        let clock = ClockHandle()
-        var ownerState = CardPresentPaymentSessionState.active
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 60,
-                                                now: clock.now, isPaymentPending: { ownerState.isPending })
-        defer { sut.stop() }
-
-        // When
-        sut.handlePaymentSessionStateChange(.active)
-        clock.advance(by: 600)
-        ownerState = .unresolved
-        sut.handlePaymentSessionStateChange(.unresolved)
-        sut.handlePaymentStateChange(from: .init(card: .processingPayment, cash: .idle), to: .idle, locksAfterSale: true)
-        sut.handleTimerFire()
-
-        // Then
-        #expect(session.lockCallCount == 0)
-
-        // When
-        ownerState = .idle
-        sut.handlePaymentSessionStateChange(.idle)
-        clock.advance(by: 59)
-        sut.handleTimerFire()
-
-        // Then
-        #expect(session.lockCallCount == 0)
-        clock.advance(by: 1)
-        sut.handleTimerFire()
-        #expect(session.lockCallCount == 1)
-    }
-
     @Test func test_handleTimerFire_when_isPINProtectionEnabled_is_false_then_does_not_lock() {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: false, isPINProtectionEnabled: false)
@@ -116,8 +83,7 @@ struct POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { paymentState },
             timeout: 300,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         defer { sut.stop() }
         paymentState = .idle
@@ -139,8 +105,7 @@ struct POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { .idle },
             timeout: 300,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         defer { sut.stop() }
 
@@ -162,8 +127,7 @@ struct POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { .idle },
             timeout: 300,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         defer { sut.stop() }
         sut.noteActivityThrottled()
@@ -186,8 +150,7 @@ struct POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { .idle },
             timeout: 300,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         defer { sut.stop() }
         sut.noteActivityThrottled()
@@ -206,8 +169,7 @@ struct POSAutoLockActivityControllerTests {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: nil, now: clock.now,
-                                                isPaymentPending: { false })
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: nil, now: clock.now)
         defer { sut.stop() }
         sut.noteActivity()
         clock.advance(by: 24 * 60 * 60)
@@ -223,8 +185,7 @@ struct POSAutoLockActivityControllerTests {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 300, now: clock.now,
-                                                isPaymentPending: { false })
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 300, now: clock.now)
         defer { sut.stop() }
         clock.advance(by: 200)
 
@@ -245,8 +206,7 @@ struct POSAutoLockActivityControllerTests {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 60, now: clock.now,
-                                                isPaymentPending: { false })
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 60, now: clock.now)
         defer { sut.stop() }
 
         // When
@@ -262,8 +222,7 @@ struct POSAutoLockActivityControllerTests {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: nil, now: clock.now,
-                                                isPaymentPending: { false })
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: nil, now: clock.now)
         defer { sut.stop() }
         sut.updateTimeout(120)
 
@@ -371,8 +330,7 @@ struct POSAutoLockActivityControllerTests {
         // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
-        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 300, now: clock.now,
-                                                isPaymentPending: { false })
+        let sut = POSAutoLockActivityController(session: session, paymentStateProvider: { .idle }, timeout: 300, now: clock.now)
         defer { sut.stop() }
 
         // When
@@ -393,8 +351,7 @@ struct POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { .idle },
             timeout: 300,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         defer { sut.stop() }
         session.isLocked = false
@@ -419,8 +376,7 @@ private extension POSAutoLockActivityControllerTests {
             session: session,
             paymentStateProvider: { paymentState },
             timeout: timeout,
-            now: clock.now,
-            isPaymentPending: { false }
+            now: clock.now
         )
         clock.advance(by: secondsSinceLastActivity)
         return controller

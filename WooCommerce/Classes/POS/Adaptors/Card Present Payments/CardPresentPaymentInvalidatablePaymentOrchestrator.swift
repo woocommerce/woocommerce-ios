@@ -8,13 +8,10 @@ import class PointOfSale.POSPaymentSuccessCelebration
 final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOrchestrating {
     private let invalidated = OSAllocatedUnfairLock(initialState: false)
     private let paymentOrchestrator: PaymentCaptureOrchestrator
-    private let onProcessingCompletion: @MainActor () -> Void
 
     /// POS celebrates through `POSPaymentSuccessCelebration`, which honors the payment success sound setting from POS settings.
     init(stores: StoresManager = ServiceLocator.stores,
-         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
-         onProcessingCompletion: @escaping @MainActor () -> Void) {
-        self.onProcessingCompletion = onProcessingCompletion
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration()) {
         self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: celebration)
     }
 
@@ -56,10 +53,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                                            onCardInserted: onCardInserted,
                                            onProcessingMessage: onProcessingMessage,
                                            onDisplayMessage: onDisplayMessage,
-                                           onProcessingCompletion: { [notifyOwner = self.onProcessingCompletion] intent in
-                                               notifyOwner()
-                                               onProcessingCompletion(intent)
-                                           },
+                                           onProcessingCompletion: onProcessingCompletion,
                                            onCompletion: onCompletion)
     }
 

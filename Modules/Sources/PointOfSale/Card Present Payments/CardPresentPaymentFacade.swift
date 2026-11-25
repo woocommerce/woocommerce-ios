@@ -4,19 +4,7 @@ import struct Yosemite.Order
 import enum Yosemite.CardReaderSoftwareUpdateState
 import Combine
 
-public enum CardPresentPaymentSessionState: Sendable, Equatable {
-    case idle
-    case active
-    case cancelling
-    case unresolved
-
-    public var isPending: Bool { self != .idle }
-}
-
 public protocol CardPresentPaymentFacade: Sendable {
-    @MainActor var paymentSessionState: CardPresentPaymentSessionState { get }
-    @MainActor var paymentSessionStatePublisher: AnyPublisher<CardPresentPaymentSessionState, Never> { get }
-
     /// `paymentEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages.
     /// This is a long lasting stream, and will not finish during the life of the façade, instead it will publish events for each payment attempt.

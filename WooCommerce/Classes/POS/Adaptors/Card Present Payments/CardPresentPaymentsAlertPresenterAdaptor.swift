@@ -9,7 +9,6 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     typealias AlertDetails = CardPresentPaymentEventDetails
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
-    var onOrderAlreadyPaid: (@MainActor () -> Void)?
 
     private let paymentEventSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
 
@@ -25,11 +24,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
         switch eventDetails {
         case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _):
-            if let onOrderAlreadyPaid {
-                onOrderAlreadyPaid()
-            } else {
-                paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
-            }
+            paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway, _, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in

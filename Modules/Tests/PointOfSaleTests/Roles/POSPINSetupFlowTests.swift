@@ -395,9 +395,7 @@ private extension POSPINSetupFlowTests {
                                              authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
-                                             userDefaults: defaultsScope.defaults,
-                                             isPaymentPending: { false },
-                                             onLock: {})
+                                             userDefaults: defaultsScope.defaults)
         let controller = POSSecuritySettingsController(store: store, session: session,
                                                        lockSettings: POSLockSettings(siteID: 123, userDefaults: defaultsScope.defaults),
                                                        flowSleep: sleeper.sleep)

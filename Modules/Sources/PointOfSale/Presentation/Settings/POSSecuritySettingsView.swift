@@ -12,15 +12,12 @@ struct POSSecuritySettingsView: View {
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             if controller.roles?.isEmpty == true {
+                if horizontalSizeClass == .compact {
+                    POSPageHeaderView(title: "")
+                }
                 POSAccessControlSetupView {
                     controller.load()
                     presentation.present(.editor(controller.makePINSetupFlow(for: .admin)))
-                }
-                .overlay(alignment: .top) {
-                    if horizontalSizeClass == .compact {
-                        POSPageHeaderView(title: "")
-                            .background(Color.posSurface)
-                    }
                 }
             } else {
                 POSPageHeaderView(title: Localization.title)

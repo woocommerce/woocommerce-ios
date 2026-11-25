@@ -5,15 +5,20 @@ struct StoreProductFormReviewSummary: View {
     let review: StoreProductFormSettingsRow.Review
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: StoreSpacing.s2) {
-                stars
-                reviewCount.fixedSize(horizontal: true, vertical: false)
+        if let average = review.average {
+            let rating = min(max(average, 0), Double(Self.starCount))
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: StoreSpacing.s2) {
+                    stars(for: rating)
+                    reviewCount.fixedSize(horizontal: true, vertical: false)
+                }
+                VStack(alignment: .leading, spacing: StoreSpacing.s1) {
+                    stars(for: rating)
+                    reviewCount
+                }
             }
-            VStack(alignment: .leading, spacing: StoreSpacing.s1) {
-                stars
-                reviewCount
-            }
+        } else {
+            reviewCount
         }
     }
 
@@ -22,7 +27,7 @@ struct StoreProductFormReviewSummary: View {
             .storeTextStyle(.bodyMedium)
     }
 
-    private var stars: some View {
+    private func stars(for rating: Double) -> some View {
         HStack(spacing: StoreSpacing.s0) {
             ForEach(0..<Self.starCount) { index in
                 let fill = CGFloat(min(max(rating - Double(index), 0), 1))
@@ -41,10 +46,6 @@ struct StoreProductFormReviewSummary: View {
         .foregroundStyle(Color.storeAlertOrange)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(rating.formatted())
-    }
-
-    private var rating: Double {
-        review.average.isFinite ? min(max(review.average, 0), Double(Self.starCount)) : 0
     }
 
     private static let starCount = 5

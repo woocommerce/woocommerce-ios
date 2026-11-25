@@ -10,7 +10,7 @@ struct StoreProductFormSettingsRow: Identifiable {
     let accessibilityIdentifier: String
 
     struct Review {
-        let average: Double
+        let average: Double?
         let countDescription: String
     }
 
@@ -30,7 +30,8 @@ struct StoreProductFormSettingsRow: Identifiable {
         case .price(let model, _): self.init("price", row, model)
         case .customFields(let model): self.init("custom-fields", row, model)
         case .reviews(let model, let count, let average):
-            let review = Review(average: Double(average) ?? 0,
+            let rating = Double(average)
+            let review = Review(average: count > 0 && rating?.isFinite == true ? rating : nil,
                                 countDescription: DefaultProductFormTableViewModel.Localization.reviewCountDescription(count))
             self.init("reviews", row, model, review: review, accessibilityIdentifier: "product-review-cell")
         case .productType(let model, _): self.init("type", row, model)

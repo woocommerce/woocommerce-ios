@@ -520,12 +520,10 @@ struct PointOfSaleDashboardView: View {
         // coverManager interaction.
         var cart = CartView()
         cart.onPresentBarcodeScannerSetup = {
-            let scope = session.accessScope
             phoneShowingCart = false
             // Tiny delay so the cart sheet finishes dismissing before the cover presents,
             // otherwise iOS rejects the simultaneous transitions and nothing shows.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                guard session.isCurrent(scope) else { return }
                 phoneShowingBarcodeScannerSetup = true
             }
         }

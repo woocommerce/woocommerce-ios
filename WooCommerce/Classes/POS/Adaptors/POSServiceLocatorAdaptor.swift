@@ -95,7 +95,7 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(
-            SupportForm(isPresented: context.whileSessionIsCurrent(isPresented),
+            SupportForm(isPresented: isPresented,
                         viewModel: SupportFormViewModel(sourceTag: sourceTag,
                                                         mobileStatusReportProvider: MobileStatusReportProvider(),
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
@@ -109,9 +109,9 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
                                   onDisappear: @escaping () -> Void) -> AnyView {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
-            showTypeSelection: context.whileSessionIsCurrent(showTypeSelection),
+            showTypeSelection: showTypeSelection,
             onSuccess: context.whileSessionIsCurrent(onSuccess),
-            dismissHandler: context.whileSessionIsCurrent(dismissHandler),
+            dismissHandler: dismissHandler,
             onDisappear: context.whileSessionIsCurrent(onDisappear)
         ))
     }
@@ -121,10 +121,10 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
         AnyView(POSDiscountTypeSelectionSheetAdaptor(
-            isPresented: context.whileSessionIsCurrent(isPresented),
+            isPresented: isPresented,
             title: title,
             cancelButtonTitle: cancelButtonTitle,
-            onSelection: context.whileSessionIsCurrent(onSelection)
+            onSelection: onSelection
         ))
     }
 

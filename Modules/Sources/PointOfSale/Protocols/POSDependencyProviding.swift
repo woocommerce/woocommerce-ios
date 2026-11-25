@@ -96,14 +96,6 @@ public struct POSExternalViewContext {
         let perform = whileSessionIsCurrent { (_: Void) in action() }
         return { perform(()) }
     }
-
-    public func whileSessionIsCurrent(_ binding: Binding<Bool>) -> Binding<Bool> {
-        let scope = session.accessScope
-        return Binding(get: { binding.wrappedValue }, set: { value in
-            guard session.isCurrent(scope) else { return }
-            binding.wrappedValue = value
-        })
-    }
 }
 
 /// Main protocol that combines all POS dependency providers

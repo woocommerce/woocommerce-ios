@@ -30,7 +30,7 @@ struct POSIneligibleView: View {
     }
 
     private var canRefresh: Bool {
-        !session.isLocked && (reason != .featureSwitchDisabled || session.allows(.manageStoreSettings))
+        reason != .featureSwitchDisabled || (!session.isLocked && session.allows(.manageStoreSettings))
     }
 
     var body: some View {

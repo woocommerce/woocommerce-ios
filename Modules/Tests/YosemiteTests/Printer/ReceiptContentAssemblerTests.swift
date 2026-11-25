@@ -132,7 +132,7 @@ struct ReceiptContentAssemblerTests {
         let parameters = try makeReceiptParameters()
         let fees = [makeFee(id: 1, name: "Gift wrap", amount: "5.00"),
                     makeFee(id: 2, name: "Service charge", amount: "15.50")]
-        let order = makeOrder(shippingTotal: "5.50", totalTax: "2.00", fees: fees)
+        let order = makeOrder(discountTotal: "0.00", shippingTotal: "5.50", totalTax: "2.00", fees: fees)
 
         // When
         let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
@@ -182,7 +182,7 @@ struct ReceiptContentAssemblerTests {
     @Test func test_makeContent_when_order_has_no_fees_then_excludes_fee_lines() throws {
         // Given
         let parameters = try makeReceiptParameters()
-        let order = makeOrder(fees: [])
+        let order = makeOrder(discountTotal: "0.00", fees: [])
 
         // When
         let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)

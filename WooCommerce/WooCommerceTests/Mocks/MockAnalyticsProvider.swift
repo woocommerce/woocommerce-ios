@@ -136,6 +136,7 @@ extension MockAnalyticsProvider {
         static let errorKeyCode = "error_code"
         static let errorKeyDomain = "error_domain"
         static let errorKeyDescription = "error_description"
+        static let errorKeyRawCode = "error_raw_code"
         static let propertyKeyTimeInApp = "time_in_app"
         static let blogIDKey = "blog_id"
         static let wpcomStoreKey = "is_wpcom_store"

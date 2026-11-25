@@ -34,7 +34,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
             .clipped()
 
             sizedButtons
-                .padding(.bottom, metrics.padding.medium)
+                .posFooterBottomPadding()
         }
         .padding(.bottom, floatingControlBottomPadding)
     }

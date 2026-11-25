@@ -1100,9 +1100,191 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.dataSource.isEligibleForBackendReceipt)
     }
+
+    // MARK: - `syncEverything` countries
+
+    func test_syncEverything_when_shipping_state_is_numeric_code_without_stored_name_then_synchronizes_countries() {
+        // Given
+        // A CN24 code means nothing to merchants, so the name has to be fetched to show it.
+        let order = Order.fake().copy(billingAddress: Address.fake().copy(state: "CA", country: "US"),
+                                      shippingAddress: Address.fake().copy(state: "CN24", country: "CN"))
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_numeric_state_code_name_is_already_stored_then_does_not_synchronize_countries() {
+        // Given
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "CN", name: "China", states: [StateOfACountry(code: "CN24", name: "Sichuan")])
+        ])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_state_codes_are_readable_then_does_not_synchronize_countries() {
+        // Given
+        // US codes like CA are shown as they are, so stores that only see them never pay for the large request.
+        let address = Address.fake().copy(state: "CA", country: "US")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_numeric_code_country_has_empty_state_then_does_not_synchronize_countries() {
+        // Given
+        // An empty state never gets a name, so fetching would repeat on every refresh.
+        let address = Address.fake().copy(state: "", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_state_code_is_unknown_but_country_states_are_stored_then_does_not_synchronize_countries() {
+        // Given
+        // The stored CN list is complete, so a refetch would not add CN99 and would repeat on every refresh.
+        let address = Address.fake().copy(state: "CN99", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "CN", name: "China", states: [StateOfACountry(code: "CN24", name: "Sichuan")])
+        ])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_numeric_code_country_is_stored_without_states_then_does_not_synchronize_countries() {
+        // Given
+        // The store sent Croatia without states, so refetching can never add a name.
+        let address = Address.fake().copy(state: "HR-01", country: "HR")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "HR", name: "Croatia", states: [])])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+
+        // Then
+        XCTAssertFalse(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_refreshed_order_gains_numeric_state_code_then_synchronizes_countries() {
+        // Given
+        // The cached order can be stale, so the address the refresh returns is the one that gets shown.
+        let cachedAddress = Address.fake().copy(state: "CA", country: "US")
+        let cachedOrder = Order.fake().copy(billingAddress: cachedAddress, shippingAddress: cachedAddress)
+        let refreshedOrder = cachedOrder.copy(shippingAddress: Address.fake().copy(state: "CN24", country: "CN"))
+        let viewModel = OrderDetailsViewModel(order: cachedOrder, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: refreshedOrder)
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_order_refresh_fails_then_synchronizes_countries_for_cached_numeric_state_code() {
+        // Given
+        // A failed refresh leaves the cached address on screen, so it still needs its state name.
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: nil)
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_countries_arrive_then_reloads_pushed_billing_information() throws {
+        // Given
+        // The billing screen formats its address in its cells, so it keeps showing CN24 until reloaded.
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        viewModel.reloadSections()
+        let billingDetailIndexPath = try XCTUnwrap(viewModel.dataSource.sections.enumerated().lazy.compactMap { section, value in
+            value.rows.firstIndex(of: .billingDetail).map { IndexPath(row: $0, section: section) }
+        }.first)
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        viewModel.tableView(UITableView(), in: navigationController.viewControllers[0], didSelectRowAt: billingDetailIndexPath)
+        let billingViewController = try XCTUnwrap(navigationController.topViewController as? BillingInformationViewController)
+        billingViewController.loadViewIfNeeded()
+        billingViewController.tableView.layoutIfNeeded()
+        let addressIndexPath = IndexPath(row: 0, section: 0)
+        let staleCell = try XCTUnwrap(billingViewController.tableView.cellForRow(at: addressIndexPath) as? BillingAddressTableViewCell)
+        staleCell.address = "stale"
+        storesManager.whenReceivingAction(ofType: DataAction.self) { action in
+            guard case let .synchronizeCountries(_, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success([]))
+        }
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+        billingViewController.tableView.layoutIfNeeded()
+
+        // Then
+        let reloadedCell = try XCTUnwrap(billingViewController.tableView.cellForRow(at: addressIndexPath) as? BillingAddressTableViewCell)
+        XCTAssertEqual(reloadedCell.address, address.formattedPostalAddress)
+    }
 }
 
 private extension OrderDetailsViewModelTests {
+    /// Runs `syncEverything` with `refreshedOrder` as the refresh result (`nil` fails it),
+    /// returning once the view model has handled it.
+    func syncEverythingAndWaitForOrderRefresh(_ viewModel: OrderDetailsViewModel, refreshedOrder: Order?) {
+        waitFor { promise in
+            self.storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+                guard case let .retrieveOrder(_, _, onCompletion) = action else {
+                    return
+                }
+                onCompletion(refreshedOrder, refreshedOrder == nil ? NSError(domain: "", code: 0) : nil)
+                // The view model's handling is already queued on main, so this runs after it.
+                DispatchQueue.main.async {
+                    promise(())
+                }
+            }
+            viewModel.syncEverything()
+        }
+    }
+
+    var didDispatchSynchronizeCountries: Bool {
+        storesManager.receivedActions.contains { action in
+            guard let action = action as? DataAction, case .synchronizeCountries = action else {
+                return false
+            }
+            return true
+        }
+    }
+
     enum PluginPath {
         static let wooShipping = "woocommerce-shipping/woocommerce-shipping.php"
         static let wooShippingAndTax = "woocommerce-services/woocommerce-services.php"

@@ -25,7 +25,9 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                 ForEach(store.settingsRows) { item in
                     settingsRow(item)
                 }
-                StoreDivider()
+                if !store.settingsRows.isEmpty {
+                    StoreDivider()
+                }
             }
         }
         .scrollDismissesKeyboard(.interactively)
@@ -126,7 +128,7 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                       leading: item.icon.image(size: .largeIncreased).accessibilityHidden(true),
                       supportingContent: item.review.map { StoreProductFormReviewSummary(review: $0) })
                 .accessibilityIdentifier(item.accessibilityIdentifier)
-            if !model.hideSeparator && (item.review == nil || item.id != store.settingsRows.last?.id) {
+            if !model.hideSeparator && item.id != store.settingsRows.last?.id {
                 StoreDivider()
                     .padding(.leading, StoreSpacing.s12)
             }

@@ -20,6 +20,10 @@ enum POSConstants {
         ///
         case inPersonPaymentsLearnMoreWCPay =
                 "https://woocommerce.com/document/getting-started-with-in-person-payments-woopayments/"
+
+        /// Video of a Point of Sale sale, from cart to payment, shown in the onboarding guide
+        ///
+        case pointOfSaleSaleVideo = "https://woocommerce.com/woocommerce-pos/?wvideo=f7lc0t53r8"
     }
 }
 

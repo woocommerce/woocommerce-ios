@@ -41,14 +41,18 @@ enum POSOnboardingGuideStep: Int, CaseIterable, Identifiable {
         }
     }
 
-    static let saleSteps = [Localization.saleStepAddProducts, Localization.saleStepCheckOut, Localization.saleStepGetPaid]
+    static let saleSteps: [(systemImage: String, label: String)] = [
+        ("cart", Localization.saleStepAddProducts),
+        ("doc.plaintext", Localization.saleStepCheckOut),
+        ("creditcard", Localization.saleStepGetPaid)
+    ]
 }
 
 private extension POSOnboardingGuideStep {
     enum Localization {
         static let checkoutTitle = NSLocalizedString(
-            "pos.onboardingGuide.checkout.title.v2",
-            value: "Built for selling in person",
+            "pos.onboardingGuide.checkout.title.v3",
+            value: "Sell in person with Point of Sale",
             comment: "Title of the first step of the POS onboarding guide shown on iPhone."
         )
         static let checkoutMessage = NSLocalizedString(
@@ -62,8 +66,9 @@ private extension POSOnboardingGuideStep {
             comment: "Title of the second step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreMessage = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.message.v3",
-            value: "POS uses your store's products, prices and stock, and records every sale there. Nothing to reconcile.",
+            "pos.onboardingGuide.oneStore.message.v4",
+            value: "Sell straight from your WooCommerce catalog. Prices and stock are always up to date, " +
+                "and every sale is recorded in your store.",
             comment: "Message of the second step of the POS onboarding guide shown on iPhone."
         )
         static let howASaleWorksTitle = NSLocalizedString(

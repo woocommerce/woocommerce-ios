@@ -5,25 +5,31 @@ import WooFoundation
 /// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
+    @State private var isShowingVideo = false
 
     @Binding var currentStep: POSOnboardingGuideStep
     let onStartSelling: () -> Void
     let onExit: () -> Void
+    let onWatchVideo: () -> Void
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             TabView(selection: $currentStep) {
                 ForEach(POSOnboardingGuideStep.allCases) { step in
-                    POSOnboardingGuideStepView(step: step)
-                        .tag(step)
+                    // The dots sit right under each step's content, with the free space above the buttons.
+                    VStack(spacing: metrics.spacing.none) {
+                        POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+                        POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
+                                         currentPage: currentPage,
+                                         accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+                            .posPadding(.bottom, \.medium)
+                        Spacer(minLength: metrics.spacing.none)
+                    }
+                    .scrollVerticallyIfNeeded()
+                    .tag(step)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-
-            POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
-                             currentPage: currentPage,
-                             accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
-                .posPadding(.vertical, \.medium)
 
             POSFlowButtonsView(configuration: buttonConfiguration)
                 .posStatusButtonsWidth()
@@ -31,6 +37,9 @@ struct POSOnboardingGuideView: View {
         }
         .background(Color.posSurface.ignoresSafeArea())
         .interactiveDismissDisabled()
+        .posFullScreenCover(isPresented: $isShowingVideo) {
+            SafariView(url: POSConstants.URLs.pointOfSaleSaleVideo.asURL())
+        }
     }
 
     private var currentPage: Binding<Int> {
@@ -41,6 +50,11 @@ struct POSOnboardingGuideView: View {
                         currentStep = step
                     }
                 })
+    }
+
+    private func watchVideo() {
+        onWatchVideo()
+        isShowingVideo = true
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -57,9 +71,9 @@ private struct POSOnboardingGuideStepView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric private var badgeSize: CGFloat = 28
 
     let step: POSOnboardingGuideStep
+    let onWatchVideo: () -> Void
 
     private static let illustrationSize: CGFloat = 140
 
@@ -83,38 +97,115 @@ private struct POSOnboardingGuideStepView: View {
                     Text(message)
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                } else {
-                    saleSteps
                 }
             }
             .multilineTextAlignment(.center)
-            .frame(maxWidth: POSStatusButtonsLayout.maxWidth)
-        }
-        // Top-anchored, so the illustration and title stay in place while swiping between steps.
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding(metrics.padding.medium)
-        .posPadding(.top, \.xxLarge)
-        .scrollVerticallyIfNeeded()
-    }
 
-    private var saleSteps: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.small) {
-            ForEach(Array(POSOnboardingGuideStep.saleSteps.enumerated()), id: \.offset) { index, label in
-                HStack(spacing: metrics.spacing.medium) {
-                    Text((index + 1).formatted())
-                        .font(.posBodyMediumBold)
-                        .foregroundStyle(Color.posOnPrimary)
-                        .frame(width: badgeSize, height: badgeSize)
-                        .background(Circle().fill(Color.posPrimary))
-                    Text(label)
-                        .font(.posBodyLargeRegular())
+            if step == .howASaleWorks {
+                POSOnboardingGuideSaleSteps()
+                POSOnboardingGuideVideoCard(action: onWatchVideo)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: POSStatusButtonsLayout.maxWidth)
+        .padding(metrics.padding.medium)
+    }
+}
+
+/// Add products › Check out › Get paid. With accessibility text sizes the labels don't fit side by side, so the steps stack.
+private struct POSOnboardingGuideSaleSteps: View {
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric private var tileSize = POSOnboardingGuideSaleStepTile.baseSize
+
+    var body: some View {
+        let stacks = dynamicTypeSize.isAccessibilitySize
+        let rowLayout = stacks ? AnyLayout(VStackLayout(alignment: .leading, spacing: metrics.spacing.medium))
+                               : AnyLayout(HStackLayout(alignment: .top, spacing: metrics.spacing.small))
+        let itemLayout = stacks ? AnyLayout(HStackLayout(spacing: metrics.spacing.medium))
+                                : AnyLayout(VStackLayout(spacing: metrics.spacing.small))
+        rowLayout {
+            ForEach(Array(POSOnboardingGuideStep.saleSteps.enumerated()), id: \.offset) { index, saleStep in
+                if index > 0 && !stacks {
+                    Image(systemName: "chevron.forward")
+                        .font(.posBodySmallBold())
+                        .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                        .frame(height: tileSize)
+                        .accessibilityHidden(true)
+                }
+                itemLayout {
+                    POSOnboardingGuideSaleStepTile(systemImage: saleStep.systemImage)
+                        // Larger tiles would push the row off the screen.
+                        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                    Text(saleStep.label)
+                        .font(.posBodyMediumRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 }
                 .accessibilityElement(children: .combine)
             }
         }
-        .multilineTextAlignment(.leading)
-        .posPadding(.top, \.small)
+    }
+}
+
+private struct POSOnboardingGuideSaleStepTile: View {
+    static let baseSize: CGFloat = 64
+    @ScaledMetric private var size = Self.baseSize
+
+    let systemImage: String
+
+    var body: some View {
+        Image(systemName: systemImage)
+            .font(.posButtonSymbolLarge)
+            .foregroundStyle(Color.posPrimary)
+            .frame(width: size, height: size)
+            .background(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value).fill(Color.posSecondary))
+            .accessibilityHidden(true)
+    }
+}
+
+private struct POSOnboardingGuideVideoCard: View {
+    @Environment(\.posMetrics) private var metrics
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: metrics.spacing.medium) {
+                Image(systemName: "play.circle.fill")
+                    .font(.posButtonSymbolLarge)
+                    .foregroundStyle(Color.posPrimary)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                    Text(Localization.title)
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                    Text(Localization.subtitle)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
+                .multilineTextAlignment(.leading)
+                Spacer(minLength: metrics.spacing.none)
+            }
+            .posPadding(\.medium)
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private enum Localization {
+        static let title = NSLocalizedString(
+            "pos.onboardingGuide.video.title",
+            value: "Watch a sale in action",
+            comment: "Title of the card on the last step of the POS onboarding guide that opens a video of a sale."
+        )
+        static let subtitle = NSLocalizedString(
+            "pos.onboardingGuide.video.subtitle",
+            value: "Short video, from cart to payment",
+            comment: "Subtitle of the card on the last step of the POS onboarding guide that opens a video of a sale."
+        )
     }
 }
 
@@ -138,8 +229,9 @@ private struct POSOnboardingGuidePreview: View {
     @State var currentStep: POSOnboardingGuideStep
 
     var body: some View {
-        POSOnboardingGuideView(currentStep: $currentStep, onStartSelling: {}, onExit: {})
+        POSOnboardingGuideView(currentStep: $currentStep, onStartSelling: {}, onExit: {}, onWatchVideo: {})
             .posPreviewSmallestPhone()
+            .environmentObject(POSFullScreenCoverManager())
     }
 }
 
@@ -153,7 +245,7 @@ private struct POSOnboardingGuidePreview: View {
 }
 
 #Preview("Accessibility text") {
-    POSOnboardingGuidePreview(currentStep: .oneStore)
+    POSOnboardingGuidePreview(currentStep: .howASaleWorks)
         .dynamicTypeSize(.accessibility3)
 }
 #endif

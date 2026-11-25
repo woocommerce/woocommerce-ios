@@ -59,9 +59,10 @@ private extension POSOnboardingGuideStep {
             comment: "Title of the second step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreMessage = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.message.v5",
-            value: "A single source of truth for products, prices, stock, and orders across online and in-person sales.",
-            comment: "Message of the second step of the POS onboarding guide shown on iPhone."
+            "pos.onboardingGuide.oneStore.message.v6",
+            value: "A single source of truth for products, prices, stock, and orders across online and in‑person sales.",
+            comment: "Message of the second step of the POS onboarding guide shown on iPhone. " +
+                "\"in‑person\" uses a non-breaking hyphen so it doesn't split across lines."
         )
         static let howASaleWorksTitle = NSLocalizedString(
             "pos.onboardingGuide.howASaleWorks.title.v2",

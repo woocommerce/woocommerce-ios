@@ -310,7 +310,7 @@ public struct PointOfSaleEntryPointView: View {
             guard lockSettings.preferences.locksInBackground,
                   accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
-            posModel?.paymentModel.cancelCardPaymentForLock()
+            Task { await posModel?.paymentModel.cancelCardPaymentForLock() }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             let session = accessSession

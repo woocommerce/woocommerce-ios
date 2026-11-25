@@ -14,68 +14,63 @@ import enum WooFoundationCore.WooAnalyticsStat
 struct POSPaymentModelTests {
 
     @Test(arguments: [PointOfSaleCardPaymentState.acceptingCard, .processingPayment]) @MainActor
-    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_requests_cancellation_and_keeps_state(card: PointOfSaleCardPaymentState) {
+    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_cancels_before_returning_to_checkout(card: PointOfSaleCardPaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let state = PointOfSalePaymentState(card: card, cash: .idle)
         let provider = MockPOSPaymentOrderProvider()
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, paymentState: state)
+        var returnedToCheckout = false
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }),
+                                        paymentState: state)
+        service.onCancelPaymentCalled = {
+            #expect(!returnedToCheckout)
+            #expect(sut.paymentState == state)
+        }
 
         // When
-        sut.cancelCardPaymentForLock()
+        await sut.cancelCardPaymentForLock()
 
         // Then
         #expect(service.cancelPaymentCalled)
-        #expect(service.cancelPaymentCallCount == 1)
-        #expect(sut.paymentState == state)
+        #expect(returnedToCheckout)
         #expect(provider.provideOrderCallCount == 0)
     }
 
     @Test(arguments: [PointOfSalePaymentState.idle,
                       PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash),
                       PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)]) @MainActor
-    func test_cancelCardPaymentForLock_when_no_card_payment_is_active_then_does_not_request_cancellation(state: PointOfSalePaymentState) {
+    func test_cancelCardPaymentForLock_when_no_card_payment_is_active_then_does_not_request_cancellation(state: PointOfSalePaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
 
         // When
-        sut.cancelCardPaymentForLock()
+        await sut.cancelCardPaymentForLock()
 
         // Then
         #expect(!service.cancelPaymentCalled)
         #expect(sut.paymentState == state)
     }
 
-    @Test(arguments: [true, false]) @MainActor
-    func test_cancelCardPaymentForLock_when_collection_finishes_then_returns_to_checkout_only_on_cancellation(isCanceled: Bool) async {
+    @Test @MainActor
+    func test_cancelCardPaymentForLock_when_cancellation_fails_then_keeps_checkout() async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(total: "1.00")
-        provider.totalDecimalToReturn = 1
         var returnedToCheckout = false
+        let state = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
         let sut = makePaymentController(cardPresentPaymentService: service,
-                                        orderProvider: provider,
-                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }))
-        service.collectPaymentOverride = { [weak sut, weak service] in
-            service?.paymentEvent = .show(eventDetails: .processing)
-            sut?.cancelCardPaymentForLock()
-            service?.paymentEvent = .idle
-            #expect(!returnedToCheckout)
-            return isCanceled ? .cancellation : .success(CardPresentPaymentTransaction())
-        }
+                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }),
+                                        paymentState: state)
+        service.onCancelPaymentCalled = { throw CancellationError() }
 
         // When
-        await sut.startPayment()
+        await sut.cancelCardPaymentForLock()
 
         // Then
-        #expect(returnedToCheckout == isCanceled)
-        #expect(service.cancelPaymentCallCount == 1)
-        #expect(provider.provideOrderCallCount == 1)
+        #expect(!returnedToCheckout)
+        #expect(sut.paymentState == state)
     }
 
     // MARK: - Payment starts that end without a payment

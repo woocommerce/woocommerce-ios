@@ -24,7 +24,6 @@ final class POSPaymentModel {
     let paymentStateChanges: AnyPublisher<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    private var returnsToCheckoutAfterLockCancellation = false
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
@@ -87,11 +86,16 @@ final class POSPaymentModel {
         currentPaymentMethod != nil
     }
 
-    func cancelCardPaymentForLock() {
+    func cancelCardPaymentForLock() async {
         guard paymentState.activePaymentMethod == .card, paymentState.isAutoLockSuppressing else { return }
-        returnsToCheckoutAfterLockCancellation = true
-        // This entry point uses the current flow's phase-specific cancellation handler.
-        cardPresentPaymentService.cancelPayment()
+        let generation = startPaymentGeneration
+        do {
+            try await cardPresentPaymentService.cancelPayment()
+            guard startPaymentGeneration == generation, !paymentState.isSuccess else { return }
+            configuration.intentCreationErrorExitAction.action()
+        } catch {
+            DDLogWarn("Failed to cancel card payment when locking POS: \(error)")
+        }
     }
 
     /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
@@ -625,7 +629,6 @@ extension POSPaymentModel {
     }
 
     private func collectCardPayment(using method: CardReaderConnectionMethod) async {
-        returnsToCheckoutAfterLockCancellation = false
         DDLogInfo("🃏 [CardPayment] collectCardPayment(\(method)) called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         let generation = startPaymentGeneration
         defer {
@@ -647,14 +650,7 @@ extension POSPaymentModel {
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
-        let generation = startPaymentGeneration
         let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
-        if case .cancellation = result, returnsToCheckoutAfterLockCancellation, startPaymentGeneration == generation {
-            returnsToCheckoutAfterLockCancellation = false
-            // The existing edit-order route keeps the cart and synced order.
-            configuration.intentCreationErrorExitAction.action()
-            return
-        }
         if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
             cardPaymentDetails = (order.orderID, cardDetails)
         }
@@ -1146,7 +1142,6 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
-        returnsToCheckoutAfterLockCancellation = false
         scanToPayGeneration = UUID()
         cancelConnectCardReaderTask()
         cancelTapToPayConnectTask()

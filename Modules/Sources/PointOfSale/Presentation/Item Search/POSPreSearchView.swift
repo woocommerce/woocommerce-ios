@@ -45,20 +45,16 @@ struct POSPreSearchView: View {
     }
 
     @ViewBuilder private var recentSearchesOnly: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.none) {
-            if savedSearches.isNotEmpty {
+        if savedSearches.isNotEmpty {
+            VStack(alignment: .leading, spacing: metrics.spacing.none) {
                 recentSearchesSection(bottomPadding: metrics.padding.medium)
 
                 Spacer()
-            } else {
-                Text(Localization.preSearchEmptyListText)
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .padding(.top, metrics.padding.medium)
             }
+            .padding(.horizontal, metrics.padding.medium)
+        } else {
+            POSListEmptyView(viewModel: POSCouponPreSearchEmptyViewModel())
         }
-        .padding(.horizontal, metrics.padding.medium)
     }
 
     @ViewBuilder private func recentSearchesSection(bottomPadding: CGFloat) -> some View {
@@ -123,10 +119,25 @@ private extension POSPreSearchView {
             "pos.itemsearch.before.search.popularProducts.title",
             value: "Popular products",
             comment: "Title for the list of popular products shown before a search term is typed in POS")
+    }
+}
 
-        static let preSearchEmptyListText = NSLocalizedString(
-            "pos.itemsearch.before.search.emptyListText",
-            value: "Search your store",
-            comment: "Text shown when there's nothing to show before a search term is typed in POS")
+struct POSCouponPreSearchEmptyViewModel: POSListEmptyViewModelProtocol {
+    var title: String { Localization.title }
+    var subtitle: String { Localization.subtitle }
+    var buttonTitle: String? { nil }
+    var icon: Image { PointOfSaleAssets.coupons.decorativeImage }
+}
+
+private extension POSCouponPreSearchEmptyViewModel {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "pos.itemsearch.before.search.coupons.emptyTitle",
+            value: "Find a coupon",
+            comment: "Title shown on the coupon search screen in POS before a search term is typed, when there are no recent searches")
+        static let subtitle = NSLocalizedString(
+            "pos.itemsearch.before.search.coupons.emptySubtitle",
+            value: "Type a coupon code to search.",
+            comment: "Subtitle shown on the coupon search screen in POS before a search term is typed, when there are no recent searches")
     }
 }

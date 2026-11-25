@@ -382,13 +382,13 @@ final class MainTabBarController: UITabBarController {
 
     // MARK: - Public Methods
 
-    var canNavigateOutsidePOS: Bool {
+    var isPOSExitBlocked: Bool {
         if let pos = presentedViewController as? POSHostingController {
-            return pos.accessContext?.canExitPOS ?? !featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
+            return pos.accessContext.map { !$0.canExitPOS } ?? featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
         }
 
         // Cold-start routes can arrive before the persisted lock is presented.
-        return !hasSavedPOSLockToReopen
+        return hasSavedPOSLockToReopen
     }
 
     private var hasSavedPOSLockToReopen: Bool {
@@ -404,18 +404,18 @@ final class MainTabBarController: UITabBarController {
     }
 
     func beginExternalNavigation() -> (() -> Bool)? {
-        guard canNavigateOutsidePOS else { return nil }
+        guard !isPOSExitBlocked else { return nil }
         let generation = posPresentationGeneration
         let isCurrentSession = (presentedViewController as? POSHostingController)?.accessContext?.sessionValidityCheck()
         return { [weak self] in
-            guard let self, generation == posPresentationGeneration, canNavigateOutsidePOS else { return false }
+            guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return false }
             return isCurrentSession?() ?? true
         }
     }
 
     /// Switches the TabBarController to the specified Tab
-    @discardableResult
-    func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) -> Bool {
+    ///
+    func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
         navigateToTabWithViewController(tab, animated: animated) { _ in
             completion?()
         }
@@ -427,14 +427,8 @@ final class MainTabBarController: UITabBarController {
     ///   - tab: The tab to switch to.
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete with the root view controller.
-    @discardableResult
-    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) -> Bool {
-        guard canNavigateOutsidePOS else { return false }
-        performTabNavigation(to: tab, animated: animated, completion: completion)
-        return true
-    }
-
-    private func performTabNavigation(to tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)?) {
+    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
+        guard !isPOSExitBlocked else { return }
         let generation = posPresentationGeneration
         dismiss(animated: animated) { [weak self] in
             guard let self, posPresentationGeneration == generation else { return }
@@ -758,17 +752,17 @@ extension MainTabBarController {
     }
 
     private func performStoreSwitch(to siteID: Int64, storedSiteOnly: Bool, onCompletion: @escaping (Bool?) -> Void) {
-        guard canNavigateOutsidePOS else { return onCompletion(nil) }
+        guard !isPOSExitBlocked else { return onCompletion(nil) }
         guard siteID != stores.sessionManager.defaultStoreID else { return onCompletion(true) }
 
         let generation = posPresentationGeneration
         let proceed = { [weak self] in
-            guard let self, generation == posPresentationGeneration, canNavigateOutsidePOS else { return onCompletion(nil) }
+            guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return onCompletion(nil) }
             let switcher = SwitchStoreUseCase(stores: stores)
             let completed: (Bool) -> Void = { [weak self] siteChanged in
-                guard let self, generation == posPresentationGeneration, canNavigateOutsidePOS else { return onCompletion(nil) }
+                guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return onCompletion(nil) }
                 if siteChanged {
-                    let presenter = SwitchStoreNoticePresenter(siteID: siteID)
+                    let presenter = SwitchStoreNoticePresenter(siteID: siteID, stores: stores, noticePresenter: noticePresenter)
                     presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
                 }
                 onCompletion(siteChanged)
@@ -787,9 +781,16 @@ extension MainTabBarController {
         }
     }
 
-    func presentAddProductFlow() -> Bool {
-        navigateTo(.products) { [weak self] in
-            (self?.productsContainerController.wrappedController as? ProductsSplitViewWrapperController)?.startProductCreation()
+    static func presentAddProductFlow() {
+        switchToProductsTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let productsContainerController = tabBar?.productsContainerController
+
+            guard let productsSplitViewWrapperController = productsContainerController?.wrappedController as? ProductsSplitViewWrapperController else {
+                return
+            }
+
+            productsSplitViewWrapperController.startProductCreation()
         }
     }
 
@@ -852,7 +853,9 @@ extension MainTabBarController {
     }
 
     private static func presentProductDetails(productID: Int64, siteID: Int64) {
-        guard let tabBar = AppDelegate.shared.tabBarController else { return }
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
 
         let model: ProductLoaderViewController.Model = .product(productID: productID)
         let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
@@ -924,31 +927,26 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        _ = navigateIfAllowed(to: destination)
-    }
-
-    func navigateIfAllowed(to destination: any DeepLinkDestinationProtocol) -> Bool {
-        guard canNavigateOutsidePOS else { return false }
         switch destination {
         case is HubMenuDestination,
             is PaymentsMenuDestination:
-            performTabNavigation(to: .hubMenu) { [weak self] _ in
+            navigateTo(.hubMenu) { [weak self] in
                 self?.hubMenuTabCoordinator?.navigate(to: destination)
             }
         case is OrdersDestination:
-            performTabNavigation(to: .orders) { _ in
+            navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
         case let analyticsDestination as AnalyticsHubDestination:
-            performTabNavigation(to: .myStore) { [weak self] _ in
+            navigateTo(.myStore) { [weak self] in
                 self?.presentAnalyticsHub(for: analyticsDestination)
             }
         case is POSPromotionDestination:
+            guard !isPOSExitBlocked else { return }
             presentPOSPromotionModal()
         default:
-            return false
+            return
         }
-        return true
     }
 
     private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {

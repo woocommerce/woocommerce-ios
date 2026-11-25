@@ -9,8 +9,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var universalLinkRouter: UniversalLinkRouter?
     var tabBarController: MainTabBarController? { appCoordinator?.tabBarController }
 
-    private var canNavigateOutsidePOS: Bool {
-        tabBarController?.canNavigateOutsidePOS ?? !MainTabBarController.hasSavedPOSLock()
+    private var isPOSExitBlocked: Bool {
+        tabBarController?.isPOSExitBlocked ?? MainTabBarController.hasSavedPOSLock()
     }
 
     // MARK: - Scene lifecycle
@@ -103,7 +103,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     // MARK: - URL / Activity Handling
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard canNavigateOutsidePOS, let url = URLContexts.first?.url else { return }
+        guard !isPOSExitBlocked, let url = URLContexts.first?.url else { return }
         if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
             universalLinkRouter.handle(url: url)
             return
@@ -116,7 +116,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        guard canNavigateOutsidePOS else { return }
+        guard !isPOSExitBlocked else { return }
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
         }
@@ -138,19 +138,19 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private func handle(shortcutItem: UIApplicationShortcutItem, completion: ((Bool) -> Void)?) {
         guard let quickAction = QuickAction(rawValue: shortcutItem.type),
-              let tabBarController else {
+              let tabBarController, !tabBarController.isPOSExitBlocked else {
             completion?(false)
             return
         }
-        let handled = switch quickAction {
+        switch quickAction {
         case .addProduct:
-            tabBarController.presentAddProductFlow()
+            MainTabBarController.presentAddProductFlow()
         case .addOrder, .collectPayment:
-            tabBarController.navigateIfAllowed(to: OrdersDestination.createOrder)
+            tabBarController.navigate(to: OrdersDestination.createOrder)
         case .openOrders:
-            tabBarController.navigateIfAllowed(to: OrdersDestination.orderList)
+            tabBarController.navigate(to: OrdersDestination.orderList)
         }
-        completion?(handled)
+        completion?(true)
     }
 
     // MARK: - Routers & Presenters

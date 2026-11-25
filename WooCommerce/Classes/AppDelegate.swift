@@ -433,12 +433,12 @@ extension AppDelegate {
 // MARK: - UNUserNotificationCenterDelegate
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    var canNavigateOutsidePOS: Bool {
-        tabBarController?.canNavigateOutsidePOS ?? !MainTabBarController.hasSavedPOSLock()
+    private var isPOSExitBlocked: Bool {
+        tabBarController?.isPOSExitBlocked ?? MainTabBarController.hasSavedPOSLock()
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        guard canNavigateOutsidePOS else { return }
+        guard !isPOSExitBlocked else { return }
         await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
     }
 
@@ -450,7 +450,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
-        guard canNavigateOutsidePOS else { return false }
+        guard !isPOSExitBlocked else { return false }
         if ServiceLocator.stores.isAuthenticated {
             let pendingAuthFlowStorage = PendingAuthFlowStorage()
             let flow = pendingAuthFlowStorage.current
@@ -484,7 +484,7 @@ extension AppDelegate {
                 .timeout(.seconds(30), scheduler: DispatchQueue.main)
                 .first(where: { $0 != nil })
                 .sink { [weak self] site in
-                    guard let site, isCurrent?() ?? (self?.canNavigateOutsidePOS == true) else { return }
+                    guard let site, isCurrent?() ?? (self?.isPOSExitBlocked == false) else { return }
                     _ = self?.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
                 }
                 .store(in: &subscriptions)

@@ -455,10 +455,13 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNil(tabBar.presentedViewController)
 
         // When
-        let accepted = tabBar.navigateTo(.orders)
+        tabBar.navigateTo(.orders) {
+            XCTFail("The blocked request must not complete")
+        }
 
         // Then
-        XCTAssertFalse(accepted)
+        XCTAssertTrue(tabBar.isPOSExitBlocked)
+        XCTAssertNil(tabBar.presentedViewController)
     }
 
     @MainActor
@@ -474,16 +477,16 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertTrue(tabBar.presentedViewController === pos)
 
         // When
-        let accepted = tabBar.navigateTo(.products) {
+        tabBar.navigateTo(.products) {
             XCTFail("The blocked request must not complete")
         }
-        XCTAssertFalse(tabBar.navigateIfAllowed(to: OrdersDestination.orderList))
+        tabBar.navigate(to: OrdersDestination.orderList)
+        XCTAssertTrue(tabBar.isPOSExitBlocked)
         session.currentStaff = POSLocalRole.admin.staff
 
         // Then
-        XCTAssertFalse(accepted)
         XCTAssertTrue(tabBar.presentedViewController === pos)
-        XCTAssertTrue(tabBar.canNavigateOutsidePOS)
+        XCTAssertFalse(tabBar.isPOSExitBlocked)
     }
 
     func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {

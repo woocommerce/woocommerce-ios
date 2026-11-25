@@ -16,13 +16,16 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
             LazyVStack(spacing: StoreSpacing.s0) {
                 ForEach(store.primaryRows) { item in
                     primaryRow(item.row)
+                    StoreDivider()
                 }
                 if !store.primaryRows.isEmpty && !store.settingsRows.isEmpty {
                     Color.storeSurface.frame(height: StoreSpacing.s3)
+                    StoreDivider()
                 }
                 ForEach(store.settingsRows) { item in
                     settingsRow(item)
                 }
+                StoreDivider()
             }
         }
         .scrollDismissesKeyboard(.interactively)
@@ -60,16 +63,12 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                         .buttonStyle(.plain)
                         .padding(StorePadding.p4)
                     }
-                    StoreDivider()
                 }
                 .background(Color.storeSurfaceBright)
             }
         case .name(_, let isEditable, _):
-            VStack(spacing: StoreSpacing.s0) {
-                productName(isEditable: isEditable)
-                StoreDivider()
-            }
-            .background(Color.storeSurfaceBright)
+            productName(isEditable: isEditable)
+                .background(Color.storeSurfaceBright)
         case .variationName(let name):
             readOnlyName(name)
                 .modifier(NameStyle())
@@ -77,18 +76,14 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
         case .description(let description, let isEditable, _):
             let hasDescription = description?.isEmpty == false
             let action: (() -> Void)? = isEditable ? { store.onPrimaryRowSelected(row) } : nil
-            VStack(spacing: StoreSpacing.s0) {
-                StoreCell(hasDescription ? Localization.descriptionTitle : Localization.descriptionPlaceholder,
-                          description: hasDescription ? description : nil,
-                          density: .compact,
-                          showsDisclosureIndicator: isEditable,
-                          action: action)
-                    .accessibilityHint(isEditable && hasDescription ? Localization.Accessibility.descriptionHint : "")
-                    .accessibilityIdentifier("product-description")
-                StoreDivider()
-                    .padding(.leading, StorePadding.p7)
-            }
-            .background(Color.storeSurfaceBright)
+            StoreCell(hasDescription ? Localization.descriptionTitle : Localization.descriptionPlaceholder,
+                      description: hasDescription ? description : nil,
+                      configuration: .init(density: .compact, iconTint: .title),
+                      showsDisclosureIndicator: isEditable,
+                      action: action)
+                .accessibilityHint(isEditable && hasDescription ? Localization.Accessibility.descriptionHint : "")
+                .accessibilityIdentifier("product-description")
+                .background(Color.storeSurfaceBright)
         case .linkedProductsPromo, .descriptionAI, .learnMoreAboutAI, .promoteWithBlaze, .separator:
             EmptyView()
         }
@@ -124,7 +119,7 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
         return VStack(spacing: StoreSpacing.s0) {
             StoreCell(model.title ?? "",
                       description: item.review == nil ? model.details : nil,
-                      density: .compact,
+                      configuration: .init(density: .compact, iconTint: .title),
                       showsDisclosureIndicator: item.isActionable,
                       action: action,
                       leading: item.icon.image(size: .largeIncreased).accessibilityHidden(true),

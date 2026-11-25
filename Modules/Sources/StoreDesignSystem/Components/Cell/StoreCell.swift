@@ -1,22 +1,5 @@
 import SwiftUI
 
-public enum StoreCellDensity: Sendable {
-    case standard
-    case compact
-
-    fileprivate var verticalPadding: CGFloat {
-        self == .compact ? StorePadding.p4 : StorePadding.p7
-    }
-
-    fileprivate var trailingSpacing: CGFloat {
-        self == .compact ? StoreSpacing.s5 : StoreSpacing.s6
-    }
-
-    fileprivate var minimumHeight: CGFloat? {
-        self == .compact ? StoreSize.compactCellHeight : nil
-    }
-}
-
 /// A single list row: a title with an optional description between optional leading and trailing
 /// slots, on a surface-bright container. Combine cells (separated by ``StoreDivider``) to build lists.
 /// `action` makes the whole row a button; a `trailing` slot with its own control (e.g. a toggle) belongs on a row without `action`.
@@ -26,7 +9,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
 
     private let title: String
     private let description: String?
-    private let density: StoreCellDensity
+    private let configuration: StoreCellConfiguration
     private let showsDisclosureIndicator: Bool
     private let action: (() -> Void)?
     private let leading: Leading
@@ -36,7 +19,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
     /// - Parameters:
     ///   - title: The row's primary text.
     ///   - description: Secondary text shown under the title.
-    ///   - density: Controls vertical padding, minimum row height and icon treatment.
+    ///   - configuration: Controls row density and icon tint independently.
     ///   - showsDisclosureIndicator: Shows the trailing chevron that signals the row opens a detail.
     ///   - action: Makes the whole row a button. `nil` renders a static row.
     ///   - leading: A single view before the text, e.g. a ``StoreIconContainer`` or an image.
@@ -44,7 +27,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
     ///   - trailing: Content after the text, e.g. a value label, a ``StoreBadge`` or a toggle.
     public init(_ title: String,
                 description: String? = nil,
-                density: StoreCellDensity = .standard,
+                configuration: StoreCellConfiguration = .init(),
                 showsDisclosureIndicator: Bool = false,
                 action: (() -> Void)? = nil,
                 leading: Leading,
@@ -52,7 +35,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
                 @ViewBuilder trailing: () -> Trailing) {
         self.title = title
         self.description = description
-        self.density = density
+        self.configuration = configuration
         self.showsDisclosureIndicator = showsDisclosureIndicator
         self.action = action
         self.leading = leading
@@ -77,7 +60,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
     }
 
     private var content: some View {
-        HStack(alignment: .center, spacing: density.trailingSpacing) {
+        HStack(alignment: .center, spacing: configuration.density.trailingSpacing) {
             HStack(alignment: .center, spacing: StoreSpacing.s5) {
                 leading
                     .foregroundStyle(iconColor)
@@ -93,14 +76,17 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
             }
         }
         .padding(.horizontal, StorePadding.p7)
-        .padding(.vertical, density.verticalPadding)
-        .frame(minHeight: density.minimumHeight)
+        .padding(.vertical, configuration.density.verticalPadding)
+        .frame(minHeight: configuration.density.minimumHeight)
         .background(appearance.background)
         .contentShape(Rectangle())
     }
 
     private var iconColor: Color {
-        density == .compact ? appearance.title : appearance.slot
+        switch configuration.iconTint {
+        case .secondary: appearance.slot
+        case .title: appearance.title
+        }
     }
 
     /// Title and description read as one VoiceOver element, whatever the slots hold.
@@ -127,12 +113,12 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
 public extension StoreCell where Leading == EmptyView, Trailing == EmptyView, Supporting == EmptyView {
     init(_ title: String,
          description: String? = nil,
-         density: StoreCellDensity = .standard,
+         configuration: StoreCellConfiguration = .init(),
          showsDisclosureIndicator: Bool = false,
          action: (() -> Void)? = nil) {
         self.init(title,
                   description: description,
-                  density: density,
+                  configuration: configuration,
                   showsDisclosureIndicator: showsDisclosureIndicator,
                   action: action,
                   leading: EmptyView(),
@@ -143,14 +129,14 @@ public extension StoreCell where Leading == EmptyView, Trailing == EmptyView, Su
 public extension StoreCell where Trailing == EmptyView {
     init(_ title: String,
          description: String? = nil,
-         density: StoreCellDensity = .standard,
+         configuration: StoreCellConfiguration = .init(),
          showsDisclosureIndicator: Bool = false,
          action: (() -> Void)? = nil,
          leading: Leading,
          supportingContent: Supporting = EmptyView()) {
         self.init(title,
                   description: description,
-                  density: density,
+                  configuration: configuration,
                   showsDisclosureIndicator: showsDisclosureIndicator,
                   action: action,
                   leading: leading,
@@ -162,13 +148,13 @@ public extension StoreCell where Trailing == EmptyView {
 public extension StoreCell where Leading == EmptyView, Supporting == EmptyView {
     init(_ title: String,
          description: String? = nil,
-         density: StoreCellDensity = .standard,
+         configuration: StoreCellConfiguration = .init(),
          showsDisclosureIndicator: Bool = false,
          action: (() -> Void)? = nil,
          @ViewBuilder trailing: () -> Trailing) {
         self.init(title,
                   description: description,
-                  density: density,
+                  configuration: configuration,
                   showsDisclosureIndicator: showsDisclosureIndicator,
                   action: action,
                   leading: EmptyView(),

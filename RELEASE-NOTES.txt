@@ -4,7 +4,7 @@
 26.2
 -----
 - [***] In-Person Payments: Tap to Pay on iPhone is now available for stores in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18405]
-- [**] POS: Print receipts on Star Micronics printers over Bluetooth. Connect a printer in Settings › Hardware › Receipt printers, then tap Print receipt after a sale. [PR_URL]
+- [**] POS: Print receipts on Star Micronics printers over Bluetooth. Connect a printer in Settings › Hardware › Receipt printers, then tap Print receipt after a sale. [https://github.com/woocommerce/woocommerce-ios/pull/18473]
 - [*] Cancel is no longer cut off to "Ca…" on payments setup, the admin role required screen and Blaze Edit Ad. [https://github.com/woocommerce/woocommerce-ios/pull/18470]
 - [*] POS: The recent search shadow is no longer cut on the search screen before typing, and that screen now has even gaps under the section titles, with more space between the sections. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
 - [*] POS: On iPhone, the Cart button no longer shows under Retry on the "Unable to load coupons" and "No supported variations found" screens. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
@@ -193,7 +193,7 @@
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
 - [*] Order creation: the Add Shipping button now stays above the keyboard after returning from the shipping method picker. [https://github.com/woocommerce/woocommerce-ios/pull/17767]
 - [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/17763]
-- [Internal] Payments: Added the card reader discovery and connection Tracks events that iOS was missing, for parity with Android. [PR_URL]
+- [Internal] Payments: Added the card reader discovery and connection Tracks events that iOS was missing, for parity with Android. [https://github.com/woocommerce/woocommerce-ios/pull/18473]
 - [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
 - [*] Orders paid via Scan to Pay or Mark as Paid now show their actual payment method instead of "Other". [https://github.com/woocommerce/woocommerce-ios/pull/17470]
 - [Internal] Analytics: Site enrichment no longer drops caller-supplied properties when the session cache is still empty [https://github.com/woocommerce/woocommerce-ios/pull/17809]

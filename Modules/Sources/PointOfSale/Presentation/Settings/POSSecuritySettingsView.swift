@@ -107,12 +107,7 @@ struct POSSecuritySettingsView: View {
                 presentation.cancel()
                 dismissApproval()
             case .guidedAccessGuide:
-                if controller.isVisible {
-                    closeGuidedAccessGuide()
-                } else {
-                    controller.dismissGuidedAccessGuide()
-                    presentation.cancel()
-                }
+                closeGuidedAccessGuide()
             case nil: break
             }
         })

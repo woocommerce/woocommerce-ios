@@ -292,28 +292,21 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Exit Decision Tests
 
-    @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {
+    @Test(arguments: [true, false])
+    func shouldConfirmExit_when_exit_requires_confirmation_then_shows_confirmation(approved: Bool) {
         // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: false)
+        let result = PointOfSaleDashboardViewHelper.shouldConfirmExit(confirmingFirst: true, approved: approved)
 
         // Then
-        #expect(result == .showConfirmation)
-    }
-
-    @Test func exitDecision_when_confirming_first_and_approved_then_leaves_and_tracks_confirmation() {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: true)
-
-        // Then
-        #expect(result == .leave(tracksConfirmation: true))
+        #expect(result)
     }
 
     @Test(arguments: [true, false])
-    func exitDecision_when_not_confirming_first_then_leaves_without_tracking(approved: Bool) {
+    func shouldConfirmExit_when_dismissing_an_error_then_confirms_after_approval_only(approved: Bool) {
         // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: false, approved: approved)
+        let result = PointOfSaleDashboardViewHelper.shouldConfirmExit(confirmingFirst: false, approved: approved)
 
         // Then
-        #expect(result == .leave(tracksConfirmation: false))
+        #expect(result == approved)
     }
 }

@@ -218,11 +218,6 @@ struct PointOfSaleDashboardView: View {
                 await posModel.checkStaleSyncStatus()
             }
         }
-        .onChange(of: session.isLocked) { _, isLocked in
-            if isLocked {
-                posModel.customAmountFlow = nil
-            }
-        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
@@ -741,13 +736,9 @@ private extension PointOfSaleDashboardView {
     /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
     func requestExit(confirmingFirst: Bool) {
         overrideHandler.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { approved in
-            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
-            case .showConfirmation:
+            if PointOfSaleDashboardViewHelper.shouldConfirmExit(confirmingFirst: confirmingFirst, approved: approved) {
                 showExitPOSModal = true
-            case .leave(let tracksConfirmation):
-                if tracksConfirmation {
-                    analytics.track(.pointOfSaleExitConfirmed)
-                }
+            } else {
                 dismiss()
             }
         }

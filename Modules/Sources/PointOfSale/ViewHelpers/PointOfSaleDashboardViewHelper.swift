@@ -51,17 +51,8 @@ struct PointOfSaleDashboardViewHelper {
         isPhoneLayout && cartIsEmpty
     }
 
-    enum ExitDecision: Equatable {
-        case showConfirmation
-        case leave(tracksConfirmation: Bool)
-    }
-
-    /// The approval prompt already confirms the exit, so an approved exit leaves POS without the confirmation.
-    static func exitDecision(confirmingFirst: Bool, approved: Bool) -> ExitDecision {
-        guard confirmingFirst else {
-            return .leave(tracksConfirmation: false)
-        }
-        return approved ? .leave(tracksConfirmation: true) : .showConfirmation
+    static func shouldConfirmExit(confirmingFirst: Bool, approved: Bool) -> Bool {
+        confirmingFirst || approved
     }
 }
 

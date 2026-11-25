@@ -64,9 +64,8 @@ final class POSManagerOverrideHandler {
         return result
     }
 
-    /// Runs immediately when the session grants the capability; otherwise waits for one approval, which
-    /// authorizes only this call. `approved` tells callers that the approval prompt stood in for any
-    /// confirmation they would otherwise show.
+    /// Runs immediately when the session grants the capability; otherwise waits for one approval.
+    /// `approved` indicates whether a manager approved this action.
     func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ approved: Bool) -> Void) {
         guard let session else { return }
         if session.allows(capability) {

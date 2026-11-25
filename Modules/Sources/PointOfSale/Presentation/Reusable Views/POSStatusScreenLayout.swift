@@ -30,6 +30,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
             // Search dismisses the keyboard on scroll. A message taller than the space above the keyboard
             // must stay scrollable while the merchant is still typing.
             .scrollDismissesKeyboard(.never)
+            .clipped()
 
             sizedButtons
                 .padding(.bottom, metrics.padding.medium)

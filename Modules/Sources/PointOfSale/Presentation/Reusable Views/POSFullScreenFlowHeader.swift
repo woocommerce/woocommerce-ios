@@ -134,6 +134,9 @@ private struct POSFullScreenFlowHeader: View {
         case .back(let backAction):
             return .init(state: backAction.isEnabled ? .enabled : .disabled,
                          action: {
+                guard stepNavigation?.isSettled != false else {
+                    return
+                }
                 stepNavigation?.goBackwardOnNextStep()
                 backAction.perform()
             },

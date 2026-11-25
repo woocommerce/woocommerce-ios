@@ -25,9 +25,9 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
 
     var body: some View {
         if isFullScreenFlow && UIDevice.current.userInterfaceIdiom == .phone {
-            let _ = navigation?.show(step: pacer.shown)
             ZStack {
                 currentPage
+                    .allowsHitTesting(pacer.isSettled)
                     .id(pacer.shown)
                     .transition(reduceMotion ? AnyTransition.opacity : AnyTransition(POSFlowStepSlideTransition(direction: { [navigation] in
                         navigation?.direction ?? .forward
@@ -35,7 +35,8 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
             }
             .animation(pacer.isSliding ? .easeInOut(duration: POSFlowStepSlideTransition.animationDuration) : nil, value: pacer.shown)
             .onChange(of: step) { _, step in
-                pacer.show(step)
+                pacer.show(step, direction: navigation?.takeDirection() ?? .forward)
+                navigation?.follow(pacer)
             }
             .task(id: pacer.slideCount) {
                 let duration = pacer.isModalArriving ? POSRootModalViewModifier.animationDuration : POSFlowStepSlideTransition.settleDuration
@@ -44,6 +45,7 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
                     return
                 }
                 pacer.motionEnded()
+                navigation?.follow(pacer)
             }
         } else {
             page()
@@ -69,18 +71,25 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
 /// Steps that change while the modal arrives are swapped in on arrival: a page inserted into the moving modal is drawn at its final position.
 struct POSModalFlowStepPacer<Step: Hashable> {
     private(set) var shown: Step
+    private(set) var direction = POSFlowStepDirection.forward
     private(set) var isSliding = false
     private(set) var slideCount = 0
     private(set) var isModalArriving = true
     private var latest: Step
+    private var latestDirection = POSFlowStepDirection.forward
+
+    var isSettled: Bool {
+        !isSliding && shown == latest
+    }
 
     init(step: Step) {
         shown = step
         latest = step
     }
 
-    mutating func show(_ step: Step) {
+    mutating func show(_ step: Step, direction: POSFlowStepDirection = .forward) {
         latest = step
+        latestDirection = direction
         if !isModalArriving && !isSliding {
             slideToLatest()
         }
@@ -101,6 +110,7 @@ struct POSModalFlowStepPacer<Step: Hashable> {
             return
         }
         shown = latest
+        direction = latestDirection
         isSliding = true
         slideCount += 1
     }
@@ -108,20 +118,21 @@ struct POSModalFlowStepPacer<Step: Hashable> {
 
 final class POSModalFlowStepNavigation {
     private(set) var direction = POSFlowStepDirection.forward
+    private(set) var isSettled = true
     private var nextDirection = POSFlowStepDirection.forward
-    private var step: AnyHashable?
 
     func goBackwardOnNextStep() {
         nextDirection = .backward
     }
 
-    func show(step newStep: AnyHashable) {
-        guard newStep != step else {
-            return
-        }
-        direction = step == nil ? .forward : nextDirection
-        nextDirection = .forward
-        step = newStep
+    func takeDirection() -> POSFlowStepDirection {
+        defer { nextDirection = .forward }
+        return nextDirection
+    }
+
+    func follow<Step>(_ pacer: POSModalFlowStepPacer<Step>) {
+        direction = pacer.direction
+        isSettled = pacer.isSettled
     }
 }
 

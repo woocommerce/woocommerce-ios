@@ -29,47 +29,33 @@ struct POSModalFlowStepsTests {
         #expect(removalEdge == .trailing)
     }
 
-    @Test func test_direction_when_steps_change_without_back_then_forward() {
+    @Test func test_takeDirection_when_back_precedes_a_step_change_then_backward_for_that_change_only() {
         // Given
         let sut = POSModalFlowStepNavigation()
-
-        // When
-        sut.show(step: "first")
-        sut.show(step: "second")
-
-        // Then
-        #expect(sut.direction == .forward)
-    }
-
-    @Test func test_direction_when_back_precedes_a_step_change_then_backward_for_that_change_only() {
-        // Given
-        let sut = POSModalFlowStepNavigation()
-        sut.show(step: "first")
-        sut.show(step: "second")
 
         // When
         sut.goBackwardOnNextStep()
-        sut.show(step: "first")
-        let directionAfterBack = sut.direction
-        sut.show(step: "second")
+        let directionAfterBack = sut.takeDirection()
+        let nextDirection = sut.takeDirection()
 
         // Then
         #expect(directionAfterBack == .backward)
-        #expect(sut.direction == .forward)
+        #expect(nextDirection == .forward)
     }
 
-    @Test func test_direction_when_the_same_step_renders_again_then_unchanged() {
+    @Test func test_follow_when_pacer_slides_then_navigation_takes_its_direction_and_is_not_settled() {
         // Given
         let sut = POSModalFlowStepNavigation()
-        sut.show(step: "first")
-        sut.goBackwardOnNextStep()
-        sut.show(step: "second")
+        var pacer = POSModalFlowStepPacer(step: "second")
+        pacer.motionEnded()
 
         // When
-        sut.show(step: "second")
+        pacer.show("first", direction: .backward)
+        sut.follow(pacer)
 
         // Then
         #expect(sut.direction == .backward)
+        #expect(sut.isSettled == false)
     }
 
     @Test func test_pacer_when_steps_change_while_the_modal_arrives_then_shows_the_latest_without_sliding_once_it_arrived() {
@@ -152,5 +138,73 @@ struct POSModalFlowStepsTests {
         #expect(sut.shown == "second")
         #expect(sut.isSliding == false)
         #expect(sut.slideCount == 1)
+    }
+
+    @Test func test_pacer_when_back_and_next_during_a_slide_return_to_the_shown_step_then_next_slide_goes_forward() {
+        // Given
+        var sut = POSModalFlowStepPacer(step: "first")
+        sut.motionEnded()
+        sut.show("second")
+
+        // When
+        sut.show("first", direction: .backward)
+        sut.show("second", direction: .forward)
+        sut.motionEnded()
+        sut.show("third", direction: .forward)
+
+        // Then
+        #expect(sut.shown == "third")
+        #expect(sut.direction == .forward)
+    }
+
+    @Test func test_pacer_when_steps_pass_during_a_slide_then_the_next_slide_takes_the_latest_direction() {
+        // Given
+        var sut = POSModalFlowStepPacer(step: "second")
+        sut.motionEnded()
+        sut.show("third")
+
+        // When
+        sut.show("fourth")
+        sut.show("first", direction: .backward)
+        sut.motionEnded()
+
+        // Then
+        #expect(sut.shown == "first")
+        #expect(sut.direction == .backward)
+    }
+
+    @Test func test_isSettled_when_sliding_or_a_step_waits_then_false_until_the_last_slide_ends() {
+        // Given
+        var sut = POSModalFlowStepPacer(step: "first")
+        sut.motionEnded()
+        let settledAtRest = sut.isSettled
+
+        // When
+        sut.show("second")
+        let settledWhileSliding = sut.isSettled
+        sut.show("third")
+        sut.motionEnded()
+        let settledDuringSecondSlide = sut.isSettled
+        sut.motionEnded()
+
+        // Then
+        #expect(settledAtRest)
+        #expect(settledWhileSliding == false)
+        #expect(settledDuringSecondSlide == false)
+        #expect(sut.isSettled)
+    }
+
+    @Test func test_isSettled_when_a_step_changes_while_the_modal_arrives_then_false_until_it_arrived() {
+        // Given
+        var sut = POSModalFlowStepPacer(step: "opening")
+
+        // When
+        sut.show("searching")
+        let settledWhileArriving = sut.isSettled
+        sut.motionEnded()
+
+        // Then
+        #expect(settledWhileArriving == false)
+        #expect(sut.isSettled)
     }
 }

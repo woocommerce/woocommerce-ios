@@ -16,15 +16,9 @@ struct POSOnboardingGuideView: View {
         VStack(spacing: metrics.spacing.none) {
             TabView(selection: $currentStep) {
                 ForEach(POSOnboardingGuideStep.allCases) { step in
-                    // Drops the illustration when the step doesn't fit, and only then scrolls.
-                    ViewThatFits(in: .vertical) {
-                        POSOnboardingGuideStepView(step: step, showsIllustration: true, onWatchVideo: watchVideo)
-                        POSOnboardingGuideStepView(step: step, showsIllustration: false, onWatchVideo: watchVideo)
-                        ScrollView {
-                            POSOnboardingGuideStepView(step: step, showsIllustration: false, onWatchVideo: watchVideo)
-                        }
-                    }
-                    .tag(step)
+                    POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+                        .scrollVerticallyIfNeeded()
+                        .tag(step)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -79,10 +73,10 @@ private struct POSOnboardingGuideStepView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     let step: POSOnboardingGuideStep
-    let showsIllustration: Bool
     let onWatchVideo: () -> Void
 
     private var illustrationHeight: CGFloat {
+        // Smaller in landscape, where there's little height.
         verticalSizeClass == .compact ? 64 : 120
     }
     // As in the design, a fixed text height keeps the titles in line across steps.
@@ -90,12 +84,10 @@ private struct POSOnboardingGuideStepView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.xxLarge) {
-            if showsIllustration {
-                step.illustration.decorativeImage
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: illustrationHeight)
-            }
+            step.illustration.decorativeImage
+                .resizable()
+                .scaledToFit()
+                .frame(height: illustrationHeight)
 
             VStack(spacing: metrics.spacing.xxLarge) {
                 VStack(spacing: metrics.spacing.large) {

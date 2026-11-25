@@ -13,11 +13,10 @@ struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var modalManager: POSModalManager
     @EnvironmentObject private var coverManager: POSFullScreenCoverManager
 
-    @State private var showExitPOSModal: Bool = false
+    @State private var exitFlow = POSExitFlow()
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
-    @State private var overrideHandler = POSManagerOverrideHandler()
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var navigationPath: [POSNavigationDestination] = []
@@ -81,13 +80,13 @@ struct PointOfSaleDashboardView: View {
             case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
                     catalogSyncState: catalogSyncState,
-                    onExit: { requestExit(confirmingFirst: false) }
+                    onExit: { requestExit() }
                 )
                     .transition(.opacity)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
-                }, onExit: { requestExit(confirmingFirst: false) })
+                }, onExit: { requestExit() })
                 .frame(maxWidth: .infinity)
             case .error(let error):
                 PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
@@ -108,7 +107,7 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    requestExit(confirmingFirst: false)
+                    requestExit()
                 } : nil)
             case .content:
                 POSPushTransitionContainer(
@@ -130,7 +129,7 @@ struct PointOfSaleDashboardView: View {
         // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
         // report its own ideal height while POS is being presented, which must not drive this position.
         .overlay(alignment: .bottomLeading) {
-            POSFloatingControlView(onExitSelected: { requestExit(confirmingFirst: true) },
+            POSFloatingControlView(onExitSelected: { requestExit() },
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
                                    showSettings: $showSettings,
@@ -187,16 +186,20 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posDialog(isPresented: $showExitPOSModal) {
-            .exitPOS(exit: {
+        .posDialog(item: Binding(get: { exitFlow.confirmation }, set: { if $0 == nil { exitFlow.cancelConfirmation() } }),
+                   onDismissCompleted: { request in
+            exitFlow.confirmationDismissed(request, session: session, reason: Localization.exitOverrideDescription) {
                 analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
-            }, close: {
-                showExitPOSModal = false
-            })
+            }
+        }) { request in
+            .exitPOS(exit: { exitFlow.confirm(request) }, close: { exitFlow.cancelConfirmation() })
         }
         .posRootModal()
-        .posManagerOverrideModal(handler: overrideHandler)
+        .posManagerOverrideModal(handler: exitFlow.approvalHandler)
+        .onDisappear { exitFlow.cancel() }
+        .onChange(of: ObjectIdentifier(session)) { exitFlow.cancel() }
+        .onChange(of: session.accessScope) { exitFlow.cancel() }
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -226,7 +229,7 @@ struct PointOfSaleDashboardView: View {
             // Locking ends the current staff context; dismiss dashboard-owned presentations
             // so the next signed-in staff member does not inherit them.
             guard isLocked else { return }
-            showExitPOSModal = false
+            exitFlow.cancel()
             showSupport = false
             showDocumentation = false
             showSettings = false
@@ -463,7 +466,7 @@ struct PointOfSaleDashboardView: View {
             }
             POSMenuButton {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
-                requestExit(confirmingFirst: true)
+                requestExit()
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
@@ -747,19 +750,9 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
-    func requestExit(confirmingFirst: Bool) {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
-            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
-            case .showConfirmation:
-                showExitPOSModal = true
-            case .leave(let tracksConfirmation):
-                if tracksConfirmation {
-                    analytics.track(.pointOfSaleExitConfirmed)
-                }
-                dismiss()
-            }
-        }
+    /// Every way out of POS needs confirmation and the exit capability, including startup errors.
+    func requestExit() {
+        exitFlow.request(session: session)
     }
 }
 

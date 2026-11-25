@@ -122,17 +122,20 @@ struct ItemListView: View {
                 // The regular pane is already inside the dashboard's horizontal safe bounds.
                 .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
-        // Set here, not in each error view: hidden tabs and the list under search stay mounted and would report too.
-        .preference(key: POSHidesCompactCartButtonPreferenceKey.self, value: hidesCompactCartButton)
+        // Root screens report here, not in each error view: hidden tabs and the list under search stay mounted.
+        // Transform instead of set, so a pushed ChildItemList can still report its own status screen.
+        .transformPreference(POSHidesCompactCartButtonPreferenceKey.self) { hides in
+            hides = hides || rootHidesCompactCartButton
+        }
     }
 
-    private var hidesCompactCartButton: Bool {
-        let pushedParentState = posModel.viewStateCoordinatorForView.itemNavigationPath.last.map { parentItem in
-            itemsController(selectedItemListType).itemsViewState.itemsStack.itemStates[parentItem] ?? .loading([])
+    private var rootHidesCompactCartButton: Bool {
+        guard posModel.viewStateCoordinatorForView.itemNavigationPath.isEmpty else {
+            return false
         }
         return ItemListViewHelper().hidesCompactCartButton(rootState: itemListState(selectedItemListType),
-                                                           isShowingPreSearch: isSearching && searchTerm.isEmpty,
-                                                           pushedParentState: pushedParentState)
+                                                           isSearching: isSearching,
+                                                           isShowingPreSearch: isSearching && searchTerm.isEmpty)
     }
 
     var content: some View {

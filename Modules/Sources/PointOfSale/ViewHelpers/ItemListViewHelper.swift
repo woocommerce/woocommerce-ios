@@ -37,25 +37,22 @@ struct ItemListViewHelper {
         return !isSearching
     }
 
-    /// The full-screen error and empty variations screens already have their own primary button.
+    /// Whether the visible root list screen has its own primary button, so the compact Cart button would be a second one.
+    /// Pushed variations screens report this themselves.
     func hidesCompactCartButton(rootState: ItemListState,
-                                isShowingPreSearch: Bool,
-                                pushedParentState: ItemListState?) -> Bool {
-        if let pushedParentState {
-            // Mirrors the states ChildItemList shows as its empty or error screen.
-            switch pushedParentState {
-            case .initial, .loaded([], _), .empty, .error:
-                return true
-            case .loading, .loaded, .inlineError:
-                return false
-            }
-        }
+                                isSearching: Bool,
+                                isShowingPreSearch: Bool) -> Bool {
         guard !isShowingPreSearch else {
             return false
         }
-        if case .error = rootState {
+        switch rootState {
+        case .error:
             return true
+        case .empty:
+            // The search empty screen has no button.
+            return !isSearching
+        case .initial, .loading, .loaded, .inlineError:
+            return false
         }
-        return false
     }
 }

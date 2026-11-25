@@ -534,10 +534,12 @@ extension PointOfSaleAggregateModel {
     }
 
     func printReceipt() async throws {
+        let scope = accessSession.accessScope
         // Refresh the store's receipt settings so the printout reflects any changes made this
         // session. On failure the previously loaded values are kept, so printing still proceeds
         // with the best available information.
         await settingsController.storeViewModel.retrievePOSReceiptSettings()
+        guard accessSession.isCurrent(scope), !Task.isCancelled else { throw CancellationError() }
         try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
     }
 

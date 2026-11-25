@@ -91,7 +91,7 @@ private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
 private struct POSExternalViewAdaptor: POSExternalViewProviding {
     let context: POSExternalViewContext
 
-    var requiresEmbeddedSettingsWebView: Bool { context.requiresEmbeddedSettingsWebView }
+    var canManageStoreSettings: Bool { context.canReuseAppWebSignIn }
 
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(

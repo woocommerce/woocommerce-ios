@@ -321,6 +321,23 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
     }
 
+    func test_open_when_review_is_tapped_in_app_or_from_the_system_then_both_use_the_same_router() async throws {
+        let payload = notificationPayload(type: .comment)
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        application.applicationState = .active
+        _ = await manager.handleNotificationInTheForeground(notification)
+        XCTAssertTrue(application.presentedNotifications.isEmpty)
+        let openInApp = try XCTUnwrap(application.presentInAppActionHandlers.first)
+        openInApp()
+
+        application.applicationState = .inactive
+        await manager.handleUserResponseToNotification(response)
+
+        XCTAssertEqual(application.presentedNotifications.map(\.kind), [.comment, .comment])
+    }
+
     /// Verifies that `handleNotification` displays an InApp Notification with title and message whenever the app is in active state and both title
     /// and message are present in the payload.
     ///
@@ -603,7 +620,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
 
-    func test_it_emits_inactive_notifications_with_title_only_given_a_notification_while_the_app_is_inactive_and_only_title_in_payload() async throws {
+    func test_open_when_inactive_notification_has_only_a_title_then_passes_the_title_to_the_router() async throws {
         // Given
         application.applicationState = .inactive
         manager = {
@@ -615,11 +632,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
-        var emittedNotifications = [WooCommerce.PushNotification]()
-        manager.inactiveNotifications.sink { notification in
-            emittedNotifications.append(notification)
-        }.store(in: &subscriptions)
-
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle)
         let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: userinfo))
 
@@ -627,14 +639,14 @@ final class PushNotificationsManagerTests: XCTestCase {
         _ = await manager.handleUserResponseToNotification(response)
 
         // Then
-        XCTAssertEqual(emittedNotifications.count, 1)
+        XCTAssertEqual(application.presentedNotifications.count, 1)
 
-        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
-        XCTAssertEqual(emittedNotification.kind, .storeOrder)
-        XCTAssertEqual(emittedNotification.noteID, 9_981)
-        XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
-        XCTAssertNil(emittedNotification.subtitle)
-        XCTAssertNil(emittedNotification.message)
+        let openedNotification = try XCTUnwrap(application.presentedNotifications.first)
+        XCTAssertEqual(openedNotification.kind, .storeOrder)
+        XCTAssertEqual(openedNotification.noteID, 9_981)
+        XCTAssertEqual(openedNotification.title, Sample.defaultTitle)
+        XCTAssertNil(openedNotification.subtitle)
+        XCTAssertNil(openedNotification.message)
     }
 
     // MARK: - Background Notification Observable
@@ -3127,15 +3139,12 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("push_notification_received"))
     }
 
-    func test_handleUserResponseToNotification_when_type_is_unknown_then_does_not_present_details_or_emit_inactive() async throws {
+    func test_handleUserResponseToNotification_when_type_is_unknown_then_does_not_present_details() async throws {
         // Given
         application.applicationState = .inactive
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         manager = makeManager(analytics: analytics)
-
-        var emittedInactiveNotifications: [WooCommerce.PushNotification] = []
-        manager.inactiveNotifications.sink { emittedInactiveNotifications.append($0) }.store(in: &subscriptions)
 
         var emittedLocalResponses: [UNNotificationResponse] = []
         manager.localNotificationUserResponses.sink { emittedLocalResponses.append($0) }.store(in: &subscriptions)
@@ -3148,7 +3157,6 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
-        XCTAssertTrue(emittedInactiveNotifications.isEmpty)
         XCTAssertTrue(emittedLocalResponses.isEmpty,
                       "Unknown remote types must not leak into the local-notification response stream")
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("pushNotificationAlertPressed"))
@@ -3230,8 +3238,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults.set("1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
         manager = makeManager()
         application.applicationState = .inactive
-        var emittedNotifications: [WooCommerce.PushNotification] = []
-        manager.inactiveNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
         let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: notificationPayload(type: .storeOrder, siteID: 42)))
 
         // When
@@ -3239,7 +3245,6 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
-        XCTAssertTrue(emittedNotifications.isEmpty)
     }
 }
 

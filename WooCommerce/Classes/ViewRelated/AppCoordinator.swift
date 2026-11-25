@@ -197,6 +197,7 @@ private extension AppCoordinator {
     }
 
     private func presentSurveyWebView(url: URL) {
+        guard tabBarController.canNavigateOutsidePOS else { return }
         let safariViewController = SFSafariViewController(url: url)
         // POS mode is presented via a UIHostingController as full-screen view on top of the tabBarController, so
         // we have to target the topmost VC if we want to present a web view on top of this when tapping on the local notification.

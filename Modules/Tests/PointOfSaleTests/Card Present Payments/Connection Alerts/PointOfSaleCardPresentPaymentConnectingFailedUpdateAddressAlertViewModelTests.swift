@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 import TestKit
 import XCTest
 @testable import PointOfSale
@@ -8,136 +8,56 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     func test_manual_equatable_conformance_number_of_properties_unchanged() {
         let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: true,
             retrySearchAction: {},
             cancelSearchAction: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 13,
+                               expectedCount: 9,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 
     func test_manual_hashable_conformance_number_of_properties_unchanged() {
         let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: true,
             retrySearchAction: {},
             cancelSearchAction: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 13,
+                               expectedCount: 9,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
 
-    func test_application_will_enter_foreground_when_settings_opened_in_browser_then_retries_search_once() throws {
+    func test_enter_address_when_tapped_then_opens_settings_and_offers_retry() {
         // Given
-        var openedURLs: [URL] = []
-        let notificationCenter = NotificationCenter()
         var retryCount = 0
         let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: false,
             retrySearchAction: { retryCount += 1 },
-            cancelSearchAction: {},
-            openURL: { openedURLs.append($0) },
-            notificationCenter: notificationCenter)
-        // When
-        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
+            cancelSearchAction: {})
+        let enterAddressTitle = sut.primaryButtonViewModel.title
 
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        // When
+        sut.primaryButtonViewModel.actionHandler()
 
         // Then
-        XCTAssertEqual(openedURLs, [URL(string: "https://example.com")!])
+        XCTAssertTrue(sut.shouldShowSettingsWebView)
+        XCTAssertNotEqual(sut.primaryButtonViewModel.title, enterAddressTitle)
+        XCTAssertEqual(retryCount, 0)
+    }
+
+    func test_settings_web_view_when_dismissed_then_retries_reader_search() {
+        // Given
+        var retryCount = 0
+        let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+            settingsAdminUrl: URL(string: "https://example.com")!,
+            retrySearchAction: { retryCount += 1 },
+            cancelSearchAction: {})
+        sut.primaryButtonViewModel.actionHandler()
+
+        // When
+        sut.settingsWebViewWasDismissed()
+
+        // Then
         XCTAssertEqual(retryCount, 1)
-        withExtendedLifetime(sut) {}
-    }
-
-    func test_application_will_enter_foreground_when_settings_not_opened_then_does_not_retry_search() {
-        // Given
-        let notificationCenter = NotificationCenter()
-        var retryCount = 0
-        let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
-            settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: false,
-            retrySearchAction: { retryCount += 1 },
-            cancelSearchAction: {},
-            openURL: { _ in },
-            notificationCenter: notificationCenter)
-
-        // When
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
-
-        // Then
-        XCTAssertEqual(retryCount, 0)
-        withExtendedLifetime(sut) {}
-    }
-
-    func test_application_will_enter_foreground_when_settings_opened_in_authenticated_web_view_then_does_not_retry_search() throws {
-        // Given
-        let notificationCenter = NotificationCenter()
-        var retryCount = 0
-        let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
-            settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: true,
-            retrySearchAction: { retryCount += 1 },
-            cancelSearchAction: {},
-            openURL: { _ in },
-            notificationCenter: notificationCenter)
-        // When
-        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
-
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
-
-        // Then
-        XCTAssertTrue(sut.shouldShowSettingsWebView)
-        XCTAssertEqual(retryCount, 0)
-    }
-
-    func test_open_settings_when_embedding_is_required_then_uses_the_embedded_web_view() {
-        // Given
-        var openedBrowser = false
-        var didRetrySearch = false
-        let notificationCenter = NotificationCenter()
-        let sut = PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
-            settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: false,
-            retrySearchAction: { didRetrySearch = true },
-            cancelSearchAction: {},
-            openURL: { _ in openedBrowser = true },
-            notificationCenter: notificationCenter)
-
-        // When
-        sut.primaryButtonViewModel(requiresEmbeddedSettingsWebView: true).actionHandler()
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
-
-        // Then
-        XCTAssertTrue(sut.shouldShowSettingsWebView)
-        XCTAssertFalse(openedBrowser)
-        XCTAssertFalse(didRetrySearch)
-    }
-
-    func test_application_will_enter_foreground_when_alert_released_then_does_not_retry_search() throws {
-        // Given
-        let notificationCenter = NotificationCenter()
-        var retryCount = 0
-        var sut: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel? = .init(
-            settingsAdminUrl: URL(string: "https://example.com")!,
-            showsInAuthenticatedWebView: false,
-            retrySearchAction: { retryCount += 1 },
-            cancelSearchAction: {},
-            openURL: { _ in },
-            notificationCenter: notificationCenter)
-        sut?.primaryButtonViewModel(requiresEmbeddedSettingsWebView: false).actionHandler()
-        weak var releasedViewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel?
-        releasedViewModel = sut
-
-        // When
-        sut = nil
-        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
-
-        // Then
-        XCTAssertNil(releasedViewModel)
-        XCTAssertEqual(retryCount, 0)
     }
 }

@@ -52,7 +52,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         onboardingScreenViewModelSubject.send(.showOnboarding(
             factory: .init(
                 configuration: onboardingViewModel,
-                view: CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)),
+                view: CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel, isPointOfSale: true)),
             onCancel: { [weak self] in
                 self?.readinessSubscription = nil
             })

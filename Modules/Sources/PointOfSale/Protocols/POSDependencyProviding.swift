@@ -48,7 +48,7 @@ public protocol POSExternalNavigationProviding {
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 public protocol POSExternalViewProviding {
-    @MainActor var requiresEmbeddedSettingsWebView: Bool { get }
+    @MainActor var canManageStoreSettings: Bool { get }
     @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     @MainActor
@@ -70,18 +70,23 @@ public protocol POSExternalViewProviding {
 public struct POSExternalViewContext {
     let session: POSAccessSession
 
-    public var requiresEmbeddedSettingsWebView: Bool {
-        session.isPINProtectionEnabled
+    public var canExitPOS: Bool {
+        !session.isLocked && session.allows(.exitPOS)
     }
 
     public var canReuseAppWebSignIn: Bool {
         !session.isLocked && session.allows(.manageStoreSettings)
     }
 
-    public func whileSessionIsCurrent<Value>(_ action: @escaping (Value) -> Void) -> (Value) -> Void {
+    public func sessionValidityCheck() -> @MainActor () -> Bool {
         let scope = session.accessScope
+        return { session.isCurrent(scope) }
+    }
+
+    public func whileSessionIsCurrent<Value>(_ action: @escaping (Value) -> Void) -> (Value) -> Void {
+        let isCurrent = sessionValidityCheck()
         return { value in
-            guard session.isCurrent(scope) else { return }
+            guard isCurrent() else { return }
             action(value)
         }
     }

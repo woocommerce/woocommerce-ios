@@ -199,7 +199,7 @@ final class POSTabCoordinator {
     func openPOS(entryPoint: POSAnalyticsEntryPoint) {
         TracksProvider.setPOSEntryPoint(entryPoint)
         setPOSHasBeenOpened()
-        presentPOSView(siteID: siteID)
+        presentPOSView(siteID: siteID, isReopening: entryPoint == .autoReopen)
     }
 }
 
@@ -215,24 +215,33 @@ private extension POSTabCoordinator {
         }
     }
 
-    func presentPOSView(siteID: Int64) {
-        let httpsConfigurationNotice = httpsConfigurationNoticeProvider()
-        let hostingController = POSHostingController(
-            rootView: POSPresentationRootView(posView: nil)
-        )
-        hostingController.modalPresentationStyle = .fullScreen
-        viewControllerToPresent.present(hostingController, animated: true, completion: nil)
-
-        Task { @MainActor [weak self, weak hostingController] in
+    func presentPOSView(siteID: Int64, isReopening: Bool) {
+        guard viewControllerToPresent.presentedViewController == nil else { return }
+        let preparation = POSPreparation()
+        let hostingController = POSHostingController(rootView: AnyView(PointOfSaleLoadingEntryPointView()))
+        let services = POSServiceLocatorAdaptor()
+        let prepare: @MainActor () async -> Void = { [weak self, weak hostingController] in
             guard let self, let hostingController else { return }
+            let httpsConfigurationNotice = httpsConfigurationNoticeProvider()
             await configureLocalCatalogSystemStatusService()
+            guard !Task.isCancelled else { return }
+
+            let eligibility: POSEligibilityState?
+            if isReopening || localCatalogEligibilityService != nil {
+                eligibility = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
+            } else {
+                eligibility = nil
+            }
+            if isReopening, case .ineligible(let reason)? = eligibility {
+                preparation.state = .unavailable(reason)
+                return
+            }
 
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
-                try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
+                try? await service.updatePOSEligibility(isEligible: eligibility == .eligible, for: siteID)
 
                 // Retry transient failures before using the value
                 do {
@@ -243,6 +252,7 @@ private extension POSTabCoordinator {
                     isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
                 } catch {
                     DDLogError("⛔️ Failed to resolve local catalog eligibility: \(error)")
+                    preparation.state = .unavailable(.siteSettingsNotAvailable)
                     return
                 }
             } else {
@@ -256,8 +266,7 @@ private extension POSTabCoordinator {
             let catalogSyncStrategy = POSCheckoutCatalogStrategy(isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 hasDatabase: grdbManager != nil,
                                                                 hasSyncCoordinator: catalogSyncCoordinator != nil)
-            let serviceAdaptor = POSServiceLocatorAdaptor()
-            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics,
+            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: services.analytics,
                                                                                       catalogSyncStrategy: catalogSyncStrategy)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
@@ -310,7 +319,7 @@ private extension POSTabCoordinator {
                     orderService = posOrderService
                 } else {
                     DDLogError("POSOrderService not provided")
-                    await hostingController.dismiss(animated: true)
+                    preparation.state = .unavailable(.siteSettingsNotAvailable)
                     return
                 }
 
@@ -346,7 +355,7 @@ private extension POSTabCoordinator {
                     refundService = posRefundService
                 } else {
                     DDLogError("RefundService not provided")
-                    await hostingController.dismiss(animated: true)
+                    preparation.state = .unavailable(.siteSettingsNotAvailable)
                     return
                 }
 
@@ -380,7 +389,7 @@ private extension POSTabCoordinator {
                         selectedSite: defaultSitePublisher,
                         appPasswordSupportState: isAppPasswordSupported,
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                        analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
+                        analytics: POSOrderListFetchAnalytics(analytics: services.analytics)
                     ),
                     orderService: orderService,
                     refundsService: refundsService,
@@ -406,33 +415,47 @@ private extension POSTabCoordinator {
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     receiptPrinter: receiptPrinter,
-                    services: serviceAdaptor,
+                    services: services,
                     httpsConfigurationNotice: httpsConfigurationNotice,
                     itemProvider: itemProvider,
-                    registerPresentation: { [weak hostingController] canExitPOS, cleanup in
+                    registerOnDismiss: { [weak hostingController] cleanup in
                         guard let hostingController,
                               !hostingController.isBeingDismissed,
                               hostingController.presentingViewController != nil else { return false }
-                        hostingController.canExitPOS = canExitPOS
                         hostingController.onDismiss = cleanup
                         return true
                     }
                 )
 
-                guard hostingController.presentingViewController != nil else {
-                    return
-                }
-                hostingController.rootView = POSPresentationRootView(posView: posView)
+                guard !Task.isCancelled, hostingController.presentingViewController != nil else { return }
+                preparation.state = .ready(posView)
             } else {
-                await hostingController.dismiss(animated: true)
+                preparation.state = .unavailable(.siteSettingsNotAvailable)
             }
         }
+
+        hostingController.rootView = AnyView(POSLaunchView(siteID: siteID, featureFlags: services.featureFlags, isReopening: isReopening, registerSession: {
+            [weak hostingController] context, endSession in
+            guard let hostingController, !hostingController.isBeingDismissed, hostingController.presentingViewController != nil else { return false }
+            hostingController.accessContext = context
+            hostingController.canExitPOS = { context.canExitPOS }
+            hostingController.endSession = endSession
+            return true
+        }) {
+            POSPresentationRootView(preparation: preparation, prepare: prepare) { [weak hostingController] in
+                hostingController?.dismiss(animated: true)
+            }
+        })
+        hostingController.modalPresentationStyle = .fullScreen
+        viewControllerToPresent.present(hostingController, animated: !isReopening)
     }
 }
 
 
 /// Temporary payment coverage must not end the POS presentation.
-final class POSHostingController: UIHostingController<POSPresentationRootView> {
+final class POSHostingController: UIHostingController<AnyView> {
+    var accessContext: POSExternalViewContext?
+    var endSession: (() -> Void)?
     var canExitPOS: (@MainActor () -> Bool)?
     var onDismiss: (() -> Void)?
 
@@ -440,21 +463,42 @@ final class POSHostingController: UIHostingController<POSPresentationRootView> {
         super.viewDidDisappear(animated)
         guard isBeingDismissed || presentingViewController == nil else { return }
         let cleanup = onDismiss
+        let endSession = self.endSession
         onDismiss = nil
+        self.endSession = nil
+        accessContext = nil
         canExitPOS = nil
+        endSession?()
         cleanup?()
     }
 }
 
 
-struct POSPresentationRootView: View {
-    let posView: PointOfSaleEntryPointView?
+@MainActor
+private final class POSPreparation: ObservableObject {
+    enum State {
+        case loading
+        case ready(PointOfSaleEntryPointView)
+        case unavailable(POSIneligibleReason)
+    }
+
+    @Published var state: State = .loading
+}
+
+private struct POSPresentationRootView: View {
+    @ObservedObject var preparation: POSPreparation
+    let prepare: @MainActor () async -> Void
+    let onExit: () -> Void
 
     var body: some View {
-        if let posView {
-            posView
-        } else {
+        switch preparation.state {
+        case .loading:
             PointOfSaleLoadingEntryPointView()
+                .task { await prepare() }
+        case .ready(let posView):
+            posView
+        case .unavailable(let reason):
+            POSLaunchIneligibleView(reason: reason, onRefresh: prepare, onExit: onExit)
         }
     }
 }

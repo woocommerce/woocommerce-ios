@@ -32,16 +32,18 @@ final class POSModalManager: ObservableObject {
         isPresented = true
     }
 
-    func dismiss(owner: UUID? = nil, runsCallbacks: Bool = true) {
+    func dismiss(owner: UUID? = nil) {
         guard isPresented, owner == nil || self.owner == owner else { return }
-        let canRunCallbacks = runsCallbacks && session?.isLocked != true
-        let onDismiss = canRunCallbacks ? self.onDismiss : nil
-        let completion = canRunCallbacks ? self.onDismissCompleted : nil
+        guard session?.isLocked != true else {
+            clearPresentation()
+            return
+        }
+        let onDismiss = self.onDismiss
+        let completion = onDismissCompleted
         let session = self.session
         let scope = session?.accessScope
         let changes = {
-            self.isPresented = false
-            self.reset()
+            self.clearPresentation()
             onDismiss?()
         }
         if let completion {
@@ -56,7 +58,7 @@ final class POSModalManager: ObservableObject {
 
     func dismissForLock() {
         guard !preservesOnLock() else { return }
-        dismiss(runsCallbacks: false)
+        clearPresentation()
     }
 
     func getContent() -> AnyView {
@@ -72,10 +74,12 @@ final class POSModalManager: ObservableObject {
     }
 
     func onDisappear() {
-        dismiss(runsCallbacks: false)
+        clearPresentation()
     }
 
-    private func reset() {
+    private func clearPresentation() {
+        guard isPresented else { return }
+        isPresented = false
         owner = nil
         session = nil
         preservesOnLock = { false }

@@ -15,6 +15,21 @@ extension View {
     }
 }
 
+@MainActor
+struct POSNativePresentationDismissal {
+    private var scope: POSPINSessionTokens.Token?
+
+    mutating func presented(in session: POSAccessSession) {
+        scope = session.accessScope
+    }
+
+    mutating func takeAction(in session: POSAccessSession, action: (() -> Void)?) -> (() -> Void)? {
+        defer { scope = nil }
+        guard let scope, session.isCurrent(scope) else { return nil }
+        return action
+    }
+}
+
 // MARK: - Sheet Detection Infrastructure
 
 final class POSSheetManager: ObservableObject {
@@ -48,6 +63,7 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     let sheetContent: () -> SheetContent
 
     @State private var sheetId = UUID().uuidString
+    @State private var dismissal = POSNativePresentationDismissal()
 
     private var sheetIsPresented: Binding<Bool> {
         Binding<Bool>(get: {
@@ -61,11 +77,16 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .posDismissOnLock($isPresented, to: false, when: session.isLocked)
-            .sheet(isPresented: sheetIsPresented, onDismiss: onDismiss) {
+            .sheet(isPresented: sheetIsPresented, onDismiss: {
+                dismissal.takeAction(in: session, action: onDismiss)?()
+            }) {
                 sheetContent()
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .environment(\.posHeaderTopPadding, nil)
-                    .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
+                    .onAppear {
+                        dismissal.presented(in: session)
+                        sheetManager.registerSheetPresented(id: sheetId)
+                    }
                     .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
             }
             .onChange(of: isPresented) { _, newValue in
@@ -88,6 +109,7 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
     let sheetContent: (Item) -> SheetContent
 
     @State private var sheetId = UUID().uuidString
+    @State private var dismissal = POSNativePresentationDismissal()
 
     private var sheetItem: Binding<Item?> {
         Binding<Item?>(get: {
@@ -102,11 +124,16 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
     func body(content: Content) -> some View {
         content
             .posDismissOnLock($item, to: nil, when: session.isLocked)
-            .sheet(item: sheetItem, onDismiss: onDismiss) { item in
+            .sheet(item: sheetItem, onDismiss: {
+                dismissal.takeAction(in: session, action: onDismiss)?()
+            }) { item in
                 sheetContent(item)
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .environment(\.posHeaderTopPadding, nil)
-                    .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
+                    .onAppear {
+                        dismissal.presented(in: session)
+                        sheetManager.registerSheetPresented(id: sheetId)
+                    }
                     .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
             }
             .onChange(of: sheetItem.wrappedValue) { _, newItem in
@@ -161,7 +188,7 @@ extension View {
     ///   - onDismiss: Optional closure executed when the sheet is dismissed.
     ///   - content: Content to show in the sheet
     /// - Returns: a modified view which can show the sheet content specified, when applicable.
-    func posSheet<Item: Identifiable & Equatable, SheetContent: View>(
+    public func posSheet<Item: Identifiable & Equatable, SheetContent: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> SheetContent

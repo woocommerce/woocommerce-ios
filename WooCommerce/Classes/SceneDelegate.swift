@@ -9,6 +9,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var universalLinkRouter: UniversalLinkRouter?
     var tabBarController: MainTabBarController? { appCoordinator?.tabBarController }
 
+    private var canNavigateOutsidePOS: Bool {
+        tabBarController?.canNavigateOutsidePOS ?? !MainTabBarController.hasSavedPOSLock()
+    }
+
     // MARK: - Scene lifecycle
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
@@ -99,7 +103,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     // MARK: - URL / Activity Handling
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard tabBarController?.canNavigateOutsidePOS != false, let url = URLContexts.first?.url else { return }
+        guard canNavigateOutsidePOS, let url = URLContexts.first?.url else { return }
         if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
             universalLinkRouter.handle(url: url)
             return
@@ -112,7 +116,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        guard tabBarController?.canNavigateOutsidePOS != false else { return }
+        guard canNavigateOutsidePOS else { return }
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
         }

@@ -17,14 +17,12 @@ extension View {
     // periphery:ignore
     func posFullScreenCover<Content: View>(
         isPresented: Binding<Bool>,
-        preservesOnLock: Bool = false,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         self.modifier(
             POSFullScreenCoverModifier(
                 isPresented: isPresented,
-                preservesOnLock: preservesOnLock,
                 onDismiss: onDismiss,
                 coverContent: content
             )
@@ -66,7 +64,6 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
     @Environment(\.posAccessSession) private var session
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var isPresented: Bool
-    let preservesOnLock: Bool
     let onDismiss: (() -> Void)?
     let coverContent: () -> CoverContent
 
@@ -74,15 +71,21 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
     @StateObject private var modalManager = POSModalManager()
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
+    @State private var dismissal = POSNativePresentationDismissal()
 
     func body(content: Content) -> some View {
-        let shouldDismiss = session.isLocked && !preservesOnLock
-        let activePresentation = Binding(get: { !shouldDismiss && isPresented }, set: { isPresented = $0 })
+        let activePresentation = Binding(get: { !session.isLocked && isPresented }, set: { isPresented = $0 })
         content
-            .posDismissOnLock($isPresented, to: false, when: shouldDismiss)
-            .fullScreenCover(isPresented: activePresentation, onDismiss: onDismiss, content: {
+            .posDismissOnLock($isPresented, to: false, when: session.isLocked)
+            .fullScreenCover(isPresented: activePresentation, onDismiss: {
+                modalManager.onDisappear()
+                dismissal.takeAction(in: session, action: onDismiss)?()
+            }, content: {
                 coverContent()
-                    .onAppear { parentCoverManager.isPresented = true }
+                    .onAppear {
+                        dismissal.presented(in: session)
+                        parentCoverManager.isPresented = true
+                    }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)
@@ -107,14 +110,21 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
     @StateObject private var modalManager = POSModalManager()
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
+    @State private var dismissal = POSNativePresentationDismissal()
 
     func body(content: Content) -> some View {
         let activePresentation = Binding(get: { session.isLocked ? nil : item }, set: { item = $0 })
         content
             .posDismissOnLock($item, to: nil, when: session.isLocked)
-            .fullScreenCover(item: activePresentation, onDismiss: onDismiss, content: {
+            .fullScreenCover(item: activePresentation, onDismiss: {
+                modalManager.onDisappear()
+                dismissal.takeAction(in: session, action: onDismiss)?()
+            }, content: {
                 coverContent($0)
-                    .onAppear { parentCoverManager.isPresented = true }
+                    .onAppear {
+                        dismissal.presented(in: session)
+                        parentCoverManager.isPresented = true
+                    }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)

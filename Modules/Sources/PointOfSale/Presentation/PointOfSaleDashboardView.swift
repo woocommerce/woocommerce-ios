@@ -194,9 +194,7 @@ struct PointOfSaleDashboardView: View {
         .posSheet(isPresented: $showDocumentation) {
             documentationView
         }
-        .posFullScreenCover(isPresented: $showSettings,
-                            preservesOnLock: securitySettings?.preservesGuidedAccessPresentation == true,
-                            onDismiss: { securitySettings?.isReturningFromGuidedAccessSettings = false }) {
+        .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
         .posFullScreenCover(isPresented: $showOrders) {
@@ -217,9 +215,6 @@ struct PointOfSaleDashboardView: View {
         .onChange(of: session.isLocked) { _, isLocked in
             if isLocked {
                 posModel.customAmountFlow = nil
-            } else if securitySettings?.isReturningFromGuidedAccessSettings == true,
-                      !session.allows(.manageStoreSettings) {
-                showSettings = false
             }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
@@ -235,10 +230,6 @@ struct PointOfSaleDashboardView: View {
                 trackElapsedTimeForInitialLoadingState()
             }
         }
-    }
-
-    private var securitySettings: POSSecuritySettingsController? {
-        posModel.settingsController.securityController
     }
 
     private var navigationRouter: POSNavigationRouter {
@@ -728,7 +719,7 @@ private extension PointOfSaleDashboardView {
 
     /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
     func requestExit(confirmingFirst: Bool) {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
+        overrideHandler.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { approved in
             switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
             case .showConfirmation:
                 showExitPOSModal = true
@@ -793,12 +784,6 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
-        )
-        static let exitOverrideDescription = NSLocalizedString(
-            "pointOfSaleDashboard.exit.overrideReason",
-            value: "Exiting Point of Sale requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "exit permission tries to leave Point of Sale."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.SafariSheetView
 
 /// Displays the WooPayments onboarding UI based on the state.
 struct PointOfSaleCardPresentPaymentOnboardingView: View {
@@ -15,13 +16,24 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
         }
         .posModalCloseButton(action: viewModel.cancelOnboarding,
                              accessibilityLabel: Localization.cancelOnboarding)
-        .safariSheet(url: $viewModel.onboardingURL)
-        .posModalSizing()
-        .onChange(of: session.isLocked, initial: true) { _, _ in
-            if let onSupportRequested {
-                let context = POSExternalViewContext(session: session)
-                viewModel.onboardingViewContainer.configuration.showSupport = context.whileSessionIsCurrent(onSupportRequested)
+        .posSheet(isPresented: Binding(get: { viewModel.onboardingURL != nil }, set: { isPresented in
+            if !isPresented { viewModel.onboardingURL = nil }
+        })) {
+            if let url = viewModel.onboardingURL {
+                SafariSheetView(url: url).ignoresSafeArea()
             }
+        }
+        .posModalSizing()
+        .onAppear {
+            viewModel.onboardingViewContainer.configuration.showSupport = onSupportRequested.map { action in
+                {
+                    guard !session.isLocked else { return }
+                    action()
+                }
+            }
+        }
+        .onDisappear {
+            viewModel.onboardingViewContainer.configuration.showSupport = nil
         }
     }
 }

@@ -96,11 +96,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                         dependencies.dismissReaderConnectionModal()
                     })))
 
-        case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
+        case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
             self = .alert(.connectingFailedUpdateAddress(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
                     settingsAdminUrl: wcSettingsAdminURL,
-                    showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                     retrySearchAction: retrySearch,
                     cancelSearchAction: {
                         endSearch()

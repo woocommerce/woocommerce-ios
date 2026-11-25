@@ -130,9 +130,6 @@ final class MainTabBarControllerTests: XCTestCase {
     @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
-        let pushNotificationsManager = MockPushNotificationsManager()
-        ServiceLocator.setPushNotesManager(pushNotificationsManager)
-
         // Hides POS tab.
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
@@ -182,9 +179,8 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
 
         // Action
-        // Send push notification in inactive state
         let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
-        pushNotificationsManager.sendInactiveNotification(pushNotification)
+        tabBarController.openNotification(pushNotification)
 
         // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first(where: { $0 is ProductReviewAction }) as? ProductReviewAction)
@@ -468,7 +464,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
         window.rootViewController = tabBar
-        let pos = POSHostingController(rootView: POSPresentationRootView(posView: nil))
+        let pos = POSHostingController(rootView: AnyView(PointOfSaleLoadingEntryPointView()))
         pos.modalPresentationStyle = .fullScreen
         var canExit = false
         pos.canExitPOS = { canExit }
@@ -625,7 +621,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertFalse(tabBarController.tabBarController(tabBarController, shouldSelect: posTabContainerController))
 
         waitUntil {
-            posTabContainerController.presentedViewController is UIHostingController<POSPresentationRootView>
+            posTabContainerController.presentedViewController is POSHostingController
         }
 
         // When POS tab becomes invisible

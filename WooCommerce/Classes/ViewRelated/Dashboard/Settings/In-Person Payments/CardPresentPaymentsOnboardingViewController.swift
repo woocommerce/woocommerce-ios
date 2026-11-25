@@ -1,4 +1,5 @@
 import SwiftUI
+import PointOfSale
 import Yosemite
 
 final class CardPresentPaymentsOnboardingViewController: UIHostingController<CardPresentPaymentsOnboardingView> {
@@ -33,8 +34,28 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
 struct CardPresentPaymentsOnboardingView: View {
     @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
     @State private var presentedAdminURL: URL?
+    @Environment(\.posExternalViews) private var posExternalViews
+    var isPointOfSale = false
+
+    private var canManagePlugins: Bool {
+        viewModel.userIsAdministrator && (!isPointOfSale || posExternalViews.canManageStoreSettings)
+    }
 
     var body: some View {
+        if isPointOfSale {
+            content.posSheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
+                posExternalViews.createAuthenticatedWebView(url: url, title: Localization.storeAdmin) {
+                    presentedAdminURL = nil
+                }
+            }
+        } else {
+            content.sheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
+                AuthenticatableWebView(url: url, title: Localization.storeAdmin)
+            }
+        }
+    }
+
+    private var content: some View {
         Group {
             switch viewModel.state {
             case .loading:
@@ -55,8 +76,8 @@ struct CardPresentPaymentsOnboardingView: View {
                                                            onRefresh: viewModel.refresh)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
-                                                   userIsAdministrator: viewModel.userIsAdministrator,
-                                                   onInstall: viewModel.installPlugin,
+                                                   userIsAdministrator: canManagePlugins,
+                                                   onInstall: installPlugin,
                                                    onRefresh: viewModel.refresh)
             case .pluginUnsupportedVersion(let plugin):
                 InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics,
@@ -68,14 +89,14 @@ struct CardPresentPaymentsOnboardingView: View {
                 case .wcPay:
                     InPersonPaymentsPluginNotActivated(plugin: plugin,
                                                        analyticReason: viewModel.state.reasonForAnalytics,
-                                                       userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onActivate: viewModel.activatePlugin,
+                                                       userIsAdministrator: canManagePlugins,
+                                                       onActivate: activatePlugin,
                                                        onRefresh: viewModel.refresh)
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
                     InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
-                                                       userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onInstall: viewModel.installPlugin,
+                                                       userIsAdministrator: canManagePlugins,
+                                                       onInstall: installPlugin,
                                                        onRefresh: viewModel.refresh)
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
@@ -122,10 +143,17 @@ struct CardPresentPaymentsOnboardingView: View {
                 viewModel.showURL?(url)
             }
         })
-        .sheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
-            AuthenticatableWebView(url: url, title: Localization.storeAdmin)
-        }
         .navigationTitle(Localization.title)
+    }
+
+    private func installPlugin() {
+        guard !isPointOfSale || canManagePlugins else { return }
+        viewModel.installPlugin()
+    }
+
+    private func activatePlugin() {
+        guard !isPointOfSale || canManagePlugins else { return }
+        viewModel.activatePlugin()
     }
 
     private func adminButton(text: String, url: URL?, plugin: CardPresentPaymentsPlugin) -> InPersonPaymentsOnboardingErrorButtonViewModel? {

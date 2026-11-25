@@ -22,7 +22,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             }
 
             Spacer(minLength: metrics.spacing.large)
-            let button = viewModel.primaryButtonViewModel(requiresEmbeddedSettingsWebView: externalViews.requiresEmbeddedSettingsWebView)
+            let button = viewModel.primaryButtonViewModel
             Button(button.title, action: button.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
@@ -59,7 +59,6 @@ private extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView
     return PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,
-            showsInAuthenticatedWebView: true,
             retrySearchAction: {},
             cancelSearchAction: {}),
         animation: .init(namespace: namespace)

@@ -18,7 +18,6 @@ public enum CardPresentPaymentEventDetails: Sendable {
     case connectingFailedChargeReader(retrySearch: @MainActor @Sendable () -> Void,
                                       endSearch: @MainActor @Sendable () -> Void)
     case connectingFailedUpdateAddress(wcSettingsAdminURL: URL,
-                                       showsInAuthenticatedWebView: Bool,
                                        retrySearch: @MainActor @Sendable () -> Void,
                                        endSearch: @MainActor @Sendable () -> Void)
     case preparingForPayment(cancelPayment: @MainActor @Sendable () -> Void)

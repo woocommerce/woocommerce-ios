@@ -786,6 +786,40 @@ struct PointOfSaleAggregateModelTests {
             #expect(printer.printedStoreInformation?.phone == "555-0100")
         }
 
+        @Test func printReceipt_when_session_locks_during_settings_refresh_then_does_not_submit_print() async throws {
+            let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+            let printer = MockReceiptPrinterService()
+            let settingsService = MockPointOfSaleSettingsService()
+            settingsService.onRetrieve = { session.lock() }
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "99.0.0", active: true))
+            let settingsController = MockPOSSettingsController()
+            settingsController.storeViewModel = POSSettingsStoreViewModel(
+                siteID: 123,
+                settingsService: settingsService,
+                pluginsService: pluginsService,
+                defaultSiteName: "Sample Store",
+                siteSettings: [],
+                receiptSettingsAdminURL: "")
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: .fake().copy(orderID: 42))
+            let sut = makePointOfSaleAggregateModel(cardPresentPaymentService: cardPresentPaymentService,
+                                                    orderController: orderController,
+                                                    settingsController: settingsController,
+                                                    receiptPrinter: printer,
+                                                    accessSession: session)
+            await sut.checkOut()
+
+            await #expect(throws: CancellationError.self) {
+                try await sut.printReceipt()
+            }
+
+            #expect(settingsService.retrievePointOfSaleSettingsWasCalled)
+            #expect(printer.printedOrder == nil)
+        }
+
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -2102,10 +2136,12 @@ private func makePointOfSaleAggregateModel(
 @MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     var retrievePointOfSaleSettingsWasCalled = false
+    var onRetrieve: (@MainActor () -> Void)?
     var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         retrievePointOfSaleSettingsWasCalled = true
+        await onRetrieve?()
         switch retrievePointOfSaleSettingsResult {
         case .success(let receiptInfo):
             return receiptInfo

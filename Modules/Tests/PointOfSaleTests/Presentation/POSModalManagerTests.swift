@@ -135,6 +135,19 @@ struct POSModalManagerTests {
 
         // Then
         #expect(sut.compactStyle == nil)
+        #expect(!sut.isPresented)
+    }
+
+    @Test func test_native_dismissal_when_session_changed_then_discards_the_action() async throws {
+        let session = MockPOSAccessSession()
+        var dismissal = POSNativePresentationDismissal()
+        dismissal.presented(in: session)
+
+        session.lock()
+        try await session.signIn(withPIN: "1234")
+
+        let action = dismissal.takeAction(in: session, action: { Issue.record("Dismissal action no longer owns this session") })
+        #expect(action == nil)
     }
 
     @Test func test_dismiss_when_completion_is_supplied_then_calls_it_once_after_clearing_presentation() {

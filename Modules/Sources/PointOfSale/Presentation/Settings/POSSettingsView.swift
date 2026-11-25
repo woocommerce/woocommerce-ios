@@ -21,14 +21,9 @@ struct POSSettingsView: View {
                 selection = .store
             }
         }
-        .onChange(of: showsSecurityDetail) { _, showsSecurityDetail in
-            if !showsSecurityDetail && selection == .security { selection = .store }
+        .onChange(of: settingsController.securityController?.isVisible) { _, isVisible in
+            if isVisible != true && selection == .security { selection = .store }
         }
-    }
-
-    private var showsSecurityDetail: Bool {
-        guard let security = settingsController.securityController else { return false }
-        return security.isVisible || security.preservesGuidedAccessPresentation
     }
 }
 
@@ -128,7 +123,7 @@ extension POSSettingsView {
                 EmptyView()
             }
         case .security:
-            if let controller = settingsController.securityController, showsSecurityDetail {
+            if let controller = settingsController.securityController, controller.isVisible {
                 POSSecuritySettingsView(controller: controller)
             }
         case .help:

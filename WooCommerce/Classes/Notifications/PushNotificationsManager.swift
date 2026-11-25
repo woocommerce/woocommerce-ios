@@ -48,26 +48,6 @@ final class PushNotificationsManager: PushNotesManager {
     /// Mutable reference to `foregroundNotifications`.
     private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
-    /// An observable that emits values when the user taps to view the in-app notification while the app is
-    /// in the foreground.
-    ///
-    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
-        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
-    }
-
-    /// Mutable reference to `foregroundNotificationsToView`.
-    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
-
-    /// An observable that emits values when a Remote Notification is received while the app is
-    /// in inactive.
-    ///
-    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
-        inactiveNotificationsSubject.eraseToAnyPublisher()
-    }
-
-    /// Mutable reference to `inactiveNotifications`
-    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
-
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in the background.
     ///
@@ -617,7 +597,6 @@ extension PushNotificationsManager {
                                               actionTitle: Localization.viewInAppNotification) { [weak self] in
                         guard let self else { return }
                         self.presentDetails(for: foregroundNotification)
-                        self.foregroundNotificationsToViewSubject.send(foregroundNotification)
                         self.analytics.track(.viewInAppPushNotificationPressed,
                                                        withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                     }
@@ -886,8 +865,6 @@ private extension PushNotificationsManager {
         DDLogVerbose("📱 Handling Remote Notification in Inactive State")
 
         presentDetails(for: notification)
-
-        inactiveNotificationsSubject.send(notification)
     }
 
     /// Reload related product when review notification is received
@@ -903,9 +880,7 @@ private extension PushNotificationsManager {
 
 private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
-        if notification.kind != .comment {
-            configuration.application.presentNotificationDetails(notification: notification)
-        }
+        configuration.application.presentNotificationDetails(notification: notification)
         // The Products tab clears this on appear, but it may already be visible when the push is opened.
         if notification.kind == .storeStock {
             resetBadgeCount(type: .storeStock, siteID: notification.resolvedSiteID(stores: stores))

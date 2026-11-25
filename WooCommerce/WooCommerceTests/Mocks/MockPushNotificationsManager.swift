@@ -25,18 +25,6 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let foregroundNotificationsSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
 
-    var foregroundNotificationsToView: AnyPublisher<WooCommerce.PushNotification, Never> {
-        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
-    }
-
-    private let foregroundNotificationsToViewSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
-
-    var inactiveNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
-        inactiveNotificationsSubject.eraseToAnyPublisher()
-    }
-
-    private let inactiveNotificationsSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
-
     var backgroundNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
         backgroundNotificationsSubject.eraseToAnyPublisher()
     }
@@ -207,20 +195,6 @@ extension MockPushNotificationsManager {
     ///
     func sendForegroundNotification(_ notification: WooCommerce.PushNotification) {
         foregroundNotificationsSubject.send(notification)
-    }
-
-    /// Send a `PushNotification` that will be emitted by the `foregroundNotificationsToView`
-    /// observable.
-    ///
-    func sendForegroundNotificationToView(_ notification: WooCommerce.PushNotification) {
-        foregroundNotificationsToViewSubject.send(notification)
-    }
-
-    /// Send a `PushNotification` that will be emitted by the `inactiveNotifications`
-    /// observable.
-    ///
-    func sendInactiveNotification(_ notification: WooCommerce.PushNotification) {
-        inactiveNotificationsSubject.send(notification)
     }
 
     /// Send a `UNNotificationResponse` that will be emitted by the `localNotificationResponses`

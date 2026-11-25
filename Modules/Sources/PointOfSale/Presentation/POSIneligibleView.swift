@@ -28,6 +28,12 @@ struct POSIneligibleView: View {
         scrollViewHeight > 0 && contentHeight > 0 && contentHeight <= scrollViewHeight
     }
 
+    init(reason: POSIneligibleReason, onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
+        self.reason = reason
+        self.onRefresh = onRefresh
+        self.onExit = onExit
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: metrics.spacing.none) {
@@ -269,3 +275,31 @@ private extension POSIneligibleReason {
 }
 
 #endif
+
+
+public struct POSLaunchIneligibleView: View {
+    @State private var approval = POSManagerOverrideHandler()
+    @StateObject private var modalManager = POSModalManager()
+    @StateObject private var coverManager = POSFullScreenCoverManager()
+    @StateObject private var sheetManager = POSSheetManager()
+    private let reason: POSIneligibleReason
+    private let onRefresh: () async throws -> Void
+    private let onExit: () -> Void
+
+    public init(reason: POSIneligibleReason, onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
+        self.reason = reason
+        self.onRefresh = onRefresh
+        self.onExit = onExit
+    }
+
+    public var body: some View {
+        POSIneligibleView(reason: reason, onRefresh: onRefresh) {
+            approval.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { _ in onExit() }
+        }
+        .posManagerOverrideModal(handler: approval)
+        .posRootModal()
+        .environmentObject(modalManager)
+        .environmentObject(coverManager)
+        .environmentObject(sheetManager)
+    }
+}

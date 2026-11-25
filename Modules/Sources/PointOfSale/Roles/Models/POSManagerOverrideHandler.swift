@@ -220,3 +220,12 @@ private extension POSManagerOverrideHandler {
         }
     }
 }
+
+extension POSManagerOverrideHandler {
+    static let exitReason = NSLocalizedString(
+        "pointOfSaleDashboard.exit.overrideReason",
+        value: "Exiting Point of Sale requires approval",
+        comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+            + "exit permission tries to leave Point of Sale."
+    )
+}

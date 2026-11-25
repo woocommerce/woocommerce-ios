@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import SwiftUI
 
 final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject, Identifiable {
     let title = Localization.title
@@ -15,47 +14,24 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     @Published private var hasOpenedSettings = false
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    private let showsInAuthenticatedWebView: Bool
     private let retrySearchAction: () -> Void
-    private let openURL: (URL) -> Void
+    private let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    private let notificationCenter: NotificationCenter
-    private var foregroundRetrySubscription: AnyCancellable?
-
-    func primaryButtonViewModel(requiresEmbeddedSettingsWebView: Bool) -> CardPresentPaymentsModalButtonViewModel {
+    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel {
         if hasOpenedSettings { return retryButtonViewModel }
         return CardPresentPaymentsModalButtonViewModel(
             title: Localization.openAdmin,
             actionHandler: { [weak self] in
-                guard let self else { return }
-                if requiresEmbeddedSettingsWebView || showsInAuthenticatedWebView {
-                    shouldShowSettingsWebView = true
-                } else {
-                    foregroundRetrySubscription = notificationCenter
-                        .publisher(for: UIApplication.willEnterForegroundNotification)
-                        .first()
-                        .sink { [weak self] _ in
-                            self?.retrySearchAction()
-                        }
-                    openURL(settingsAdminUrl)
-                }
-                hasOpenedSettings = true
+                self?.shouldShowSettingsWebView = true
+                self?.hasOpenedSettings = true
             })
     }
 
-    private var retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
-
     init(settingsAdminUrl: URL,
-         showsInAuthenticatedWebView: Bool,
          retrySearchAction: @escaping () -> Void,
-         cancelSearchAction: @escaping () -> Void,
-         openURL: @escaping (URL) -> Void = { UIApplication.shared.open($0) },
-         notificationCenter: NotificationCenter = .default) {
+         cancelSearchAction: @escaping () -> Void) {
         self.settingsAdminUrl = settingsAdminUrl
-        self.showsInAuthenticatedWebView = showsInAuthenticatedWebView
         self.retrySearchAction = retrySearchAction
-        self.openURL = openURL
-        self.notificationCenter = notificationCenter
         self.retryButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.retry,
             actionHandler: retrySearchAction)
@@ -79,7 +55,6 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         lhs.hasOpenedSettings == rhs.hasOpenedSettings &&
         lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
         lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
-        lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView &&
         lhs.id == rhs.id
     }
 
@@ -91,7 +66,6 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         hasher.combine(hasOpenedSettings)
         hasher.combine(cancelButtonViewModel)
         hasher.combine(retryButtonViewModel)
-        hasher.combine(showsInAuthenticatedWebView)
         hasher.combine(id)
     }
 }

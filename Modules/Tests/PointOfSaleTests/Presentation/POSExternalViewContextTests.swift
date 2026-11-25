@@ -11,7 +11,6 @@ struct POSExternalViewContextTests {
         let sut = POSExternalViewContext(session: session)
 
         // Then
-        #expect(sut.requiresEmbeddedSettingsWebView)
         #expect(sut.canReuseAppWebSignIn == (role == .admin))
     }
 
@@ -20,7 +19,6 @@ struct POSExternalViewContextTests {
         let sut = POSExternalViewContext(session: UnrestrictedPOSAccessSession())
 
         // Then
-        #expect(!sut.requiresEmbeddedSettingsWebView)
         #expect(sut.canReuseAppWebSignIn)
     }
 

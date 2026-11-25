@@ -41,10 +41,18 @@ struct POSOnboardingGuideView: View {
                 Spacer(minLength: metrics.spacing.none)
             }
             .scrollVerticallyIfNeeded()
+            // With large text, steps scroll under the buttons. Fading the edge keeps a clipped card from reading as a strip.
+            .mask {
+                VStack(spacing: metrics.spacing.none) {
+                    Color.black
+                    LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: metrics.padding.xLarge)
+                }
+            }
 
             POSFlowButtonsView(configuration: buttonConfiguration)
-                .posStatusButtonsWidth()
-                .posPadding(.bottom, \.medium)
+                .posStatusButtonsWidth(addsHorizontalPadding: false)
+                .posPhoneBottomButtonPadding()
         }
         .background(Color.posSurface.ignoresSafeArea())
         .interactiveDismissDisabled()

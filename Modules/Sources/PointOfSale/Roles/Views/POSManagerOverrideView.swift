@@ -21,12 +21,6 @@ struct POSManagerOverrideView: View {
     }
 }
 
-extension POSModalCompactStyle {
-    static var managerApproval: POSModalCompactStyle {
-        .fullScreen(title: POSManagerOverrideView.Localization.title)
-    }
-}
-
 private extension POSManagerOverrideView {
     var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -47,12 +41,7 @@ private extension POSManagerOverrideView {
 
     var compactContent: some View {
         VStack(spacing: metrics.spacing.large) {
-            // The flow header already shows the title.
-            if isFullScreenFlow {
-                reason
-            } else {
-                header(spacing: metrics.spacing.small)
-            }
+            header(spacing: metrics.spacing.small)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)

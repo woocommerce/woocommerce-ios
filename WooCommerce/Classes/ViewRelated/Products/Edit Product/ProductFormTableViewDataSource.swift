@@ -191,30 +191,16 @@ private extension ProductFormTableViewDataSource {
         }
 
         defer {
-            cell.accessibilityLabel = NSLocalizedString(
-                "List of images of the product",
-                comment: "VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen."
-            )
+            cell.accessibilityLabel = Localization.imagesAccessibilityLabel
         }
 
-        guard isEditable else {
-            cell.configure(with: productImageStatuses,
-                           config: .images,
-                           productUIImageLoader: productUIImageLoader)
-            return
-        }
-        if !productImageStatuses.isEmpty {
-            if allowsMultipleImages {
-                cell.configure(with: productImageStatuses,
-                               config: .addImages,
-                               productUIImageLoader: productUIImageLoader)
-            } else {
-                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
-            }
-        }
-        else {
-            cell.configure(with: productImageStatuses, config: .extendedAddImages(isVariation: isVariation), productUIImageLoader: productUIImageLoader)
-        }
+        let config = ProductImagesCellConfig(statuses: productImageStatuses,
+                                             isEditable: isEditable,
+                                             allowsMultiple: allowsMultipleImages,
+                                             isVariation: isVariation)
+        cell.configure(with: productImageStatuses, config: config, productUIImageLoader: productUIImageLoader)
+        guard isEditable else { return }
+
         cell.onImageSelected = { [weak self] _, _ in
             self?.onAddImage?()
         }
@@ -242,21 +228,16 @@ private extension ProductFormTableViewDataSource {
         cell.accessoryType = .none
         cell.accessibilityIdentifier = "product-title"
 
-        let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
-
         let cellViewModel = LabeledTextViewTableViewCell.ViewModel(text: name,
                                                                    productStatus: productStatus,
-                                                                   placeholder: placeholder,
+                                                                   placeholder: Localization.namePlaceholder,
                                                                    textViewMinimumHeight: 10.0,
                                                                    shouldDismissOnReturn: true,
                                                                    isScrollEnabled: false,
                                                                    onNameChange: { [weak self] newName in self?.onNameChange?(newName) },
                                                                    style: .headline)
         cell.configure(with: cellViewModel)
-        cell.accessibilityLabel = NSLocalizedString(
-            "Title of the product",
-            comment: "VoiceOver accessibility hint, informing the user about the title of a product in product detail screen."
-        )
+        cell.accessibilityLabel = Localization.nameAccessibilityLabel
     }
 
     func configureReadonlyName(cell: UITableViewCell, name: String) {
@@ -276,17 +257,14 @@ private extension ProductFormTableViewDataSource {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }
-            let title = NSLocalizedString("Description",
-                                          comment: "Title in the Product description row on Product form screen when the description is non-empty.")
-            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: description, isActionable: isEditable)
+            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.descriptionTitle, text: description, isActionable: isEditable)
             cell.updateUI(viewModel: viewModel)
             cell.accessibilityHint = Localization.Accessibility.descriptionHint
         } else {
             guard let cell = cell as? BasicTableViewCell else {
                 fatalError()
             }
-            let placeholder = NSLocalizedString("Describe your product", comment: "Placeholder in the Product description row on Product form screen.")
-            cell.textLabel?.text = placeholder
+            cell.textLabel?.text = Localization.descriptionPlaceholder
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
             cell.accessibilityIdentifier = "product-description"
@@ -533,13 +511,33 @@ private extension ProductFormTableViewDataSource {
         static let settingsHeaderHeight = CGFloat(16)
         static let blazeButtonIconSize = CGSize(width: 20, height: 20)
     }
+}
+
+extension ProductFormTableViewDataSource {
     enum Localization {
-        static let legalText = NSLocalizedString(
+        static let imagesAccessibilityLabel = NSLocalizedString(
+            "List of images of the product",
+            comment: "VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen."
+        )
+        static let namePlaceholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
+        static let nameAccessibilityLabel = NSLocalizedString(
+            "Title of the product",
+            comment: "VoiceOver accessibility hint, informing the user about the title of a product in product detail screen."
+        )
+        static let descriptionTitle = NSLocalizedString(
+            "Description",
+            comment: "Title in the Product description row on Product form screen when the description is non-empty."
+        )
+        static let descriptionPlaceholder = NSLocalizedString(
+            "Describe your product",
+            comment: "Placeholder in the Product description row on Product form screen."
+        )
+        fileprivate static let legalText = NSLocalizedString(
             "Powered by AI. %1$@.",
             comment: "Label to indicate AI-generated content in the product detail screen. " +
             "Reads: Powered by AI. Learn more."
         )
-        static let learnMore = NSLocalizedString(
+        fileprivate static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Title for the link to open the legal URL for AI-generated content in the product detail screen"
         )

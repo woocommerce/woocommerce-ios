@@ -235,7 +235,7 @@ private extension POSPINEntryView {
         if let keySizeOverride {
             Button(action: action, label: label)
                 .buttonStyle(LockScreenKeyButtonStyle(size: keySizeOverride,
-                                                     showsDisabledAppearance: helper.showsDisabledKeys(for: state)))
+                                                      showsDisabledAppearance: helper.showsDisabledKeys(for: state)))
         } else {
             Button(action: action) {
                 label()

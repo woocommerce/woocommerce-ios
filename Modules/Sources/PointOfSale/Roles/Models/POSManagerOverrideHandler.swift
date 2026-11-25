@@ -110,6 +110,10 @@ final class POSManagerOverrideHandler {
         dismiss()
     }
 
+    func pinEntryState(for requestID: UUID) -> POSPINEntryState {
+        request?.id == requestID ? pinEntryState : .checkingLockout
+    }
+
     func refreshWait() async {
         guard let request else { return }
         switch pinEntryState {

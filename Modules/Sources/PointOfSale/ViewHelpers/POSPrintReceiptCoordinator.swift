@@ -87,8 +87,6 @@ struct POSPrintReceiptCoordinator {
             try await printReceipt()
             analytics.track(.receiptPrintSuccess)
             updateButtonState(.success)
-        } catch is CancellationError {
-            updateButtonState(.idle)
         } catch {
             DDLogError("⛔️ POS receipt print failed: \(error)")
             analytics.track(.receiptPrintFailed, parameters: [:], error: error)

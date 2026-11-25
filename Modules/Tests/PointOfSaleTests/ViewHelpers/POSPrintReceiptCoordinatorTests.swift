@@ -9,18 +9,6 @@ struct POSPrintReceiptCoordinatorTests {
     private let analytics = MockPOSAnalytics()
     private let spy = EffectsSpy()
 
-    @Test func test_print_when_cancelled_then_returns_to_idle_without_a_failure() async {
-        // Given
-        let sut = makeCoordinator(printReceipt: { throw CancellationError() })
-
-        // When
-        await sut.printButtonTapped(isPrinterConnected: true)
-
-        // Then
-        #expect(spy.buttonStates == [.loading, .idle])
-        #expect(spy.failures.isEmpty)
-    }
-
     // MARK: - printButtonTapped
 
     @Test func test_printButtonTapped_when_printer_connected_then_prints_and_tracks_tapped_and_success() async {

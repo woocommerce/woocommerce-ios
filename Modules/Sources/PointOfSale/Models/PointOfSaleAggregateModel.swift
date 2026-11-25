@@ -89,7 +89,6 @@ protocol PointOfSaleAggregateModelProtocol {
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
-    private let accessSession: POSAccessSession
     private let siteID: Int64
     private let customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
@@ -170,8 +169,7 @@ protocol PointOfSaleAggregateModelProtocol {
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences(),
-         accessSession: POSAccessSession = UnrestrictedPOSAccessSession()) {
+         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences()) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -185,7 +183,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
-        self.accessSession = accessSession
         self.soundPlayer = soundPlayer
         self.siteID = siteID
         self.customAmountTaxPreferences = customAmountTaxPreferences
@@ -357,11 +354,11 @@ extension PointOfSaleAggregateModel {
     @discardableResult
     func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) -> Task<Void, Never> {
         let currentCheckoutGeneration = checkoutGeneration
-        let accessScope = accessSession.accessScope
         return Task { [weak self] in
             // A queued result must still belong to this cart, even after returning to building.
-            guard let self, accessSession.isCurrent(accessScope),
-                  orderStage == .building, checkoutGeneration == currentCheckoutGeneration else { return }
+            guard let self,
+                  self.orderStage == .building,
+                  self.checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
                 await handleSuccessfulScan(barcode: barcode)
@@ -523,17 +520,11 @@ extension PointOfSaleAggregateModel {
     }
 
     func printReceipt() async throws {
-        let scope = accessSession.accessScope
         // Refresh the store's receipt settings so the printout reflects any changes made this
         // session. On failure the previously loaded values are kept, so printing still proceeds
         // with the best available information.
         await settingsController.storeViewModel.retrievePOSReceiptSettings()
-        guard accessSession.isCurrent(scope), !Task.isCancelled else { throw CancellationError() }
-        do {
-            try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
-        } catch where !accessSession.isCurrent(scope) {
-            throw CancellationError()
-        }
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
     }
 
     /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first

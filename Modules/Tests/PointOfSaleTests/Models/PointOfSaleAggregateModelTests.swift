@@ -786,40 +786,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(printer.printedStoreInformation?.phone == "555-0100")
         }
 
-        @Test func printReceipt_when_session_locks_during_settings_refresh_then_does_not_submit_print() async throws {
-            let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-            let printer = MockReceiptPrinterService()
-            let settingsService = MockPointOfSaleSettingsService()
-            settingsService.onRetrieve = { session.lock() }
-            let pluginsService = MockPluginsService()
-            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "99.0.0", active: true))
-            let settingsController = MockPOSSettingsController()
-            settingsController.storeViewModel = POSSettingsStoreViewModel(
-                siteID: 123,
-                settingsService: settingsService,
-                pluginsService: pluginsService,
-                defaultSiteName: "Sample Store",
-                siteSettings: [],
-                receiptSettingsAdminURL: "")
-            orderController.orderStateToReturn = makeLoadedOrderState(
-                orderTotal: "$10.00",
-                orderTotalDecimal: 10,
-                order: .fake().copy(orderID: 42))
-            let sut = makePointOfSaleAggregateModel(cardPresentPaymentService: cardPresentPaymentService,
-                                                    orderController: orderController,
-                                                    settingsController: settingsController,
-                                                    receiptPrinter: printer,
-                                                    accessSession: session)
-            await sut.checkOut()
-
-            await #expect(throws: CancellationError.self) {
-                try await sut.printReceipt()
-            }
-
-            #expect(settingsService.retrievePointOfSaleSettingsWasCalled)
-            #expect(printer.printedOrder == nil)
-        }
-
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -1535,39 +1501,6 @@ struct PointOfSaleAggregateModelTests {
     }
 
     @MainActor struct BarcodeTests {
-        @Test func test_barcode_when_pos_is_locked_then_cannot_change_the_current_sale() async {
-            // Given
-            let session = MockPOSAccessSession(isLocked: true)
-            let sut = makePointOfSaleAggregateModel(accessSession: session)
-            sut.addToCart(makePurchasableItem())
-            let currentItems = sut.cart.purchasableItems.map(\.id)
-
-            // When
-            await sut.barcodeScanned(.success("123456")).value
-            await sut.barcodeScanned(.failure(.scanTooShort(barcode: "1"))).value
-
-            // Then
-            #expect(sut.cart.purchasableItems.map(\.id) == currentItems)
-            #expect(sut.cart.latestScannedItemID == nil)
-        }
-
-        @Test func test_barcode_when_session_changes_before_work_runs_then_drops_the_queued_scan() async throws {
-            // Given
-            let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
-            let sut = makePointOfSaleAggregateModel(accessSession: session)
-
-            // When
-            let pendingScan = sut.barcodeScanned(.success("123456"))
-            session.lock()
-            try await session.signIn(withPIN: "1234")
-            await pendingScan.value
-
-            // Then
-            #expect(sut.cart.isEmpty)
-            await sut.barcodeScanned(.success("123456")).value
-            #expect(sut.cart.purchasableItems.count == 1)
-        }
-
         @Test(arguments: [true, false])
         func test_barcode_when_queued_before_checkout_then_does_not_change_checkout_cart(isSuccess: Bool) async throws {
             // Given
@@ -2082,8 +2015,7 @@ private func makePointOfSaleAggregateModel(
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
     isLocalCatalogEligible: Bool = false,
     receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
-    customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = MockPOSCustomAmountTaxPreferences(),
-    accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
+    customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = MockPOSCustomAmountTaxPreferences()
 ) -> PointOfSaleAggregateModel {
     let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
 
@@ -2108,20 +2040,17 @@ private func makePointOfSaleAggregateModel(
         catalogSyncCoordinator: catalogSyncCoordinator,
         isLocalCatalogEligible: isLocalCatalogEligible,
         receiptPrinter: receiptPrinter,
-        customAmountTaxPreferences: customAmountTaxPreferences,
-        accessSession: accessSession
+        customAmountTaxPreferences: customAmountTaxPreferences
     )
 }
 
 @MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     var retrievePointOfSaleSettingsWasCalled = false
-    var onRetrieve: (@MainActor () -> Void)?
     var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         retrievePointOfSaleSettingsWasCalled = true
-        onRetrieve?()
         switch retrievePointOfSaleSettingsResult {
         case .success(let receiptInfo):
             return receiptInfo

@@ -251,8 +251,7 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isCompactLayout ? .compact : .large,
-                accessSession: session)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
             let cleanup = { [posModel, posModalManager, siteID, onPointOfSaleModeActiveStateChange] in
                 if posModel?.paymentState.isSuccess == true {

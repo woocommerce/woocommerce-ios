@@ -205,6 +205,7 @@ private struct POSOnboardingGuideSaleStepTile: View {
 
 private struct POSOnboardingGuideVideoCard: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     let action: () -> Void
 
@@ -219,9 +220,12 @@ private struct POSOnboardingGuideVideoCard: View {
                     Text(Localization.title)
                         .font(.posBodyLargeBold)
                         .foregroundStyle(Color.posOnSurface)
-                    Text(Localization.subtitle)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    // In landscape, the title alone lets the last step fit above the buttons on smaller phones.
+                    if verticalSizeClass != .compact {
+                        Text(Localization.subtitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
                 }
                 .multilineTextAlignment(.leading)
                 Spacer(minLength: metrics.spacing.none)

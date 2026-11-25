@@ -179,6 +179,35 @@ struct ReceiptPrinterServiceTests {
         #expect(printedText.contains("€1") == false)
     }
 
+    @Test func test_printReceipt_with_order_when_currency_settings_change_after_creation_then_uses_updated_settings() async throws {
+        // Given
+        let currencySettings = CurrencySettings()
+        let sut = makeService(currencySettings: currencySettings)
+        let items = [OrderItem.fake().copy(name: "Coffee", quantity: 1, subtotal: "1234")]
+        try await sut.printReceipt(order: Order.fake().copy(orderID: 42, currency: "USD", total: "1234", items: items),
+                                   storeInformation: .empty,
+                                   cardDetails: nil)
+        let textBeforeSwitch = try #require(printerDiscoveryService.printedText)
+
+        // When
+        // Store switches update the shared settings instance in place.
+        currencySettings.currencyCode = .EUR
+        currencySettings.currencyPosition = .rightSpace
+        currencySettings.groupingSeparator = "."
+        currencySettings.decimalSeparator = ","
+        currencySettings.fractionDigits = 0
+        try await sut.printReceipt(order: Order.fake().copy(orderID: 43, currency: "EUR", total: "1234", items: items),
+                                   storeInformation: .empty,
+                                   cardDetails: nil)
+
+        // Then
+        #expect(textBeforeSwitch.contains("$1,234.00"))
+        let printedText = try #require(printerDiscoveryService.printedText)
+        #expect(printedText.contains("1.234\u{00a0}€"))
+        #expect(printedText.contains("1.234,00") == false)
+        #expect(printedText.contains("$") == false)
+    }
+
     @Test func test_printReceipt_with_order_when_card_details_present_then_prints_brand_and_last4() async throws {
         // Given
         let sut = makeService()

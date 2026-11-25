@@ -3,6 +3,8 @@
 
 26.2
 -----
+- [*] POS: On iPhone, the refund reason Add button now sits right above the keyboard, and the Select items and Review refund screens line up with their headers. [https://github.com/woocommerce/woocommerce-ios/pull/18430]
+- [*] POS: On iPhone, payment buttons on Checkout no longer stay disabled after a payment that could not start, for example Tap to Pay on a $0.00 order. [https://github.com/woocommerce/woocommerce-ios/pull/18419]
 - [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
 - [*] POS: On an iPhone Duo, the checkout no longer stays shrunk after you fold and unfold the phone. [https://github.com/woocommerce/woocommerce-ios/pull/18442]
 - [*] POS: On iPhone, the cart no longer shows a back arrow and loses its buttons while it closes after tapping Check out. [https://github.com/woocommerce/woocommerce-ios/pull/18416]
@@ -11,6 +13,7 @@
 - [*] Login: Site-credential login now completes only once if Retry is tapped again while sign-in is still in progress. [https://github.com/woocommerce/woocommerce-ios/pull/18429]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
+- [*] Login: WordPress.com-hosted stores signed in with a WP-Admin QR code no longer show WordPress.com-only AI and Themes features that cannot work with that session. [https://github.com/woocommerce/woocommerce-ios/pull/18438]
 - [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
 - [*] Dashboard: The Most recent orders card now updates when an order's status or details change in the app, or the order is trashed. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
 - [*] Dashboard: Unsaved card changes in Customize no longer reset after opening Control Center or returning to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18413]

@@ -19,6 +19,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
 
+    private lazy var settingsRowActionHandler = ProductFormSettingsRowActionHandler(navigator: self,
+                                                                                     eventLogger: eventLogger)
+    private lazy var actionRoutingHandler = ProductFormActionRoutingHandler(navigator: self,
+                                                                            eventLogger: eventLogger)
+
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -497,170 +502,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let section = tableViewModel.sections[indexPath.section]
         switch section {
         case .primaryFields(let rows):
-            let row = rows[indexPath.row]
-            switch row {
-            case .images(_, let isStorePublic, _, _):
-                guard isStorePublic else {
-                    presentURL(URLs.wpComPrivacySettings)
-                    return
-                }
-            case .description(_, let isEditable, _):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logDescriptionTapped()
-                editProductDescription()
-            case .promoteWithBlaze:
-                if !viewModel.shouldShowBlazeIntroView {
-                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
-                }
-                displayBlaze()
-            default:
-                break
-            }
+            actionRoutingHandler.handle(rows[indexPath.row],
+                                        shouldShowBlazeIntroView: viewModel.shouldShowBlazeIntroView)
         case .settings(let rows):
             let row = rows[indexPath.row]
-            switch row {
-            case .price(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logPriceSettingsTapped()
-                editPriceSettings()
-            case .customFields:
-                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
-                showCustomFields()
-            case .reviews:
-                ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
-                showReviews()
-            case .downloadableFiles(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
-                showDownloadableFiles()
-            case .linkedProducts(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
-                editLinkedProducts()
-            case .productType(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
-                let cell = tableView.cellForRow(at: indexPath)
-                editProductType(cell: cell)
-            case .shipping(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logShippingSettingsTapped()
-                editShippingSettings()
-            case .inventory(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logInventorySettingsTapped()
-                editInventorySettings()
-            case .addOns(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
-                navigateToAddOns()
-            case .categories(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
-                editCategories()
-            case .tags(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewTagsTapped)
-                editTags()
-            case .shortDescription(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                editShortDescription()
-            case .externalURL(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
-                editExternalLink()
-                break
-            case .simplifiedInventory(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                editSimplifiedInventory()
-                break
-            case .groupedProducts(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
-                editGroupedProducts()
-                break
-            case .variations(let row):
-                guard row.isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                showVariations()
-            case .noPriceWarning(let viewModel):
-                guard viewModel.isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                showVariations()
-            case .attributes(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                editAttributes()
-            case .status:
-                break
-            case .bundledProducts(_, let isActionable):
-                guard isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
-                showBundledProducts()
-            case .components(_, let isActionable):
-                guard isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
-                showCompositeComponents()
-            case .subscriptionFreeTrial(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-
-                eventLogger.logSubscriptionsFreeTrialTapped()
-                showSubscriptionFreeTrialSettings()
-            case .subscriptionExpiry(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-
-                eventLogger.logSubscriptionsExpirationDateTapped()
-                showSubscriptionExpirySettings()
-            case .noVariationsWarning:
-                return // This warning is not actionable.
-            case .quantityRules:
-                eventLogger.logQuantityRulesTapped()
-                showQuantityRules()
-                return
-            }
+            settingsRowActionHandler.handle(row,
+                                            sourceView: tableView.cellForRow(at: indexPath),
+                                            productID: product.productID)
         }
     }
 
@@ -997,28 +845,25 @@ private extension ProductFormViewController {
 
     func updateDataSourceActions() {
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
-            self?.editLinkedProducts()
+            self?.actionRoutingHandler.handle(.openLinkedProducts)
         }
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
-            guard let self else { return }
-            self.reloadLinkedPromoCell()
+            self?.actionRoutingHandler.handle(.reloadLinkedProductsPromo)
         }
         tableViewDataSource.descriptionAIAction = { [weak self] in
-            self?.showProductDescriptionAI()
+            self?.actionRoutingHandler.handle(.descriptionAI)
         }
         tableViewDataSource.openAILegalPageAction = { [weak self] url in
-            guard let self else { return }
-            WebviewHelper.launch(url.absoluteString, with: self)
+            self?.actionRoutingHandler.handle(.openAILegalPage(url))
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
+            self?.actionRoutingHandler.handle(.nameChanged(name ?? ""))
         }, onStatusChange: { [weak self] isEnabled in
-            self?.onEditStatusCompletion(isEnabled: isEnabled)
+            self?.actionRoutingHandler.handle(.statusChanged(isEnabled))
         }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
+            self?.actionRoutingHandler.handle(.addImage)
         }, onFailedImageUpload: { [weak self] asset, error in
-            self?.displayImageUploadErrorAlert(error: error, for: asset)
+            self?.actionRoutingHandler.handle(.failedImageUpload(asset: asset, error: error))
         })
     }
 
@@ -1043,40 +888,9 @@ private extension ProductFormViewController {
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
-                                                                        switch action {
-                                                                        case .editInventorySettings:
-                                                                            self?.eventLogger.logInventorySettingsTapped()
-                                                                            self?.editInventorySettings()
-                                                                        case .editShippingSettings:
-                                                                            self?.eventLogger.logShippingSettingsTapped()
-                                                                            self?.editShippingSettings()
-                                                                        case .editCategories:
-                                                                            ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
-                                                                            self?.editCategories()
-                                                                        case .editTags:
-                                                                            ServiceLocator.analytics.track(.productDetailViewTagsTapped)
-                                                                            self?.editTags()
-                                                                        case .editShortDescription:
-                                                                            ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                                                                            self?.editShortDescription()
-                                                                        case .editSimplifiedInventory:
-                                                                            ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                                                                            self?.editSimplifiedInventory()
-                                                                        case .editLinkedProducts:
-                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
-                                                                            self?.editLinkedProducts()
-                                                                        case .editReviews:
-                                                                            ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
-                                                                            self?.showReviews()
-                                                                        case .editDownloadableFiles:
-                                                                            ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
-                                                                            self?.showDownloadableFiles()
-                                                                        case .editCustomFields:
-                                                                            self?.showCustomFields()
-                                                                        case .editAttributes:
-                                                                            self?.trackAddProductAttributeTapped()
-                                                                            self?.addProductAttribute()
-                                                                        }
+                                                                        guard let self else { return }
+                                                                        self.actionRoutingHandler.handle(action,
+                                                                                                         productID: self.product.productID)
                                                                     }
         }
         let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
@@ -1396,10 +1210,6 @@ private extension ProductFormViewController {
 
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
-    }
-
-    func trackAddProductAttributeTapped() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: product.productID))
     }
 }
 
@@ -1741,7 +1551,7 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Type Settings
 //
 private extension ProductFormViewController {
-    func editProductType(cell: UITableViewCell?) {
+    func editProductType(sourceView: UIView?) {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
@@ -1769,7 +1579,49 @@ private extension ProductFormViewController {
             })
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command, initialPosition: .expanded)
-        productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
+        productTypesListPresenter.show(from: self, sourceView: sourceView, arrowDirections: .any)
+    }
+}
+
+// MARK: - ProductFormNavigating
+
+extension ProductFormViewController: ProductFormNavigating {
+    func navigate(to destination: ProductFormDestination) {
+        switch destination {
+        case .privacySettings: presentURL(URLs.wpComPrivacySettings)
+        case .productDescription: editProductDescription()
+        case .blaze: displayBlaze()
+        case .reloadLinkedProductsPromo: reloadLinkedPromoCell()
+        case .descriptionAI: showProductDescriptionAI()
+        case .aiLegalPage(let url): WebviewHelper.launch(url.absoluteString, with: self)
+        case .productNameChanged(let name): onEditProductNameCompletion(newName: name)
+        case .productStatusChanged(let isEnabled): onEditStatusCompletion(isEnabled: isEnabled)
+        case .productImages: showProductImages()
+        case .imageUploadFailure(let asset, let error): displayImageUploadErrorAlert(error: error, for: asset)
+        case .price: editPriceSettings()
+        case .customFields: showCustomFields()
+        case .reviews: showReviews()
+        case .downloadableFiles: showDownloadableFiles()
+        case .linkedProducts: editLinkedProducts()
+        case .productType(let sourceView): editProductType(sourceView: sourceView)
+        case .shipping: editShippingSettings()
+        case .inventory: editInventorySettings()
+        case .addOns: navigateToAddOns()
+        case .categories: editCategories()
+        case .tags: editTags()
+        case .shortDescription: editShortDescription()
+        case .externalURL: editExternalLink()
+        case .simplifiedInventory: editSimplifiedInventory()
+        case .groupedProducts: editGroupedProducts()
+        case .variations: showVariations()
+        case .attributes: editAttributes()
+        case .bundledProducts: showBundledProducts()
+        case .components: showCompositeComponents()
+        case .subscriptionFreeTrial: showSubscriptionFreeTrialSettings()
+        case .subscriptionExpiry: showSubscriptionExpirySettings()
+        case .quantityRules: showQuantityRules()
+        case .addAttribute: addProductAttribute()
+        }
     }
 }
 

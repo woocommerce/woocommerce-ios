@@ -104,7 +104,6 @@ struct StoreOnboardingPaymentsSetupView: View {
                     Button(Localization.dismiss) {
                         onDismiss()
                     }
-                    .buttonStyle(TextButtonStyle())
                 }
             }
         }

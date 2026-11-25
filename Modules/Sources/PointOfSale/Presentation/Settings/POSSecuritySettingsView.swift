@@ -430,7 +430,7 @@ private struct POSSecuritySettingRow<Accessory: View>: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .foregroundStyle(.secondary)
             }
         }
         .fixedSize(horizontal: false, vertical: true)

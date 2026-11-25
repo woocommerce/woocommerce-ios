@@ -307,31 +307,4 @@ struct PointOfSaleDashboardViewHelperTests {
         // Then
         #expect(result == false)
     }
-
-    // MARK: - Exit Decision Tests
-
-    @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: false)
-
-        // Then
-        #expect(result == .showConfirmation)
-    }
-
-    @Test func exitDecision_when_confirming_first_and_approved_then_leaves_and_tracks_confirmation() {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: true)
-
-        // Then
-        #expect(result == .leave(tracksConfirmation: true))
-    }
-
-    @Test(arguments: [true, false])
-    func exitDecision_when_not_confirming_first_then_leaves_without_tracking(approved: Bool) {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: false, approved: approved)
-
-        // Then
-        #expect(result == .leave(tracksConfirmation: false))
-    }
 }

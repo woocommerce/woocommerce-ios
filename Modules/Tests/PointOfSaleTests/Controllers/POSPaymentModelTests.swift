@@ -14,84 +14,22 @@ import enum WooFoundationCore.WooAnalyticsStat
 struct POSPaymentModelTests {
 
     @Test(arguments: [PointOfSaleCardPaymentState.acceptingCard, .processingPayment]) @MainActor
-    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_requests_cancellation_and_keeps_state(card: PointOfSaleCardPaymentState) async {
+    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_requests_cancellation_and_keeps_state(card: PointOfSaleCardPaymentState) {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let state = PointOfSalePaymentState(card: card, cash: .idle)
         let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(total: "1.00")
-        provider.totalDecimalToReturn = 1
-        service.collectPaymentOverride = {
-            service.paymentEvent = card == .acceptingCard
-                ? .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-                : .show(eventDetails: .processing)
-            return .cancellation
-        }
         let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, paymentState: state)
-        await sut.startPayment()
-        service.cancelPaymentCalled = false
 
         // When
-        await fireOnce { canceled in
-            service.onCancelPaymentCalled = { canceled() }
-            sut.cancelCardPaymentForLock()
-        }
+        sut.cancelCardPaymentForLock()
 
         // Then
         #expect(service.cancelPaymentCalled)
+        #expect(service.cancelPaymentCallCount == 1)
         #expect(sut.paymentState == state)
-        #expect(provider.provideOrderCallCount == 1)
-
-        // When the existing idle event arrives after lock cancellation.
-        service.paymentEvent = .idle
-
-        // Then the checkout uses its existing retry prompt instead of becoming blank.
-        guard case .cancelledOnReader = sut.cardPresentPaymentInlineMessage else {
-            Issue.record("Expected the existing cancellation message")
-            return
-        }
-        #expect(sut.paymentState == .idle)
-
-        // A new explicit payment uses normal messages again.
-        service.onCancelPaymentCalled = nil
-        service.collectPaymentWasCalled = false
-        await sut.cancelThenCollectPayment()
-        #expect(provider.provideOrderCallCount == 2)
-        #expect(service.collectPaymentWasCalled)
-        service.paymentEvent = .idle
-        #expect(sut.cardPresentPaymentInlineMessage == nil)
-
-        sut.reset()
-        #expect(sut.cardPresentPaymentInlineMessage == nil)
-    }
-
-    @Test @MainActor
-    func test_cancelCardPaymentForLock_when_payment_succeeds_then_keeps_existing_success_presentation() async {
-        // Given
-        let service = MockCardPresentPaymentService()
-        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(total: "1.00")
-        provider.totalDecimalToReturn = 1
-        service.collectPaymentOverride = {
-            service.paymentEvent = .show(eventDetails: .processing)
-            return .cancellation
-        }
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider)
-        await sut.startPayment()
-        sut.cancelCardPaymentForLock()
-
-        // When
-        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-
-        // Then
-        guard case .paymentSuccess = sut.cardPresentPaymentInlineMessage else {
-            Issue.record("Expected the existing success message")
-            return
-        }
-        service.paymentEvent = .idle
-        #expect(sut.cardPresentPaymentInlineMessage == nil)
+        #expect(provider.provideOrderCallCount == 0)
     }
 
     @Test(arguments: [PointOfSalePaymentState.idle,
@@ -109,6 +47,35 @@ struct POSPaymentModelTests {
         // Then
         #expect(!service.cancelPaymentCalled)
         #expect(sut.paymentState == state)
+    }
+
+    @Test(arguments: [true, false]) @MainActor
+    func test_cancelCardPaymentForLock_when_collection_finishes_then_returns_to_checkout_only_on_cancellation(isCanceled: Bool) async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "1.00")
+        provider.totalDecimalToReturn = 1
+        var returnedToCheckout = false
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }))
+        service.collectPaymentOverride = { [weak sut, weak service] in
+            service?.paymentEvent = .show(eventDetails: .processing)
+            sut?.cancelCardPaymentForLock()
+            service?.paymentEvent = .idle
+            #expect(!returnedToCheckout)
+            return isCanceled ? .cancellation : .success(CardPresentPaymentTransaction())
+        }
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(returnedToCheckout == isCanceled)
+        #expect(service.cancelPaymentCallCount == 1)
+        #expect(provider.provideOrderCallCount == 1)
     }
 
     // MARK: - Payment starts that end without a payment

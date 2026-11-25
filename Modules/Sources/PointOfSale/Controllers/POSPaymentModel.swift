@@ -24,7 +24,7 @@ final class POSPaymentModel {
     let paymentStateChanges: AnyPublisher<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    private var showsLockCancellationMessage = false
+    private var returnsToCheckoutAfterLockCancellation = false
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
@@ -89,14 +89,9 @@ final class POSPaymentModel {
 
     func cancelCardPaymentForLock() {
         guard paymentState.activePaymentMethod == .card, paymentState.isAutoLockSuppressing else { return }
-        showsLockCancellationMessage = (currentPaymentMethod ?? activeCardPaymentConnectionMethod) == .bluetooth
-        cardPaymentCancelTask = Task { [weak self] in
-            do {
-                try await self?.cardPresentPaymentService.cancelPayment()
-            } catch {
-                DDLogError("🃏 [CardPayment] cancelPayment for lock failed: \(error)")
-            }
-        }
+        returnsToCheckoutAfterLockCancellation = true
+        // This entry point uses the current flow's phase-specific cancellation handler.
+        cardPresentPaymentService.cancelPayment()
     }
 
     /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
@@ -630,7 +625,7 @@ extension POSPaymentModel {
     }
 
     private func collectCardPayment(using method: CardReaderConnectionMethod) async {
-        showsLockCancellationMessage = false
+        returnsToCheckoutAfterLockCancellation = false
         DDLogInfo("🃏 [CardPayment] collectCardPayment(\(method)) called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         let generation = startPaymentGeneration
         defer {
@@ -652,7 +647,14 @@ extension POSPaymentModel {
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
+        let generation = startPaymentGeneration
         let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
+        if case .cancellation = result, returnsToCheckoutAfterLockCancellation, startPaymentGeneration == generation {
+            returnsToCheckoutAfterLockCancellation = false
+            // The existing edit-order route keeps the cart and synced order.
+            configuration.intentCreationErrorExitAction.action()
+            return
+        }
         if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
             cardPaymentDetails = (order.orderID, cardDetails)
         }
@@ -1144,7 +1146,7 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
-        showsLockCancellationMessage = false
+        returnsToCheckoutAfterLockCancellation = false
         scanToPayGeneration = UUID()
         cancelConnectCardReaderTask()
         cancelTapToPayConnectTask()
@@ -1548,30 +1550,16 @@ private extension POSPaymentModel {
     }
 
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
-        switch event {
-        case .show(.paymentSuccess), .show(.paymentError), .show(.paymentCaptureError), .show(.paymentIntentCreationError):
-            showsLockCancellationMessage = false
-        default:
-            break
-        }
-
-        let presentationEvent: CardPresentPaymentEvent
-        if showsLockCancellationMessage, case .idle = event {
-            presentationEvent = .show(eventDetails: .cancelledOnReader)
-        } else {
-            presentationEvent = event
-        }
-
         // On the TTP path a merchant-cancelled-on-reader event drops the merchant
         // back to the idle hero rather than the legacy iPad "Payment canceled /
         // Try payment again" screen — Android does the same. Suppress the inline
         // message here; the cancelledOnReader sink in subscribeToPaymentSessionEvents resets card state.
         if currentPaymentMethod == .tapToPay,
-           case .show(.cancelledOnReader) = presentationEvent {
+           case .show(.cancelledOnReader) = event {
             return nil
         }
 
-        guard case let .show(eventDetails) = presentationEvent,
+        guard case let .show(eventDetails) = event,
               case let .message(messageType) = presentationStyle(for: eventDetails) else {
             return nil
         }

@@ -7,6 +7,7 @@ import WidgetKit
 import os
 import enum Alamofire.AFError
 import enum Networking.NetworkError
+import enum Networking.DotcomError
 import Yosemite
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
@@ -297,11 +298,18 @@ private extension Analytics {
         guard let error else {
             return nil
         }
-        return [
+        let dotcomError = error as? DotcomError
+        // The NSError bridge would use `DotcomError.debugDescription`, which adds the raw code.
+        // That code has its own property, so keep the description value as it was.
+        var properties: [AnyHashable: Any] = [
             Constants.errorKeyCode: error.errorCode.description,
             Constants.errorKeyDomain: error.errorDomain,
-            Constants.errorKeyDescription: (error as NSError).description
+            Constants.errorKeyDescription: dotcomError?.description ?? (error as NSError).description
         ]
+        if let rawCode = dotcomError?.rawCode {
+            properties[Constants.errorKeyRawCode] = rawCode
+        }
+        return properties
     }
 }
 
@@ -408,6 +416,7 @@ private enum Constants {
     static let errorKeyCode         = "error_code"
     static let errorKeyDomain       = "error_domain"
     static let errorKeyDescription  = "error_description"
+    static let errorKeyRawCode      = "error_raw_code"
 }
 
 private enum PropertyKeys {

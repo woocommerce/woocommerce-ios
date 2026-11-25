@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 private struct POSBottomButtonPaddingModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics

@@ -16,9 +16,15 @@ struct POSOnboardingGuideView: View {
         VStack(spacing: metrics.spacing.none) {
             TabView(selection: $currentStep) {
                 ForEach(POSOnboardingGuideStep.allCases) { step in
-                    POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
-                        .scrollVerticallyIfNeeded()
-                        .tag(step)
+                    // Drops the illustration when the step doesn't fit, and only then scrolls.
+                    ViewThatFits(in: .vertical) {
+                        POSOnboardingGuideStepView(step: step, showsIllustration: true, onWatchVideo: watchVideo)
+                        POSOnboardingGuideStepView(step: step, showsIllustration: false, onWatchVideo: watchVideo)
+                        ScrollView {
+                            POSOnboardingGuideStepView(step: step, showsIllustration: false, onWatchVideo: watchVideo)
+                        }
+                    }
+                    .tag(step)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -71,23 +77,24 @@ struct POSOnboardingGuideView: View {
 private struct POSOnboardingGuideStepView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let step: POSOnboardingGuideStep
+    let showsIllustration: Bool
     let onWatchVideo: () -> Void
 
-    private static let illustrationHeight: CGFloat = 120
+    private var illustrationHeight: CGFloat {
+        verticalSizeClass == .compact ? 64 : 120
+    }
     // As in the design, a fixed text height keeps the titles in line across steps.
     @ScaledMetric private var textMinHeight: CGFloat = 144
 
     var body: some View {
         VStack(spacing: metrics.spacing.xxLarge) {
-            // In landscape and with accessibility text sizes, the illustration would leave little room for the text.
-            if verticalSizeClass != .compact && !dynamicTypeSize.isAccessibilitySize {
+            if showsIllustration {
                 step.illustration.decorativeImage
                     .resizable()
                     .scaledToFit()
-                    .frame(height: Self.illustrationHeight)
+                    .frame(height: illustrationHeight)
             }
 
             VStack(spacing: metrics.spacing.xxLarge) {

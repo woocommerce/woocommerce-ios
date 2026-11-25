@@ -567,7 +567,7 @@ private extension POSOrderDetailsView {
                 return .init(primary: email)
             }
         default:
-            return .none
+            return .empty
         }
     }
 

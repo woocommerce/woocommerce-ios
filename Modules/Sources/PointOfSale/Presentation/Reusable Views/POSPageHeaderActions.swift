@@ -16,7 +16,7 @@ struct POSPageActions {
         self.secondary = secondary
     }
 
-    static let none = POSPageActions(primary: nil)
+    static let empty = POSPageActions(primary: nil)
 
     var allActions: [POSPageAction] {
         [primary].compactMap { $0 } + secondary

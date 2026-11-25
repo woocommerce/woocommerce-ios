@@ -5,7 +5,7 @@ import Testing
 struct POSPageActionsTests {
     @Test func test_allActions_when_there_are_no_actions_then_is_empty() {
         // Given
-        let actions = POSPageActions.none
+        let actions = POSPageActions.empty
 
         // When
         let ids = actions.allActions.map(\.id)

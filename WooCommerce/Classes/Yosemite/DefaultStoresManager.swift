@@ -16,6 +16,8 @@ import enum PointOfSale.POSCustomAmountTaxPersistence
 //
 class DefaultStoresManager: StoresManager {
 
+    typealias WordPressComSiteInfoFetcher = (String, @escaping (Result<WordPressComSiteInfo, Error>) -> Void) -> Void
+
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
@@ -58,6 +60,8 @@ class DefaultStoresManager: StoresManager {
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
     private let grdbManagerProvider: GRDBManagerProviding
+
+    private let wordPressComSiteInfoFetcher: WordPressComSiteInfoFetcher
 
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
@@ -175,7 +179,10 @@ class DefaultStoresManager: StoresManager {
          pushNotificationDefaults: UserDefaults = .group ?? .standard,
          stateFactory: (SessionManagerProtocol) -> StoresManagerState = { AuthenticatedState(sessionManager: $0) ?? DeauthenticatedState() },
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
-         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
+         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider(),
+         wordPressComSiteInfoFetcher: @escaping WordPressComSiteInfoFetcher = { siteURL, completion in
+             WordPressAuthenticator.fetchSiteInfo(for: siteURL, onCompletion: completion)
+         }) {
         _sessionManager = sessionManager
         self.state = stateFactory(sessionManager)
         self.notificationCenter = notificationCenter
@@ -183,6 +190,7 @@ class DefaultStoresManager: StoresManager {
         self.pushNotificationDefaults = pushNotificationDefaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.grdbManagerProvider = grdbManagerProvider
+        self.wordPressComSiteInfoFetcher = wordPressComSiteInfoFetcher
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -1103,13 +1111,13 @@ private extension DefaultStoresManager {
                 self.updateAndReloadWidgetInformation(with: site.siteID)
                 /// Trigger the `v1.1/connect/site-info` API to get information about
                 /// the site's Jetpack status and whether it's a WPCom site.
-                WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
+                wordPressComSiteInfoFetcher(url) { [weak self] result in
                     guard let self else { return }
                     switch result {
                     case .success(let info):
                         let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
                                                     isJetpackConnected: info.isJetpackConnected,
-                                                    isWordPressComStore: info.isWPCom)
+                                                    isWordPressComStore: info.isWPCom && !isAuthenticatedWithoutWPCom)
                         self.sessionManager.defaultSite = self.siteByApplyingCookieNonceAuthenticationEndpoints(to: updatedSite)
                         trackSiteConnectionType()
                         self.updateAndReloadWidgetInformation(with: site.siteID)

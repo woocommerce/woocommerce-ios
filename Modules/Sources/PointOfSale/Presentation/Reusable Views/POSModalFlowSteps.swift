@@ -27,12 +27,12 @@ struct POSModalFlowSteps<Step: Hashable, Page: View>: View {
         if isFullScreenFlow && UIDevice.current.userInterfaceIdiom == .phone {
             ZStack {
                 currentPage
-                    .allowsHitTesting(pacer.isSettled)
                     .id(pacer.shown)
                     .transition(reduceMotion ? AnyTransition.opacity : AnyTransition(POSFlowStepSlideTransition(direction: { [navigation] in
                         navigation?.direction ?? .forward
                     })))
             }
+            .allowsHitTesting(pacer.isSettled)
             .animation(pacer.isSliding ? .easeInOut(duration: POSFlowStepSlideTransition.animationDuration) : nil, value: pacer.shown)
             .onChange(of: step) { _, step in
                 pacer.show(step, direction: navigation?.takeDirection() ?? .forward)

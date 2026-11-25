@@ -62,6 +62,9 @@ struct POSFlowButtonsView: View {
     @ViewBuilder
     private func button(for config: PointOfSaleFlowButtonConfiguration.ButtonConfig) -> some View {
         let button = Button(config.title) {
+            guard stepNavigation?.isSettled != false else {
+                return
+            }
             if config.stepsBackward {
                 stepNavigation?.goBackwardOnNextStep()
             }

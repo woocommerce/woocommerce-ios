@@ -48,12 +48,16 @@ public final class TabNavComponent: ScreenObject {
         return try ProductsScreen(app: app)
     }
     public func goToPOSScreen() throws -> POSScreen {
-        tapPOSTab()
-        return try POSScreen(app: app)
+        try openPOSTab()
+        do {
+            return try POSScreen(app: app)
+        } catch ScreenObject.WaitForScreenError.timedOut {
+            throw TabNavigationError.posProductListTimedOut
+        }
     }
     @discardableResult
     public func goToPOSIneligibleScreen() throws -> POSIneligibleScreen {
-        tapPOSTab()
+        try openPOSTab()
         return try POSIneligibleScreen(app: app)
     }
     @discardableResult
@@ -72,10 +76,27 @@ public final class TabNavComponent: ScreenObject {
 }
 
 private extension TabNavComponent {
-    func tapPOSTab() {
-        XCTAssertTrue(posTabButton.waitForIsHittable(timeout: 10), "POS tab should be tappable.")
-        // XCTest can report the tab as hittable and still synthesize a tap outside the tab bar.
-        posTabButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+    func openPOSTab() throws {
+        for _ in 0..<2 {
+            guard posTabButton.waitForIsHittable(timeout: 10) else {
+                throw TabNavigationError.posTabNotReady
+            }
+            let tabFrame = posTabButton.frame
+            let appFrame = app.frame
+            guard !tabFrame.isEmpty, appFrame.contains(tabFrame) else {
+                throw TabNavigationError.posTabNotReady
+            }
+
+            // XCTest can lose the tab's accessibility element while checking for system interruptions.
+            let tabCenter = CGVector(dx: tabFrame.midX - appFrame.minX, dy: tabFrame.midY - appFrame.minY)
+            app.coordinate(withNormalizedOffset: .zero).withOffset(tabCenter).tap()
+
+            // POS opens as a full-screen presentation. Only retry while My Store is still accessible.
+            if myStoreTabButton.waitFor(predicateString: "isHittable == false", timeout: 5) == .completed {
+                return
+            }
+        }
+        throw TabNavigationError.posTabDidNotOpen
     }
 
     func selectTab(_ tabButtonGetter: (XCUIApplication) -> XCUIElement, named name: String, maxAttempts: Int = 3) throws {
@@ -95,5 +116,8 @@ private extension TabNavComponent {
 
     enum TabNavigationError: Error {
         case selectionTimedOut(tab: String)
+        case posTabNotReady
+        case posTabDidNotOpen
+        case posProductListTimedOut
     }
 }

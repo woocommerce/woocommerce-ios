@@ -26,9 +26,11 @@ public struct StoreCellConfiguration: Sendable {
 
     let density: Density
     let iconTint: IconTint
+    let descriptionLineLimit: Int?
 
-    public init(density: Density = .standard, iconTint: IconTint = .secondary) {
+    public init(density: Density = .standard, iconTint: IconTint = .secondary, descriptionLineLimit: Int? = nil) {
         self.density = density
         self.iconTint = iconTint
+        self.descriptionLineLimit = descriptionLineLimit
     }
 }

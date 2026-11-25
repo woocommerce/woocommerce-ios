@@ -78,7 +78,7 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
             let action: (() -> Void)? = isEditable ? { store.onPrimaryRowSelected(row) } : nil
             StoreCell(hasDescription ? Localization.descriptionTitle : Localization.descriptionPlaceholder,
                       description: hasDescription ? description : nil,
-                      configuration: .init(density: .compact, iconTint: .title),
+                      configuration: .init(density: .compact, iconTint: .title, descriptionLineLimit: 1),
                       showsDisclosureIndicator: isEditable,
                       action: action)
                 .accessibilityHint(isEditable && hasDescription ? Localization.Accessibility.descriptionHint : "")
@@ -116,10 +116,11 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
     private func settingsRow(_ item: StoreProductFormSettingsRow) -> some View {
         let model = item.viewModel
         let action: (() -> Void)? = item.isActionable ? { store.onSettingsRowSelected(item.row) } : nil
+        let descriptionLineLimit = model.numberOfLinesForDetails > 0 ? model.numberOfLinesForDetails : nil
         return VStack(spacing: StoreSpacing.s0) {
             StoreCell(model.title ?? "",
                       description: item.review == nil ? model.details : nil,
-                      configuration: .init(density: .compact, iconTint: .title),
+                      configuration: .init(density: .compact, iconTint: .title, descriptionLineLimit: descriptionLineLimit),
                       showsDisclosureIndicator: item.isActionable,
                       action: action,
                       leading: item.icon.image(size: .largeIncreased).accessibilityHidden(true),

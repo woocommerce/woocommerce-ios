@@ -6,6 +6,7 @@ import SwiftUI
 /// `leading` is a single view value and `trailing` a view builder, so a lone trailing closure always fills `trailing:`.
 public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.lineLimit) private var inheritedLineLimit
 
     private let title: String
     private let description: String?
@@ -19,7 +20,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
     /// - Parameters:
     ///   - title: The row's primary text.
     ///   - description: Secondary text shown under the title.
-    ///   - configuration: Controls row density and icon tint independently.
+    ///   - configuration: Controls row density, icon tint, and the description line limit.
     ///   - showsDisclosureIndicator: Shows the trailing chevron that signals the row opens a detail.
     ///   - action: Makes the whole row a button. `nil` renders a static row.
     ///   - leading: A single view before the text, e.g. a ``StoreIconContainer`` or an image.
@@ -99,6 +100,7 @@ public struct StoreCell<Leading: View, Trailing: View, Supporting: View>: View {
                 Text(description)
                     .storeTextStyle(.bodyMedium)
                     .foregroundStyle(appearance.description)
+                    .lineLimit(configuration.descriptionLineLimit ?? inheritedLineLimit)
             }
             supportingContent
                 .foregroundStyle(appearance.description)

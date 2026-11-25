@@ -32,6 +32,7 @@ final class POSSecurityPINPresentation {
         case idle
         case presented(Destination)
         case dismissingApproval(UUID, POSPINSetupFlow?)
+        case dismissingEditorForGuide(ObjectIdentifier)
         case awaitingApprovalResult
     }
 
@@ -44,7 +45,7 @@ final class POSSecurityPINPresentation {
 
     var isTransitioning: Bool {
         switch state {
-        case .dismissingApproval, .awaitingApprovalResult: true
+        case .dismissingApproval, .dismissingEditorForGuide, .awaitingApprovalResult: true
         case .idle, .presented: false
         }
     }
@@ -58,11 +59,19 @@ final class POSSecurityPINPresentation {
         state = .dismissingApproval(request.id, nil)
     }
 
+    func dismissEditorForGuide(_ editor: POSPINSetupFlow) -> Bool {
+        guard case .presented(.editor(let current)) = state, current === editor else {
+            return false
+        }
+        state = .dismissingEditorForGuide(ObjectIdentifier(editor))
+        return true
+    }
+
     func finishApproval(editor: POSPINSetupFlow?) {
         guard let editor else {
             switch state {
             case .presented(.approval), .dismissingApproval, .awaitingApprovalResult: state = .idle
-            case .idle, .presented(.editor), .presented(.guidedAccessGuide): break
+            case .idle, .presented(.editor), .presented(.guidedAccessGuide), .dismissingEditorForGuide: break
             }
             return
         }
@@ -73,18 +82,22 @@ final class POSSecurityPINPresentation {
             state = .dismissingApproval(id, editor)
         case .awaitingApprovalResult:
             state = .presented(.editor(editor))
-        case .idle, .presented(.editor), .presented(.guidedAccessGuide): break
+        case .idle, .presented(.editor), .presented(.guidedAccessGuide), .dismissingEditorForGuide: break
         }
     }
 
     func dismissalCompleted(for destination: Destination) {
-        guard case .approval(let request) = destination,
-              case .dismissingApproval(let id, let editor) = state,
-              id == request.id else { return }
-        if let editor {
-            state = .presented(.editor(editor))
-        } else {
-            state = .awaitingApprovalResult
+        switch (destination, state) {
+        case (.approval(let request), .dismissingApproval(let id, let editor)) where id == request.id:
+            if let editor {
+                state = .presented(.editor(editor))
+            } else {
+                state = .awaitingApprovalResult
+            }
+        case (.editor(let editor), .dismissingEditorForGuide(let id)) where ObjectIdentifier(editor) == id:
+            state = .presented(.guidedAccessGuide)
+        default:
+            break
         }
     }
 

@@ -25,7 +25,7 @@ struct POSGuidedAccessGuideView: View {
                 ScrollView {
                     VStack(spacing: metrics.spacing.medium) {
                         slideContent(reservingCaptionHeight: false)
-                        actionButton
+                        actionButton(reservingHeight: false)
                     }
                 }
                 .scrollBounceBehavior(.basedOnSize)
@@ -33,34 +33,23 @@ struct POSGuidedAccessGuideView: View {
                 ViewThatFits(in: .vertical) {
                     VStack(spacing: metrics.spacing.medium) {
                         slideContent(reservingCaptionHeight: true).frame(maxHeight: .infinity)
-                        actionButton
+                        actionButton(reservingHeight: true)
                     }
                     ScrollView {
                         VStack(spacing: metrics.spacing.medium) {
                             slideContent(reservingCaptionHeight: false)
-                            actionButton
+                            actionButton(reservingHeight: false)
                         }
                     }
                     .scrollBounceBehavior(.basedOnSize)
                 }
             }
         }
-        Group {
-            if isFullScreenFlow || usesAccessibilityFullScreen {
-                content.posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
-            } else {
-                content
-                    .padding(metrics.padding.xxLarge)
-                    .frame(width: min(Constants.cardSize.width, parentSize.width),
-                           height: max(0, min(Constants.cardSize.height, parentSize.height - 2 * metrics.padding.medium)))
-            }
-        }
-        .posModalFullScreen(usesAccessibilityFullScreen)
-        .posModalFlowHeaderTitle(Localization.title)
-        .posModalFlowBackAction(enabled: isFullScreenFlow && slide.previous != nil) {
-            show(slide.previous)
-        }
-        .accessibilityIdentifier("pos-guided-access-guide")
+        content
+            .posModalSizing(fillsAvailableSpace: usesAccessibilityFullScreen)
+            .posModalFullScreen(usesAccessibilityFullScreen)
+            .posModalFlowHeaderTitle(Localization.title)
+            .accessibilityIdentifier("pos-guided-access-guide")
     }
 }
 
@@ -134,20 +123,22 @@ private extension POSGuidedAccessGuideView {
         let device = Self.illustrationDevice(idiom: UIDevice.current.userInterfaceIdiom, isCompact: isCompact, parentSize: parentSize)
         let size = POSGuidedAccessIllustration.size(for: device)
         let drawing = POSGuidedAccessIllustration(slide: slide, device: device).id(device)
-        if !isCompact {
-            let width = max(0, min(Constants.illustrationAreaSize.width, parentSize.width - 2 * metrics.padding.xxLarge - 2 * Constants.arrowSize))
-            let scale = min(1, width / size.width)
-            drawing.scaleEffect(scale).frame(width: width, height: Constants.illustrationAreaSize.height * scale)
-        } else if dynamicTypeSize.isAccessibilitySize {
+        if dynamicTypeSize.isAccessibilitySize {
             // The scroll view of large text sizes has no height to fit, so only the width limits the drawing.
-            let scale = min(1, max(0, parentSize.width - 2 * metrics.padding.xxLarge) / size.width)
+            let arrowsWidth = isCompact ? 0 : 2 * Constants.arrowSize
+            let availableWidth = max(0, parentSize.width - 2 * metrics.padding.xxLarge - arrowsWidth)
+            let width = isCompact ? availableWidth : min(Constants.illustrationAreaSize.width, availableWidth)
+            let scale = min(1, width / size.width)
             drawing.scaleEffect(scale).frame(width: size.width * scale, height: size.height * scale)
         } else {
             GeometryReader { proxy in
-                let scale = min(Constants.maximumCompactScale, proxy.size.width / size.width, proxy.size.height / size.height)
+                let maximumScale = isCompact ? Constants.maximumCompactScale : 1
+                let scale = min(maximumScale, proxy.size.width / size.width, proxy.size.height / size.height)
                 drawing.scaleEffect(scale).frame(width: proxy.size.width, height: proxy.size.height)
             }
-            .frame(minHeight: Constants.minimumIllustrationHeight)
+            .frame(maxWidth: isCompact ? .infinity : Constants.illustrationAreaSize.width,
+                   minHeight: Constants.minimumIllustrationHeight,
+                   maxHeight: isCompact ? .infinity : Constants.illustrationAreaSize.height)
         }
     }
 
@@ -192,24 +183,37 @@ private extension POSGuidedAccessGuideView {
         .fixedSize(horizontal: false, vertical: true)
     }
 
-    @ViewBuilder
-    var actionButton: some View {
-        switch slide.action {
-        case .openSettings:
-            VStack(spacing: metrics.spacing.small) {
+    func actionButton(reservingHeight: Bool) -> some View {
+        let showsSettingsAction = slide.action == .openSettings
+        return VStack(spacing: metrics.spacing.small) {
+            if reservingHeight || showsSettingsAction {
                 Text(Localization.settingsDestination)
                     .font(.posCaptionRegular)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                Button(Localization.openSettings, action: openSettings)
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                    .accessibilityIdentifier("pos-guided-access-open-settings")
+                    .opacity(showsSettingsAction ? 1 : 0)
+                    .accessibilityHidden(!showsSettingsAction)
             }
-        case .done:
-            Button(Localization.done, action: close)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .accessibilityIdentifier("pos-guided-access-done")
+            // Fixed layouts reserve both actions so Done cannot resize the illustration above them.
+            ZStack {
+                if reservingHeight || showsSettingsAction {
+                    Button(Localization.openSettings, action: openSettings)
+                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                        .accessibilityIdentifier("pos-guided-access-open-settings")
+                        .opacity(showsSettingsAction ? 1 : 0)
+                        .allowsHitTesting(showsSettingsAction)
+                        .accessibilityHidden(!showsSettingsAction)
+                }
+                if reservingHeight || !showsSettingsAction {
+                    Button(Localization.done, action: close)
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+                        .accessibilityIdentifier("pos-guided-access-done")
+                        .opacity(showsSettingsAction ? 0 : 1)
+                        .allowsHitTesting(!showsSettingsAction)
+                        .accessibilityHidden(showsSettingsAction)
+                }
+            }
         }
     }
 
@@ -269,7 +273,6 @@ private extension POSGuidedAccessGuideView {
     }
 
     enum Constants {
-        static let cardSize = CGSize(width: 721, height: 720)
         static let illustrationAreaSize = CGSize(width: 447, height: 320)
         static let maximumCompactScale: CGFloat = 1.25
         static let minimumIllustrationHeight: CGFloat = 180

@@ -86,8 +86,7 @@ struct POSSecuritySettingsView: View {
                     .posManagerOverrideModalSizing()
             case .editor(let flow):
                 POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor) {
-                    closeEditor()
-                    startGuidedAccessGuide()
+                    startGuidedAccessGuide(afterDismissing: flow)
                 }
             case .guidedAccessGuide:
                 if let guide = controller.guidedAccessGuide {
@@ -129,6 +128,15 @@ struct POSSecuritySettingsView: View {
         if controller.guidedAccessGuide != nil {
             presentation.present(.guidedAccessGuide)
         }
+    }
+
+    private func startGuidedAccessGuide(afterDismissing editor: POSPINSetupFlow) {
+        guard presentation.dismissEditorForGuide(editor) else {
+            return
+        }
+        controller.endPINEditing()
+        controller.load()
+        controller.startGuidedAccessGuide()
     }
 
     private func closeGuidedAccessGuide() {

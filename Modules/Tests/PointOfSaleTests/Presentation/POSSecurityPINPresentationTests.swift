@@ -3,6 +3,71 @@ import Testing
 
 @MainActor
 struct POSSecurityPINPresentationTests {
+    @Test func test_guide_when_requested_from_editor_then_waits_for_matching_dismissal() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let editor = makeEditor()
+        sut.present(.editor(editor))
+
+        // When
+        #expect(sut.dismissEditorForGuide(editor))
+
+        // Then
+        #expect(sut.destination == nil)
+        #expect(sut.isTransitioning)
+        sut.dismissalCompleted(for: .editor(makeEditor()))
+        #expect(sut.destination == nil)
+        sut.dismissalCompleted(for: .editor(editor))
+        #expect(sut.destination == .guidedAccessGuide)
+        #expect(!sut.isTransitioning)
+    }
+
+    @Test func test_guide_when_pending_editor_is_cancelled_then_late_dismissal_cannot_present_it() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let editor = makeEditor()
+        sut.present(.editor(editor))
+        #expect(sut.dismissEditorForGuide(editor))
+
+        // When
+        sut.cancel()
+        sut.dismissalCompleted(for: .editor(editor))
+
+        // Then
+        #expect(sut.destination == nil)
+        #expect(!sut.isTransitioning)
+    }
+
+    @Test func test_guide_when_requested_from_stale_editor_then_keeps_current_editor() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let editor = makeEditor()
+        sut.present(.editor(editor))
+
+        // When
+        #expect(!sut.dismissEditorForGuide(makeEditor()))
+
+        // Then
+        #expect(sut.destination == .editor(editor))
+        #expect(!sut.isTransitioning)
+    }
+
+    @Test func test_guide_when_pending_then_late_approval_cannot_replace_it() {
+        // Given
+        let sut = POSSecurityPINPresentation()
+        let editor = makeEditor()
+        sut.present(.editor(editor))
+        #expect(sut.dismissEditorForGuide(editor))
+
+        // When
+        sut.finishApproval(editor: nil)
+        sut.finishApproval(editor: makeEditor())
+        sut.dismissalCompleted(for: .editor(editor))
+
+        // Then
+        #expect(sut.destination == .guidedAccessGuide)
+    }
+
     @Test func test_guide_when_presented_and_closed_then_never_restores_pin_editor() {
         // Given
         let sut = POSSecurityPINPresentation()

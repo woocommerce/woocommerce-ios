@@ -74,7 +74,9 @@ private extension ReceiptContentAssembler {
     }
 
     func discountLine(order: Order, currency: String) -> ReceiptTotalLine? {
-        let discountValue = NSDecimalNumber(apiAmount: order.discountTotal).decimalValue
+        let parsedDiscount = NSDecimalNumber(apiAmount: order.discountTotal).decimalValue
+        // An empty or malformed discount_total parses to NaN, which the currency formatter can't format.
+        let discountValue = parsedDiscount.isNaN ? 0 : parsedDiscount
         if discountValue == 0 && order.coupons.isEmpty {
             return nil
         }

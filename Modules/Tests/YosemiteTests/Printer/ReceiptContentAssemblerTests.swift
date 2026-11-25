@@ -133,6 +133,19 @@ struct ReceiptContentAssemblerTests {
         #expect(discountLine == nil)
     }
 
+    @Test func test_makeContent_when_discount_total_is_empty_then_excludes_discount_line() throws {
+        // Given
+        let parameters = try makeReceiptParameters()
+        let order = makeOrder(discountTotal: "", coupons: [])
+
+        // When
+        let content = ReceiptContentAssembler().makeContent(order: order, parameters: parameters)
+
+        // Then
+        let discountLine = content.cartTotals.first { $0.description.starts(with: expectedDiscountLineDescription()) }
+        #expect(discountLine == nil)
+    }
+
     @Test func test_makeContent_when_order_has_coupon_without_discount_then_lists_coupon_with_zero_amount() throws {
         // Given
         let parameters = try makeReceiptParameters()

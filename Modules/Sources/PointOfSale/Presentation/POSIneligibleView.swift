@@ -10,7 +10,6 @@ struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     let onExit: () -> Void
-    @Environment(\.posAccessSession) private var session
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -27,10 +26,6 @@ struct POSIneligibleView: View {
     /// Returns true if scrolling should be disabled (content fits within scroll view).
     private var shouldDisableScrolling: Bool {
         scrollViewHeight > 0 && contentHeight > 0 && contentHeight <= scrollViewHeight
-    }
-
-    private var canRefresh: Bool {
-        reason != .featureSwitchDisabled || (!session.isLocked && session.allows(.manageStoreSettings))
     }
 
     var body: some View {
@@ -64,7 +59,6 @@ struct POSIneligibleView: View {
                     VStack(spacing: metrics.spacing.medium) {
                         Button {
                             Task { @MainActor in
-                                guard canRefresh else { return }
                                 do {
                                     isLoading = true
                                     analytics.track(
@@ -81,7 +75,6 @@ struct POSIneligibleView: View {
                             Text(reason.refreshEligibilityTitle)
                         }
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-                        .disabled(!canRefresh)
                         .accessibilityIdentifier("pos-ineligible-refresh-button")
 
                         Button {

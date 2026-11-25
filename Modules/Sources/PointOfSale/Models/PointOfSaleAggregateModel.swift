@@ -365,14 +365,14 @@ extension PointOfSaleAggregateModel {
                   orderStage == .building, checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
-                await handleSuccessfulScan(barcode: barcode, accessScope: accessScope)
+                await handleSuccessfulScan(barcode: barcode)
             case .failure(let error):
                 await handleFailedScan(error: error)
             }
         }
     }
 
-    private func handleSuccessfulScan(barcode: String, accessScope: POSPINSessionTokens.Token) async {
+    private func handleSuccessfulScan(barcode: String) async {
         let placeholderItemID = cart.addLoadingItem().id
 
         analytics.track(
@@ -382,18 +382,8 @@ extension PointOfSaleAggregateModel {
             )
         )
 
-        let lookup: Result<POSItem, PointOfSaleBarcodeScanError>
         do throws(PointOfSaleBarcodeScanError) {
-            lookup = .success(try await barcodeScanService.getItem(barcode: barcode))
-        } catch {
-            lookup = .failure(error)
-        }
-        guard accessSession.isCurrent(accessScope) else {
-            cart.removeItem(id: placeholderItemID)
-            return
-        }
-        switch lookup {
-        case .success(let item):
+            let item = try await barcodeScanService.getItem(barcode: barcode)
             if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
                 analytics.track(
                     event: .PointOfSale.addItemToCart(
@@ -405,7 +395,7 @@ extension PointOfSaleAggregateModel {
 
                 cart.accessibilityFocusedItemID = cartItem.id
             }
-        case .failure(let error):
+        } catch {
             DDLogInfo("Failed to find item by barcode: \(error)")
             if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                 await handleErrorItemAdded(error)

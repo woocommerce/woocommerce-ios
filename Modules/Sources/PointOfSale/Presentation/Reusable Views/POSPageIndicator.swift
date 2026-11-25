@@ -10,16 +10,16 @@ struct POSPageIndicator: View {
     /// Read by VoiceOver with the page number, e.g. the page title.
     var accessibilityPageName: ((Int) -> String)?
 
-    private static let dotSize: CGFloat = 8
-
     var body: some View {
         HStack(spacing: metrics.spacing.small) {
             ForEach(0..<pageCount, id: \.self) { page in
-                Circle()
-                    .fill(page == currentPage ? Color.posPrimary : Color.posOnSurfaceVariantLowest)
-                    .frame(width: Self.dotSize, height: Self.dotSize)
+                Capsule()
+                    .fill(page == currentPage ? Color.posOnSurfaceVariantHighest : .clear)
+                    .strokeBorder(page == currentPage ? .clear : Color.posOutline)
+                    .frame(width: page == currentPage ? Constants.selectedDotWidth : Constants.dotSize, height: Constants.dotSize)
             }
         }
+        .animation(reduceMotion ? nil : .easeInOut, value: currentPage)
         .accessibilityElement()
         .accessibilityLabel(Localization.label)
         .accessibilityValue(accessibilityValue)
@@ -54,6 +54,11 @@ struct POSPageIndicator: View {
 }
 
 private extension POSPageIndicator {
+    enum Constants {
+        static let dotSize: CGFloat = 10
+        static let selectedDotWidth: CGFloat = 40
+    }
+
     enum Localization {
         static let label = NSLocalizedString(
             "pos.pageIndicator.label",

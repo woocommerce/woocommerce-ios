@@ -75,6 +75,7 @@ struct POSSecuritySettingsView: View {
                 POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor)
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("pos-security-settings")
     }
 

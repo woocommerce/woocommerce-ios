@@ -24,7 +24,7 @@ struct POSGuidedAccessGuideView: View {
             if dynamicTypeSize.isAccessibilitySize {
                 ScrollView {
                     VStack(spacing: metrics.spacing.medium) {
-                        slideContent
+                        slideContent(reservingCaptionHeight: false)
                         actionButton
                     }
                 }
@@ -32,12 +32,12 @@ struct POSGuidedAccessGuideView: View {
             } else {
                 ViewThatFits(in: .vertical) {
                     VStack(spacing: metrics.spacing.medium) {
-                        slideContent.frame(maxHeight: .infinity)
+                        slideContent(reservingCaptionHeight: true).frame(maxHeight: .infinity)
                         actionButton
                     }
                     ScrollView {
                         VStack(spacing: metrics.spacing.medium) {
-                            slideContent
+                            slideContent(reservingCaptionHeight: false)
                             actionButton
                         }
                     }
@@ -57,13 +57,17 @@ struct POSGuidedAccessGuideView: View {
         }
         .posModalFullScreen(usesAccessibilityFullScreen)
         .posModalFlowHeaderTitle(Localization.title)
-        .posModalFlowBackAction(enabled: isFullScreenFlow && slide.previous != nil) { show(slide.previous) }
+        .posModalFlowBackAction(enabled: isFullScreenFlow && slide.previous != nil) {
+            show(slide.previous)
+        }
         .accessibilityIdentifier("pos-guided-access-guide")
     }
 }
 
 private extension POSGuidedAccessGuideView {
-    var slide: POSGuidedAccessGuideSlide { guide.slide }
+    var slide: POSGuidedAccessGuideSlide {
+        guide.slide
+    }
 
     var isCompact: Bool {
         horizontalSizeClass == .compact
@@ -95,7 +99,7 @@ private extension POSGuidedAccessGuideView {
     }
 
     /// One illustration follows the slides, so swipes change the slide instead of paging separate views.
-    var slideContent: some View {
+    func slideContent(reservingCaptionHeight: Bool) -> some View {
         VStack(spacing: metrics.spacing.xLarge) {
             // Phones have no room beside the illustration, so their arrows sit next to the page indicator.
             HStack(spacing: metrics.spacing.none) {
@@ -118,7 +122,7 @@ private extension POSGuidedAccessGuideView {
                     arrow(to: slide.next, icon: "arrow.forward", label: Localization.next)
                 }
             }
-            caption
+            caption(reservingHeight: reservingCaptionHeight)
         }
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
@@ -167,13 +171,19 @@ private extension POSGuidedAccessGuideView {
         }
     }
 
-    var caption: some View {
-        // Reserve every caption so the layout keeps its height between slides.
-        ZStack {
-            ForEach(POSGuidedAccessGuideSlide.allCases, id: \.self) { page in
-                Text(Self.caption(for: page))
-                    .opacity(page == slide ? 1 : 0)
-                    .accessibilityHidden(page != slide)
+    func caption(reservingHeight: Bool) -> some View {
+        Group {
+            if reservingHeight {
+                // Fixed layouts keep their height between slides; scrolling layouts need only the active text.
+                ZStack {
+                    ForEach(POSGuidedAccessGuideSlide.allCases, id: \.self) { page in
+                        Text(Self.caption(for: page))
+                            .opacity(page == slide ? 1 : 0)
+                            .accessibilityHidden(page != slide)
+                    }
+                }
+            } else {
+                Text(Self.caption(for: slide))
             }
         }
         .font(.posBodyMediumRegular())
@@ -204,7 +214,9 @@ private extension POSGuidedAccessGuideView {
     }
 
     func arrow(to target: POSGuidedAccessGuideSlide?, icon: String, label: String) -> some View {
-        Button(action: { show(target) }, label: {
+        Button(action: {
+            show(target)
+        }, label: {
             Text(Image(systemName: icon))
                 .font(.posButtonSymbolLarge)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
@@ -219,21 +231,27 @@ private extension POSGuidedAccessGuideView {
     }
 
     func show(_ target: POSGuidedAccessGuideSlide?) {
-        guard let target else { return }
+        guard let target else {
+            return
+        }
         withAnimation(reduceMotion ? nil : .easeInOut(duration: Constants.slideDuration)) {
             guide.slide = target
         }
     }
 
     func swipe(_ drag: DragGesture.Value) {
-        guard abs(drag.translation.width) > abs(drag.translation.height) else { return }
+        guard abs(drag.translation.width) > abs(drag.translation.height) else {
+            return
+        }
         let movesForward = (drag.translation.width < 0) == (layoutDirection == .leftToRight)
         show(movesForward ? slide.next : slide.previous)
     }
 
     func openSettings() {
         // The public Settings URL requires manual navigation to Accessibility.
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        guard let url = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
         guide.isVisitingSettings = true
         Task {
             if await UIApplication.shared.open(url) == false {
@@ -266,8 +284,10 @@ private extension POSGuidedAccessGuideView {
 extension POSGuidedAccessGuideView {
     /// A phone in compact width shows itself, in the proportions of its screen. Regular width is a tablet or an unfolded
     /// iPhone Duo, where split views show both columns, and a tablet in compact width is still a tablet.
-    static func illustrationDevice(idiom: UIUserInterfaceIdiom, isCompact: Bool, parentSize: CGSize) -> POSGuidedAccessIllustration.Device {
-        guard idiom == .phone, isCompact, parentSize.width > 0 else { return .pad }
+    private static func illustrationDevice(idiom: UIUserInterfaceIdiom, isCompact: Bool, parentSize: CGSize) -> POSGuidedAccessIllustration.Device {
+        guard idiom == .phone, isCompact, parentSize.width > 0 else {
+            return .pad
+        }
         return .phone(heightRatio: parentSize.height / parentSize.width)
     }
 
@@ -304,14 +324,16 @@ extension POSGuidedAccessGuideView {
 
 #if DEBUG
 #Preview("Guide on iPad", traits: .landscapeLeft) {
-    POSGuidedAccessGuideView(guide: POSGuidedAccessGuide(), close: {})
+    POSGuidedAccessGuideView(guide: POSGuidedAccessGuide(), close: {
+    })
         .background(Color.posSurfaceBright)
         .posPreviewModalParentSize()
         .environmentObject(POSModalManager())
 }
 
 #Preview("Last slide on phone, dark") {
-    POSGuidedAccessGuideView(guide: POSGuidedAccessGuide(slide: .start), close: {})
+    POSGuidedAccessGuideView(guide: POSGuidedAccessGuide(slide: .start), close: {
+    })
         .posPreviewSmallestPhone()
         .background(Color.posSurfaceBright)
         .environmentObject(POSModalManager())

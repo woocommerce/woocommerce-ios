@@ -25,7 +25,9 @@ struct POSSettingsView: View {
             if isVisible != true && selection == .security { selection = .store }
         }
         .onAppear {
-            if settingsController.securityController?.guidedAccessGuide != nil { selection = .security }
+            if settingsController.securityController?.guidedAccessGuide != nil {
+                selection = .security
+            }
         }
     }
 }

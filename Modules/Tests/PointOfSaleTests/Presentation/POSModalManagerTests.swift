@@ -47,7 +47,11 @@ struct POSModalManagerTests {
         // Given
         let sut = POSModalManager()
         var onDismissCalled = false
-        sut.present(compactStyle: .dialog, onDismiss: { onDismissCalled = true }) { EmptyView() }
+        sut.present(compactStyle: .dialog, onDismiss: {
+            onDismissCalled = true
+        }) {
+            EmptyView()
+        }
 
         // When
         sut.onDisappear()

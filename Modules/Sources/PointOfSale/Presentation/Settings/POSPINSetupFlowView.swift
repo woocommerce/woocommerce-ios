@@ -172,7 +172,9 @@ private extension POSPINSetupFlowView {
         case .guidedAccessOffer:
             messagePage(art: POSLockIllustration(), title: Localization.offerTitle, message: Localization.offerMessage) {
                 Button(Localization.setUpGuidedAccess) {
-                    if flow.close() { setUpGuidedAccess() }
+                    if flow.close() {
+                        setUpGuidedAccess()
+                    }
                 }
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                 Button(Localization.maybeLater, action: closeFlow)

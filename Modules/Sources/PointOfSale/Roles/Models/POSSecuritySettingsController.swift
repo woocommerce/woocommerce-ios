@@ -52,7 +52,9 @@ final class POSSecuritySettingsController {
     var lockPreferences: POSLockPreferences { lockSettings.preferences }
 
     func startGuidedAccessGuide() {
-        guard isVisible else { return }
+        guard isVisible else {
+            return
+        }
         guidedAccessGuide = POSGuidedAccessGuide()
     }
 
@@ -62,11 +64,15 @@ final class POSSecuritySettingsController {
 
     func dismissGuidedAccessGuide() {
         // Only an intentional Settings visit survives dismissal of the protected Settings UI.
-        if guidedAccessGuide?.isVisitingSettings != true { closeGuidedAccessGuide() }
+        if guidedAccessGuide?.isVisitingSettings != true {
+            closeGuidedAccessGuide()
+        }
     }
 
     func resumeGuidedAccessGuide() -> Bool {
-        guard let guide = guidedAccessGuide, guide.isVisitingSettings, !session.isLocked else { return false }
+        guard let guide = guidedAccessGuide, guide.isVisitingSettings, !session.isLocked else {
+            return false
+        }
         guard isVisible else {
             closeGuidedAccessGuide()
             return false

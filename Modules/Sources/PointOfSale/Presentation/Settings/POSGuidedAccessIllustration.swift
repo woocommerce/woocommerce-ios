@@ -44,7 +44,9 @@ struct POSGuidedAccessIllustration: View {
         .dynamicTypeSize(.large)
         .environment(\.posLayoutScale, .regular)
         .accessibilityHidden(true)
-        .task(id: AnimationKey(slide: slide, reduceMotion: reduceMotion)) { await playPowerClicks() }
+        .task(id: AnimationKey(slide: slide, reduceMotion: reduceMotion)) {
+            await playPowerClicks()
+        }
     }
 
     private var layout: Layout {
@@ -76,26 +78,50 @@ struct POSGuidedAccessIllustration: View {
         powerTouch = Touch()
         isPowerHighlighted = false
         showsSessionExample = false
-        guard slide == .start, !reduceMotion else { return }
+        guard slide == .start, !reduceMotion else {
+            return
+        }
         while !Task.isCancelled {
-            guard await pause(Constants.powerDelay) else { return }
-            withAnimation(.easeInOut(duration: 0.3)) { isPowerHighlighted = true }
-            guard await $powerTouch.press(at: layout.powerTouch) else { return }
+            guard await pause(Constants.powerDelay) else {
+                return
+            }
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isPowerHighlighted = true
+            }
+            guard await $powerTouch.press(at: layout.powerTouch) else {
+                return
+            }
             for _ in 1..<3 {
-                withAnimation(.easeOut(duration: 0.1)) { powerTouch.isPressed = false }
-                guard await pause(Constants.clickGap) else { return }
-                withAnimation(.easeOut(duration: 0.1)) { powerTouch.isPressed = true }
-                guard await pause(Constants.clickGap) else { return }
+                withAnimation(.easeOut(duration: 0.1)) {
+                    powerTouch.isPressed = false
+                }
+                guard await pause(Constants.clickGap) else {
+                    return
+                }
+                withAnimation(.easeOut(duration: 0.1)) {
+                    powerTouch.isPressed = true
+                }
+                guard await pause(Constants.clickGap) else {
+                    return
+                }
             }
             $powerTouch.lift()
-            guard await pause(Constants.activeMessageDelay) else { return }
-            withAnimation(.spring(duration: 0.4, bounce: 0.3)) { showsSessionExample = true }
-            guard await pause(Constants.activeMessageHold) else { return }
+            guard await pause(Constants.activeMessageDelay) else {
+                return
+            }
+            withAnimation(.spring(duration: 0.4, bounce: 0.3)) {
+                showsSessionExample = true
+            }
+            guard await pause(Constants.activeMessageHold) else {
+                return
+            }
             withAnimation(.easeInOut(duration: 0.35)) {
                 showsSessionExample = false
                 isPowerHighlighted = false
             }
-            guard await pause(Constants.powerRestartDelay) else { return }
+            guard await pause(Constants.powerRestartDelay) else {
+                return
+            }
         }
     }
 }
@@ -143,7 +169,9 @@ private struct POSGuidedAccessSettingsScene: View {
         }
         .frame(width: layout.screen.width, height: layout.screen.height, alignment: .topLeading)
         .task(id: AnimationKey(slide: showsGuidedAccess ? .turnOn : .openSettings, reduceMotion: reduceMotion)) {
-            guard !reduceMotion else { return }
+            guard !reduceMotion else {
+                return
+            }
             if showsGuidedAccess {
                 await playTurnOn()
             } else {
@@ -172,22 +200,40 @@ private struct POSGuidedAccessSettingsScene: View {
         }
         while !Task.isCancelled {
             if step < Constants.settingsSteps {
-                guard await pause(Constants.startDelay), await $touch.press(at: layout.sidebarTouch) else { return }
-                withAnimation(.easeOut(duration: 0.35)) { step = 1 }
+                guard await pause(Constants.startDelay), await $touch.press(at: layout.sidebarTouch) else {
+                    return
+                }
+                withAnimation(.easeOut(duration: 0.35)) {
+                    step = 1
+                }
                 $touch.lift()
-                guard await pause(Constants.beat), await $touch.press(at: layout.dragStart) else { return }
+                guard await pause(Constants.beat), await $touch.press(at: layout.dragStart) else {
+                    return
+                }
                 withAnimation(.easeInOut(duration: 0.7)) {
                     step = 2
                     touch.point.y -= layout.scrollDistance
                 }
-                guard await pause(Constants.dragDuration) else { return }
+                guard await pause(Constants.dragDuration) else {
+                    return
+                }
                 $touch.lift()
-                guard await pause(Constants.outlineDelay) else { return }
-                withAnimation(.easeOut(duration: 0.25)) { step = Constants.settingsSteps }
+                guard await pause(Constants.outlineDelay) else {
+                    return
+                }
+                withAnimation(.easeOut(duration: 0.25)) {
+                    step = Constants.settingsSteps
+                }
             }
-            guard await pause(Constants.settingsHold) else { return }
-            withAnimation(.easeInOut(duration: 0.35)) { isRewinding = true }
-            guard await pause(Constants.beat) else { return }
+            guard await pause(Constants.settingsHold) else {
+                return
+            }
+            withAnimation(.easeInOut(duration: 0.35)) {
+                isRewinding = true
+            }
+            guard await pause(Constants.beat) else {
+                return
+            }
             step = 0
             isRewinding = false
         }
@@ -202,34 +248,62 @@ private struct POSGuidedAccessSettingsScene: View {
         while !Task.isCancelled {
             if !isFlowShown {
                 flowStep = 0
-                guard await pause(Constants.startDelay), await $touch.press(at: layout.guidedAccessTouch) else { return }
-                withAnimation(.easeInOut(duration: 0.35)) { isFlowShown = true }
+                guard await pause(Constants.startDelay), await $touch.press(at: layout.guidedAccessTouch) else {
+                    return
+                }
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    isFlowShown = true
+                }
                 $touch.lift(hides: false)
-                guard await pause(Constants.switchDelay), await $touch.press(at: layout.switchTouch) else { return }
+                guard await pause(Constants.switchDelay), await $touch.press(at: layout.switchTouch) else {
+                    return
+                }
                 $touch.lift(hides: false)
                 for next in 1..<Constants.passcodePageStep {
-                    withAnimation(.snappy(duration: 0.3)) { flowStep = next }
-                    guard await pause(Constants.cascadeInterval) else { return }
+                    withAnimation(.snappy(duration: 0.3)) {
+                        flowStep = next
+                    }
+                    guard await pause(Constants.cascadeInterval) else {
+                        return
+                    }
                 }
-                guard await pause(Constants.longBeat), await $touch.press(at: layout.passcodeRowTouch) else { return }
+                guard await pause(Constants.longBeat), await $touch.press(at: layout.passcodeRowTouch) else {
+                    return
+                }
                 $touch.lift(hides: false)
-                withAnimation(.easeInOut(duration: 0.35)) { flowStep = Constants.passcodePageStep }
-                guard await pause(Constants.longBeat), await $touch.press(at: layout.setPasscodeTouch) else { return }
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    flowStep = Constants.passcodePageStep
+                }
+                guard await pause(Constants.longBeat), await $touch.press(at: layout.setPasscodeTouch) else {
+                    return
+                }
                 $touch.lift(hides: false)
-                withAnimation(.easeOut(duration: 0.25)) { flowStep = Constants.keypadStep }
-                guard await pause(Constants.typingDelay) else { return }
+                withAnimation(.easeOut(duration: 0.25)) {
+                    flowStep = Constants.keypadStep
+                }
+                guard await pause(Constants.typingDelay) else {
+                    return
+                }
                 for key in Constants.passcodeKeys {
                     flowStep += 1
                     let origin = layout.keyOrigin(key)
                     let center = CGPoint(x: origin.x + Constants.keySize / 2, y: origin.y + Constants.keySize / 2)
-                    guard await $touch.press(at: center, leadIn: Constants.keyLeadIn) else { return }
+                    guard await $touch.press(at: center, leadIn: Constants.keyLeadIn) else {
+                        return
+                    }
                     $touch.lift(hides: false)
                 }
                 $touch.lift()
             }
-            guard await pause(Constants.loopHold) else { return }
-            withAnimation(.easeInOut(duration: 0.35)) { isFlowShown = false }
-            guard await pause(Constants.beat) else { return }
+            guard await pause(Constants.loopHold) else {
+                return
+            }
+            withAnimation(.easeInOut(duration: 0.35)) {
+                isFlowShown = false
+            }
+            guard await pause(Constants.beat) else {
+                return
+            }
         }
     }
 
@@ -467,13 +541,21 @@ private extension Binding where Value == Touch {
     @MainActor
     func press(at point: CGPoint, leadIn: Duration = Constants.touchLeadIn) async -> Bool {
         if wrappedValue.isVisible {
-            withAnimation(.easeInOut(duration: 0.3)) { wrappedValue.point = point }
+            withAnimation(.easeInOut(duration: 0.3)) {
+                wrappedValue.point = point
+            }
         } else {
             wrappedValue.point = point
-            withAnimation(.easeOut(duration: 0.2)) { wrappedValue.isVisible = true }
+            withAnimation(.easeOut(duration: 0.2)) {
+                wrappedValue.isVisible = true
+            }
         }
-        guard await pause(leadIn) else { return false }
-        withAnimation(.easeOut(duration: 0.12)) { wrappedValue.isPressed = true }
+        guard await pause(leadIn) else {
+            return false
+        }
+        withAnimation(.easeOut(duration: 0.12)) {
+            wrappedValue.isPressed = true
+        }
         return await pause(Constants.touchHold)
     }
 
@@ -565,7 +647,9 @@ private struct Layout {
 
     var sidebarRows: [(y: CGFloat, width: CGFloat)] {
         let rows: [(y: CGFloat, width: CGFloat)] = [(52, 46), (72, 17), (92, 31), (112, 23), (132, 14), (154, 23), (194, 39), (214, 39)]
-        guard isPhone else { return rows }
+        guard isPhone else {
+            return rows
+        }
         // A phone is taller than the list of the design, so more rows fill its screen.
         let extraRows = stride(from: CGFloat(234), to: screen.height - 16, by: 20).enumerated().map { index, y in
             (y: y, width: rows[index % rows.count].width)
@@ -695,7 +779,9 @@ private enum Constants {
     static let activeMessageDelay: Duration = .milliseconds(600)
     static let activeMessageHold: Duration = .seconds(5)
     static let powerRestartDelay: Duration = .seconds(3)
-    static var sceneTransition: AnyTransition { .opacity.combined(with: .scale(scale: 0.94)) }
+    static var sceneTransition: AnyTransition {
+        .opacity.combined(with: .scale(scale: 0.94))
+    }
     // Stays visible on both the device and its cards in light mode, where the dim surfaces match the background.
     static let fill = Color.posOutlineVariant.opacity(0.5)
     // The palette has no token for the blue of the Accessibility icon and of links in iOS Settings.

@@ -9,7 +9,13 @@ enum POSGuidedAccessGuideSlide: Int, CaseIterable, Sendable {
         case done
     }
 
-    var previous: Self? { Self(rawValue: rawValue - 1) }
-    var next: Self? { Self(rawValue: rawValue + 1) }
-    var action: Action { next == nil ? .done : .openSettings }
+    var previous: Self? {
+        Self(rawValue: rawValue - 1)
+    }
+    var next: Self? {
+        Self(rawValue: rawValue + 1)
+    }
+    var action: Action {
+        next == nil ? .done : .openSettings
+    }
 }

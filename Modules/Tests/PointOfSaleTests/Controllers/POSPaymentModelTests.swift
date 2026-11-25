@@ -17,6 +17,7 @@ struct POSPaymentModelTests {
     func test_cancelCardPaymentForLock_when_card_payment_is_active_then_cancels_before_returning_to_checkout(card: PointOfSaleCardPaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let state = PointOfSalePaymentState(card: card, cash: .idle)
         let provider = MockPOSPaymentOrderProvider()
         var returnedToCheckout = false
@@ -44,6 +45,7 @@ struct POSPaymentModelTests {
     func test_cancelCardPaymentForLock_when_no_card_payment_is_active_then_does_not_request_cancellation(state: PointOfSalePaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
 
         // When
@@ -58,6 +60,7 @@ struct POSPaymentModelTests {
     func test_cancelCardPaymentForLock_when_cancellation_fails_then_keeps_checkout() async {
         // Given
         let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         var returnedToCheckout = false
         let state = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
         let sut = makePaymentController(cardPresentPaymentService: service,

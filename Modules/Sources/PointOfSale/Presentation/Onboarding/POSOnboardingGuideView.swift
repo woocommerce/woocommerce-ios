@@ -25,6 +25,8 @@ struct POSOnboardingGuideView: View {
                 .accessibilityHidden(true)
                 .overlay {
                     pager(scrollsSteps: false)
+                        // Pages clip to their bounds. Extending them below the steps keeps the card's shadow whole.
+                        .padding(.bottom, -metrics.padding.xLarge)
                 }
 
                 // When the steps don't fit (landscape, large text), each one scrolls above the dots.

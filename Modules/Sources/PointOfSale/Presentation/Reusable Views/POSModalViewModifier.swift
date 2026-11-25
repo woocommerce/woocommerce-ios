@@ -4,10 +4,15 @@ import SwiftUI
 enum POSModalCompactStyle: Equatable {
     case dialog
     case bottomSheet
-    case fullScreen(title: String)
+    case fullScreen(title: String, preservesOnLock: Bool = false)
+
+    var preservesOnLock: Bool {
+        guard case .fullScreen(_, let preservesOnLock) = self else { return false }
+        return preservesOnLock
+    }
 
     var fullScreenTitle: String? {
-        guard case .fullScreen(let title) = self else {
+        guard case .fullScreen(let title, _) = self else {
             return nil
         }
         return title
@@ -19,6 +24,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @Environment(\.posAccessSession) private var session
     @State private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
@@ -113,6 +119,9 @@ struct POSRootModalViewModifier: ViewModifier {
                 .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .onChange(of: session.isLocked, initial: true) { _, isLocked in
+                if isLocked { modalManager.dismissForLock() }
+            }
             .onChange(of: modalManager.isPresented) { _, isPresented in
                 if isPresented {
                     bottomSheetDragOffset = 0
@@ -216,6 +225,8 @@ extension View {
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.posAccessSession) private var session
+    @State private var owner = UUID()
     let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
@@ -226,59 +237,43 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: item) { _, newItem in
+            .posDismissOnLock($item, to: nil, when: session.isLocked && !compactStyle.preservesOnLock)
+            .onChange(of: item, initial: compactStyle.preservesOnLock) { _, newItem in
                 if let newItem {
-                    // Don't show a modal if a full screen overlay is presented on top
-                    guard !coverManager.isPresented else { return }
-
-                    let completed = onDismissCompleted.map { completion in { completion(newItem) } }
-                    modalManager.present(compactStyle: compactStyle, onDismiss: {
-                        // Internal dismissal, i.e. from tapping the background
-                        onDismiss?()
-                        item = nil
-                    }, onDismissCompleted: completed) {
-                        modalContent(newItem)
-                            .animation(.default, value: item)
-                    }
+                    present(newItem)
                 } else if onDismissCompleted != nil, reduceMotion {
                     var transaction = Transaction()
                     transaction.disablesAnimations = true
-                    withTransaction(transaction) { modalManager.dismiss() }
+                    withTransaction(transaction) { dismiss() }
                 } else {
-                    modalManager.dismiss()
+                    dismiss()
                 }
             }
+            .onChange(of: coverManager.isPresented) { _, hasCover in
+                if !hasCover, compactStyle.preservesOnLock, let item { present(item) }
+            }
+    }
+
+    private func present(_ item: Item) {
+        let completed = onDismissCompleted.map { completion in { completion(item) } }
+        modalManager.present(compactStyle: compactStyle, owner: owner, session: session,
+                             isCovered: coverManager.isPresented, onDismiss: {
+            onDismiss?()
+            self.item = nil
+        }, onDismissCompleted: completed) {
+            modalContent(item).animation(.default, value: self.item)
+        }
+    }
+
+    private func dismiss() {
+        modalManager.dismiss(owner: owner)
     }
 }
 
-struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
-    let compactStyle: POSModalCompactStyle
-    @EnvironmentObject var modalManager: POSModalManager
-    @EnvironmentObject var coverManager: POSFullScreenCoverManager
-    @Binding var isPresented: Bool
-    let onDismiss: (() -> Void)?
-    let modalContent: () -> ModalContent
+private enum POSModalPresence: Hashable, Identifiable {
+    case presented
 
-    func body(content: Content) -> some View {
-        content
-            .onChange(of: isPresented) { _, newValue in
-                if newValue {
-                    // Don't show a modal if a full screen overlay is presented on top
-                    guard !coverManager.isPresented else { return }
-
-                    modalManager.present(compactStyle: compactStyle, onDismiss: {
-                        // Internal dismissal, i.e. from tapping the background
-                        onDismiss?()
-                        isPresented = false
-                    }) {
-                        modalContent()
-                    }
-                } else {
-                    // External dismissal
-                    modalManager.dismiss()
-                }
-            }
-    }
+    var id: Self { self }
 }
 
 extension View {
@@ -299,11 +294,12 @@ extension View {
                                       compactStyle: POSModalCompactStyle,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
-        self.modifier(
-            POSModalViewModifierForBool(compactStyle: compactStyle,
-                                        isPresented: isPresented,
-                                        onDismiss: onDismiss,
-                                        modalContent: content))
+        let item = Binding<POSModalPresence?>(get: {
+            isPresented.wrappedValue ? .presented : nil
+        }, set: {
+            isPresented.wrappedValue = $0 != nil
+        })
+        return posModal(item: item, compactStyle: compactStyle, onDismiss: onDismiss) { _ in content() }
     }
 
     /// Shows a modal view over the Point of Sale experience.

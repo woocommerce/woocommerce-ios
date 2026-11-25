@@ -10,7 +10,6 @@ struct TotalsView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
@@ -208,10 +207,6 @@ struct TotalsView: View {
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                 onMarkOrderAsPaid: handleMarkAsPaidSelected
             )
-        }
-        .onChange(of: session.isLocked) { _, isLocked in
-            guard isLocked else { return }
-            isShowingOtherPaymentMethodsSheet = false
         }
     }
 

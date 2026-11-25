@@ -48,6 +48,7 @@ public protocol POSExternalNavigationProviding {
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 public protocol POSExternalViewProviding {
+    @MainActor var canManageStoreSettings: Bool { get }
     @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     @MainActor
@@ -65,6 +66,38 @@ public protocol POSExternalViewProviding {
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
 }
 
+/// The live POS session policy for views supplied by the app target.
+@MainActor
+public struct POSExternalViewContext {
+    let session: POSAccessSession
+
+    public var canExitPOS: Bool {
+        !session.isLocked && session.allows(.exitPOS)
+    }
+
+    public var canReuseAppWebSignIn: Bool {
+        !session.isLocked && session.allows(.manageStoreSettings)
+    }
+
+    public func sessionValidityCheck() -> @MainActor () -> Bool {
+        let scope = session.accessScope
+        return { session.isCurrent(scope) }
+    }
+
+    public func whileSessionIsCurrent<Value>(_ action: @escaping (Value) -> Void) -> (Value) -> Void {
+        let isCurrent = sessionValidityCheck()
+        return { value in
+            guard isCurrent() else { return }
+            action(value)
+        }
+    }
+
+    public func whileSessionIsCurrent(_ action: @escaping () -> Void) -> () -> Void {
+        let perform = whileSessionIsCurrent { (_: Void) in action() }
+        return { perform(()) }
+    }
+}
+
 /// Main protocol that combines all POS dependency providers
 /// This enables dependency injection for POS code while maintaining clean separation from ServiceLocator
 public protocol POSDependencyProviding {
@@ -73,5 +106,5 @@ public protocol POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding { get }
     var connectivity: POSConnectivityProviding { get }
     @MainActor var externalNavigation: POSExternalNavigationProviding { get }
-    @MainActor var externalViews: POSExternalViewProviding { get }
+    @MainActor func externalViews(context: POSExternalViewContext) -> POSExternalViewProviding
 }

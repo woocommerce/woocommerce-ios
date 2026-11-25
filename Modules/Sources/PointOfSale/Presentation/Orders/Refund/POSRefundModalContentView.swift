@@ -568,7 +568,7 @@ private extension CardPresentPaymentEventDetails {
             return "connectingFailedUpdatePostalCode"
         case .connectingFailedChargeReader:
             return "connectingFailedChargeReader"
-        case .connectingFailedUpdateAddress(let adminURL, _, _, _):
+        case .connectingFailedUpdateAddress(let adminURL, _, _):
             return "connectingFailedUpdateAddress-\(adminURL.absoluteString)"
         case .foundReader(let name, _, _, _):
             return "foundReader-\(name)"

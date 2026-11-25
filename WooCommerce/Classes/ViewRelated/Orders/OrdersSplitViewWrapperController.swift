@@ -55,7 +55,7 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
 
     /// Presents the Details for the Notification with the specified Identifier.
     ///
-    func presentDetails(for notification: PushNotification) {
+    func presentDetails(for notification: PushNotification, isCurrent: @escaping () -> Bool) {
         guard let orderID = notification.meta?.identifier(forKey: .order) else {
             DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its OrderID!")
             return
@@ -64,6 +64,7 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
 
         // workaround - delay to ensure the transition to the secondary column works after switching stores
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
+            guard isCurrent() else { return }
             presentDetails(for: Int64(orderID), siteID: notificationSiteID, note: notification.note)
         }
     }

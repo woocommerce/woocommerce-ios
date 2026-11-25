@@ -12,6 +12,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
+import struct PointOfSale.POSExternalViewContext
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
@@ -37,8 +38,8 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSExternalNavigationAdaptor()
     }
 
-    @MainActor var externalViews: POSExternalViewProviding {
-        POSExternalViewAdaptor()
+    @MainActor func externalViews(context: POSExternalViewContext) -> POSExternalViewProviding {
+        POSExternalViewAdaptor(context: context)
     }
 }
 
@@ -88,6 +89,10 @@ private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
 }
 
 private struct POSExternalViewAdaptor: POSExternalViewProviding {
+    let context: POSExternalViewContext
+
+    var canManageStoreSettings: Bool { context.canReuseAppWebSignIn }
+
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(
             SupportForm(isPresented: isPresented,
@@ -105,9 +110,9 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
             showTypeSelection: showTypeSelection,
-            onSuccess: onSuccess,
+            onSuccess: context.whileSessionIsCurrent(onSuccess),
             dismissHandler: dismissHandler,
-            onDisappear: onDisappear
+            onDisappear: context.whileSessionIsCurrent(onDisappear)
         ))
     }
 
@@ -124,6 +129,8 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     }
 
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
-        AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
+        AnyView(WCAuthenticatedWebView(url: url, title: title,
+                                       session: context.canReuseAppWebSignIn ? .app : .isolatedSignIn,
+                                       completion: context.whileSessionIsCurrent(completion)))
     }
 }

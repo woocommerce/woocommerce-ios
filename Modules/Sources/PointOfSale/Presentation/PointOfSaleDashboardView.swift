@@ -218,17 +218,6 @@ struct PointOfSaleDashboardView: View {
                 await posModel.checkStaleSyncStatus()
             }
         }
-        .onChange(of: session.isLocked) { _, isLocked in
-            // Locking ends the current staff context; dismiss dashboard-owned presentations
-            // so the next signed-in staff member does not inherit them.
-            guard isLocked else { return }
-            showExitPOSModal = false
-            showSupport = false
-            showDocumentation = false
-            showSettings = false
-            showOrders = false
-            posModel.customAmountFlow = nil
-        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
@@ -744,14 +733,10 @@ private extension PointOfSaleDashboardView {
 
     /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
     func requestExit(confirmingFirst: Bool) {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
-            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
-            case .showConfirmation:
+        overrideHandler.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { approved in
+            if PointOfSaleDashboardViewHelper.shouldConfirmExit(confirmingFirst: confirmingFirst, approved: approved) {
                 showExitPOSModal = true
-            case .leave(let tracksConfirmation):
-                if tracksConfirmation {
-                    analytics.track(.pointOfSaleExitConfirmed)
-                }
+            } else {
                 dismiss()
             }
         }
@@ -809,12 +794,6 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
-        )
-        static let exitOverrideDescription = NSLocalizedString(
-            "pointOfSaleDashboard.exit.overrideReason",
-            value: "Exiting Point of Sale requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "exit permission tries to leave Point of Sale."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

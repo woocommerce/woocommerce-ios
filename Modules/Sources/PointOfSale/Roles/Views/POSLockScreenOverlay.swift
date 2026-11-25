@@ -4,9 +4,12 @@ struct POSLockScreenOverlay<Content: View>: View {
     private let content: Content
     private let session: POSAccessSession
 
-    init(session: POSAccessSession, @ViewBuilder content: () -> Content) {
+    private let locksInBackground: () -> Bool
+
+    init(session: POSAccessSession, locksInBackground: @escaping () -> Bool, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.session = session
+        self.locksInBackground = locksInBackground
     }
 
     var body: some View {
@@ -17,6 +20,7 @@ struct POSLockScreenOverlay<Content: View>: View {
             .opacity(session.isLocked ? 0 : 1)
             .animation(nil, value: session.isLocked)
             .background(POSLockPresentationHost(session: session,
+                                                 locksInBackground: locksInBackground,
                                                  lockContent: POSLockScreenView(session: session).id(ObjectIdentifier(session))))
             .overlay {
                 if session.isLocked {
@@ -29,17 +33,18 @@ struct POSLockScreenOverlay<Content: View>: View {
 
 private struct POSLockScreenOverlayModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
+    let locksInBackground: () -> Bool
 
     func body(content: Content) -> some View {
-        POSLockScreenOverlay(session: session) {
+        POSLockScreenOverlay(session: session, locksInBackground: locksInBackground) {
             content
         }
     }
 }
 
 extension View {
-    func posLockScreenOverlay() -> some View {
-        modifier(POSLockScreenOverlayModifier())
+    func posLockScreenOverlay(locksInBackground: @escaping () -> Bool = { false }) -> some View {
+        modifier(POSLockScreenOverlayModifier(locksInBackground: locksInBackground))
     }
 }
 

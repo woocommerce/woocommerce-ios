@@ -269,3 +269,38 @@ private extension POSIneligibleReason {
 }
 
 #endif
+
+public struct POSLaunchIneligibleView: View {
+    @State private var approval = POSManagerOverrideHandler()
+    @State private var showExitConfirmation = false
+    @StateObject private var modalManager = POSModalManager()
+    @StateObject private var coverManager = POSFullScreenCoverManager()
+    @StateObject private var sheetManager = POSSheetManager()
+    private let onRefresh: () async throws -> Void
+    private let onExit: () -> Void
+
+    public init(onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
+        self.onRefresh = onRefresh
+        self.onExit = onExit
+    }
+
+    public var body: some View {
+        POSIneligibleView(reason: .siteSettingsNotAvailable, onRefresh: onRefresh) {
+            approval.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { approved in
+                if approved {
+                    showExitConfirmation = true
+                } else {
+                    onExit()
+                }
+            }
+        }
+        .posDialog(isPresented: $showExitConfirmation) {
+            .exitPOS(exit: onExit, close: { showExitConfirmation = false })
+        }
+        .posManagerOverrideModal(handler: approval)
+        .posRootModal()
+        .environmentObject(modalManager)
+        .environmentObject(coverManager)
+        .environmentObject(sheetManager)
+    }
+}

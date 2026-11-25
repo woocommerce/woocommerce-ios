@@ -197,9 +197,8 @@ private extension CardPresentPaymentEventDetails {
         case .connectingFailedChargeReader(let retrySearch, let endSearch):
             return .connectingFailedChargeReader(retrySearch: retrySearch,
                                                  endSearch: markAndRun(endSearch))
-        case .connectingFailedUpdateAddress(let adminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
+        case .connectingFailedUpdateAddress(let adminURL, let retrySearch, let endSearch):
             return .connectingFailedUpdateAddress(wcSettingsAdminURL: adminURL,
-                                                  showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                                                   retrySearch: retrySearch,
                                                   endSearch: markAndRun(endSearch))
         case .preparingForPayment(let cancelPayment):

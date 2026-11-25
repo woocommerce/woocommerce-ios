@@ -729,7 +729,7 @@ final class POSPreviewServices: POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
-    var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+    func externalViews(context: POSExternalViewContext) -> POSExternalViewProviding { EmptyPOSExternalView() }
 
     /// Main actor isolated because `externalNavigation` and `externalViews` are main actor requirements.
     @MainActor init() {}

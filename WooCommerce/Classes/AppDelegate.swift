@@ -433,7 +433,12 @@ extension AppDelegate {
 // MARK: - UNUserNotificationCenterDelegate
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    private var isPOSExitBlocked: Bool {
+        tabBarController?.isPOSExitBlocked ?? MainTabBarController.hasSavedPOSLock()
+    }
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard !isPOSExitBlocked else { return }
         await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
     }
 
@@ -445,6 +450,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
+        guard !isPOSExitBlocked else { return false }
         if ServiceLocator.stores.isAuthenticated {
             let pendingAuthFlowStorage = PendingAuthFlowStorage()
             let flow = pendingAuthFlowStorage.current
@@ -471,15 +477,14 @@ extension AppDelegate {
         if let site = ServiceLocator.stores.sessionManager.defaultSite {
             return handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
         } else {
+            let isCurrent = tabBarController?.beginExternalNavigation()
+            guard isCurrent != nil || tabBarController == nil else { return false }
             // Wait for the site to be available before handling the magic link
             ServiceLocator.stores.sessionManager.defaultSitePublisher
                 .timeout(.seconds(30), scheduler: DispatchQueue.main)
                 .first(where: { $0 != nil })
                 .sink { [weak self] site in
-                    guard let site else {
-                        // This should never happen as we filter out nil values
-                        return
-                    }
+                    guard let site, isCurrent?() ?? (self?.isPOSExitBlocked == false) else { return }
                     _ = self?.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
                 }
                 .store(in: &subscriptions)

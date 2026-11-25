@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import WebKit
 import Yosemite
 @testable import WooCommerce
 
@@ -13,6 +14,33 @@ struct AuthenticatedWebViewModelTests {
         URL(string: "https://adpurchase.wordpress.com/checkout/order-pay/123/")
     ]
     private let siteURL = "http://example.com"
+
+    @Test @MainActor func test_webSession_when_opened_from_protected_pos_then_ignores_existing_cookies() async throws {
+        // Given
+        let existingSession = WKWebsiteDataStore.default().httpCookieStore
+        let cookie = try #require(HTTPCookie(properties: [
+            .name: "wordpress_logged_in_\(UUID().uuidString)",
+            .value: "fixture-session",
+            .path: "/",
+            .domain: "pos-web-session.example"
+        ]))
+        let url = try #require(URL(string: "https://pos-web-session.example/wp-admin/"))
+        await existingSession.setCookie(cookie)
+
+        // When
+        let model = DefaultAuthenticatedWebViewModel(initialURL: url)
+        let sut = AuthenticatedWebViewController(viewModel: model, session: .isolatedSignIn)
+        sut.loadViewIfNeeded()
+        let webView = try #require(sut.view.subviews.compactMap { $0 as? WKWebView }.first)
+        let isolatedCookies = await webView.configuration.websiteDataStore.httpCookieStore.allCookies()
+        let appCookies = await existingSession.allCookies()
+        await existingSession.deleteCookie(cookie)
+
+        // Then
+        #expect(!webView.configuration.websiteDataStore.isPersistent)
+        #expect(!isolatedCookies.contains { $0.name == cookie.name })
+        #expect(appCookies.contains { $0.name == cookie.name })
+    }
 
     @Test @MainActor func test_decidePolicy_when_initial_url_main_frame_response_is_http_error_then_calls_handler_with_status_code() async throws {
         // Given

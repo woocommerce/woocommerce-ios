@@ -88,7 +88,7 @@ extension EnvironmentValues {
         set { self[POSExternalNavigationKey.self] = newValue }
     }
 
-    var posExternalViews: POSExternalViewProviding {
+    public var posExternalViews: POSExternalViewProviding {
         get { self[POSExternalViewKey.self] }
         set { self[POSExternalViewKey.self] = newValue }
     }
@@ -157,6 +157,7 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 }
 
 struct EmptyPOSExternalView: POSExternalViewProviding {
+    var canManageStoreSettings: Bool { false }
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,

@@ -4,12 +4,14 @@ import SwiftUI
 struct WCAuthenticatedWebView: View {
     let url: URL
     let title: String
+    var session: AuthenticatedWebViewController.Session = .app
     let completion: () -> Void
 
     var body: some View {
         NavigationView {
             AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
+                                 url: url,
+                                 session: session)
                                  .navigationTitle(title)
                                  .navigationBarTitleDisplayMode(.inline)
                                  .toolbar {

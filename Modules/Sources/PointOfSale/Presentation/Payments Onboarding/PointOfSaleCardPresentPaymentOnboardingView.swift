@@ -24,7 +24,7 @@ extension POSModalCompactStyle {
             "pos.cardPaymentsOnboarding.modal.title",
             value: "Card payments",
             comment: "Title in the header of the full-screen card payments onboarding flow on phone."
-        ))
+        ), preservesOnLock: true)
     }
 }
 

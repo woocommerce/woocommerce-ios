@@ -185,6 +185,8 @@ final class MainTabBarController: UITabBarController {
     /// lock state for the active site is true. Flipped to false after the first attempt so
     /// subsequent site switches don't keep yanking the user back into POS.
     private var needsPOSAutoReopenCheck = true
+    private let posStartupCover = UIView()
+    private var posPresentationGeneration = UUID()
 
     private let bookingsContainerController = TabContainerController()
 
@@ -324,11 +326,21 @@ final class MainTabBarController: UITabBarController {
         ///
 
         startListeningToOrdersBadge()
+        if hasSavedPOSLockToReopen {
+            posStartupCover.frame = view.bounds
+            posStartupCover.backgroundColor = .systemBackground
+            posStartupCover.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            posStartupCover.accessibilityViewIsModal = true
+            view.addSubview(posStartupCover)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        if let siteID = stores.sessionManager.defaultStoreID {
+            openLockedPOSIfNeeded(siteID: siteID)
+        }
         viewModel.onViewDidAppear()
         httpsConfigurationWarningPresenter.update()
     }
@@ -370,6 +382,37 @@ final class MainTabBarController: UITabBarController {
 
     // MARK: - Public Methods
 
+    var isPOSExitBlocked: Bool {
+        if let pos = presentedViewController as? POSHostingController {
+            return pos.accessContext.map { !$0.canExitPOS } ?? featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
+        }
+
+        // Cold-start routes can arrive before the persisted lock is presented.
+        return hasSavedPOSLockToReopen
+    }
+
+    private var hasSavedPOSLockToReopen: Bool {
+        needsPOSAutoReopenCheck && Self.hasSavedPOSLock(stores: stores, featureFlags: featureFlagService, userDefaults: userDefaults)
+    }
+
+    static func hasSavedPOSLock(stores: StoresManager = ServiceLocator.stores,
+                                featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+                                userDefaults: UserDefaults = .standard) -> Bool {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles),
+              let siteID = stores.sessionManager.defaultStoreID else { return false }
+        return userDefaults.bool(forKey: POSLockStateKey.key(for: siteID))
+    }
+
+    func beginExternalNavigation() -> (() -> Bool)? {
+        guard !isPOSExitBlocked else { return nil }
+        let generation = posPresentationGeneration
+        let isCurrentSession = (presentedViewController as? POSHostingController)?.accessContext?.sessionValidityCheck()
+        return { [weak self] in
+            guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return false }
+            return isCurrentSession?() ?? true
+        }
+    }
+
     /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
@@ -385,8 +428,10 @@ final class MainTabBarController: UITabBarController {
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete with the root view controller.
     func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
+        guard !isPOSExitBlocked else { return }
+        let generation = posPresentationGeneration
         dismiss(animated: animated) { [weak self] in
-            guard let self else { return }
+            guard let self, posPresentationGeneration == generation else { return }
             httpsConfigurationWarningPresenter.update(for: tab)
             selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             // Lays out the new tab before the completion runs. Since iOS 26 a tab's split view
@@ -501,7 +546,11 @@ extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         let isSelectingPOSTab = viewController == posContainerController
         if isSelectingPOSTab {
-            posTabCoordinator?.openPOS(entryPoint: .posTab)
+            if let siteID = stores.sessionManager.defaultStoreID {
+                if !openLockedPOSIfNeeded(siteID: siteID) {
+                    openPOS(entryPoint: .posTab)
+                }
+            }
         }
         return !isSelectingPOSTab
     }
@@ -665,13 +714,24 @@ extension MainTabBarController {
         })
     }
 
+    private func showReviewNotification(_ review: ProductReviewFromNoteParcel) {
+        performStoreSwitch(to: review.review.siteID, storedSiteOnly: false) { [weak self] result in
+            guard let self, result != nil else { return }
+            navigateTo(.hubMenu) { [weak self] in
+                self?.hubMenuTabCoordinator?.hubMenuController?.pushReviewDetailsViewController(using: review)
+                ServiceLocator.analytics.track(.reviewOpen)
+            }
+        }
+    }
+
     /// Presents the order details if the `note` is for an order push notification.
     ///
     private static func presentNotificationDetails(for notification: PushNotification) {
         switch notification.kind {
         case .storeOrder:
             switchToOrdersTab {
-                ordersTabSplitViewWrapper()?.presentDetails(for: notification)
+                guard let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
+                ordersTabSplitViewWrapper()?.presentDetails(for: notification, isCurrent: isCurrent)
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
@@ -686,23 +746,38 @@ extension MainTabBarController {
     }
 
     private static func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        let stores = ServiceLocator.stores
+        AppDelegate.shared.tabBarController?.performStoreSwitch(to: siteID, storedSiteOnly: true) { result in
+            if let result { onCompletion(result) }
+        }
+    }
 
-        // Already showing that store, do nothing
-        guard siteID != stores.sessionManager.defaultStoreID else {
-            onCompletion(true)
-            return
+    private func performStoreSwitch(to siteID: Int64, storedSiteOnly: Bool, onCompletion: @escaping (Bool?) -> Void) {
+        guard !isPOSExitBlocked else { return onCompletion(nil) }
+        guard siteID != stores.sessionManager.defaultStoreID else { return onCompletion(true) }
+
+        let generation = posPresentationGeneration
+        let proceed = { [weak self] in
+            guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return onCompletion(nil) }
+            let switcher = SwitchStoreUseCase(stores: stores)
+            let completed: (Bool) -> Void = { [weak self] siteChanged in
+                guard let self, generation == posPresentationGeneration, !isPOSExitBlocked else { return onCompletion(nil) }
+                if siteChanged {
+                    let presenter = SwitchStoreNoticePresenter(siteID: siteID, stores: stores, noticePresenter: noticePresenter)
+                    presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                }
+                onCompletion(siteChanged)
+            }
+            if storedSiteOnly {
+                switcher.switchToStoreIfSiteIsStored(with: siteID, onCompletion: completed)
+            } else {
+                switcher.switchStore(with: siteID, onCompletion: completed)
+            }
         }
 
-        SwitchStoreUseCase(stores: stores).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
-            guard siteChanged else {
-                return onCompletion(false)
-            }
-
-            let presenter = SwitchStoreNoticePresenter(siteID: siteID)
-            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-
-            onCompletion(true)
+        if presentedViewController is POSHostingController {
+            dismiss(animated: false, completion: proceed)
+        } else {
+            proceed()
         }
     }
 
@@ -727,8 +802,9 @@ extension MainTabBarController {
                     return
                 }
 
+                guard let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                    presentDetails(for: orderID, siteID: siteID)
+                    if isCurrent() { presentDetails(for: orderID, siteID: siteID) }
                 }
             }
         })
@@ -751,11 +827,10 @@ extension MainTabBarController {
 
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
-                return
-            }
+            guard storeIsShown, let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                guard isCurrent() else { return }
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaign("\(campaignID)")
                 }
@@ -770,8 +845,9 @@ extension MainTabBarController {
         }
 
         switchToProductsTab {
+            guard let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                presentProductDetails(productID: Int64(productID), siteID: notification.resolvedSiteID())
+                if isCurrent() { presentProductDetails(productID: Int64(productID), siteID: notification.resolvedSiteID()) }
             }
         }
     }
@@ -790,11 +866,10 @@ extension MainTabBarController {
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
-                return
-            }
+            guard storeIsShown, let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                guard isCurrent() else { return }
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaignCreation()
                 }
@@ -867,6 +942,7 @@ extension MainTabBarController: DeepLinkNavigator {
                 self?.presentAnalyticsHub(for: analyticsDestination)
             }
         case is POSPromotionDestination:
+            guard !isPOSExitBlocked else { return }
             presentPOSPromotionModal()
         default:
             return
@@ -1191,7 +1267,7 @@ private extension MainTabBarController {
             }
         )
         posTabCoordinator = coordinator
-        autoReopenPOSIfNeeded(siteID: siteID)
+        openLockedPOSIfNeeded(siteID: siteID)
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -1238,13 +1314,8 @@ private extension MainTabBarController {
                            storesManager: stores,
                            httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
-                           willPresentReviewDetailsFromPushNotification: { [weak self] in
-            await withCheckedContinuation { [weak self] continuation in
-                self?.navigateTo(.hubMenu) {
-                    continuation.resume(returning: ())
-                }
-            }
-        })
+                           beginNavigation: { [weak self] in self?.beginExternalNavigation() },
+                           showReview: { [weak self] in self?.showReviewNotification($0) })
     }
 
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
@@ -1399,14 +1470,15 @@ private extension MainTabBarController {
 
     func showProductDetails(for error: ProductImageUploadErrorInfo) async {
         // Switches to the correct store first if needed.
-        let switchStoreUseCase = SwitchStoreUseCase(stores: stores)
-        let siteChanged = await switchStoreUseCase.switchStore(with: error.siteID)
-        if siteChanged {
-            let presenter = SwitchStoreNoticePresenter(siteID: error.siteID,
-                                                       noticePresenter: self.noticePresenter)
-            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+        await withCheckedContinuation { continuation in
+            performStoreSwitch(to: error.siteID, storedSiteOnly: false) { [weak self] result in
+                if result != nil { self?.presentProductUploadError(error) }
+                continuation.resume()
+            }
         }
+    }
 
+    private func presentProductUploadError(_ error: ProductImageUploadErrorInfo) {
         if let productsSplitViewWrapperController = productsContainerController.wrappedController as? ProductsSplitViewWrapperController,
            let productForm = productsSplitViewWrapperController.currentProductForm(for: error.productOrVariationID.id) {
             // Ask the product form to display an alert about the error
@@ -1437,20 +1509,26 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     /// Reopen POS on cold launch if the active site's persisted key says it was locked.
-    func autoReopenPOSIfNeeded(siteID: Int64) {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
-        guard needsPOSAutoReopenCheck else { return }
-        // Consume the one-shot only when the active site is the locked one.
-        guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
-        needsPOSAutoReopenCheck = false
-
-        // Capture the just-created coordinator weakly so a site change between
-        // scheduling and execution can't redirect this auto-reopen at a different
-        // coordinator. If the active site changes mid-flight the old coordinator
-        // is released and the closure no-ops.
-        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
-            coordinator?.openPOS(entryPoint: .autoReopen)
+    @discardableResult
+    func openLockedPOSIfNeeded(siteID: Int64) -> Bool {
+        guard hasSavedPOSLockToReopen else {
+            posStartupCover.removeFromSuperview()
+            return false
         }
+        guard viewIfLoaded?.window != nil, presentedViewController == nil,
+              stores.sessionManager.defaultStoreID == siteID,
+              posTabCoordinator != nil else { return false }
+        openPOS(entryPoint: .autoReopen)
+        guard presentedViewController is POSHostingController else { return false }
+        needsPOSAutoReopenCheck = false
+        posStartupCover.removeFromSuperview()
+        return true
+    }
+
+    func openPOS(entryPoint: POSAnalyticsEntryPoint) {
+        guard stores.sessionManager.defaultStoreID != nil, let posTabCoordinator else { return }
+        posPresentationGeneration = UUID()
+        posTabCoordinator.openPOS(entryPoint: entryPoint)
     }
 }
 

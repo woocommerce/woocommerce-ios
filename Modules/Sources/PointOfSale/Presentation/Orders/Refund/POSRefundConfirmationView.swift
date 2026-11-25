@@ -310,7 +310,7 @@ extension CardPresentPaymentEventDetails {
         case .connectingFailed(_, _, let endSearch),
                 .connectingFailedUpdatePostalCode(_, let endSearch),
                 .connectingFailedChargeReader(_, let endSearch),
-                .connectingFailedUpdateAddress(_, _, _, let endSearch):
+                .connectingFailedUpdateAddress(_, _, let endSearch):
             return endSearch
         case .selectSearchType(_, _, let endSearch),
                 .foundReader(_, _, _, let endSearch):

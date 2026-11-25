@@ -22,3 +22,9 @@ protocol POSAccessSession: AnyObject, Sendable {
     func saveElapsedTime() async
     func checkLockoutState() async throws(POSAuthError)
 }
+
+extension POSAccessSession {
+    func isCurrent(_ scope: POSPINSessionTokens.Token) -> Bool {
+        !isLocked && accessScope == scope
+    }
+}

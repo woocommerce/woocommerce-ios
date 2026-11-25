@@ -1,6 +1,6 @@
 import Combine
 import Photos
-import PointOfSale
+@testable import PointOfSale
 import StoreDesignSystem
 import SwiftUI
 import TestKit
@@ -132,7 +132,6 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
         ServiceLocator.setPushNotesManager(pushNotificationsManager)
-
         // Hides POS tab.
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
@@ -182,7 +181,6 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
 
         // Action
-        // Send push notification in inactive state
         let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
@@ -440,6 +438,57 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
 
+    @MainActor
+    func test_navigateTo_when_pos_has_persisted_lock_at_launch_then_drops_route_before_pos_opens() throws {
+        // Given
+        let siteID: Int64 = 134
+        let defaultsName = "POSNavigation.\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: defaultsName))
+        defer { defaults.removePersistentDomain(forName: defaultsName) }
+        defaults.set(true, forKey: POSLockStateKey.key(for: siteID))
+        stores.updateDefaultStore(storeID: siteID)
+        let featureFlags = MockFeatureFlagService()
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleRoles] = true
+        let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController { coder in
+            MainTabBarController(coder: coder, featureFlagService: featureFlags, stores: self.stores, userDefaults: defaults)
+        })
+        XCTAssertNil(tabBar.presentedViewController)
+
+        // When
+        tabBar.navigateTo(.orders) {
+            XCTFail("The blocked request must not complete")
+        }
+
+        // Then
+        XCTAssertTrue(tabBar.isPOSExitBlocked)
+        XCTAssertNil(tabBar.presentedViewController)
+    }
+
+    @MainActor
+    func test_navigateTo_when_pos_denies_exit_then_keeps_pos_and_discards_the_request() throws {
+        // Given
+        let tabBar = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        window.rootViewController = tabBar
+        let pos = POSHostingController(rootView: AnyView(PointOfSaleLoadingEntryPointView()))
+        pos.modalPresentationStyle = .fullScreen
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        pos.accessContext = POSExternalViewContext(session: session)
+        tabBar.present(pos, animated: false)
+        XCTAssertTrue(tabBar.presentedViewController === pos)
+
+        // When
+        tabBar.navigateTo(.products) {
+            XCTFail("The blocked request must not complete")
+        }
+        tabBar.navigate(to: OrdersDestination.orderList)
+        XCTAssertTrue(tabBar.isPOSExitBlocked)
+        session.currentStaff = POSLocalRole.admin.staff
+
+        // Then
+        XCTAssertTrue(tabBar.presentedViewController === pos)
+        XCTAssertFalse(tabBar.isPOSExitBlocked)
+    }
+
     func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {
         // Given
         let siteID: Int64 = 134
@@ -578,7 +627,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertFalse(tabBarController.tabBarController(tabBarController, shouldSelect: posTabContainerController))
 
         waitUntil {
-            posTabContainerController.presentedViewController is UIHostingController<POSPresentationRootView>
+            posTabContainerController.presentedViewController is POSHostingController
         }
 
         // When POS tab becomes invisible

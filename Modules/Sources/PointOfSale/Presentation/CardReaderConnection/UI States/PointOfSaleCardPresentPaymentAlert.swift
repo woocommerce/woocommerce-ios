@@ -73,7 +73,7 @@ extension POSModalCompactStyle {
             "pos.cardReaderConnection.modal.title",
             value: "Card reader",
             comment: "Title in the header of the full-screen card reader connection flow on phone."
-        ))
+        ), preservesOnLock: true)
     }
 }
 

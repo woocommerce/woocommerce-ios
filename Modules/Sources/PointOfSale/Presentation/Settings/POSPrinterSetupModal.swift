@@ -396,7 +396,7 @@ extension POSModalCompactStyle {
             "pos.printerSetup.modal.title",
             value: "Receipt printer",
             comment: "Title in the header of the full-screen receipt printer setup flow on phone."
-        ))
+        ), preservesOnLock: true)
     }
 }
 

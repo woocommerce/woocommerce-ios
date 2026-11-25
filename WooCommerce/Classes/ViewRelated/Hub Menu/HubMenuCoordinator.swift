@@ -3,7 +3,6 @@ import Foundation
 import UIKit
 
 import enum Yosemite.ProductReviewAction
-import enum Yosemite.NotificationAction
 import struct Yosemite.ProductReviewFromNoteParcel
 import protocol Yosemite.StoresManager
 
@@ -16,12 +15,12 @@ final class HubMenuCoordinator {
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
     private let noticePresenter: NoticePresenter
-    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
 
     private var notificationsSubscription: AnyCancellable?
 
-    private let willPresentReviewDetailsFromPushNotification: () async -> Void
+    private let beginNavigation: () -> (() -> Bool)?
+    private let showReview: (ProductReviewFromNoteParcel) -> Void
 
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
@@ -29,32 +28,19 @@ final class HubMenuCoordinator {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         switchStoreUseCase: SwitchStoreUseCaseProtocol,
          httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-         willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
+         beginNavigation: @escaping () -> (() -> Bool)?,
+         showReview: @escaping (ProductReviewFromNoteParcel) -> Void) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
         self.noticePresenter = noticePresenter
-        self.switchStoreUseCase = switchStoreUseCase
         self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
-        self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
+        self.beginNavigation = beginNavigation
+        self.showReview = showReview
         self.tabContainerController = tabContainerController
-    }
-
-    convenience init(tabContainerController: TabContainerController,
-                     storesManager: StoresManager = ServiceLocator.stores,
-                     httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
-                     tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-                     willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
-        self.init(tabContainerController: tabContainerController,
-                  storesManager: storesManager,
-                  switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
-                  httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
-                  tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
-                  willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 
     deinit {
@@ -85,64 +71,25 @@ final class HubMenuCoordinator {
 
     @MainActor
     private func handleNotification(_ notification: WooCommerce.PushNotification) {
-        guard notification.kind == .comment else {
-            return
-        }
+        guard notification.kind == .comment, let isCurrent = beginNavigation() else { return }
 
-        guard let noteID = notification.noteID else {
-            return attemptRetrieveProductReviewWithoutNoteID(notification: notification)
-        }
-        let action = ProductReviewAction.retrieveProductReviewFromNote(noteID: Int64(noteID)) { [weak self] result in
-            self?.handleProductReviewResult(result)
-        }
-        storesManager.dispatch(action)
-    }
-
-    @MainActor
-    private func attemptRetrieveProductReviewWithoutNoteID(notification: PushNotification) {
-        guard let reviewID = notification.meta?.identifier(forKey: .comment) else {
-            return
-        }
-        let action = ProductReviewAction.retrieveProductReviewAndProduct(
-            siteID: notification.resolvedSiteID(stores: storesManager),
-            reviewID: Int64(reviewID),
-            onCompletion: { [weak self] result in
-                self?.handleProductReviewResult(result)
-            })
-        storesManager.dispatch(action)
-    }
-
-    @MainActor
-    private func handleProductReviewResult(_ result: Result<ProductReviewFromNoteParcel, Error>) {
-        switch result {
-        case .failure:
-            noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
-        case .success(let parcel):
-            let siteID = parcel.review.siteID
-
-            // Switch to the correct store first if needed
-            self.switchStoreUseCase.switchStore(with: siteID) { [weak self] siteChanged in
-                guard let self else {
-                    return
-                }
-
-                Task { @MainActor in
-                    ServiceLocator.analytics.track(.reviewOpen)
-                    await self.willPresentReviewDetailsFromPushNotification()
-                    self.pushReviewDetailsViewController(using: parcel)
-
-                    if siteChanged {
-                        let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
-                                                                   noticePresenter: self.noticePresenter)
-                        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-                    }
-                }
+        let completion: (Result<ProductReviewFromNoteParcel, Error>) -> Void = { [weak self] result in
+            guard let self, isCurrent() else { return }
+            switch result {
+            case .failure:
+                noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
+            case .success(let review):
+                showReview(review)
             }
         }
-    }
-
-    private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        hubMenuController?.pushReviewDetailsViewController(using: parcel)
+        if let noteID = notification.noteID {
+            storesManager.dispatch(ProductReviewAction.retrieveProductReviewFromNote(noteID: Int64(noteID), onCompletion: completion))
+        } else if let reviewID = notification.meta?.identifier(forKey: .comment) {
+            storesManager.dispatch(ProductReviewAction.retrieveProductReviewAndProduct(
+                siteID: notification.resolvedSiteID(stores: storesManager),
+                reviewID: Int64(reviewID),
+                onCompletion: completion))
+        }
     }
 }
 

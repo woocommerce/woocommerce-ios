@@ -38,18 +38,11 @@ struct PointOfSalePaymentSuccessView: View {
                 isTitleFocused = true
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
+        .posModal(isPresented: $showPrinterSetupModal,
+                  compactStyle: .receiptPrinterSetup,
+                  onDismiss: handlePrinterSetupDismissed) {
             if let controller = posModel.settingsController.printerConnectionController {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .printReceipt)
-            }
-        }
-        .onChange(of: showPrinterSetupModal) { _, isShowing in
-            // The setup modal auto-dismisses when a printer connects, so the modal closing with a
-            // printer connected means setup succeeded — print the receipt the merchant asked for.
-            Task {
-                await printCoordinator.setupModalVisibilityChanged(
-                    isPresented: isShowing,
-                    isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
         .posDialog(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
@@ -74,7 +67,10 @@ struct PointOfSalePaymentSuccessView: View {
                                    presentPrinterSetup: { showPrinterSetupModal = true },
                                    presentEmailReceipt: { router.pushEmailReceipt() },
                                    isOnSuccessScreen: { !router.isNavigated },
-                                   presentFailure: { printFailure = $0 },
+                                   presentFailure: {
+                                       selectedFailureAction = nil
+                                       printFailure = $0
+                                   },
                                    updateButtonState: { printButtonState = $0 })
     }
 
@@ -82,6 +78,12 @@ struct PointOfSalePaymentSuccessView: View {
         guard printButtonState == .idle else { return }
         Task {
             await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
+        }
+    }
+
+    private func handlePrinterSetupDismissed() {
+        Task {
+            await printCoordinator.setupModalVisibilityChanged(isPresented: false, isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 

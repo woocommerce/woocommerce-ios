@@ -30,8 +30,8 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
-    @State private var accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
-    @State private var lockSettings: POSLockSettings
+    @Environment(\.posAccessSession) private var accessSession
+    @Environment(\.posLaunchLockSettings) private var lockSettings
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -164,7 +164,6 @@ public struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
-        self._lockSettings = State(initialValue: POSLockSettings(siteID: siteID))
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
@@ -203,18 +202,16 @@ public struct PointOfSaleEntryPointView: View {
 
     private func content(isCompactLayout: Bool) -> some View {
         Group {
-            if let posModel {
+            if let posModel, let lockSettings {
                 PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
-                    // Lock modifiers capture their session once; keep this branch gated on the model created after accessSession is set.
                     .posAutoLockActivityTracking(
                         session: accessSession,
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel,
                         settings: lockSettings
                     )
-                    .posLockScreenOverlay()
             } else {
                 PointOfSaleLoadingView()
             }
@@ -224,20 +221,8 @@ public struct PointOfSaleEntryPointView: View {
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
-            guard posModel == nil else { return }
-            // Session initialization persists lock state, so it must run once, before content is exposed.
-            let session: POSAccessSession
-            do {
-                session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
-                                                                 shouldCreate: { posModel == nil })
-            } catch {
-                return
-            }
-            guard !Task.isCancelled, posModel == nil else {
-                session.endSession()
-                return
-            }
-            accessSession = session
+            guard posModel == nil, let lockSettings else { return }
+            let session = accessSession
             if services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) {
                 settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session, lockSettings: lockSettings)
             }
@@ -268,8 +253,7 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
-                session.endSession()
+            let cleanup = { [posModel, posModalManager, siteID, onPointOfSaleModeActiveStateChange] in
                 if posModel?.paymentState.isSuccess == true {
                     POSAccessSessionFactory.handleCompletedSaleExit(siteID: siteID)
                 }
@@ -292,7 +276,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posFeatureFlags, services.featureFlags)
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
-        .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posExternalViews, services.externalViews(context: POSExternalViewContext(session: accessSession)))
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
@@ -301,19 +285,8 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
-        .environment(\.posAccessSession, accessSession)
         .onChange(of: isCompactLayout) { _, isCompactLayout in
             posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-            // Active app switch, not idle - lock even mid-payment.
-            guard lockSettings.preferences.locksInBackground,
-                  accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
-            accessSession.lock()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-            let session = accessSession
-            Task { await session.saveElapsedTime() }
         }
     }
 
@@ -353,6 +326,7 @@ public struct PointOfSaleEntryPointView: View {
         receiptSettingsAdminURL: "",
         services: POSPreviewServices()
     )
+    .environment(\.posLaunchLockSettings, POSLockSettings(siteID: 1))
 }
 
 #endif

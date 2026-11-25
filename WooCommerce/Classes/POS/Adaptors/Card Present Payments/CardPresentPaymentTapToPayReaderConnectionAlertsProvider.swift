@@ -42,7 +42,6 @@ struct CardPresentPaymentTapToPayReaderConnectionAlertsProvider: CardReaderConne
                 endSearch: cancelSearch)
         }
         return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
-                                              showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                                               retrySearch: retrySearch,
                                               endSearch: cancelSearch)
     }

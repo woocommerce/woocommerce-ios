@@ -21,14 +21,11 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
 
-            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                Spacer(minLength: metrics.spacing.large)
-
-                Button(primaryButtonViewModel.title,
-                       action: primaryButtonViewModel.actionHandler)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
-            }
+            Spacer(minLength: metrics.spacing.large)
+            let button = viewModel.primaryButtonViewModel
+            Button(button.title, action: button.actionHandler)
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
@@ -38,10 +35,11 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
         .onAppear {
             isTitleFocused = true
         }
-        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
+        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView, onDismiss: viewModel.settingsWebViewWasDismissed) {
             externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
-                                                    title: Localization.settingsWebViewTitle,
-                                                    completion: viewModel.settingsWebViewWasDismissed)
+                                                    title: Localization.settingsWebViewTitle) {
+                viewModel.shouldShowSettingsWebView = false
+            }
         }
     }
 }
@@ -61,7 +59,6 @@ private extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView
     return PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,
-            showsInAuthenticatedWebView: true,
             retrySearchAction: {},
             cancelSearchAction: {}),
         animation: .init(namespace: namespace)

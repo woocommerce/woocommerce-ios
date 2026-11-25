@@ -34,6 +34,26 @@ struct CardPresentPaymentsOnboardingView: View {
     @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
     @State private var presentedAdminURL: URL?
 
+    init(viewModel: CardPresentPaymentsOnboardingViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    var body: some View {
+        CardPresentPaymentsOnboardingContent(viewModel: viewModel, presentedAdminURL: $presentedAdminURL,
+                                             canManagePlugins: { viewModel.userIsAdministrator })
+            .sheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
+                AuthenticatableWebView(url: url, title: CardPresentPaymentsOnboardingContent.Localization.storeAdmin)
+            }
+    }
+
+    typealias Localization = CardPresentPaymentsOnboardingContent.Localization
+}
+
+struct CardPresentPaymentsOnboardingContent: View {
+    @ObservedObject var viewModel: CardPresentPaymentsOnboardingViewModel
+    @Binding var presentedAdminURL: URL?
+    let canManagePlugins: () -> Bool
+
     var body: some View {
         Group {
             switch viewModel.state {
@@ -55,8 +75,8 @@ struct CardPresentPaymentsOnboardingView: View {
                                                            onRefresh: viewModel.refresh)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
-                                                   userIsAdministrator: viewModel.userIsAdministrator,
-                                                   onInstall: viewModel.installPlugin,
+                                                   userIsAdministrator: canManagePlugins(),
+                                                   onInstall: { managePlugins(viewModel.installPlugin) },
                                                    onRefresh: viewModel.refresh)
             case .pluginUnsupportedVersion(let plugin):
                 InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics,
@@ -68,14 +88,14 @@ struct CardPresentPaymentsOnboardingView: View {
                 case .wcPay:
                     InPersonPaymentsPluginNotActivated(plugin: plugin,
                                                        analyticReason: viewModel.state.reasonForAnalytics,
-                                                       userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onActivate: viewModel.activatePlugin,
+                                                       userIsAdministrator: canManagePlugins(),
+                                                       onActivate: { managePlugins(viewModel.activatePlugin) },
                                                        onRefresh: viewModel.refresh)
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
                     InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
-                                                       userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onInstall: viewModel.installPlugin,
+                                                       userIsAdministrator: canManagePlugins(),
+                                                       onInstall: { managePlugins(viewModel.installPlugin) },
                                                        onRefresh: viewModel.refresh)
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
@@ -122,10 +142,11 @@ struct CardPresentPaymentsOnboardingView: View {
                 viewModel.showURL?(url)
             }
         })
-        .sheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
-            AuthenticatableWebView(url: url, title: Localization.storeAdmin)
-        }
         .navigationTitle(Localization.title)
+    }
+
+    private func managePlugins(_ action: () -> Void) {
+        if canManagePlugins() { action() }
     }
 
     private func adminButton(text: String, url: URL?, plugin: CardPresentPaymentsPlugin) -> InPersonPaymentsOnboardingErrorButtonViewModel? {

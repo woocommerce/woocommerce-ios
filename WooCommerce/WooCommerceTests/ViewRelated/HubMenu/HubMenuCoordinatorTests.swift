@@ -13,7 +13,6 @@ final class HubMenuCoordinatorTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var sessionManager: SessionManager!
     private var noticePresenter: MockNoticePresenter!
-    private var switchStoreUseCase: MockSwitchStoreUseCase!
 
     private let siteID: Int64 = 1
 
@@ -28,11 +27,9 @@ final class HubMenuCoordinatorTests: XCTestCase {
         storesManager.reset()
 
         noticePresenter = MockNoticePresenter()
-        switchStoreUseCase = MockSwitchStoreUseCase()
     }
 
     override func tearDown() {
-        switchStoreUseCase = nil
         noticePresenter = nil
         storesManager = nil
         sessionManager = nil
@@ -90,6 +87,33 @@ final class HubMenuCoordinatorTests: XCTestCase {
         assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 
+    func test_when_navigation_is_blocked_then_review_tap_does_not_start_lookup() {
+        let coordinator = makeHubMenuCoordinator(beginNavigation: { nil })
+        coordinator.activate(siteID: siteID)
+
+        pushNotificationsManager.sendInactiveNotification(
+            .init(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil))
+
+        assertEmpty(storesManager.receivedActions)
+    }
+
+    func test_when_session_changes_during_review_lookup_then_result_is_dropped() throws {
+        var isCurrent = true
+        let coordinator = makeHubMenuCoordinator(beginNavigation: { { isCurrent } })
+        coordinator.activate(siteID: siteID)
+        pushNotificationsManager.sendInactiveNotification(
+            .init(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil))
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case let .retrieveProductReviewFromNote(_, completion) = action else {
+            return XCTFail("Expected review lookup")
+        }
+
+        isCurrent = false
+        completion(.failure(NSError(domain: "test", code: 0)))
+
+        assertEmpty(noticePresenter.queuedNotices)
+    }
+
     func test_when_failing_to_retrieve_ProductReview_details_then_it_will_present_a_notice() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
@@ -130,14 +154,14 @@ final class HubMenuCoordinatorTests: XCTestCase {
 // MARK: - Utils
 private extension HubMenuCoordinatorTests {
     @MainActor
-    func makeHubMenuCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> HubMenuCoordinator {
+    func makeHubMenuCoordinator(beginNavigation: @escaping () -> (() -> Bool)? = { { true } }) -> HubMenuCoordinator {
         HubMenuCoordinator(tabContainerController: TabContainerController(),
                            pushNotificationsManager: pushNotificationsManager,
                            storesManager: storesManager,
                            noticePresenter: noticePresenter,
-                           switchStoreUseCase: switchStoreUseCase,
                            httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel(stores: storesManager),
                            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                           willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
+                           beginNavigation: beginNavigation,
+                           showReview: { _ in })
     }
 }

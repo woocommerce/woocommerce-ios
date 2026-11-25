@@ -17,6 +17,7 @@ struct BarcodeScannerContainer: View {
     let isScanningEnabled: () -> Bool
 
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posAccessSession) private var session
 
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
@@ -29,15 +30,17 @@ struct BarcodeScannerContainer: View {
     }
 
     var body: some View {
-        BarcodeScannerContainerRepresentable(
-            configuration: configuration,
-            analytics: analytics,
-            isScanningEnabled: isScanningEnabled,
-            onScan: onScan
-        )
-        .frame(width: 0, height: 0)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
+        if !session.isLocked {
+            BarcodeScannerContainerRepresentable(
+                configuration: configuration,
+                analytics: analytics,
+                isScanningEnabled: { !session.isLocked && isScanningEnabled() },
+                onScan: onScan
+            )
+            .frame(width: 0, height: 0)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+        }
     }
 }
 

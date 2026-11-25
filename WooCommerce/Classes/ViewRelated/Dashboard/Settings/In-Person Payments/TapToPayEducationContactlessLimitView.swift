@@ -101,11 +101,14 @@ private extension TapToPayEducationContactlessLimitViewModel {
 
 private extension CardPresentPaymentsConfiguration {
     var limitParagraph: String {
-        guard let amount = formattedContactlessLimitAmount,
-              countryCode == .GB else {
+        guard let amount = formattedContactlessLimitAmount else {
             // N.B. This is not ideal, because some countries have an article, e.g. 'the United States', and some don't.
             // Since it's a fallback, this is a fair trade off, but for the ideal string, the country name should be embedded.
             return String(format: Localization.contactlessLimitFallback, countryCode.readableCountry)
+        }
+
+        guard countryCode == .GB else {
+            return String(format: Localization.contactlessLimitWithAmount, amount)
         }
 
         return String(format: Localization.contactlessLimitWithAmountGB, amount)
@@ -127,6 +130,14 @@ private extension CardPresentPaymentsConfiguration {
             comment: "A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will " +
             "be replaced with the country name of the store, which is a trade off as it can't be contextually " +
             "translated, however this string is only used when there's a problem decoding the limit, so it's acceptable.")
+
+        static let contactlessLimitWithAmount = NSLocalizedString(
+            "tapToPay.aboutTapToPay.contactlessLimit.pin",
+            value: "For card payments over %1$@, customers may need to enter their PIN on the iPhone. " +
+            "If a card can't complete the payment with a PIN, ask for another card or use another payment method.",
+            comment: "A description of the contactless limit, shown on the About Tap to Pay screen for countries other " +
+            "than the UK. %1$@ will be replaced with the limit amount in the store currency, formatted correctly for the locale."
+        )
 
         static let contactlessLimitWithAmountGB = NSLocalizedString(
             "tapToPay.aboutTapToPay.contactlessLimit.gb",

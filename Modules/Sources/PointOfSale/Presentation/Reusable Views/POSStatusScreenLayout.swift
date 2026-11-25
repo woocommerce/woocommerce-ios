@@ -7,6 +7,8 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.keyboardObserver) private var keyboard
 
+    @State private var bottomSafeAreaInset: CGFloat = 0
+
     private let buttonsWidth: POSStatusButtonsWidth
     private let message: Message
     private let buttons: Buttons
@@ -29,9 +31,10 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
             .scrollVerticallyIfNeeded()
 
             sizedButtons
-                .padding(.bottom, metrics.padding.medium)
+                .padding(.bottom, buttonsBottomPadding)
         }
         .padding(.bottom, floatingControlBottomPadding)
+        .onGeometryChange(for: CGFloat.self, of: { $0.safeAreaInsets.bottom }) { bottomSafeAreaInset = $0 }
     }
 
     @ViewBuilder
@@ -45,6 +48,13 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
                 .frame(maxWidth: .infinity)
                 .posContentPadding(.horizontal, metrics.padding.medium)
         }
+    }
+
+    private var buttonsBottomPadding: CGFloat {
+        guard horizontalSizeClass == .compact, !keyboard.isFullSizeKeyboardVisible else {
+            return metrics.padding.medium
+        }
+        return POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset, metrics: metrics)
     }
 
     private var floatingControlBottomPadding: CGFloat {

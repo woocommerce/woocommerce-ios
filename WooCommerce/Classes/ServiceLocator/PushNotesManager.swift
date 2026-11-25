@@ -13,6 +13,16 @@ protocol PushNotesManager {
     ///
     var foregroundNotifications: AnyPublisher<PushNotification, Never> { get }
 
+    /// An observable that emits values when the user taps to view the in-app notification while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> { get }
+
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in inactive.
+    ///
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
+
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in the background.
     ///

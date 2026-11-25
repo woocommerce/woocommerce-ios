@@ -106,13 +106,17 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posCardReaderAlert(item: $posModel.cardPresentPaymentAlertViewModel)
-        .posCardPaymentsOnboarding(item: $posModel.cardPresentPaymentOnboardingViewContainer,
-                                   onDismiss: posModel.cancelCardPaymentsOnboarding,
-                                   onSupportRequested: { [weak posModel, showSupport = $showSupport] in
-            posModel?.cancelCardPaymentsOnboarding()
-            showSupport.wrappedValue = true
-        }, onPresented: posModel.trackCardPaymentsOnboardingShown)
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }, content: { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        })
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
+        }, content: { viewContainer in
+            paymentsOnboardingView(from: viewContainer)
+        })
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -128,6 +132,22 @@ struct POSSettingsHardwareDetailView: View {
 
 // MARK: - Views
 private extension POSSettingsHardwareDetailView {
+    func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
+        onboardingViewContainer.configuration.showSupport = {
+            posModel.cancelCardPaymentsOnboarding()
+            showSupport = true
+        }
+
+        return PointOfSaleCardPresentPaymentOnboardingView(
+            viewModel: .init(onboardingViewContainer: onboardingViewContainer,
+                             onDismissTap: {
+                                 posModel.cancelCardPaymentsOnboarding()
+                             }))
+        .onAppear {
+            posModel.trackCardPaymentsOnboardingShown()
+        }
+    }
+
     var supportForm: some View {
         NavigationStack {
             externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)

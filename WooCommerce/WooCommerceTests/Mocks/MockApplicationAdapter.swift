@@ -32,8 +32,7 @@ final class MockApplicationAdapter: ApplicationAdapter {
 
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
-    var presentedNotifications = [WooCommerce.PushNotification]()
-    var presentDetailsNoteIDs: [Int64] { presentedNotifications.compactMap(\.noteID) }
+    var presentDetailsNoteIDs = [Int64]()
 
     /// Innocuous `registerForRemoteNotifications`
     ///
@@ -52,7 +51,10 @@ final class MockApplicationAdapter: ApplicationAdapter {
     /// Innocuous `displayNotificationDetails`
     ///
     func presentNotificationDetails(notification: WooCommerce.PushNotification) {
-        presentedNotifications.append(notification)
+        guard let noteID = notification.noteID else {
+            return
+        }
+        presentDetailsNoteIDs.append(noteID)
     }
 
     /// Restores the initial state
@@ -61,6 +63,6 @@ final class MockApplicationAdapter: ApplicationAdapter {
         registerWasCalled = false
         onRegisterForRemoteNotifications = nil
         applicationIconBadgeNumber = .min
-        presentedNotifications = []
+        presentDetailsNoteIDs = []
     }
 }

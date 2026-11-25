@@ -162,7 +162,8 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void) -> AnyView {
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView {
         AnyView(EmptyView())
     }
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,

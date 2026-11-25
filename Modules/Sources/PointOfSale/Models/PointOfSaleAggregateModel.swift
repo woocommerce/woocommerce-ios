@@ -211,9 +211,8 @@ protocol PointOfSaleAggregateModelProtocol {
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
                 onSuccessScreenBarcodeScanned: { barcode in
-                    guard let model = weakSelf, !model.accessSession.isLocked else { return }
-                    model.startNewCart()
-                    model.barcodeScanned(barcode)
+                    weakSelf?.startNewCart()
+                    weakSelf?.barcodeScanned(barcode)
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
@@ -530,7 +529,11 @@ extension PointOfSaleAggregateModel {
         // with the best available information.
         await settingsController.storeViewModel.retrievePOSReceiptSettings()
         guard accessSession.isCurrent(scope), !Task.isCancelled else { throw CancellationError() }
-        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+        do {
+            try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+        } catch where !accessSession.isCurrent(scope) {
+            throw CancellationError()
+        }
     }
 
     /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first

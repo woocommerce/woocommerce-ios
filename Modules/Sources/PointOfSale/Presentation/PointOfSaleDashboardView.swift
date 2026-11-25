@@ -170,13 +170,19 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posCardPaymentsOnboarding(item: $posModel.cardPresentPaymentOnboardingViewContainer,
-                                   onDismiss: posModel.cancelCardPaymentsOnboarding,
-                                   onSupportRequested: { [weak posModel, showSupport = $showSupport] in
-            posModel?.cancelCardPaymentsOnboarding()
-            showSupport.wrappedValue = true
-        }, onPresented: posModel.trackCardPaymentsOnboardingShown)
-        .posCardReaderAlert(item: $posModel.cardPresentPaymentAlertViewModel)
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
+        }) { factory in
+            paymentsOnboardingView(from: factory)
+        }
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  compactStyle: .cardReaderConnection,
+                  onDismiss: {
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        }
         .posDialog(isPresented: $showExitPOSModal) {
             .exitPOS(exit: {
                 analytics.track(.pointOfSaleExitConfirmed)
@@ -687,6 +693,21 @@ private extension PointOfSaleDashboardView {
 
     var documentationView: some View {
         SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
+    }
+
+    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewContainer) -> some View {
+        factory.configuration.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
+            showSupport = true
+        }
+
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewContainer: factory,
+                                                                            onDismissTap: {
+            posModel.cancelCardPaymentsOnboarding()
+        }))
+        .onAppear {
+            posModel.trackCardPaymentsOnboardingShown()
+        }
     }
 }
 

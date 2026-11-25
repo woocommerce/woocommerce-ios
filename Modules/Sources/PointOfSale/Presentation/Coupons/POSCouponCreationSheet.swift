@@ -23,6 +23,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
     @Environment(\.posExternalViews) private var externalViews
     @State private var selectedType: POSCouponDiscountType?
     @State private var showCouponSelectionSheet: Bool = false
+    @State private var addedCouponItem: POSItem?
 
     func body(content: Content) -> some View {
         content
@@ -32,14 +33,20 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                     showTypeSelection: $showCouponSelectionSheet,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
-                        selectedType = nil
-                        onSuccess(.coupon(.init(id: id,
-                                               code: coupon.code,
-                                               summary: coupon.summary(currencySettings: currencySettings),
-                                               appliesToWholeCart: coupon.appliesToWholeCart)))
+                        addedCouponItem = .coupon(.init(id: id,
+                                                        code: coupon.code,
+                                                        summary: coupon.summary(currencySettings: currencySettings),
+                                                        appliesToWholeCart: coupon.appliesToWholeCart))
                     },
                     dismissHandler: {
                         selectedType = nil
+                    },
+                    onDisappear: {
+                        if let couponItem = addedCouponItem {
+                            selectedType = nil
+                            onSuccess(couponItem)
+                            addedCouponItem = nil
+                        }
                     }
                 )
                 .posSheet(isPresented: $showCouponSelectionSheet) {

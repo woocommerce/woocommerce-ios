@@ -18,7 +18,6 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posAccessSession) private var session
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -54,9 +53,6 @@ struct PointOfSalePaymentSuccessView: View {
                                  },
                                  close: { printFailure = nil })
         }
-        .onChange(of: session.isLocked) { _, isLocked in
-            if isLocked { selectedFailureAction = nil }
-        }
         .task(id: printButtonState) {
             guard printButtonState == .success else { return }
             try? await Task.sleep(for: Constants.printConfirmationDuration)
@@ -67,27 +63,27 @@ struct PointOfSalePaymentSuccessView: View {
 
     private var printCoordinator: POSPrintReceiptCoordinator {
         POSPrintReceiptCoordinator(analytics: analytics,
-                                   session: session,
                                    printReceipt: { try await posModel.printReceipt() },
                                    presentPrinterSetup: { showPrinterSetupModal = true },
                                    presentEmailReceipt: { router.pushEmailReceipt() },
                                    isOnSuccessScreen: { !router.isNavigated },
-                                   presentFailure: { printFailure = $0 },
+                                   presentFailure: {
+                                       selectedFailureAction = nil
+                                       printFailure = $0
+                                   },
                                    updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
         guard printButtonState == .idle else { return }
-        let coordinator = printCoordinator
         Task {
-            await coordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
+            await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
     private func handlePrinterSetupDismissed() {
-        let coordinator = printCoordinator
         Task {
-            await coordinator.setupModalVisibilityChanged(isPresented: false, isPrinterConnected: posModel.isReceiptPrinterConnected)
+            await printCoordinator.setupModalVisibilityChanged(isPresented: false, isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
@@ -96,9 +92,8 @@ struct PointOfSalePaymentSuccessView: View {
     private func handlePrintFailureDismissed() {
         guard let action = selectedFailureAction else { return }
         selectedFailureAction = nil
-        let coordinator = printCoordinator
         Task {
-            await coordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
+            await printCoordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 

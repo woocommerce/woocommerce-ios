@@ -55,7 +55,8 @@ public protocol POSExternalViewProviding {
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void) -> AnyView
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView
     @MainActor
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
                                           title: String,

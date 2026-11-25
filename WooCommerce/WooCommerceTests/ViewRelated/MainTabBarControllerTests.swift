@@ -1,6 +1,6 @@
 import Combine
 import Photos
-import PointOfSale
+@testable import PointOfSale
 import StoreDesignSystem
 import SwiftUI
 import TestKit
@@ -130,6 +130,8 @@ final class MainTabBarControllerTests: XCTestCase {
     @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        ServiceLocator.setPushNotesManager(pushNotificationsManager)
         // Hides POS tab.
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
@@ -180,7 +182,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Action
         let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
-        tabBarController.openNotification(pushNotification)
+        pushNotificationsManager.sendInactiveNotification(pushNotification)
 
         // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first(where: { $0 is ProductReviewAction }) as? ProductReviewAction)
@@ -466,8 +468,8 @@ final class MainTabBarControllerTests: XCTestCase {
         window.rootViewController = tabBar
         let pos = POSHostingController(rootView: AnyView(PointOfSaleLoadingEntryPointView()))
         pos.modalPresentationStyle = .fullScreen
-        var canExit = false
-        pos.canExitPOS = { canExit }
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.cashier.staff)
+        pos.accessContext = POSExternalViewContext(session: session)
         tabBar.present(pos, animated: false)
         XCTAssertTrue(tabBar.presentedViewController === pos)
 
@@ -475,7 +477,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let accepted = tabBar.navigateTo(.products) {
             XCTFail("The blocked request must not complete")
         }
-        canExit = true
+        XCTAssertFalse(tabBar.navigateIfAllowed(to: OrdersDestination.orderList))
+        session.currentStaff = POSLocalRole.admin.staff
 
         // Then
         XCTAssertFalse(accepted)

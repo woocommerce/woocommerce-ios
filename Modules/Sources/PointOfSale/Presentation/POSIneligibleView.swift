@@ -10,6 +10,7 @@ struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     let onExit: () -> Void
+    @Environment(\.posAccessSession) private var session
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -28,10 +29,8 @@ struct POSIneligibleView: View {
         scrollViewHeight > 0 && contentHeight > 0 && contentHeight <= scrollViewHeight
     }
 
-    init(reason: POSIneligibleReason, onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
-        self.reason = reason
-        self.onRefresh = onRefresh
-        self.onExit = onExit
+    private var canRefresh: Bool {
+        !session.isLocked && (reason != .featureSwitchDisabled || session.allows(.manageStoreSettings))
     }
 
     var body: some View {
@@ -65,6 +64,7 @@ struct POSIneligibleView: View {
                     VStack(spacing: metrics.spacing.medium) {
                         Button {
                             Task { @MainActor in
+                                guard canRefresh else { return }
                                 do {
                                     isLoading = true
                                     analytics.track(
@@ -81,6 +81,7 @@ struct POSIneligibleView: View {
                             Text(reason.refreshEligibilityTitle)
                         }
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                        .disabled(!canRefresh)
                         .accessibilityIdentifier("pos-ineligible-refresh-button")
 
                         Button {
@@ -276,24 +277,21 @@ private extension POSIneligibleReason {
 
 #endif
 
-
 public struct POSLaunchIneligibleView: View {
     @State private var approval = POSManagerOverrideHandler()
     @StateObject private var modalManager = POSModalManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
     @StateObject private var sheetManager = POSSheetManager()
-    private let reason: POSIneligibleReason
     private let onRefresh: () async throws -> Void
     private let onExit: () -> Void
 
-    public init(reason: POSIneligibleReason, onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
-        self.reason = reason
+    public init(onRefresh: @escaping () async throws -> Void, onExit: @escaping () -> Void) {
         self.onRefresh = onRefresh
         self.onExit = onExit
     }
 
     public var body: some View {
-        POSIneligibleView(reason: reason, onRefresh: onRefresh) {
+        POSIneligibleView(reason: .siteSettingsNotAvailable, onRefresh: onRefresh) {
             approval.gate(.exitPOS, reason: POSManagerOverrideHandler.exitReason) { _ in onExit() }
         }
         .posManagerOverrideModal(handler: approval)

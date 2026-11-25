@@ -35,10 +35,10 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
         .onAppear {
             isTitleFocused = true
         }
-        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
+        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView, onDismiss: viewModel.settingsWebViewWasDismissed) {
             externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
                                                     title: Localization.settingsWebViewTitle) {
-                viewModel.settingsWebViewWasDismissed()
+                viewModel.shouldShowSettingsWebView = false
             }
         }
     }

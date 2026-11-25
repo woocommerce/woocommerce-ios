@@ -138,24 +138,19 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private func handle(shortcutItem: UIApplicationShortcutItem, completion: ((Bool) -> Void)?) {
         guard let quickAction = QuickAction(rawValue: shortcutItem.type),
-              let tabBarController, tabBarController.canNavigateOutsidePOS else {
+              let tabBarController else {
             completion?(false)
             return
         }
-        switch quickAction {
+        let handled = switch quickAction {
         case .addProduct:
-            MainTabBarController.presentAddProductFlow()
-            completion?(true)
-        case .addOrder:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completion?(true)
+            tabBarController.presentAddProductFlow()
+        case .addOrder, .collectPayment:
+            tabBarController.navigateIfAllowed(to: OrdersDestination.createOrder)
         case .openOrders:
-            tabBarController.navigate(to: OrdersDestination.orderList)
-            completion?(true)
-        case .collectPayment:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completion?(true)
+            tabBarController.navigateIfAllowed(to: OrdersDestination.orderList)
         }
+        completion?(handled)
     }
 
     // MARK: - Routers & Presenters

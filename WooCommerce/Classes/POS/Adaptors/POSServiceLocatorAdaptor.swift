@@ -105,12 +105,14 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
-                                  dismissHandler: @escaping () -> Void) -> AnyView {
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
             showTypeSelection: context.whileSessionIsCurrent(showTypeSelection),
             onSuccess: context.whileSessionIsCurrent(onSuccess),
-            dismissHandler: context.whileSessionIsCurrent(dismissHandler)
+            dismissHandler: context.whileSessionIsCurrent(dismissHandler),
+            onDisappear: context.whileSessionIsCurrent(onDisappear)
         ))
     }
 

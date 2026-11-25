@@ -4,10 +4,15 @@ import SwiftUI
 enum POSModalCompactStyle: Equatable {
     case dialog
     case bottomSheet
-    case fullScreen(title: String)
+    case fullScreen(title: String, preservesOnLock: Bool = false)
+
+    var preservesOnLock: Bool {
+        guard case .fullScreen(_, let preservesOnLock) = self else { return false }
+        return preservesOnLock
+    }
 
     var fullScreenTitle: String? {
-        guard case .fullScreen(let title) = self else {
+        guard case .fullScreen(let title, _) = self else {
             return nil
         }
         return title
@@ -223,7 +228,6 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     @Environment(\.posAccessSession) private var session
     @State private var owner = UUID()
     let compactStyle: POSModalCompactStyle
-    let preservesOnLock: () -> Bool
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -233,8 +237,8 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
-            .posDismissOnLock($item, to: nil, when: session.isLocked && !preservesOnLock())
-            .onChange(of: item, initial: preservesOnLock()) { _, newItem in
+            .posDismissOnLock($item, to: nil, when: session.isLocked && !compactStyle.preservesOnLock)
+            .onChange(of: item, initial: compactStyle.preservesOnLock) { _, newItem in
                 if let newItem {
                     present(newItem)
                 } else if onDismissCompleted != nil, reduceMotion {
@@ -246,14 +250,14 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                 }
             }
             .onChange(of: coverManager.isPresented) { _, hasCover in
-                if !hasCover, preservesOnLock(), let item { present(item) }
+                if !hasCover, compactStyle.preservesOnLock, let item { present(item) }
             }
     }
 
     private func present(_ item: Item) {
         let completed = onDismissCompleted.map { completion in { completion(item) } }
         modalManager.present(compactStyle: compactStyle, owner: owner, session: session,
-                             isCovered: coverManager.isPresented, preservesOnLock: preservesOnLock, onDismiss: {
+                             isCovered: coverManager.isPresented, onDismiss: {
             onDismiss?()
             self.item = nil
         }, onDismissCompleted: completed) {
@@ -313,13 +317,11 @@ extension View {
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
         compactStyle: POSModalCompactStyle,
-        preservesOnLock: @escaping () -> Bool = { false },
         onDismiss: (() -> Void)? = nil,
         onDismissCompleted: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(compactStyle: compactStyle,
-                                 preservesOnLock: preservesOnLock,
                                  item: item,
                                  onDismiss: onDismiss,
                                  onDismissCompleted: onDismissCompleted,

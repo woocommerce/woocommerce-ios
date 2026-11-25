@@ -2121,7 +2121,7 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
 
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         retrievePointOfSaleSettingsWasCalled = true
-        await onRetrieve?()
+        onRetrieve?()
         switch retrievePointOfSaleSettingsResult {
         case .success(let receiptInfo):
             return receiptInfo

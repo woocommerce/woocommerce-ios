@@ -10,43 +10,34 @@ import typealias Yosemite.CouponDiscountType
 @MainActor
 struct POSCouponCreationViewAdaptor: View {
     @StateObject private var viewModel: AddEditCouponViewModel
-    @State private var completion = POSCouponCreationCompletion()
     @Binding private var showTypeSelection: Bool
-    private let onSuccess: (Coupon) -> Void
     private let dismissHandler: () -> Void
+    private let onDisappear: () -> Void
 
     init(discountType: CouponDiscountType,
          showTypeSelection: Binding<Bool>,
          onSuccess: @escaping (Coupon) -> Void,
-         dismissHandler: @escaping () -> Void) {
+         dismissHandler: @escaping () -> Void,
+         onDisappear: @escaping () -> Void) {
         _showTypeSelection = showTypeSelection
-        self.onSuccess = onSuccess
         self.dismissHandler = dismissHandler
-        _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(discountType: discountType, onSuccess: { _ in }))
+        self.onDisappear = onDisappear
+        _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(
+            discountType: discountType,
+            onSuccess: onSuccess
+        ))
     }
 
     var body: some View {
         var view = AddEditCoupon(viewModel)
         view.dismissHandler = dismissHandler
-        view.onDisappear = {
-            if let coupon = completion.take(viewModel.coupon) { onSuccess(coupon) }
-        }
+        view.onDisappear = onDisappear
         view.discountTypeHandler = { _ in
             showTypeSelection = true
         }
 
         return view
             .interactiveDismissDisabled()
-    }
-}
-
-struct POSCouponCreationCompletion {
-    private var didDeliverCoupon = false
-
-    mutating func take(_ coupon: Coupon?) -> Coupon? {
-        guard let coupon, !didDeliverCoupon else { return nil }
-        didDeliverCoupon = true
-        return coupon
     }
 }
 

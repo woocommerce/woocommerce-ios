@@ -67,24 +67,13 @@ struct PointOfSaleCardPresentPaymentAlert: View {
     private var animation: POSCardPresentPaymentAlertAnimation { .init(namespace: namespace) }
 }
 
-extension View {
-    func posCardReaderAlert(item: Binding<PointOfSaleCardPresentPaymentAlertType?>) -> some View {
-        posModal(item: item, compactStyle: .cardReaderConnection, preservesOnLock: { true }, onDismiss: {
-            item.wrappedValue?.onDismiss?()
-        }) { alertType in
-            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-        }
-    }
-}
-
 extension POSModalCompactStyle {
     static var cardReaderConnection: POSModalCompactStyle {
         .fullScreen(title: NSLocalizedString(
             "pos.cardReaderConnection.modal.title",
             value: "Card reader",
             comment: "Title in the header of the full-screen card reader connection flow on phone."
-        ))
+        ), preservesOnLock: true)
     }
 }
 

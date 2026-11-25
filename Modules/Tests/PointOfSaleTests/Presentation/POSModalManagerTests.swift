@@ -16,7 +16,7 @@ struct POSModalManagerTests {
         #expect(!sut.isPresented)
 
         // When
-        sut.present(compactStyle: .dialog, isCovered: true, preservesOnLock: { true }, onDismiss: {}) { EmptyView() }
+        sut.present(compactStyle: .cardReaderConnection, isCovered: true, onDismiss: {}) { EmptyView() }
 
         // Then
         #expect(!sut.isPresented)
@@ -55,7 +55,7 @@ struct POSModalManagerTests {
         let session = MockPOSAccessSession()
         let readerOwner = UUID()
         var readerDismissCount = 0
-        sut.present(compactStyle: .cardReaderConnection, owner: readerOwner, session: session, preservesOnLock: { true },
+        sut.present(compactStyle: .cardReaderConnection, owner: readerOwner, session: session,
                     onDismiss: { readerDismissCount += 1 }) { EmptyView() }
 
         // When
@@ -75,7 +75,7 @@ struct POSModalManagerTests {
         // Given
         let sut = POSModalManager()
         let session = MockPOSAccessSession(isLocked: true)
-        sut.present(compactStyle: .cardReaderConnection, session: session, preservesOnLock: { true },
+        sut.present(compactStyle: .cardReaderConnection, session: session,
                     onDismiss: { Issue.record("Dismiss action ran during lock") }) { EmptyView() }
         #expect(sut.isPresented)
 

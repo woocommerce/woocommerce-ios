@@ -226,21 +226,11 @@ private extension POSTabCoordinator {
             await configureLocalCatalogSystemStatusService()
             guard !Task.isCancelled else { return }
 
-            let eligibility: POSEligibilityState?
-            if isReopening || localCatalogEligibilityService != nil {
-                eligibility = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
-            } else {
-                eligibility = nil
-            }
-            if isReopening, case .ineligible(let reason)? = eligibility {
-                preparation.state = .unavailable(reason)
-                return
-            }
-
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Resolve POS eligibility before deciding the fetch strategy
+                let eligibility = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
                 try? await service.updatePOSEligibility(isEligible: eligibility == .eligible, for: siteID)
 
                 // Retry transient failures before using the value
@@ -252,7 +242,7 @@ private extension POSTabCoordinator {
                     isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
                 } catch {
                     DDLogError("⛔️ Failed to resolve local catalog eligibility: \(error)")
-                    preparation.state = .unavailable(.siteSettingsNotAvailable)
+                    preparation.state = .unavailable
                     return
                 }
             } else {
@@ -319,7 +309,7 @@ private extension POSTabCoordinator {
                     orderService = posOrderService
                 } else {
                     DDLogError("POSOrderService not provided")
-                    preparation.state = .unavailable(.siteSettingsNotAvailable)
+                    preparation.state = .unavailable
                     return
                 }
 
@@ -355,7 +345,7 @@ private extension POSTabCoordinator {
                     refundService = posRefundService
                 } else {
                     DDLogError("RefundService not provided")
-                    preparation.state = .unavailable(.siteSettingsNotAvailable)
+                    preparation.state = .unavailable
                     return
                 }
 
@@ -430,7 +420,7 @@ private extension POSTabCoordinator {
                 guard !Task.isCancelled, hostingController.presentingViewController != nil else { return }
                 preparation.state = .ready(posView)
             } else {
-                preparation.state = .unavailable(.siteSettingsNotAvailable)
+                preparation.state = .unavailable
             }
         }
 
@@ -438,11 +428,10 @@ private extension POSTabCoordinator {
             [weak hostingController] context, endSession in
             guard let hostingController, !hostingController.isBeingDismissed, hostingController.presentingViewController != nil else { return false }
             hostingController.accessContext = context
-            hostingController.canExitPOS = { context.canExitPOS }
             hostingController.endSession = endSession
             return true
-        }) {
-            POSPresentationRootView(preparation: preparation, prepare: prepare) { [weak hostingController] in
+        }) { [weak hostingController] in
+            POSPresentationRootView(preparation: preparation, prepare: prepare) {
                 hostingController?.dismiss(animated: true)
             }
         })
@@ -456,7 +445,6 @@ private extension POSTabCoordinator {
 final class POSHostingController: UIHostingController<AnyView> {
     var accessContext: POSExternalViewContext?
     var endSession: (() -> Void)?
-    var canExitPOS: (@MainActor () -> Bool)?
     var onDismiss: (() -> Void)?
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -467,7 +455,6 @@ final class POSHostingController: UIHostingController<AnyView> {
         onDismiss = nil
         self.endSession = nil
         accessContext = nil
-        canExitPOS = nil
         endSession?()
         cleanup?()
     }
@@ -479,7 +466,7 @@ private final class POSPreparation: ObservableObject {
     enum State {
         case loading
         case ready(PointOfSaleEntryPointView)
-        case unavailable(POSIneligibleReason)
+        case unavailable
     }
 
     @Published var state: State = .loading
@@ -497,8 +484,8 @@ private struct POSPresentationRootView: View {
                 .task { await prepare() }
         case .ready(let posView):
             posView
-        case .unavailable(let reason):
-            POSLaunchIneligibleView(reason: reason, onRefresh: prepare, onExit: onExit)
+        case .unavailable:
+            POSLaunchIneligibleView(onRefresh: prepare, onExit: onExit)
         }
     }
 }

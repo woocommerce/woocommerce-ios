@@ -61,10 +61,24 @@ struct POSPaymentContentView: View {
         .overlay(alignment: .topTrailing) {
             closeButton
         }
-        .posCardReaderAlert(item: $paymentModel.cardPresentPaymentAlertViewModel)
-        .posCardPaymentsOnboarding(item: $paymentModel.cardPresentPaymentOnboardingViewContainer,
-                                   onDismiss: paymentModel.cancelCardPaymentsOnboarding,
-                                   onPresented: paymentModel.trackCardPaymentsOnboardingShown)
+        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
+            paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        }
+        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
+            paymentModel.cancelCardPaymentsOnboarding()
+        }) { factory in
+            PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
+                onboardingViewContainer: factory,
+                onDismissTap: {
+                    paymentModel.cancelCardPaymentsOnboarding()
+                }))
+            .onAppear {
+                paymentModel.trackCardPaymentsOnboardingShown()
+            }
+        }
     }
 
     // MARK: - Close Button

@@ -187,16 +187,6 @@ final class MainTabBarController: UITabBarController {
     private var needsPOSAutoReopenCheck = true
     private let posStartupCover = UIView()
     private var posPresentationGeneration = UUID()
-    private lazy var notificationOpenCoordinator = NotificationOpenCoordinator(
-        stores: stores,
-        noticePresenter: noticePresenter,
-        beginNavigation: { [weak self] in self?.beginExternalNavigation() },
-        showDetails: { notification in
-            Self.showStore(with: notification.resolvedSiteID()) { _ in
-                Self.presentNotificationDetails(for: notification)
-            }
-        },
-        showReview: { [weak self] review in self?.showReviewNotification(review) })
 
     private let bookingsContainerController = TabContainerController()
 
@@ -394,7 +384,7 @@ final class MainTabBarController: UITabBarController {
 
     var canNavigateOutsidePOS: Bool {
         if let pos = presentedViewController as? POSHostingController {
-            return pos.canExitPOS?() ?? !featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
+            return pos.accessContext?.canExitPOS ?? !featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles)
         }
 
         // Cold-start routes can arrive before the persisted lock is presented.
@@ -421,10 +411,6 @@ final class MainTabBarController: UITabBarController {
             guard let self, generation == posPresentationGeneration, canNavigateOutsidePOS else { return false }
             return isCurrentSession?() ?? true
         }
-    }
-
-    func openNotification(_ notification: WooCommerce.PushNotification) {
-        notificationOpenCoordinator.open(notification)
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -726,11 +712,19 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
+    /// Presents the details  of a push notification.
+    static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
+        let siteID = notification.resolvedSiteID()
+        showStore(with: siteID, onCompletion: { _ in
+            presentNotificationDetails(for: notification)
+        })
+    }
+
     private func showReviewNotification(_ review: ProductReviewFromNoteParcel) {
         performStoreSwitch(to: review.review.siteID, storedSiteOnly: false) { [weak self] result in
             guard let self, result != nil else { return }
             navigateTo(.hubMenu) { [weak self] in
-                self?.hubMenuTabCoordinator?.showReview(review)
+                self?.hubMenuTabCoordinator?.hubMenuController?.pushReviewDetailsViewController(using: review)
                 ServiceLocator.analytics.track(.reviewOpen)
             }
         }
@@ -742,7 +736,8 @@ extension MainTabBarController {
         switch notification.kind {
         case .storeOrder:
             switchToOrdersTab {
-                ordersTabSplitViewWrapper()?.presentDetails(for: notification)
+                guard let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
+                ordersTabSplitViewWrapper()?.presentDetails(for: notification, isCurrent: isCurrent)
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
@@ -785,23 +780,16 @@ extension MainTabBarController {
             }
         }
 
-        if let pos = presentedViewController as? POSHostingController {
-            pos.dismiss(animated: false, completion: proceed)
+        if presentedViewController is POSHostingController {
+            dismiss(animated: false, completion: proceed)
         } else {
             proceed()
         }
     }
 
-    static func presentAddProductFlow() {
-        switchToProductsTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let productsContainerController = tabBar?.productsContainerController
-
-            guard let productsSplitViewWrapperController = productsContainerController?.wrappedController as? ProductsSplitViewWrapperController else {
-                return
-            }
-
-            productsSplitViewWrapperController.startProductCreation()
+    func presentAddProductFlow() -> Bool {
+        navigateTo(.products) { [weak self] in
+            (self?.productsContainerController.wrappedController as? ProductsSplitViewWrapperController)?.startProductCreation()
         }
     }
 
@@ -838,11 +826,10 @@ extension MainTabBarController {
 
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
-                return
-            }
+            guard storeIsShown, let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                guard isCurrent() else { return }
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaign("\(campaignID)")
                 }
@@ -876,11 +863,10 @@ extension MainTabBarController {
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
-                return
-            }
+            guard storeIsShown, let isCurrent = AppDelegate.shared.tabBarController?.beginExternalNavigation() else { return }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                guard isCurrent() else { return }
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaignCreation()
                 }
@@ -938,7 +924,11 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        guard canNavigateOutsidePOS else { return }
+        _ = navigateIfAllowed(to: destination)
+    }
+
+    func navigateIfAllowed(to destination: any DeepLinkDestinationProtocol) -> Bool {
+        guard canNavigateOutsidePOS else { return false }
         switch destination {
         case is HubMenuDestination,
             is PaymentsMenuDestination:
@@ -956,8 +946,9 @@ extension MainTabBarController: DeepLinkNavigator {
         case is POSPromotionDestination:
             presentPOSPromotionModal()
         default:
-            return
+            return false
         }
+        return true
     }
 
     private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {
@@ -1324,7 +1315,9 @@ private extension MainTabBarController {
         HubMenuCoordinator(tabContainerController: hubMenuContainerController,
                            storesManager: stores,
                            httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
-                           tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
+                           tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
+                           beginNavigation: { [weak self] in self?.beginExternalNavigation() },
+                           showReview: { [weak self] in self?.showReviewNotification($0) })
     }
 
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
@@ -1488,7 +1481,6 @@ private extension MainTabBarController {
     }
 
     private func presentProductUploadError(_ error: ProductImageUploadErrorInfo) {
-        guard canNavigateOutsidePOS else { return }
         if let productsSplitViewWrapperController = productsContainerController.wrappedController as? ProductsSplitViewWrapperController,
            let productForm = productsSplitViewWrapperController.currentProductForm(for: error.productOrVariationID.id) {
             // Ask the product form to display an alert about the error

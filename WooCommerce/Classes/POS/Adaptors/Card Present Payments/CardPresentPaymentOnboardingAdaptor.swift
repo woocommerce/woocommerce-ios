@@ -1,6 +1,7 @@
 import Foundation
 import PointOfSale
 import Combine
+import SwiftUI
 import protocol Yosemite.StoresManager
 
 /// This is really a re-implementation of the CardPresentPaymentsOnboardingPresenter, as it needs to take the calls to `showOnboardingIfRequired` and
@@ -52,7 +53,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         onboardingScreenViewModelSubject.send(.showOnboarding(
             factory: .init(
                 configuration: onboardingViewModel,
-                view: CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel, isPointOfSale: true)),
+                view: POSCardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)),
             onCancel: { [weak self] in
                 self?.readinessSubscription = nil
             })
@@ -80,3 +81,22 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 }
 
 extension CardPresentPaymentsOnboardingViewModel: CardPresentPaymentsOnboardingViewConfiguration {}
+
+private struct POSCardPresentPaymentsOnboardingView: View {
+    @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
+    @State private var presentedAdminURL: URL?
+    @Environment(\.posExternalViews) private var externalViews
+
+    var body: some View {
+        CardPresentPaymentsOnboardingContent(viewModel: viewModel,
+                                             presentedAdminURL: $presentedAdminURL,
+                                             canManagePlugins: {
+            externalViews.canManageStoreSettings && viewModel.stores.sessionManager.defaultRoles.contains(.administrator)
+        })
+            .posSheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
+                externalViews.createAuthenticatedWebView(url: url, title: CardPresentPaymentsOnboardingContent.Localization.storeAdmin) {
+                    presentedAdminURL = nil
+                }
+            }
+    }
+}

@@ -8,7 +8,6 @@ final class POSModalManager: ObservableObject {
     @Published private(set) var compactStyle: POSModalCompactStyle?
     private var owner: UUID?
     private var session: POSAccessSession?
-    private var preservesOnLock: () -> Bool = { false }
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
     private var onDismissCompleted: (() -> Void)?
@@ -17,15 +16,13 @@ final class POSModalManager: ObservableObject {
                                 owner: UUID? = nil,
                                 session: POSAccessSession? = nil,
                                 isCovered: Bool = false,
-                                preservesOnLock: @escaping () -> Bool = { false },
                                 onDismiss: @escaping () -> Void,
                                 onDismissCompleted: (() -> Void)? = nil,
                                 content: @escaping () -> Content) {
-        guard !isCovered, session?.isLocked != true || preservesOnLock() else { return }
+        guard !isCovered, session?.isLocked != true || compactStyle.preservesOnLock else { return }
         self.compactStyle = compactStyle
         self.owner = owner
         self.session = session
-        self.preservesOnLock = preservesOnLock
         contentBuilder = { AnyView(content()) }
         self.onDismiss = onDismiss
         self.onDismissCompleted = onDismissCompleted
@@ -57,7 +54,7 @@ final class POSModalManager: ObservableObject {
     }
 
     func dismissForLock() {
-        guard !preservesOnLock() else { return }
+        guard compactStyle?.preservesOnLock != true else { return }
         clearPresentation()
     }
 
@@ -82,7 +79,6 @@ final class POSModalManager: ObservableObject {
         isPresented = false
         owner = nil
         session = nil
-        preservesOnLock = { false }
         onDismiss = nil
         onDismissCompleted = nil
         allowsInteractiveDismissal = true

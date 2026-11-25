@@ -1,31 +1,29 @@
 import SwiftUI
-import WooFoundation
 
 /// Full-screen guide shown on iPhone when POS opens, until the merchant taps Start selling in person.
 /// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
-    @State private var isShowingVideo = false
+    @State var currentPage = 0
 
-    @Binding var currentStep: POSOnboardingGuideStep
     let onStartSelling: () -> Void
     let onExit: () -> Void
-    let onWatchVideo: () -> Void
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            TabView(selection: $currentStep) {
-                ForEach(POSOnboardingGuideStep.allCases) { step in
-                    POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+            TabView(selection: $currentPage) {
+                ForEach(steps.indices, id: \.self) { index in
+                    POSOnboardingGuideStepView(step: steps[index],
+                                               onLearnMore: index == steps.indices.last ? learnMore : nil)
                         .scrollVerticallyIfNeeded()
-                        .tag(step)
+                        .tag(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
-                             currentPage: currentPage,
-                             accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+            POSPageIndicator(pageCount: steps.count,
+                             currentPage: $currentPage,
+                             accessibilityPageName: { steps[$0].title })
                 // The top gap keeps scrolled text from running into the dots.
                 .posPadding(.top, \.medium)
                 .posPadding(.bottom, \.xLarge)
@@ -38,24 +36,12 @@ struct POSOnboardingGuideView: View {
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
-        .posFullScreenCover(isPresented: $isShowingVideo) {
-            SafariView(url: POSConstants.URLs.pointOfSaleSaleVideo.asURL())
-        }
     }
 
-    private var currentPage: Binding<Int> {
-        Binding(get: { currentStep.rawValue },
-                set: { page in
-                    // The indicator only sets pages within `pageCount`.
-                    if let step = POSOnboardingGuideStep(rawValue: page) {
-                        currentStep = step
-                    }
-                })
-    }
+    private var steps: [POSOnboardingGuideStep] { POSOnboardingGuideStep.all }
 
-    private func watchVideo() {
-        onWatchVideo()
-        isShowingVideo = true
+    private func learnMore() {
+        // No-op until the video of a sale is ready.
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -73,7 +59,7 @@ private struct POSOnboardingGuideStepView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     let step: POSOnboardingGuideStep
-    let onWatchVideo: () -> Void
+    let onLearnMore: (() -> Void)?
 
     private var illustrationHeight: CGFloat {
         // Smaller in landscape, where there's little height.
@@ -102,8 +88,8 @@ private struct POSOnboardingGuideStepView: View {
                 }
                 .multilineTextAlignment(.center)
 
-                if step == .howASaleWorks {
-                    POSOnboardingGuideLearnMoreButton(action: onWatchVideo)
+                if let onLearnMore {
+                    POSOnboardingGuideLearnMoreButton(action: onLearnMore)
                 }
             }
             .frame(minHeight: textMinHeight, alignment: .top)
@@ -166,27 +152,22 @@ private extension POSOnboardingGuideView {
 }
 
 #if DEBUG
-private struct POSOnboardingGuidePreview: View {
-    @State var currentStep: POSOnboardingGuideStep
-
-    var body: some View {
-        POSOnboardingGuideView(currentStep: $currentStep, onStartSelling: {}, onExit: {}, onWatchVideo: {})
-            .posPreviewSmallestPhone()
-            .environmentObject(POSFullScreenCoverManager())
-    }
+private func onboardingGuidePreview(page: Int) -> some View {
+    POSOnboardingGuideView(currentPage: page, onStartSelling: {}, onExit: {})
+        .posPreviewSmallestPhone()
 }
 
 #Preview("Step 1") {
-    POSOnboardingGuidePreview(currentStep: .checkout)
+    onboardingGuidePreview(page: 0)
 }
 
 #Preview("Step 3, dark") {
-    POSOnboardingGuidePreview(currentStep: .howASaleWorks)
+    onboardingGuidePreview(page: 2)
         .preferredColorScheme(.dark)
 }
 
 #Preview("Accessibility text") {
-    POSOnboardingGuidePreview(currentStep: .howASaleWorks)
+    onboardingGuidePreview(page: 2)
         .dynamicTypeSize(.accessibility3)
 }
 #endif

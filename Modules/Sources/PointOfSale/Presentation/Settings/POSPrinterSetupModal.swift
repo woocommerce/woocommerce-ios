@@ -111,8 +111,8 @@ private struct POSPrinterSetupContent: View {
         switch controller.discoveryState {
         case .idle:
             messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
-                           title: pairTitle,
-                           message: pairMessage)
+                           title: pairContent.title,
+                           message: pairContent.message)
         case .searching:
             progressContent(message: Localization.searching)
         case .noPrintersFound:
@@ -138,23 +138,14 @@ private struct POSPrinterSetupContent: View {
         }
     }
 
-    private var pairTitle: String {
-        switch controller.bluetoothAuthorization {
-        case .denied:
-            return Localization.enableBluetoothTitle
-        case .notDetermined, .allowed:
-            return Localization.pairTitle
-        }
-    }
-
     /// On the pairing step, call out the disabled Bluetooth permission when that's the blocker;
     /// otherwise show the standard pair-in-Settings guidance.
-    private var pairMessage: String {
+    private var pairContent: (title: String, message: String) {
         switch controller.bluetoothAuthorization {
         case .denied:
-            return Localization.enableBluetoothInstruction
+            return (Localization.enableBluetoothTitle, Localization.enableBluetoothInstruction)
         case .notDetermined, .allowed:
-            return Localization.pairInstruction
+            return (Localization.pairTitle, Localization.pairInstruction)
         }
     }
 

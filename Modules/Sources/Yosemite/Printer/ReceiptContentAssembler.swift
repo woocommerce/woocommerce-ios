@@ -79,7 +79,7 @@ private extension ReceiptContentAssembler {
             return nil
         }
         return ReceiptTotalLine(description: discountLineDescription(order: order),
-                                amount: discountLineAmount(order: order, value: discountValue, currency: currency))
+                                amount: discountLineAmount(value: discountValue, currency: currency))
     }
 
     func discountLineDescription(order: Order) -> String {
@@ -94,8 +94,8 @@ private extension ReceiptContentAssembler {
         return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, couponCodes)
     }
 
-    func discountLineAmount(order: Order, value: Decimal, currency: String) -> String {
-        currencyFormatter.formatAmount(order.discountTotal, with: currency, isNegative: value > 0) ?? ""
+    func discountLineAmount(value: Decimal, currency: String) -> String {
+        currencyFormatter.formatAmount(value, with: currency, isNegative: value > 0) ?? ""
     }
 
     func feesLineAmount(fees: [OrderFeeLine]) -> String {

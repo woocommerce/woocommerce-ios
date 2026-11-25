@@ -285,8 +285,12 @@ final class POSLockPresentationTests {
 
         // Then
         #expect(source.subviews.count == originalSubviews + 1)
-        #expect(source.subviews.last?.frame == source.bounds)
-        #expect(source.subviews.last?.backgroundColor?.cgColor.alpha == 1)
+        let cover = try #require(source.subviews.last)
+        #expect(cover.frame == source.bounds)
+        #expect(cover.backgroundColor?.cgColor.alpha == 1)
+        #expect(cover.isOpaque)
+        #expect(cover.accessibilityElementsHidden)
+        #expect(!cover.isUserInteractionEnabled)
         NotificationCenter.default.post(name: UIScene.didEnterBackgroundNotification, object: scene)
         #expect(session.isLocked)
         #expect(!source.isUserInteractionEnabled)

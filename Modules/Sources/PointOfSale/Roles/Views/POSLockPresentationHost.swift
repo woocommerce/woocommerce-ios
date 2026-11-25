@@ -75,7 +75,7 @@ final class POSLockPresentationCoordinator: NSObject {
     private weak var sourceWindow: UIWindow?
     private weak var previousKeyWindow: UIWindow?
     private var lockWindow: UIWindow?
-    private let privacyCover = UIView()
+    private let privacyCover = POSPrivacyCoverView(frame: .zero)
     private var sourceAccessibilityHidden = false
     private var sourceInteractionEnabled = true
     private var sceneIsInactive = false
@@ -87,9 +87,6 @@ final class POSLockPresentationCoordinator: NSObject {
 
     override init() {
         super.init()
-        privacyCover.backgroundColor = UIColor(Color.posSurfaceContainerLow)
-        privacyCover.isUserInteractionEnabled = false
-        privacyCover.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         NotificationCenter.default.addObserver(self, selector: #selector(sceneDeactivating), name: UIScene.willDeactivateNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sceneBackgrounded), name: UIScene.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sceneActivated), name: UIScene.didActivateNotification, object: nil)
@@ -252,5 +249,43 @@ final class POSLockPresentationCoordinator: NSObject {
         synchronizationTask?.cancel()
         removeLock()
         privacyCover.removeFromSuperview()
+    }
+}
+
+private final class POSPrivacyCoverView: UIView {
+    private let catalogPanel = UIView()
+    private let cartPanel = UIView()
+    private let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // The material samples these generic panels over an opaque base, so the scene snapshot cannot contain sale data.
+        backgroundColor = UIColor(Color.posSurfaceContainerLow)
+        isOpaque = true
+        isUserInteractionEnabled = false
+        accessibilityElementsHidden = true
+        autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        catalogPanel.backgroundColor = UIColor(Color.posSurfaceContainerHighest)
+        cartPanel.backgroundColor = UIColor(Color.posPrimary).withAlphaComponent(0.55)
+        addSubview(catalogPanel)
+        addSubview(cartPanel)
+        addSubview(blurView)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let width = bounds.width
+        let height = bounds.height
+        let cornerRadius = min(width, height) * 0.08
+        catalogPanel.frame = CGRect(x: width * 0.08, y: height * 0.15, width: width * 0.64, height: height * 0.45)
+        catalogPanel.layer.cornerRadius = cornerRadius
+        cartPanel.frame = CGRect(x: width * 0.42, y: height * 0.42, width: width * 0.50, height: height * 0.43)
+        cartPanel.layer.cornerRadius = cornerRadius
+        blurView.frame = bounds
     }
 }

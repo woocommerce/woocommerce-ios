@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Cancel is no longer cut off to "Ca…" on payments setup, the admin role required screen and Blaze Edit Ad. [https://github.com/woocommerce/woocommerce-ios/pull/18470]
 - [*] POS: On iPhone, order details actions (Issue refund, Email receipt) are now in the ellipsis menu in the header, so the order number has more room. [https://github.com/woocommerce/woocommerce-ios/pull/18453]
 - [*] Order details now show state names instead of codes like CN24 for China and other countries with numeric state codes. [https://github.com/woocommerce/woocommerce-ios/pull/18452]
 - [*] POS: On iPhone, the refund reason Add button now sits right above the keyboard, and the Select items and Review refund screens line up with their headers. [https://github.com/woocommerce/woocommerce-ios/pull/18430]

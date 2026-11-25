@@ -33,6 +33,9 @@ public struct PointOfSaleEntryPointView: View {
     @State private var accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
     @State private var lockSettings: POSLockSettings
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dismiss) private var dismiss
+    @State private var onboardingGuideStep: POSOnboardingGuideStep = .checkout
+    @State private var isOnboardingGuideDismissed = false
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let registerOnDismiss: (@escaping () -> Void) -> Bool
@@ -201,6 +204,12 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
+    private var showsOnboardingGuide: Bool {
+        services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
+            && UIDevice.current.userInterfaceIdiom == .phone
+            && !isOnboardingGuideDismissed
+    }
+
     private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
@@ -217,6 +226,18 @@ public struct PointOfSaleEntryPointView: View {
                     .posLockScreenOverlay()
             } else {
                 PointOfSaleLoadingView()
+            }
+        }
+        .overlay {
+            // WOOMOB-4727 decides when the guide shows; for now the flag shows it each time POS opens on iPhone.
+            if showsOnboardingGuide {
+                POSOnboardingGuideView(currentStep: $onboardingGuideStep,
+                                       onStartSelling: { isOnboardingGuideDismissed = true },
+                                       onExit: { dismiss() },
+                                       onWatchVideo: {})
+                    // VoiceOver stays in the guide while it covers POS.
+                    .accessibilityElement(children: .contain)
+                    .accessibilityAddTraits(.isModal)
             }
         }
         .task {

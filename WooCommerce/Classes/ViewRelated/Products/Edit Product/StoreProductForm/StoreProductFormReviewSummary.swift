@@ -29,7 +29,7 @@ struct StoreProductFormReviewSummary: View {
 
     private func stars(for rating: Double) -> some View {
         HStack(spacing: StoreSpacing.s0) {
-            ForEach(0..<Self.starCount) { index in
+            ForEach(0..<5) { index in
                 let fill = CGFloat(min(max(rating - Double(index), 0), 1))
                 StoreIcon.Star.regular.image(size: .medium)
                     .overlay {

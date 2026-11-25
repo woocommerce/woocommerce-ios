@@ -48,7 +48,8 @@ private extension POSRefundReviewView {
                 .overlay(Color.posOutlineVariant.opacity(0.5))
             refundReasonSection
         }
-        .padding(.horizontal, metrics.padding.xLarge)
+        // Lines up with the compact header and buttons, which use medium padding on phone.
+        .padding(.horizontal, horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.xLarge)
         .frame(maxWidth: .infinity)
     }
 

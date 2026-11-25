@@ -1221,6 +1221,40 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(didDispatchSynchronizeCountries)
     }
+
+    func test_syncEverything_when_countries_arrive_then_reloads_pushed_billing_information() throws {
+        // Given
+        // The billing screen formats its address in its cells, so it keeps showing CN24 until reloaded.
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        viewModel.reloadSections()
+        let billingDetailIndexPath = try XCTUnwrap(viewModel.dataSource.sections.enumerated().lazy.compactMap { section, value in
+            value.rows.firstIndex(of: .billingDetail).map { IndexPath(row: $0, section: section) }
+        }.first)
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        viewModel.tableView(UITableView(), in: navigationController.viewControllers[0], didSelectRowAt: billingDetailIndexPath)
+        let billingViewController = try XCTUnwrap(navigationController.topViewController as? BillingInformationViewController)
+        billingViewController.loadViewIfNeeded()
+        billingViewController.tableView.layoutIfNeeded()
+        let addressIndexPath = IndexPath(row: 0, section: 0)
+        let staleCell = try XCTUnwrap(billingViewController.tableView.cellForRow(at: addressIndexPath) as? BillingAddressTableViewCell)
+        staleCell.address = "stale"
+        storesManager.whenReceivingAction(ofType: DataAction.self) { action in
+            guard case let .synchronizeCountries(_, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success([]))
+        }
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
+        billingViewController.tableView.layoutIfNeeded()
+
+        // Then
+        let reloadedCell = try XCTUnwrap(billingViewController.tableView.cellForRow(at: addressIndexPath) as? BillingAddressTableViewCell)
+        XCTAssertEqual(reloadedCell.address, address.formattedPostalAddress)
+    }
 }
 
 private extension OrderDetailsViewModelTests {

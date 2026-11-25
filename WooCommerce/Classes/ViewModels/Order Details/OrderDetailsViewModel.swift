@@ -74,6 +74,9 @@ final class OrderDetailsViewModel {
     private let pluginsService: PluginsServiceProtocol
     private(set) var order: Order
 
+    // The billing screen formats its address in its cells, so it reloads once state names arrive.
+    private weak var billingInformationViewController: BillingInformationViewController?
+
     /// Defines the current sync states of the view model data.
     ///
     private var syncStateController: OrderDetailsSyncStateControlling
@@ -596,6 +599,7 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+            self.billingInformationViewController = billingInformationViewController
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
 
@@ -852,10 +856,11 @@ extension OrderDetailsViewModel {
             onCompletion()
             return
         }
-        let action = DataAction.synchronizeCountries(siteID: order.siteID) { result in
+        let action = DataAction.synchronizeCountries(siteID: order.siteID) { [weak self] result in
             if case let .failure(error) = result {
                 DDLogError("⛔️ Error synchronizing countries: \(error)")
             }
+            self?.billingInformationViewController?.reloadAddress()
             onCompletion()
         }
         stores.dispatch(action)

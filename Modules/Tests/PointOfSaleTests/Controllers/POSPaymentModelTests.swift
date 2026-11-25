@@ -79,6 +79,32 @@ struct POSPaymentModelTests {
     }
 
     @Test @MainActor
+    func test_start_card_payment_when_bluetooth_reader_connect_fails_then_start_ends_and_next_tap_connects_again() async {
+        // Given a Bluetooth connect that fails, e.g. after the merchant dismisses the Bluetooth permission alert
+        let service = MockCardPresentPaymentService()
+        service.connectReaderOverride = { throw NSError(domain: "test", code: 1) }
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+
+        // When
+        await sut.startCardPayment(with: .bluetoothReader)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(!sut.isCardPaymentStartPending)
+        #expect(sut.lastConnectedMethod == nil)
+
+        // When
+        service.connectReaderOverride = { .canceled }
+        await sut.startCardPayment(with: .bluetoothReader)
+        await waitUntil(false) { sut.isCardPaymentStartPending }
+
+        // Then
+        #expect(service.connectReaderCallCount == 2)
+    }
+
+    @Test @MainActor
     func test_start_card_payment_when_tap_to_pay_connect_is_canceled_then_session_ends() async {
         // Given
         let service = MockCardPresentPaymentService()

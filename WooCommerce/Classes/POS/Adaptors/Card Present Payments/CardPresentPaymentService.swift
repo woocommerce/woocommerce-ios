@@ -124,6 +124,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                     self.readerConnectionStatusSubject.send(.disconnected)
                     self.paymentEventSubject.send(.idle)
                     return .canceled
+                case .failed(let error):
+                    throw error
                 }
             } catch is CancellationError {
                 await self.cancelReaderConnectionAttempt()

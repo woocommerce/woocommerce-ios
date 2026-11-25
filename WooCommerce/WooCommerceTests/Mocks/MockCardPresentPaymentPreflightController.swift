@@ -33,4 +33,8 @@ nonisolated final class MockCardPresentPaymentPreflightController: CardPresentPa
     func completeConnection(reader: CardReader, gatewayID: String?) {
         readerConnectionSubject.send(.completed(reader, .fake().copy(gatewayID: gatewayID)))
     }
+
+    func failConnection(error: Error) {
+        readerConnectionSubject.send(.failed(error))
+    }
 }

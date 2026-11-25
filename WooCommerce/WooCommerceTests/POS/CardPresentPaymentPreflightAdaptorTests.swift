@@ -32,4 +32,22 @@ final class CardPresentPaymentPreflightAdaptorTests: XCTestCase {
         XCTAssertEqual(preflightController.startCallCount, 1)
         XCTAssertEqual(preflightController.cancelConnectionAttemptCallCount, 1)
     }
+
+    @MainActor
+    func test_attemptConnection_when_preflight_fails_then_returns_failed_result() async throws {
+        // Given
+        let preflightController = MockCardPresentPaymentPreflightController()
+        let adaptor = CardPresentPaymentPreflightAdaptor(preflightController: preflightController)
+        preflightController.onStart = {
+            preflightController.failConnection(error: NSError(domain: "test", code: 1))
+        }
+
+        // When
+        let result = try await adaptor.attemptConnection(discoveryMethod: .bluetoothScan)
+
+        // Then
+        guard case .failed = result else {
+            return XCTFail("Expected a failed result, got \(result)")
+        }
+    }
 }

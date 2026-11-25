@@ -7,6 +7,7 @@ import protocol WooFoundation.Analytics
 enum CardReaderPreflightResult {
     case completed(CardReader, PaymentGatewayAccount)
     case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource, PaymentGatewayAccount)
+    case failed(Error)
 }
 
 enum CardReaderConnectionResult {
@@ -307,6 +308,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private func handlePreflightFailure(error: Error) {
         alertsPresenter.dismiss()
+        // Async callers wait for a result, so a failure must end the attempt too.
+        readerConnectionSubject.send(.failed(error))
     }
 
     private func observeConnectedReaders() {

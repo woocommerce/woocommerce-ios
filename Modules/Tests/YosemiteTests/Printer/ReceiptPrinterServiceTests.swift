@@ -2,6 +2,7 @@ import Testing
 import Fakes
 @testable import Yosemite
 @testable import Hardware
+import class WooFoundation.CurrencySettings
 
 /// ReceiptPrinterService Unit Tests
 @Suite(.timeLimit(.minutes(5)))
@@ -155,6 +156,29 @@ struct ReceiptPrinterServiceTests {
         #expect(printedText.contains("10.00"))
     }
 
+    @Test func test_printReceipt_with_order_when_store_uses_right_symbol_and_comma_decimals_then_formats_amounts_with_store_settings() async throws {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .EUR,
+                                                currencyPosition: .rightSpace,
+                                                thousandSeparator: ".",
+                                                decimalSeparator: ",",
+                                                numberOfDecimals: 2)
+        let sut = makeService(currencySettings: currencySettings)
+        let items = [OrderItem.fake().copy(name: "Coffee", quantity: 1, subtotal: "1234.5"),
+                     OrderItem.fake().copy(name: "Tea", quantity: 1, subtotal: "10")]
+        let order = Order.fake().copy(orderID: 42, currency: "EUR", total: "1244.50", items: items)
+
+        // When
+        try await sut.printReceipt(order: order, storeInformation: .empty, cardDetails: nil)
+
+        // Then
+        let printedText = try #require(printerDiscoveryService.printedText)
+        #expect(printedText.contains("1.234,50\u{00a0}€"))
+        #expect(printedText.contains("10,00\u{00a0}€"))
+        #expect(printedText.contains("1.244,50\u{00a0}€"))
+        #expect(printedText.contains("€1") == false)
+    }
+
     @Test func test_printReceipt_with_order_when_card_details_present_then_prints_brand_and_last4() async throws {
         // Given
         let sut = makeService()
@@ -193,8 +217,8 @@ struct ReceiptPrinterServiceTests {
 }
 
 private extension ReceiptPrinterServiceTests {
-    func makeService() -> ReceiptPrinterService {
-        ReceiptPrinterService(printerDiscoveryService: printerDiscoveryService)
+    func makeService(currencySettings: CurrencySettings = CurrencySettings()) -> ReceiptPrinterService {
+        ReceiptPrinterService(printerDiscoveryService: printerDiscoveryService, currencySettings: currencySettings)
     }
 
     enum SampleError: Error, Equatable {

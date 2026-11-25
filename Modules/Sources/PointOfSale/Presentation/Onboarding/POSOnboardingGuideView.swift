@@ -163,7 +163,7 @@ private struct POSOnboardingGuideLearnMoreButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: metrics.spacing.xSmall) {
+            HStack(spacing: metrics.spacing.small) {
                 Image(systemName: "play.fill")
                     .imageScale(.small)
                     .accessibilityHidden(true)

@@ -395,6 +395,7 @@ struct POSSecuritySettingsView: View {
 }
 
 private struct POSSecuritySettingRow<Accessory: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posMetrics) private var metrics
     let title: String
@@ -430,7 +431,8 @@ private struct POSSecuritySettingRow<Accessory: View>: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(.secondary)
+                    // The screen foreground tints hierarchical secondary text in light mode.
+                    .foregroundStyle(colorScheme == .light ? AnyShapeStyle(Color.secondary) : AnyShapeStyle(.secondary))
             }
         }
         .fixedSize(horizontal: false, vertical: true)

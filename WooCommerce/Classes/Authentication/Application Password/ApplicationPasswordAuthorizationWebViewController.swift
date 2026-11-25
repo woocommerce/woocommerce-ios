@@ -24,7 +24,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     /// Main web view
     private lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero)
+        let configuration = WKWebViewConfiguration()
+        // Start each authorization without cookies from earlier signed-in web views.
+        configuration.websiteDataStore = .nonPersistent()
+        let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()

@@ -4,6 +4,7 @@ import WooFoundation
 
 /// View Model logic for the bulk price setting screen
 ///
+@MainActor
 final class PriceInputViewModel {
 
     @Published private(set) var applyButtonEnabled: Bool = false

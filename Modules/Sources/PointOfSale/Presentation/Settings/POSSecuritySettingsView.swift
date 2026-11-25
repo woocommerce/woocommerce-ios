@@ -13,15 +13,12 @@ struct POSSecuritySettingsView: View {
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             if controller.roles?.isEmpty == true {
+                if horizontalSizeClass == .compact {
+                    POSPageHeaderView(title: "")
+                }
                 POSAccessControlSetupView {
                     controller.load()
                     presentation.present(.editor(controller.makePINSetupFlow(for: .admin)))
-                }
-                .overlay(alignment: .top) {
-                    if horizontalSizeClass == .compact {
-                        POSPageHeaderView(title: "")
-                            .background(Color.posSurface)
-                    }
                 }
             } else {
                 POSPageHeaderView(title: Localization.title)
@@ -94,6 +91,7 @@ struct POSSecuritySettingsView: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("pos-security-settings")
     }
 
@@ -440,6 +438,7 @@ struct POSSecuritySettingsView: View {
 }
 
 private struct POSSecuritySettingRow<Accessory: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posMetrics) private var metrics
     let title: String
@@ -475,7 +474,8 @@ private struct POSSecuritySettingRow<Accessory: View>: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    // The screen foreground tints hierarchical secondary text in light mode.
+                    .foregroundStyle(colorScheme == .light ? AnyShapeStyle(Color.secondary) : AnyShapeStyle(.secondary))
             }
         }
         .fixedSize(horizontal: false, vertical: true)

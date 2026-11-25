@@ -23,6 +23,7 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
+    @State private var itemListHidesCartButton: Bool = false
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -164,6 +165,9 @@ struct PointOfSaleDashboardView: View {
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
         }
+        .onPreferenceChange(POSHidesCompactCartButtonPreferenceKey.self) { hides in
+            itemListHidesCartButton = hides
+        }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface.ignoresSafeArea())
@@ -273,11 +277,12 @@ struct PointOfSaleDashboardView: View {
             animatesPop: { $0 != .paymentSuccess },
             onBack: { posModel.addMoreToCart() }
         ) {
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 let showsCartButton = PointOfSaleDashboardViewHelper.showsCompactCartButton(
                     cartIsEmpty: posModel.cart.isEmpty,
                     floatingControlSuppressed: floatingControlSuppressed,
-                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible
+                    isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible,
+                    itemListHidesCartButton: itemListHidesCartButton
                 )
                 VStack(spacing: metrics.spacing.none) {
                     ItemListView(
@@ -292,7 +297,7 @@ struct PointOfSaleDashboardView: View {
                         }
                     )
                     if showsCartButton {
-                        phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
+                        phoneCartButton
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
@@ -493,7 +498,7 @@ struct PointOfSaleDashboardView: View {
         posModel.cart.totalItemCount
     }
 
-    private func phoneCartButton(bottomSafeAreaInset: CGFloat) -> some View {
+    private var phoneCartButton: some View {
         Button {
             phoneCartPresentationDetent = .medium
             phoneShowingCart = true
@@ -506,7 +511,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset, metrics: metrics))
+        .posBottomButtonPadding()
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)

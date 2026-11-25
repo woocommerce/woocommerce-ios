@@ -163,7 +163,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -175,7 +176,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -187,7 +189,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: true,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -199,7 +202,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
             floatingControlSuppressed: true,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -211,7 +215,21 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: true
+            isFullSizeKeyboardVisible: true,
+            itemListHidesCartButton: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func showsCompactCartButton_when_cart_has_items_but_item_list_hides_cart_button_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: false,
+            floatingControlSuppressed: false,
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: true
         )
 
         // Then

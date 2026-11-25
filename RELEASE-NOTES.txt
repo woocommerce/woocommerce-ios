@@ -4,6 +4,8 @@
 26.2
 -----
 - [***] In-Person Payments: Tap to Pay on iPhone is now available for stores in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18405]
+- [*] POS: The recent search shadow is no longer cut on the search screen before typing, and that screen now has even gaps under the section titles, with more space between the sections. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
+- [*] POS: On iPhone, the Cart button no longer shows under Retry on the "Unable to load coupons" and "No supported variations found" screens. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
 - [*] POS: On iPhone, order details actions (Issue refund, Email receipt) are now in the ellipsis menu in the header, so the order number has more room. [https://github.com/woocommerce/woocommerce-ios/pull/18453]
 - [*] Order details now show state names instead of codes like CN24 for China and other countries with numeric state codes. [https://github.com/woocommerce/woocommerce-ios/pull/18452]
 - [*] POS: On iPhone, the refund reason Add button now sits right above the keyboard, and the Select items and Review refund screens line up with their headers. [https://github.com/woocommerce/woocommerce-ios/pull/18430]

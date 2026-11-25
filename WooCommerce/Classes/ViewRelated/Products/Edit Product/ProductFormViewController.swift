@@ -21,6 +21,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private lazy var settingsRowActionHandler = ProductFormSettingsRowActionHandler(navigator: self,
                                                                                      eventLogger: eventLogger)
+    private lazy var actionRoutingHandler = ProductFormActionRoutingHandler(navigator: self,
+                                                                            eventLogger: eventLogger)
 
     private var product: ProductModel {
         viewModel.productModel
@@ -500,27 +502,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let section = tableViewModel.sections[indexPath.section]
         switch section {
         case .primaryFields(let rows):
-            let row = rows[indexPath.row]
-            switch row {
-            case .images(_, let isStorePublic, _, _):
-                guard isStorePublic else {
-                    presentURL(URLs.wpComPrivacySettings)
-                    return
-                }
-            case .description(_, let isEditable, _):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logDescriptionTapped()
-                editProductDescription()
-            case .promoteWithBlaze:
-                if !viewModel.shouldShowBlazeIntroView {
-                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
-                }
-                displayBlaze()
-            default:
-                break
-            }
+            actionRoutingHandler.handle(rows[indexPath.row],
+                                        shouldShowBlazeIntroView: viewModel.shouldShowBlazeIntroView)
         case .settings(let rows):
             let row = rows[indexPath.row]
             settingsRowActionHandler.handle(row,
@@ -862,28 +845,25 @@ private extension ProductFormViewController {
 
     func updateDataSourceActions() {
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
-            self?.editLinkedProducts()
+            self?.actionRoutingHandler.handle(.openLinkedProducts)
         }
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
-            guard let self else { return }
-            self.reloadLinkedPromoCell()
+            self?.actionRoutingHandler.handle(.reloadLinkedProductsPromo)
         }
         tableViewDataSource.descriptionAIAction = { [weak self] in
-            self?.showProductDescriptionAI()
+            self?.actionRoutingHandler.handle(.descriptionAI)
         }
         tableViewDataSource.openAILegalPageAction = { [weak self] url in
-            guard let self else { return }
-            WebviewHelper.launch(url.absoluteString, with: self)
+            self?.actionRoutingHandler.handle(.openAILegalPage(url))
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
+            self?.actionRoutingHandler.handle(.nameChanged(name ?? ""))
         }, onStatusChange: { [weak self] isEnabled in
-            self?.onEditStatusCompletion(isEnabled: isEnabled)
+            self?.actionRoutingHandler.handle(.statusChanged(isEnabled))
         }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
+            self?.actionRoutingHandler.handle(.addImage)
         }, onFailedImageUpload: { [weak self] asset, error in
-            self?.displayImageUploadErrorAlert(error: error, for: asset)
+            self?.actionRoutingHandler.handle(.failedImageUpload(asset: asset, error: error))
         })
     }
 
@@ -908,40 +888,9 @@ private extension ProductFormViewController {
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
-                                                                        switch action {
-                                                                        case .editInventorySettings:
-                                                                            self?.eventLogger.logInventorySettingsTapped()
-                                                                            self?.editInventorySettings()
-                                                                        case .editShippingSettings:
-                                                                            self?.eventLogger.logShippingSettingsTapped()
-                                                                            self?.editShippingSettings()
-                                                                        case .editCategories:
-                                                                            ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
-                                                                            self?.editCategories()
-                                                                        case .editTags:
-                                                                            ServiceLocator.analytics.track(.productDetailViewTagsTapped)
-                                                                            self?.editTags()
-                                                                        case .editShortDescription:
-                                                                            ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                                                                            self?.editShortDescription()
-                                                                        case .editSimplifiedInventory:
-                                                                            ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                                                                            self?.editSimplifiedInventory()
-                                                                        case .editLinkedProducts:
-                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
-                                                                            self?.editLinkedProducts()
-                                                                        case .editReviews:
-                                                                            ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
-                                                                            self?.showReviews()
-                                                                        case .editDownloadableFiles:
-                                                                            ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
-                                                                            self?.showDownloadableFiles()
-                                                                        case .editCustomFields:
-                                                                            self?.showCustomFields()
-                                                                        case .editAttributes:
-                                                                            self?.trackAddProductAttributeTapped()
-                                                                            self?.addProductAttribute()
-                                                                        }
+                                                                        guard let self else { return }
+                                                                        self.actionRoutingHandler.handle(action,
+                                                                                                         productID: self.product.productID)
                                                                     }
         }
         let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
@@ -1261,10 +1210,6 @@ private extension ProductFormViewController {
 
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
-    }
-
-    func trackAddProductAttributeTapped() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: product.productID))
     }
 }
 
@@ -1638,11 +1583,21 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: - ProductFormSettingsNavigating
+// MARK: - ProductFormNavigating
 
-extension ProductFormViewController: ProductFormSettingsNavigating {
-    func navigate(to destination: ProductFormSettingsDestination) {
+extension ProductFormViewController: ProductFormNavigating {
+    func navigate(to destination: ProductFormDestination) {
         switch destination {
+        case .privacySettings: presentURL(URLs.wpComPrivacySettings)
+        case .productDescription: editProductDescription()
+        case .blaze: displayBlaze()
+        case .reloadLinkedProductsPromo: reloadLinkedPromoCell()
+        case .descriptionAI: showProductDescriptionAI()
+        case .aiLegalPage(let url): WebviewHelper.launch(url.absoluteString, with: self)
+        case .productNameChanged(let name): onEditProductNameCompletion(newName: name)
+        case .productStatusChanged(let isEnabled): onEditStatusCompletion(isEnabled: isEnabled)
+        case .productImages: showProductImages()
+        case .imageUploadFailure(let asset, let error): displayImageUploadErrorAlert(error: error, for: asset)
         case .price: editPriceSettings()
         case .customFields: showCustomFields()
         case .reviews: showReviews()
@@ -1665,6 +1620,7 @@ extension ProductFormViewController: ProductFormSettingsNavigating {
         case .subscriptionFreeTrial: showSubscriptionFreeTrialSettings()
         case .subscriptionExpiry: showSubscriptionExpirySettings()
         case .quantityRules: showQuantityRules()
+        case .addAttribute: addProductAttribute()
         }
     }
 }

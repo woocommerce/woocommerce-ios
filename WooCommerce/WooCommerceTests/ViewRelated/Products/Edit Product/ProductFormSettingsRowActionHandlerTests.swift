@@ -161,7 +161,7 @@ private final class CallRecorder {
 }
 
 @MainActor
-private final class MockNavigator: ProductFormSettingsNavigating {
+private final class MockNavigator: ProductFormNavigating {
     private let recorder: CallRecorder
     private(set) weak var productTypeSourceView: UIView?
 
@@ -169,9 +169,19 @@ private final class MockNavigator: ProductFormSettingsNavigating {
         self.recorder = recorder
     }
 
-    func navigate(to destination: ProductFormSettingsDestination) {
+    func navigate(to destination: ProductFormDestination) {
         let name: String
         switch destination {
+        case .privacySettings: name = "privacySettings"
+        case .productDescription: name = "productDescription"
+        case .blaze: name = "blaze"
+        case .reloadLinkedProductsPromo: name = "reloadLinkedProductsPromo"
+        case .descriptionAI: name = "descriptionAI"
+        case .aiLegalPage: name = "aiLegalPage"
+        case .productNameChanged: name = "productNameChanged"
+        case .productStatusChanged: name = "productStatusChanged"
+        case .productImages: name = "productImages"
+        case .imageUploadFailure: name = "imageUploadFailure"
         case .price: name = "price"
         case .customFields: name = "customFields"
         case .reviews: name = "reviews"
@@ -196,6 +206,7 @@ private final class MockNavigator: ProductFormSettingsNavigating {
         case .subscriptionFreeTrial: name = "subscriptionFreeTrial"
         case .subscriptionExpiry: name = "subscriptionExpiry"
         case .quantityRules: name = "quantityRules"
+        case .addAttribute: name = "addAttribute"
         }
         recorder.calls.append("navigate:\(name)")
     }

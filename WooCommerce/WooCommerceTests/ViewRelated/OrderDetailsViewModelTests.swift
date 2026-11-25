@@ -1111,7 +1111,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertTrue(didDispatchSynchronizeCountries)
@@ -1127,7 +1127,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
@@ -1141,7 +1141,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
@@ -1155,7 +1155,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
@@ -1172,7 +1172,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
@@ -1187,14 +1187,61 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // When
-        viewModel.syncEverything()
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: order)
 
         // Then
         XCTAssertFalse(didDispatchSynchronizeCountries)
     }
+
+    func test_syncEverything_when_refreshed_order_gains_numeric_state_code_then_synchronizes_countries() {
+        // Given
+        // The cached order can be stale, so the address the refresh returns is the one that gets shown.
+        let cachedAddress = Address.fake().copy(state: "CA", country: "US")
+        let cachedOrder = Order.fake().copy(billingAddress: cachedAddress, shippingAddress: cachedAddress)
+        let refreshedOrder = cachedOrder.copy(shippingAddress: Address.fake().copy(state: "CN24", country: "CN"))
+        let viewModel = OrderDetailsViewModel(order: cachedOrder, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: refreshedOrder)
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
+
+    func test_syncEverything_when_order_refresh_fails_then_synchronizes_countries_for_cached_numeric_state_code() {
+        // Given
+        // A failed refresh leaves the cached address on screen, so it still needs its state name.
+        let address = Address.fake().copy(state: "CN24", country: "CN")
+        let order = Order.fake().copy(billingAddress: address, shippingAddress: address)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+
+        // When
+        syncEverythingAndWaitForOrderRefresh(viewModel, refreshedOrder: nil)
+
+        // Then
+        XCTAssertTrue(didDispatchSynchronizeCountries)
+    }
 }
 
 private extension OrderDetailsViewModelTests {
+    /// Runs `syncEverything` with `refreshedOrder` as the refresh result (`nil` fails it),
+    /// returning once the view model has handled it.
+    func syncEverythingAndWaitForOrderRefresh(_ viewModel: OrderDetailsViewModel, refreshedOrder: Order?) {
+        waitFor { promise in
+            self.storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+                guard case let .retrieveOrder(_, _, onCompletion) = action else {
+                    return
+                }
+                onCompletion(refreshedOrder, refreshedOrder == nil ? NSError(domain: "", code: 0) : nil)
+                // The view model's handling is already queued on main, so this runs after it.
+                DispatchQueue.main.async {
+                    promise(())
+                }
+            }
+            viewModel.syncEverything()
+        }
+    }
+
     var didDispatchSynchronizeCountries: Bool {
         storesManager.receivedActions.contains { action in
             guard let action = action as? DataAction, case .synchronizeCountries = action else {

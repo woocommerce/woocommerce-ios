@@ -349,6 +349,13 @@ extension OrderDetailsViewModel {
                 group.leave()
             }
 
+            // State names require order addresses, so look them up only after the order is loaded
+            group.enter()
+            self.syncCountriesIfNeeded {
+                onReloadSections?()
+                group.leave()
+            }
+
             // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
             group.enter()
             self.syncSubscriptions { _ in
@@ -405,12 +412,6 @@ extension OrderDetailsViewModel {
 
         group.enter()
         syncShippingMethods { _ in
-            onReloadSections?()
-            group.leave()
-        }
-
-        group.enter()
-        syncCountriesIfNeeded {
             onReloadSections?()
             group.leave()
         }

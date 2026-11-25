@@ -4,6 +4,7 @@
 26.2
 -----
 - [*] Order details now show state names instead of codes like CN24 for China and other countries with numeric state codes. [https://github.com/woocommerce/woocommerce-ios/pull/18452]
+- [*] POS: On iPhone, the refund reason Add button now sits right above the keyboard, and the Select items and Review refund screens line up with their headers. [https://github.com/woocommerce/woocommerce-ios/pull/18430]
 - [*] POS: On iPhone, payment buttons on Checkout no longer stay disabled after a payment that could not start, for example Tap to Pay on a $0.00 order. [https://github.com/woocommerce/woocommerce-ios/pull/18419]
 - [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
 - [*] POS: On an iPhone Duo, the checkout no longer stays shrunk after you fold and unfold the phone. [https://github.com/woocommerce/woocommerce-ios/pull/18442]

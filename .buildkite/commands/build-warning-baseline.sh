@@ -17,10 +17,6 @@ if ! is_pull_request; then
   exit 0
 fi
 
-if "$COMMANDS_DIR/should-skip-job.sh" --job-type build; then
-  exit 0
-fi
-
 echo "--- :git: Resolve build warning baseline"
 git fetch --no-tags origin "+refs/heads/$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
 

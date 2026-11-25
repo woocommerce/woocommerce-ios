@@ -43,8 +43,8 @@ private extension Address {
         #if !os(watchOS)
         // https://github.com/woocommerce/woocommerce-ios/issues/5851
         // The backend gives us the state code in the state field.
-        // For these countries we should show the state name instead, as the code is not identifiable (e.g. JP01 -> Hokkaido)
-        guard ["JP", "TR"].contains(country),
+        // For countries with numeric state codes we show the state name instead (e.g. JP01 -> Hokkaido)
+        guard LocallyStoredStateNameRetriever.countriesWithNumericStateCodes.contains(country),
               let stateName = LocallyStoredStateNameRetriever().retrieveLocallyStoredStateName(of: self) else {
             return self
         }

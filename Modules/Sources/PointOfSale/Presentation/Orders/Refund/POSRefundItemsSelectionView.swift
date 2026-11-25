@@ -114,6 +114,8 @@ private extension POSRefundItemsSelectionView {
                     selectedCountLabel
                 }
             }
+            // Centers a single line on the checkbox; taller wrapped labels keep the top alignment.
+            .frame(minHeight: metrics.checkboxSize, alignment: .leading)
 
             Spacer()
         }

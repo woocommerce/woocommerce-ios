@@ -7,6 +7,20 @@ import Yosemite
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct ApplicationPasswordAuthorizationViewModelTests {
+    @Test func test_authorization_when_web_view_is_created_then_uses_nonpersistent_website_data() async throws {
+        // Given
+        let fixture = AuthorizationFixture()
+
+        // When
+        await fixture.start()
+        fixture.completeFetch?(.success(nil))
+        await fixture.waitForFetchHandling()
+
+        // Then
+        let webView = try #require(fixture.controller.view.subviews.compactMap { $0 as? WKWebView }.first)
+        #expect(!webView.configuration.websiteDataStore.isPersistent)
+    }
+
     @Test func test_authorization_failure_when_alert_is_presented_then_tracks_app_password_flow() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

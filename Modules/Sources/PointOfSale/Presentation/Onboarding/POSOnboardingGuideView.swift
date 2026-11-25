@@ -14,74 +14,33 @@ struct POSOnboardingGuideView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            ViewThatFits(in: .vertical) {
-                // Reserve every step's height, so the illustrations and titles line up between steps.
-                ZStack(alignment: .top) {
-                    ForEach(POSOnboardingGuideStep.allCases) { step in
-                        POSOnboardingGuideStepView(step: step, onWatchVideo: {})
-                    }
+            TabView(selection: $currentStep) {
+                ForEach(POSOnboardingGuideStep.allCases) { step in
+                    POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
+                        .scrollVerticallyIfNeeded()
+                        .tag(step)
                 }
-                .hidden()
-                .accessibilityHidden(true)
-                .overlay {
-                    pager(scrollsSteps: false)
-                }
-                .frame(maxHeight: .infinity)
-
-                // When the steps don't fit (landscape, large text), each one scrolls above the dots.
-                pager(scrollsSteps: true)
-                    // Matches the steps' bottom padding, so clipped content doesn't run into the dots.
-                    .posPadding(.bottom, \.medium)
             }
-            // The design uses the regular type and spacing scale for the steps on iPhone too.
-            .environment(\.posLayoutScale, .regular)
+            .tabViewStyle(.page(indexDisplayMode: .never))
 
             POSPageIndicator(pageCount: POSOnboardingGuideStep.allCases.count,
                              currentPage: currentPage,
                              accessibilityPageName: { POSOnboardingGuideStep.allCases[$0].title })
+                // The top gap keeps scrolled text from running into the dots.
+                .posPadding(.top, \.medium)
                 .posPadding(.bottom, \.xLarge)
 
             POSFlowButtonsView(configuration: buttonConfiguration)
                 .posStatusButtonsWidth(addsHorizontalPadding: false)
                 .posPhoneBottomButtonPadding()
         }
-        // The guide only shows on iPhone. Keeping the phone scale in landscape fits the buttons' longer titles on one line.
+        // The guide only shows on iPhone, so it keeps the phone scale in landscape too.
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
         .posFullScreenCover(isPresented: $isShowingVideo) {
             SafariView(url: POSConstants.URLs.pointOfSaleSaleVideo.asURL())
         }
-    }
-
-    private func pager(scrollsSteps: Bool) -> some View {
-        TabView(selection: $currentStep) {
-            ForEach(POSOnboardingGuideStep.allCases) { step in
-                let stepView = POSOnboardingGuideStepView(step: step, onWatchVideo: watchVideo)
-                Group {
-                    if scrollsSteps {
-                        ScrollView {
-                            stepView
-                        }
-                        .scrollBounceBehavior(.basedOnSize)
-                        .scrollIndicatorsFlash(onAppear: true)
-                        // Fading the edge hints that the step continues below.
-                        .mask {
-                            VStack(spacing: metrics.spacing.none) {
-                                Color.black
-                                LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                                    .frame(height: metrics.padding.xLarge)
-                            }
-                        }
-                    } else {
-                        stepView
-                            .frame(maxHeight: .infinity, alignment: .top)
-                    }
-                }
-                .tag(step)
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 
     private var currentPage: Binding<Int> {
@@ -118,9 +77,11 @@ private struct POSOnboardingGuideStepView: View {
     let onWatchVideo: () -> Void
 
     private static let illustrationHeight: CGFloat = 120
+    // As in the design, a fixed text height keeps the titles in line across steps.
+    @ScaledMetric private var textMinHeight: CGFloat = 144
 
     var body: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
+        VStack(spacing: metrics.spacing.xxLarge) {
             // In landscape and with accessibility text sizes, the illustration would leave little room for the text.
             if verticalSizeClass != .compact && !dynamicTypeSize.isAccessibilitySize {
                 step.illustration.decorativeImage
@@ -129,15 +90,15 @@ private struct POSOnboardingGuideStepView: View {
                     .frame(height: Self.illustrationHeight)
             }
 
-            VStack(spacing: metrics.spacing.large) {
-                VStack(spacing: metrics.spacing.medium) {
+            VStack(spacing: metrics.spacing.xxLarge) {
+                VStack(spacing: metrics.spacing.large) {
                     Text(step.title)
-                        .font(.posBodyLargeBold)
+                        .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
                         .accessibilityAddTraits(.isHeader)
 
                     Text(step.message)
-                        .font(.posBodyMediumRegular())
+                        .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 }
                 .multilineTextAlignment(.center)
@@ -146,11 +107,11 @@ private struct POSOnboardingGuideStepView: View {
                     POSOnboardingGuideLearnMoreButton(action: onWatchVideo)
                 }
             }
+            .frame(minHeight: textMinHeight, alignment: .top)
             .posPadding(.horizontal, \.xxLarge)
         }
-        .fixedSize(horizontal: false, vertical: true)
         // Same column as the buttons, so the content is centred on their axis.
-        .posStatusButtonsWidth(addsHorizontalPadding: false)
+        .posStatusButtonsWidth()
         .posPadding(.vertical, \.medium)
     }
 }
@@ -169,7 +130,7 @@ private struct POSOnboardingGuideLearnMoreButton: View {
                     .accessibilityHidden(true)
                 Text(Localization.title)
             }
-            .font(.posBodyMediumRegular())
+            .font(.posBodyLargeRegular())
             .foregroundStyle(Color.posPrimary)
         }
         .buttonStyle(.plain)

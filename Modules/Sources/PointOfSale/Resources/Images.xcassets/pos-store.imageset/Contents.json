@@ -1,7 +1,7 @@
 {
   "images": [
     {
-      "filename": "pos-onboarding-sync-light.svg",
+      "filename": "pos-store-light.svg",
       "idiom": "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value": "dark"
         }
       ],
-      "filename": "pos-onboarding-sync-dark.svg",
+      "filename": "pos-store-dark.svg",
       "idiom": "universal"
     }
   ],

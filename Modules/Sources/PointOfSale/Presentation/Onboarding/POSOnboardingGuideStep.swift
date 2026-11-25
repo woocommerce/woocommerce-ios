@@ -10,9 +10,9 @@ enum POSOnboardingGuideStep: Int, CaseIterable, Identifiable {
     var illustration: PointOfSaleAssets {
         switch self {
         case .checkout:
-            .onboardingStorefront
+            .store
         case .oneStore:
-            .onboardingSync
+            .tshirtsSync
         case .howASaleWorks:
             .readyForPayment
         }
@@ -29,23 +29,16 @@ enum POSOnboardingGuideStep: Int, CaseIterable, Identifiable {
         }
     }
 
-    /// The last step shows `saleSteps` instead.
-    var message: String? {
+    var message: String {
         switch self {
         case .checkout:
             Localization.checkoutMessage
         case .oneStore:
             Localization.oneStoreMessage
         case .howASaleWorks:
-            nil
+            Localization.howASaleWorksMessage
         }
     }
-
-    static let saleSteps: [(systemImage: String, label: String)] = [
-        ("cart", Localization.saleStepAddProducts),
-        ("doc.plaintext", Localization.saleStepCheckOut),
-        ("creditcard", Localization.saleStepGetPaid)
-    ]
 }
 
 private extension POSOnboardingGuideStep {
@@ -56,40 +49,30 @@ private extension POSOnboardingGuideStep {
             comment: "Title of the first step of the POS onboarding guide shown on iPhone."
         )
         static let checkoutMessage = NSLocalizedString(
-            "pos.onboardingGuide.checkout.message.v3",
-            value: "Take payments with Tap to Pay on iPhone, a card reader or cash.",
+            "pos.onboardingGuide.checkout.message.v4",
+            value: "Take payments with Tap to Pay on iPhone, a card reader, or cash.",
             comment: "Message of the first step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreTitle = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.title.v3",
-            value: "One store for every sale",
+            "pos.onboardingGuide.oneStore.title.v4",
+            value: "Same store, more ways to sell",
             comment: "Title of the second step of the POS onboarding guide shown on iPhone."
         )
         static let oneStoreMessage = NSLocalizedString(
-            "pos.onboardingGuide.oneStore.message.v4",
-            value: "Sell straight from your WooCommerce catalog. Prices and stock are always up to date, " +
-                "and every sale is recorded in your store.",
+            "pos.onboardingGuide.oneStore.message.v5",
+            value: "A single source of truth for products, prices, stock, and orders across online and in-person sales.",
             comment: "Message of the second step of the POS onboarding guide shown on iPhone."
         )
         static let howASaleWorksTitle = NSLocalizedString(
-            "pos.onboardingGuide.howASaleWorks.title",
-            value: "How a sale works",
+            "pos.onboardingGuide.howASaleWorks.title.v2",
+            value: "Selling in person is simple",
             comment: "Title of the third step of the POS onboarding guide shown on iPhone."
         )
-        static let saleStepAddProducts = NSLocalizedString(
-            "pos.onboardingGuide.howASaleWorks.addProducts",
-            value: "Add products",
-            comment: "First of three short labels for the steps of a sale in the POS onboarding guide."
-        )
-        static let saleStepCheckOut = NSLocalizedString(
-            "pos.onboardingGuide.howASaleWorks.checkOut",
-            value: "Check out",
-            comment: "Second of three short labels for the steps of a sale in the POS onboarding guide."
-        )
-        static let saleStepGetPaid = NSLocalizedString(
-            "pos.onboardingGuide.howASaleWorks.getPaid",
-            value: "Get paid",
-            comment: "Third of three short labels for the steps of a sale in the POS onboarding guide: the customer pays."
+        static let howASaleWorksMessage = NSLocalizedString(
+            "pos.onboardingGuide.howASaleWorks.message",
+            value: "Add items to the cart, tap Check out, and choose a payment method.",
+            comment: "Message of the third step of the POS onboarding guide shown on iPhone. " +
+                "Check out is the name of the button that starts the payment."
         )
     }
 }

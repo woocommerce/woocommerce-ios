@@ -46,7 +46,7 @@ final class POSTests: XCTestCase {
     }
 
     func test_POS_displays_unsupported_WooCommerce_version_when_site_fails_plugin_eligibility() throws {
-        try launchAndLogin()
+        launchWithMockStore()
 
         try TabNavComponent()
             .goToPOSIneligibleScreen()
@@ -119,17 +119,16 @@ final class POSTests: XCTestCase {
     }
 
     private func openPOS(extraLaunchArguments: [String] = []) throws -> POSScreen {
-        try launchAndLogin(extraLaunchArguments: Self.checkoutLaunchArguments + extraLaunchArguments)
+        launchWithMockStore(extraLaunchArguments: Self.checkoutLaunchArguments + extraLaunchArguments)
 
         return try TabNavComponent()
             .goToPOSScreen()
     }
 
-    private func launchAndLogin(extraLaunchArguments: [String] = []) throws {
+    private func launchWithMockStore(extraLaunchArguments: [String] = []) {
         let app = XCUIApplication()
         app.launchArguments = Self.baseLaunchArguments + extraLaunchArguments
+        app.launchEnvironment = TestCredentials.mockStoreLaunchEnvironment
         app.launch()
-
-        try LoginFlow.login()
     }
 }

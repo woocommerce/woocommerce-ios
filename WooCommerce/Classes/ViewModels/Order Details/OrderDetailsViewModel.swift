@@ -74,6 +74,9 @@ final class OrderDetailsViewModel {
     private let pluginsService: PluginsServiceProtocol
     private(set) var order: Order
 
+    // The billing screen formats its address in its cells, so it reloads once state names arrive.
+    private weak var billingInformationViewController: BillingInformationViewController?
+
     /// Defines the current sync states of the view model data.
     ///
     private var syncStateController: OrderDetailsSyncStateControlling
@@ -349,6 +352,13 @@ extension OrderDetailsViewModel {
                 group.leave()
             }
 
+            // State names require order addresses, so look them up only after the order is loaded
+            group.enter()
+            self.syncCountriesIfNeeded {
+                onReloadSections?()
+                group.leave()
+            }
+
             // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
             group.enter()
             self.syncSubscriptions { _ in
@@ -589,6 +599,7 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+            self.billingInformationViewController = billingInformationViewController
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
 
@@ -829,6 +840,28 @@ extension OrderDetailsViewModel {
         }
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
             Task { @MainActor in finish(result) }
+        }
+        stores.dispatch(action)
+    }
+
+    // Address cells need the countries cache to show state names instead of numeric codes like CN24.
+    private func syncCountriesIfNeeded(onCompletion: @escaping () -> Void) {
+        let retriever = LocallyStoredStateNameRetriever(storageManager: storageManager)
+        let needsStateNames = [order.billingAddress, order.shippingAddress].compactMap { $0 }.contains { address in
+            LocallyStoredStateNameRetriever.countriesWithNumericStateCodes.contains(address.country)
+            && !address.state.isEmpty
+            && !retriever.hasLocallyStoredCountry(code: address.country)
+        }
+        guard needsStateNames else {
+            onCompletion()
+            return
+        }
+        let action = DataAction.synchronizeCountries(siteID: order.siteID) { [weak self] result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error synchronizing countries: \(error)")
+            }
+            self?.billingInformationViewController?.reloadAddress()
+            onCompletion()
         }
         stores.dispatch(action)
     }

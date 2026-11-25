@@ -53,7 +53,7 @@ private extension ReceiptContentAssembler {
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
         let subtotalLines: [ReceiptTotalLine?] = [
             productTotalLine(order: order, currency: parameters.currency),
-            discountLine(order: order)
+            discountLine(order: order, currency: parameters.currency)
         ] + feeLines(fees: order.fees, currency: parameters.currency) + [
             lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal, currency: parameters.currency),
             lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription, amount: order.totalTax, currency: parameters.currency)
@@ -72,13 +72,15 @@ private extension ReceiptContentAssembler {
                                 amount: currencyFormatter.formatAmount(lineItemsTotal, with: currency) ?? "")
     }
 
-    func discountLine(order: Order) -> ReceiptTotalLine? {
-        let discountValue = NSDecimalNumber(apiAmount: order.discountTotal).decimalValue
+    func discountLine(order: Order, currency: String) -> ReceiptTotalLine? {
+        let parsedDiscount = NSDecimalNumber(apiAmount: order.discountTotal).decimalValue
+        // An empty or malformed discount_total parses to NaN, which the currency formatter can't format.
+        let discountValue = parsedDiscount.isNaN ? 0 : parsedDiscount
         if discountValue == 0 && order.coupons.isEmpty {
             return nil
         }
         return ReceiptTotalLine(description: discountLineDescription(order: order),
-                                amount: discountLineAmount(order: order, value: discountValue))
+                                amount: discountLineAmount(value: discountValue, currency: currency))
     }
 
     func discountLineDescription(order: Order) -> String {
@@ -93,12 +95,8 @@ private extension ReceiptContentAssembler {
         return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, couponCodes)
     }
 
-    func discountLineAmount(order: Order, value: Decimal) -> String {
-        if value > 0 {
-            return "-\(order.discountTotal)"
-        } else {
-            return order.discountTotal
-        }
+    func discountLineAmount(value: Decimal, currency: String) -> String {
+        currencyFormatter.formatAmount(value, with: currency, isNegative: value > 0) ?? ""
     }
 
     /// One line per fee so each POS custom amount prints under its own name, in order.

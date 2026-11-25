@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReasonView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var reasonText: String
     @State private var buttonState: POSButtonState = .idle
     @State private var errorMessage: String?
@@ -32,7 +33,8 @@ struct POSRefundReasonView: View {
             errorMessage: $errorMessage,
             isButtonEnabled: isAddButtonEnabled,
             onSubmit: { saveReasonIfValid() },
-            onClose: onClose
+            onClose: onClose,
+            fillsAvailableHeight: horizontalSizeClass == .compact
         )
     }
 }

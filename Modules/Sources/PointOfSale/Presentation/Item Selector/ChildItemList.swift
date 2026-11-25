@@ -34,14 +34,14 @@ struct ChildItemList: View {
     var body: some View {
         VStack {
             switch state {
-            case .initial, .loaded([], _):
+            case .initial, .loaded([], _), .empty:
                 emptyView
+                    .posHidesCompactCartButton()
             case .loading, .loaded, .inlineError:
                 listView
             case let .error(error):
                 errorView(error: error)
-            case .empty:
-                emptyView
+                    .posHidesCompactCartButton()
             }
         }
         .background(Color.posSurface.ignoresSafeArea())

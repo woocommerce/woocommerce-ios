@@ -15,13 +15,23 @@ struct POSMetrics: Equatable {
     let padding: Scale
     let productCardSize: CGFloat
     let cartRowSize: CGFloat
+    let checkboxSize: CGFloat
 
     var menuRowMinHeight: CGFloat {
         self == .compact ? 48 : 64
     }
 
-    static let regular = POSMetrics(spacing: .regular, padding: .regular, productCardSize: 112, cartRowSize: 96)
-    static let compact = POSMetrics(spacing: .compact, padding: .compact, productCardSize: 96, cartRowSize: 80)
+    /// Illustration size on empty and error screens, matching Android POS (80pt, scaled to 75% on phones).
+    var statusIllustrationSize: CGFloat {
+        self == .compact ? 60 : 80
+    }
+
+    var statusErrorMarkSize: POSErrorAndAlertIconSize {
+        self == .compact ? .largeCompact : .large
+    }
+
+    static let regular = POSMetrics(spacing: .regular, padding: .regular, productCardSize: 112, cartRowSize: 96, checkboxSize: 32)
+    static let compact = POSMetrics(spacing: .compact, padding: .compact, productCardSize: 96, cartRowSize: 80, checkboxSize: 24)
 
     static func metrics(for layoutScale: POSLayoutScale) -> POSMetrics {
         switch layoutScale {

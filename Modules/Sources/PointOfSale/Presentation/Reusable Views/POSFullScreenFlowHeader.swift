@@ -17,9 +17,8 @@ extension View {
                                                                        action: action))
     }
 
-    func posModalFlowHeaderTitle(_ title: String?, alignment: POSPageHeaderTitleAlignment = .leading) -> some View {
+    func posModalFlowHeaderTitle(_ title: String?) -> some View {
         preference(key: POSModalFlowHeaderTitleKey.self, value: title)
-            .preference(key: POSModalFlowHeaderTitleAlignmentKey.self, value: alignment)
     }
 }
 
@@ -30,7 +29,6 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @State private var dismissHandler = POSModalFlowAction.Handler()
     @State private var backAction: POSModalFlowAction?
     @State private var contentTitle: String?
-    @State private var titleAlignment = POSPageHeaderTitleAlignment.leading
     @State private var closeAccessibilityIdentifier: String?
     @State private var stepNavigation = POSModalFlowStepNavigation()
 
@@ -41,13 +39,10 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                 .environment(\.posModalCompactStyle, style)
                 .onPreferenceChange(POSModalFlowBackActionKey.self) { backAction = $0 }
                 .onPreferenceChange(POSModalFlowHeaderTitleKey.self) { contentTitle = $0 }
-                .onPreferenceChange(POSModalFlowHeaderTitleAlignmentKey.self) { titleAlignment = $0 }
                 .onPreferenceChange(POSModalFlowCloseAccessibilityIdentifierKey.self) { closeAccessibilityIdentifier = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
                     POSFullScreenFlowHeader(title: contentTitle ?? title,
-                                            titleAlignment: titleAlignment,
-                                            buttons: .init(backAction: backAction, closeAction: closeAction,
-                                                           titleAlignment: titleAlignment))
+                                            buttons: .init(title: contentTitle ?? title, backAction: backAction, closeAction: closeAction))
                 }
                 .environment(\.posModalFlowStepNavigation, stepNavigation)
         } else {
@@ -90,8 +85,8 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
     let leading: Leading?
     let trailingClose: POSModalFlowAction?
 
-    init(backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?, titleAlignment: POSPageHeaderTitleAlignment = .leading) {
-        if titleAlignment == .center || backAction != nil {
+    init(title: String, backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?) {
+        if title.isEmpty || backAction != nil {
             leading = backAction.map { .back($0) }
             trailingClose = closeAction
         } else {
@@ -104,12 +99,10 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 private struct POSFullScreenFlowHeader: View {
     @Environment(\.posModalFlowStepNavigation) private var stepNavigation
     let title: String
-    let titleAlignment: POSPageHeaderTitleAlignment
     let buttons: POSFullScreenFlowHeaderButtons
 
     var body: some View {
         POSPageHeaderView(title: title,
-                          titleAlignment: titleAlignment,
                           leadingContent: {
             // Both leading buttons share one slot, so the title stays in place while they crossfade.
             ZStack {
@@ -246,15 +239,5 @@ private struct POSModalFlowHeaderTitleKey: PreferenceKey {
 
     static func reduce(value: inout String?, nextValue: () -> String?) {
         value = value ?? nextValue()
-    }
-}
-
-private struct POSModalFlowHeaderTitleAlignmentKey: PreferenceKey {
-    static let defaultValue = POSPageHeaderTitleAlignment.leading
-
-    static func reduce(value: inout POSPageHeaderTitleAlignment, nextValue: () -> POSPageHeaderTitleAlignment) {
-        if nextValue() == .center {
-            value = .center
-        }
     }
 }

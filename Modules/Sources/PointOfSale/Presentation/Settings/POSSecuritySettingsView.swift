@@ -65,7 +65,7 @@ struct POSSecuritySettingsView: View {
             isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
         }
         .posModal(item: presentationBinding,
-                  compactStyle: presentation.destination?.compactStyle(editorTitle: Localization.title) ?? .fullScreen(title: Localization.title),
+                  compactStyle: presentation.destination?.compactStyle ?? .fullScreen(title: Localization.title),
                   onDismissCompleted: { destination in
                       guard controller.isVisible else { endEditing(); return }
                       presentation.dismissalCompleted(for: destination)

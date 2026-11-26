@@ -73,7 +73,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .building,
                                    orderState: orderState,
-                                   couponItem: coupon) == .idle)
+                                   couponItem: coupon,
+                                   cart: Cart()) == .idle)
     }
 
     @Test func couponRowState_finalizing_and_syncing_returns_validating() async throws {
@@ -83,7 +84,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .syncing,
-                                   couponItem: coupon) == .validating)
+                                   couponItem: coupon,
+                                   cart: Cart()) == .validating)
     }
 
     @Test func couponRowState_finalizing_and_loaded_with_matching_coupon_returns_valid() async throws {
@@ -101,7 +103,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .loaded(orderTotals),
-                                   couponItem: coupon) == .valid(couponTotal))
+                                   couponItem: coupon,
+                                   cart: Cart()) == .valid(couponTotal))
     }
 
     @Test func couponRowState_coupon_code_match_is_case_insensitive() async throws {
@@ -118,7 +121,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .loaded(orderTotals),
-                                   couponItem: coupon) == .valid(couponTotal))
+                                   couponItem: coupon,
+                                   cart: Cart()) == .valid(couponTotal))
     }
 
     @Test func couponRowState_finalizing_and_loaded_with_no_matching_coupon_returns_idle() async throws {
@@ -134,7 +138,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .loaded(orderTotals),
-                                   couponItem: coupon) == .idle)
+                                   couponItem: coupon,
+                                   cart: Cart()) == .idle)
     }
 
     @Test func couponRowState_finalizing_and_invalid_coupon_error_returns_invalid() async throws {
@@ -144,7 +149,8 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .error(.invalidCoupon("Invalid coupon"), {}),
-                                   couponItem: coupon) == .invalid)
+                                   couponItem: coupon,
+                                   cart: Cart()) == .invalid)
     }
 
     @Test func couponRowState_finalizing_and_other_error_returns_idle() async throws {
@@ -154,7 +160,47 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .error(.other("Some other error"), {}),
-                                   couponItem: coupon) == .idle)
+                                   couponItem: coupon,
+                                   cart: Cart()) == .idle)
+    }
+
+    @Test func couponRowState_coupon_without_discount_and_only_custom_amounts_returns_notApplied() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: false)])
+
+        // When, Then
+        #expect(sut.couponRowState(orderStage: .finalizing,
+                                   orderState: orderState,
+                                   couponItem: cart.coupons[0],
+                                   cart: cart) == .notApplied)
+    }
+
+    @Test func couponRowState_coupon_without_discount_and_products_in_cart_returns_valid() async throws {
+        // Given
+        var cart = makeCartWithCoupon(appliesToWholeCart: true)
+        cart.purchasableItems = [makeItem()]
+        let couponTotal = makeCouponTotal(hasDiscount: false)
+        let orderState = makeLoadedOrderState(couponsTotals: [couponTotal])
+
+        // When, Then
+        #expect(sut.couponRowState(orderStage: .finalizing,
+                                   orderState: orderState,
+                                   couponItem: cart.coupons[0],
+                                   cart: cart) == .valid(couponTotal))
+    }
+
+    @Test func couponRowState_coupon_with_discount_and_only_custom_amounts_returns_valid() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+        let couponTotal = makeCouponTotal(hasDiscount: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [couponTotal])
+
+        // When, Then
+        #expect(sut.couponRowState(orderStage: .finalizing,
+                                   orderState: orderState,
+                                   couponItem: cart.coupons[0],
+                                   cart: cart) == .valid(couponTotal))
     }
 
     @Test func discountNotAppliedNote_building_stage_returns_false() async throws {

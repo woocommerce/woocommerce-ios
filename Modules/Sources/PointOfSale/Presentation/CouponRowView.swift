@@ -58,8 +58,12 @@ struct CouponRowView: View {
                     Text(couponTotal.total)
                         .foregroundColor(.posSuccess)
                         .font(.posBodySmallRegular())
+                case .notApplied:
+                    Text(Localization.couponNotApplied)
+                        .foregroundColor(.posAlert)
+                        .font(.posBodySmallRegular())
                 case .invalid:
-                    Text(Localization.invalidCoupon)
+                    Text(Localization.couponNotApplied)
                         .foregroundColor(.posError)
                         .font(.posBodySmallRegular())
                 case .idle, .validating, .none:
@@ -97,10 +101,11 @@ private extension CouponRowView {
 
 private extension CouponRowView {
     private enum Localization {
-        static let invalidCoupon = NSLocalizedString(
+        static let couponNotApplied = NSLocalizedString(
             "pointOfSale.couponRow.invalidCoupon",
             value: "Coupon not applied",
-            comment: "A message shown on the coupon if's not valid after attempting to apply it")
+            comment: "A message shown on the coupon if's not valid after attempting to apply it, "
+                + "or when the cart has only custom amounts, which coupons never discount")
     }
 }
 

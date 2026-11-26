@@ -18,10 +18,6 @@ struct ApiCredentials {
     ///
     static let googleServerId: String = "<#Google Server ID#>"
 
-    /// Tracks Prefix
-    ///
-    static let tracksPrefix: String = "<#Tracks Prefix#>"
-
     /// Sentry DSN
     ///
     static let sentryDSN: String = "<#Sentry DSN#>"

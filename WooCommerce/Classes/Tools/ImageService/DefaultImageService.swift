@@ -56,7 +56,7 @@ struct DefaultImageService: ImageService {
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
         let originalURL = Self.encodedURL(from: url)
-        let url = Self.imageURL(from: url)
+        let resource = Self.imageResource(from: url)
 
         let targetSize: CGSize
         if !imageView.bounds.isEmpty {
@@ -74,7 +74,7 @@ struct DefaultImageService: ImageService {
             shouldCacheImage: true
         )
 
-        imageView.kf.setImage(with: url,
+        imageView.kf.setImage(with: resource,
                               placeholder: placeholder,
                               options: options,
                               progressBlock: progressBlock) { result in
@@ -107,7 +107,7 @@ struct DefaultImageService: ImageService {
         }
 
         return KingfisherManager.shared.retrieveImage(
-            with: Self.httpsURL(from: url),
+            with: Self.httpsResource(for: url),
             options: buildImageRetrieveOptions(
                 targetSize: scaledSize,
                 shouldCacheImage: shouldCacheImage
@@ -133,8 +133,8 @@ struct DefaultImageService: ImageService {
     }
 
     /// Stores can return `http://` image URLs, which App Transport Security blocks.
-    static func imageURL(from string: String?) -> URL? {
-        encodedURL(from: string).map(httpsURL(from:))
+    static func imageResource(from string: String?) -> KF.ImageResource? {
+        encodedURL(from: string).map(httpsResource(for:))
     }
 
     /// Returns `nil` for cancelled loads, e.g. on cell reuse.
@@ -166,6 +166,11 @@ private extension DefaultImageService {
 
     static func httpsURL(from url: URL) -> URL {
         URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
+    }
+
+    /// Caches under the caller's URL, so `retrieveImageFromCache` and `storeImageInCache` with that URL still match.
+    static func httpsResource(for url: URL) -> KF.ImageResource {
+        KF.ImageResource(downloadURL: httpsURL(from: url), cacheKey: url.imageCacheKey)
     }
 
     static func logLoadFailure(originalURL: URL?, error: Error) {

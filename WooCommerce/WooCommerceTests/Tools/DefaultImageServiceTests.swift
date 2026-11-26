@@ -331,36 +331,92 @@ final class DefaultImageServiceTests: XCTestCase {
         XCTAssertNotNil(cachedImage)
     }
 
-    func test_imageURL_when_string_is_http_then_returns_https_url() {
+    func test_retrieveImage_when_url_is_http_then_downloads_https_url_and_caches_under_original_url() {
+        // Given
+        let httpURL = URL(string: "http://woocommerce.com/fun")!
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: MockImageCache(name: "Testing"), imageDownloader: mockDownloader)
+
         // When
-        let imageURL = DefaultImageService.imageURL(from: "http://woocommerce.com/image.jpg?w=100")
+        let waitForCacheRetrieval = expectation(description: "Wait for retrieving image from cache")
+        var retrievedImage: UIImage?
+        var cachedImage: UIImage?
+        _ = imageService.retrieveImage(with: httpURL, targetSize: nil, shouldCacheImage: true) { image, _ in
+            retrievedImage = image
+            self.imageService.retrieveImageFromCache(with: httpURL) { image in
+                cachedImage = image
+                waitForCacheRetrieval.fulfill()
+            }
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(imageURL?.absoluteString, "https://woocommerce.com/image.jpg?w=100")
+        XCTAssertNotNil(retrievedImage)
+        XCTAssertNotNil(cachedImage)
     }
 
-    func test_imageURL_when_string_is_http_with_spaces_then_returns_encoded_https_url() {
+    func test_downloadAndCacheImageForImageView_when_url_is_http_then_loads_https_url_and_caches_under_original_url() {
+        // Given
+        let httpURL = URL(string: "http://woocommerce.com/fun")!
+        let imageView = UIImageView()
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: MockImageCache(name: "Testing"), imageDownloader: mockDownloader)
+
         // When
-        let imageURL = DefaultImageService.imageURL(from: "http://woocommerce.com/my image.jpg")
+        let waitForCacheRetrieval = expectation(description: "Wait for retrieving image from cache")
+        var downloadedImage: UIImage?
+        var cachedImage: UIImage?
+        imageService.downloadAndCacheImageForImageView(imageView,
+                                                       with: httpURL.absoluteString,
+                                                       placeholder: nil,
+                                                       progressBlock: nil) { image, _ in
+            downloadedImage = image
+            self.imageService.retrieveImageFromCache(with: httpURL) { image in
+                cachedImage = image
+                waitForCacheRetrieval.fulfill()
+            }
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(imageURL?.absoluteString, "https://woocommerce.com/my%20image.jpg")
+        XCTAssertNotNil(downloadedImage)
+        XCTAssertNotNil(imageView.image)
+        XCTAssertNotNil(cachedImage)
     }
 
-    func test_imageURL_when_string_is_https_then_returns_same_url() {
+    func test_imageResource_when_string_is_http_then_downloads_https_url_and_keeps_http_cache_key() {
         // When
-        let imageURL = DefaultImageService.imageURL(from: "https://woocommerce.com/image.jpg")
+        let resource = DefaultImageService.imageResource(from: "http://woocommerce.com/image.jpg?w=100")
 
         // Then
-        XCTAssertEqual(imageURL?.absoluteString, "https://woocommerce.com/image.jpg")
+        XCTAssertEqual(resource?.downloadURL.absoluteString, "https://woocommerce.com/image.jpg?w=100")
+        XCTAssertEqual(resource?.cacheKey, "http://woocommerce.com/image.jpg?w=100")
     }
 
-    func test_imageURL_when_string_is_nil_then_returns_nil() {
+    func test_imageResource_when_string_is_http_with_spaces_then_returns_encoded_https_url() {
         // When
-        let imageURL = DefaultImageService.imageURL(from: nil)
+        let resource = DefaultImageService.imageResource(from: "http://woocommerce.com/my image.jpg")
 
         // Then
-        XCTAssertNil(imageURL)
+        XCTAssertEqual(resource?.downloadURL.absoluteString, "https://woocommerce.com/my%20image.jpg")
+        XCTAssertEqual(resource?.cacheKey, "http://woocommerce.com/my%20image.jpg")
+    }
+
+    func test_imageResource_when_string_is_https_then_returns_same_url() {
+        // When
+        let resource = DefaultImageService.imageResource(from: "https://woocommerce.com/image.jpg")
+
+        // Then
+        XCTAssertEqual(resource?.downloadURL.absoluteString, "https://woocommerce.com/image.jpg")
+        XCTAssertEqual(resource?.cacheKey, "https://woocommerce.com/image.jpg")
+    }
+
+    func test_imageResource_when_string_is_nil_then_returns_nil() {
+        // When
+        let resource = DefaultImageService.imageResource(from: nil)
+
+        // Then
+        XCTAssertNil(resource)
     }
 
     func test_loadFailureDescription_when_url_session_error_then_includes_host_and_code() {

@@ -740,7 +740,9 @@ private extension PointOfSaleDashboardView {
     func trackElapsedTimeForInitialLoadingState() {
         if let waitingTimeTracker {
             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
-            let event = waitingTimeTracker.end(using: .milliseconds, additionalProperties: ["sync_strategy": syncStrategy])
+            let event = waitingTimeTracker.end(using: .milliseconds,
+                                               additionalProperties: ["sync_strategy": syncStrategy,
+                                                                      "after_onboarding_guide": opensAfterOnboardingGuide ? "true" : "false"])
             analytics.track(event: event)
             self.waitingTimeTracker = nil
         }

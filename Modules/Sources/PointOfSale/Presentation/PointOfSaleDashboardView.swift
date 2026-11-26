@@ -18,6 +18,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+    @State private var hasTrackedInitialLoad = false
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
@@ -241,11 +242,14 @@ struct PointOfSaleDashboardView: View {
             loadItemsWhenEligible()
         }
         .onAppear {
-            trackTimeForInitialLoadingState()
-            // POS can open straight to content, e.g. after the onboarding guide has waited for eligibility,
-            // so no change to content would follow.
-            if viewState == .content {
-                trackElapsedTimeForInitialLoadingState()
+            // Full-screen presentations such as Tap to Pay make the dashboard appear again; it loaded only once.
+            if !hasTrackedInitialLoad && waitingTimeTracker == nil {
+                trackTimeForInitialLoadingState()
+                // POS can open straight to content, e.g. after the onboarding guide has waited for eligibility,
+                // so no change to content would follow.
+                if viewState == .content {
+                    trackElapsedTimeForInitialLoadingState()
+                }
             }
             loadItemsWhenEligible()
         }
@@ -739,6 +743,7 @@ private extension PointOfSaleDashboardView {
             let event = waitingTimeTracker.end(using: .milliseconds, additionalProperties: ["sync_strategy": syncStrategy])
             analytics.track(event: event)
             self.waitingTimeTracker = nil
+            hasTrackedInitialLoad = true
         }
     }
 

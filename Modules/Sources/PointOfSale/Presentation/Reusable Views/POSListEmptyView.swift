@@ -19,11 +19,15 @@ struct POSListEmptyView: View {
     private let viewModel: any POSListEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
+    private let actionAccessibilityIdentifier: String?
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(viewModel: any POSListEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
+    init(viewModel: any POSListEmptyViewModelProtocol,
+         actionAccessibilityIdentifier: String? = nil,
+         onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.actionAccessibilityIdentifier = actionAccessibilityIdentifier
         self.onAction = onAction
     }
 
@@ -62,12 +66,17 @@ struct POSListEmptyView: View {
             .multilineTextAlignment(.center)
         } buttons: {
             if let onAction, let buttonTitle = viewModel.buttonTitle {
-                Button(action: {
+                let button = Button(action: {
                     onAction()
                 }, label: {
                     Text(buttonTitle)
                 })
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
+                if let actionAccessibilityIdentifier {
+                    button.accessibilityIdentifier(actionAccessibilityIdentifier)
+                } else {
+                    button
+                }
             }
         }
         .animation(.default, value: keyboard.keyboardHeight)

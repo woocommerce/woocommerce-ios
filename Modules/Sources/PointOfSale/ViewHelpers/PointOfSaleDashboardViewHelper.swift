@@ -30,8 +30,11 @@ struct PointOfSaleDashboardViewHelper {
     ///
     /// The dashboard does not move up for a full keyboard, so the button would sit under it
     /// and show through the translucent keyboard.
-    static func showsCompactCartButton(cartIsEmpty: Bool, floatingControlSuppressed: Bool, isFullSizeKeyboardVisible: Bool) -> Bool {
-        !cartIsEmpty && !floatingControlSuppressed && !isFullSizeKeyboardVisible
+    static func showsCompactCartButton(cartIsEmpty: Bool,
+                                       floatingControlSuppressed: Bool,
+                                       isFullSizeKeyboardVisible: Bool,
+                                       itemListHidesCartButton: Bool) -> Bool {
+        !cartIsEmpty && !floatingControlSuppressed && !isFullSizeKeyboardVisible && !itemListHidesCartButton
     }
 
     /// Whether a barcode scan should auto-open the compact-layout cart sheet.
@@ -49,19 +52,6 @@ struct PointOfSaleDashboardViewHelper {
     /// merchant close it by hand before adding anything. The regular layout keeps its empty cart pane.
     static func shouldDismissCompactCartSheet(isPhoneLayout: Bool, cartIsEmpty: Bool) -> Bool {
         isPhoneLayout && cartIsEmpty
-    }
-
-    enum ExitDecision: Equatable {
-        case showConfirmation
-        case leave(tracksConfirmation: Bool)
-    }
-
-    /// The approval prompt already confirms the exit, so an approved exit leaves POS without the confirmation.
-    static func exitDecision(confirmingFirst: Bool, approved: Bool) -> ExitDecision {
-        guard confirmingFirst else {
-            return .leave(tracksConfirmation: false)
-        }
-        return approved ? .leave(tracksConfirmation: true) : .showConfirmation
     }
 }
 

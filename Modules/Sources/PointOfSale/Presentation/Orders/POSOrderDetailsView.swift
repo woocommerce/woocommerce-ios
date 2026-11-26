@@ -266,7 +266,6 @@ private extension POSOrderDetailsView {
                     }
                 }
             }
-            .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
         }
         .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
@@ -361,7 +360,6 @@ private extension POSOrderDetailsView {
 
             POSPlaceholderText(.redactedPlaceholder(length: 4), font: .posBodyMediumRegular())
         }
-        .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
     }
 
     @ViewBuilder

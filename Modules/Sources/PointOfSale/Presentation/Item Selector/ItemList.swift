@@ -61,7 +61,6 @@ struct ItemList<HeaderView: View>: View {
                     if let state {
                         ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
                             ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler, onItemSelected: onItemSelected)
-                                .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
                         }
                     }
 

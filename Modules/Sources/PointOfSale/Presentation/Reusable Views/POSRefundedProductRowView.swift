@@ -40,7 +40,6 @@ struct POSRefundedProductRowView: View {
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
-        .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel ?? defaultAccessibilityLabel)
     }

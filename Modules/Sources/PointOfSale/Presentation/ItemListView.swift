@@ -246,7 +246,6 @@ struct ItemListView: View {
                         CustomAmountEntryRow(onTap: {
                             posModel.startAddingCustomAmount()
                         })
-                        .dynamicTypeSize(...PointOfSaleItemListCardConstants.maximumDynamicTypeSize)
                     }
                 }
             )

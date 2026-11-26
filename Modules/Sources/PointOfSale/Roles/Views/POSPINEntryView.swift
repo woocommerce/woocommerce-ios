@@ -624,6 +624,11 @@ extension POSPINEntryView {
     }
 }
 
+extension POSModalCompactStyle {
+    /// PIN screens show their title above the dots, so the phone header keeps only its buttons.
+    static let pinEntry = POSModalCompactStyle.fullScreen(title: "")
+}
+
 // MARK: - Preview
 
 #if DEBUG

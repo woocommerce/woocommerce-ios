@@ -21,12 +21,6 @@ struct POSManagerOverrideView: View {
     }
 }
 
-extension POSModalCompactStyle {
-    static var managerApproval: POSModalCompactStyle {
-        .fullScreen(title: POSManagerOverrideView.Localization.title)
-    }
-}
-
 private extension POSManagerOverrideView {
     var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -34,7 +28,7 @@ private extension POSManagerOverrideView {
 
     var modalContent: some View {
         VStack(spacing: metrics.spacing.large) {
-            header(spacing: metrics.spacing.medium)
+            header
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -46,13 +40,9 @@ private extension POSManagerOverrideView {
     }
 
     var compactContent: some View {
-        VStack(spacing: metrics.spacing.large) {
-            // The flow header already shows the title.
-            if isFullScreenFlow {
-                reason
-            } else {
-                header(spacing: metrics.spacing.small)
-            }
+        // Equal space above and below the dots, as on the lock and PIN setup screens.
+        VStack(spacing: POSPINEntryView.contentSpacing) {
+            header
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -66,8 +56,8 @@ private extension POSManagerOverrideView {
         .fixedSize(horizontal: false, vertical: !isFullScreenFlow)
     }
 
-    func header(spacing: CGFloat) -> some View {
-        VStack(spacing: spacing) {
+    var header: some View {
+        VStack(spacing: metrics.spacing.medium) {
             title
             reason
         }

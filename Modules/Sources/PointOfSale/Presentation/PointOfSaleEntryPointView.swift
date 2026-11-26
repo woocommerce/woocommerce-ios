@@ -94,7 +94,6 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
-         cardPaymentHistory: POSCardPaymentHistoryProviding? = nil,
          registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
         self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -195,7 +194,6 @@ public struct PointOfSaleEntryPointView: View {
         self._onboardingGuideModel = State(initialValue: POSOnboardingGuideModel(
             siteID: siteID,
             featureFlags: services.featureFlags,
-            cardPaymentHistory: cardPaymentHistory,
             analytics: services.analytics
         ))
     }
@@ -236,8 +234,8 @@ public struct PointOfSaleEntryPointView: View {
                     .accessibilityAddTraits(.isModal)
             }
         }
-        .task(id: posEntryPointController.eligibilityState) {
-            await onboardingGuideModel.resolveVisibility(eligibilityState: posEntryPointController.eligibilityState)
+        .onChange(of: posEntryPointController.eligibilityState, initial: true) { _, eligibilityState in
+            onboardingGuideModel.resolveVisibility(eligibilityState: eligibilityState)
         }
         // POS waits behind the guide, so its catalog sync starts only once the guide is gone.
         .task(id: onboardingGuideModel.visibility) {

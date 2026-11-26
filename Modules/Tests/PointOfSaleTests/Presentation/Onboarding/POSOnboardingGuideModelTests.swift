@@ -6,7 +6,6 @@ import UIKit
 struct POSOnboardingGuideModelTests {
     private let siteID: Int64 = 123
     private let preferences = MockPOSOnboardingGuidePreferences()
-    private let cardPaymentHistory = MockPOSCardPaymentHistory()
     private let analytics = MockPOSAnalytics()
 
     private func makeSUT(isFlagEnabled: Bool = true,
@@ -17,7 +16,6 @@ struct POSOnboardingGuideModelTests {
                                        featureFlags: featureFlags,
                                        deviceIdiom: deviceIdiom,
                                        preferences: preferences,
-                                       cardPaymentHistory: cardPaymentHistory,
                                        analytics: analytics)
     }
 
@@ -33,112 +31,95 @@ struct POSOnboardingGuideModelTests {
         #expect(sut.visibility == .undetermined)
     }
 
-    @Test func resolveVisibility_when_flag_disabled_then_hides_guide_before_eligibility_is_known() async {
+    @Test func resolveVisibility_when_flag_disabled_then_hides_guide_before_eligibility_is_known() {
         // Given
         let sut = makeSUT(isFlagEnabled: false)
 
         // When
-        await sut.resolveVisibility(eligibilityState: nil)
+        sut.resolveVisibility(eligibilityState: nil)
 
         // Then
         #expect(sut.visibility == .hidden)
     }
 
-    @Test func resolveVisibility_when_on_iPad_then_hides_guide_before_eligibility_is_known() async {
+    @Test func resolveVisibility_when_on_iPad_then_hides_guide_before_eligibility_is_known() {
         // Given
         let sut = makeSUT(deviceIdiom: .pad)
 
         // When
-        await sut.resolveVisibility(eligibilityState: nil)
+        sut.resolveVisibility(eligibilityState: nil)
 
         // Then
         #expect(sut.visibility == .hidden)
     }
 
-    @Test func resolveVisibility_when_store_already_completed_guide_then_hides_guide_without_checking_payments() async {
+    @Test func resolveVisibility_when_store_already_completed_guide_then_hides_guide() {
         // Given
         preferences.completedSiteIDs = [siteID]
         let sut = makeSUT()
 
         // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // Then
         #expect(sut.visibility == .hidden)
-        #expect(cardPaymentHistory.requestedSiteIDs.isEmpty)
         #expect(analytics.events.isEmpty)
     }
 
-    @Test func resolveVisibility_when_eligibility_unknown_then_stays_undetermined() async {
+    @Test func resolveVisibility_when_eligibility_unknown_then_stays_undetermined() {
         // Given
         let sut = makeSUT()
 
         // When
-        await sut.resolveVisibility(eligibilityState: nil)
+        sut.resolveVisibility(eligibilityState: nil)
 
         // Then
         #expect(sut.visibility == .undetermined)
-        #expect(cardPaymentHistory.requestedSiteIDs.isEmpty)
     }
 
-    @Test func resolveVisibility_when_eligible_without_card_payment_then_guide_shows_and_tracks_shown() async {
+    @Test func resolveVisibility_when_eligible_then_guide_shows_and_tracks_shown() {
         // Given
         let sut = makeSUT()
 
         // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // Then
         #expect(sut.visibility == .visible)
-        #expect(cardPaymentHistory.requestedSiteIDs == [siteID])
         #expect(analytics.events.map(\.eventName) == ["pos_onboarding_shown"])
     }
 
-    @Test func resolveVisibility_when_card_payment_recorded_then_guide_is_hidden() async {
+    @Test func resolveVisibility_when_ineligible_then_guide_is_hidden() {
         // Given
-        cardPaymentHistory.hasRecordedCardPayment = true
         let sut = makeSUT()
 
         // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .ineligible(reason: .unsupportedCountry))
+
+        // Then
+        #expect(sut.visibility == .hidden)
+    }
+
+    @Test func resolveVisibility_when_store_becomes_eligible_after_being_ineligible_then_guide_stays_hidden() {
+        // Given
+        let sut = makeSUT()
+        sut.resolveVisibility(eligibilityState: .ineligible(reason: .noInternetConnection))
+
+        // When
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // Then
         #expect(sut.visibility == .hidden)
         #expect(analytics.events.isEmpty)
     }
 
-    @Test func resolveVisibility_when_ineligible_then_guide_is_hidden_without_checking_payments() async {
+    @Test func resolveVisibility_when_called_again_after_showing_then_tracks_shown_once() {
         // Given
         let sut = makeSUT()
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // When
-        await sut.resolveVisibility(eligibilityState: .ineligible(reason: .unsupportedCountry))
-
-        // Then
-        #expect(sut.visibility == .hidden)
-        #expect(cardPaymentHistory.requestedSiteIDs.isEmpty)
-    }
-
-    @Test func resolveVisibility_when_store_becomes_eligible_after_being_ineligible_then_guide_stays_hidden() async {
-        // Given
-        let sut = makeSUT()
-        await sut.resolveVisibility(eligibilityState: .ineligible(reason: .noInternetConnection))
-
-        // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
-
-        // Then
-        #expect(sut.visibility == .hidden)
-        #expect(analytics.events.isEmpty)
-    }
-
-    @Test func resolveVisibility_when_called_again_after_showing_then_tracks_shown_once() async {
-        // Given
-        let sut = makeSUT()
-        await sut.resolveVisibility(eligibilityState: .eligible)
-
-        // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["pos_onboarding_shown"])
@@ -146,10 +127,10 @@ struct POSOnboardingGuideModelTests {
 
     // MARK: - Buttons
 
-    @Test func startSellingTapped_then_saves_choice_hides_guide_and_tracks_step() async throws {
+    @Test func startSellingTapped_then_saves_choice_hides_guide_and_tracks_step() throws {
         // Given
         let sut = makeSUT()
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .eligible)
         let step = try #require(steps.last)
 
         // When
@@ -163,10 +144,10 @@ struct POSOnboardingGuideModelTests {
         #expect(event.properties["step"] as? String == "step_3")
     }
 
-    @Test func exitTapped_then_tracks_step_without_saving_choice() async throws {
+    @Test func exitTapped_then_tracks_step_without_saving_choice() throws {
         // Given
         let sut = makeSUT()
-        await sut.resolveVisibility(eligibilityState: .eligible)
+        sut.resolveVisibility(eligibilityState: .eligible)
 
         // When
         sut.exitTapped(on: steps[1])

@@ -170,7 +170,6 @@ private func onboardingGuidePreview(page: Int) -> some View {
                            model: POSOnboardingGuideModel(siteID: 1,
                                                           featureFlags: EmptyPOSFeatureFlags(),
                                                           preferences: POSOnboardingGuidePreferences(),
-                                                          cardPaymentHistory: nil,
                                                           analytics: EmptyPOSAnalytics()),
                            onExit: {})
         .posPreviewSmallestPhone()

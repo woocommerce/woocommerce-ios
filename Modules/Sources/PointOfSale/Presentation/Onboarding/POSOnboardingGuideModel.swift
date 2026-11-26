@@ -17,26 +17,23 @@ final class POSOnboardingGuideModel {
     private let featureFlags: POSFeatureFlagProviding
     private let deviceIdiom: UIUserInterfaceIdiom
     private let preferences: POSOnboardingGuidePreferenceStoring
-    private let cardPaymentHistory: POSCardPaymentHistoryProviding?
     private let analytics: POSAnalyticsProviding
 
     init(siteID: Int64,
          featureFlags: POSFeatureFlagProviding,
          deviceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          preferences: POSOnboardingGuidePreferenceStoring = POSOnboardingGuidePreferences(),
-         cardPaymentHistory: POSCardPaymentHistoryProviding?,
          analytics: POSAnalyticsProviding) {
         self.siteID = siteID
         self.featureFlags = featureFlags
         self.deviceIdiom = deviceIdiom
         self.preferences = preferences
-        self.cardPaymentHistory = cardPaymentHistory
         self.analytics = analytics
     }
 
     /// Settles once per POS session. The checks that don't need eligibility run first, so POS doesn't wait for it
     /// when the guide can't show. A store that becomes eligible later in the session has already started POS.
-    func resolveVisibility(eligibilityState: POSEligibilityState?) async {
+    func resolveVisibility(eligibilityState: POSEligibilityState?) {
         guard visibility == .undetermined else {
             return
         }
@@ -54,14 +51,8 @@ final class POSOnboardingGuideModel {
             visibility = .hidden
             return
         }
-        let hasRecordedCardPayment = await cardPaymentHistory?.hasRecordedCardPayment(siteID: siteID) ?? false
-        guard visibility == .undetermined else {
-            return
-        }
-        visibility = hasRecordedCardPayment ? .hidden : .visible
-        if visibility == .visible {
-            analytics.track(event: WooAnalyticsEvent.POSOnboardingGuide.shown())
-        }
+        visibility = .visible
+        analytics.track(event: WooAnalyticsEvent.POSOnboardingGuide.shown())
     }
 
     func stepViewed(_ step: POSOnboardingGuideStep) {

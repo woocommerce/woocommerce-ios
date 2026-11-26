@@ -17,6 +17,7 @@ public final class MediaAssetExporter: MediaExporter {
 
     /// Default shared instance of the PHImageManager
     ///
+    @MainActor
     private lazy var imageManager = PHImageManager.default()
 
     init(asset: PHAsset,
@@ -46,36 +47,13 @@ public final class MediaAssetExporter: MediaExporter {
         guard asset.mediaType == .image else {
             throw AssetExportError.expectedPHAssetImageType
         }
-        var filename = UUID().uuidString + ".jpg"
-        var resourceAvailableLocally = false
-        // Get the resource matching the type, to export.
-        let resources = PHAssetResource.assetResources(for: asset).filter({ $0.type == .photo })
-        if let resource = resources.first {
-            resourceAvailableLocally = true
-            filename = resource.originalFilename
-            if resource.uniformTypeIdentifier == UTType.gif.identifier {
-                // Handles GIF export differently from images.
-                return try await exportGIF(forAsset: asset, resource: resource)
-            }
+        let resource = PHAssetResource.assetResources(for: asset).first { $0.type == .photo }
+        if let resource, resource.uniformTypeIdentifier == UTType.gif.identifier {
+            return try await exportGIF(resource: resource)
         }
 
-        // Configure the options for requesting the image.
-        let options = PHImageRequestOptions()
-        options.version = .current
-        options.deliveryMode = .highQualityFormat
-        options.resizeMode = .exact
-        options.isNetworkAccessAllowed = true
-        // If we have a resource object that means we have a local copy of the asset so we can request the image in sync mode.
-        options.isSynchronous = resourceAvailableLocally
-
-        // Request the image.
-        let (data, uti, _, info) = await requestImage(asset: asset, options: options)
-        guard let imageData = data else {
-            guard let error = info?[PHImageErrorKey] as? Error else {
-                throw AssetExportError.failedLoadingPHImageManagerRequest
-            }
-            throw error
-        }
+        let filename = resource?.originalFilename ?? UUID().uuidString + ".jpg"
+        let (imageData, uti) = try await Self.requestImage(asset: asset, isSynchronous: resource != nil)
 
         let typeHint = preferredExportTypeFor(uti: uti)
 
@@ -119,13 +97,7 @@ public final class MediaAssetExporter: MediaExporter {
         options.isNetworkAccessAllowed = true
 
         // Export the video.
-        let (exportSession, info) = await requestVideoExportSession(asset: asset, options: options)
-        guard let exportSession else {
-            guard let error = info?[PHImageErrorKey] as? Error else {
-                throw AssetExportError.failedToExportVideo
-            }
-            throw error
-        }
+        let exportSession = try await requestVideoExportSession(asset: asset, options: options)
 
         DDLogDebug("🚀 Video export starts")
         try await exportSession.export(to: destinationURL, as: .mp4)
@@ -144,24 +116,41 @@ public final class MediaAssetExporter: MediaExporter {
     }
 }
 
+@MainActor
 private extension MediaAssetExporter {
-    func requestImage(asset: PHAsset, options: PHImageRequestOptions?) async -> (Data?, String?, CGImagePropertyOrientation, [AnyHashable: Any]?) {
-        await withCheckedContinuation { continuation in
-            imageManager.requestImageDataAndOrientation(for: asset,
-                                                        options: options) { data, uti, orientation, info in
-                continuation.resume(returning: (data, uti, orientation, info))
+    @concurrent
+    nonisolated static func requestImage(asset: PHAsset, isSynchronous: Bool) async throws -> (Data, String?) {
+        let options = PHImageRequestOptions()
+        options.version = .current
+        options.deliveryMode = .highQualityFormat
+        options.resizeMode = .exact
+        options.isNetworkAccessAllowed = true
+        options.isSynchronous = isSynchronous
+
+        return try await withCheckedThrowingContinuation { continuation in
+            PHImageManager.default().requestImageDataAndOrientation(for: asset,
+                                                                    options: options) { @Sendable data, uti, _, info in
+                guard let data else {
+                    continuation.resume(throwing: info?[PHImageErrorKey] as? Error ?? AssetExportError.failedLoadingPHImageManagerRequest)
+                    return
+                }
+                continuation.resume(returning: (data, uti))
             }
         }
     }
 
-    func requestVideoExportSession(asset: PHAsset, options: PHVideoRequestOptions?) async -> (AVAssetExportSession?, [AnyHashable: Any]?) {
-        await withCheckedContinuation { continuation in
-            imageManager.requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { exportSession, info in
-                if exportSession == nil {
+    func requestVideoExportSession(asset: PHAsset, options: PHVideoRequestOptions?) async throws -> AVAssetExportSession {
+        try await withCheckedThrowingContinuation { continuation in
+            imageManager.requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { @Sendable session, info in
+                guard let session else {
                     DDLogError("⛔️ Could not create export session for the selected video")
+                    continuation.resume(throwing: info?[PHImageErrorKey] as? Error ?? AssetExportError.failedToExportVideo)
+                    return
                 }
 
-                continuation.resume(returning: (exportSession, info))
+                // Photos creates a session for this request. Only the awaiting exporter uses it after the handoff.
+                nonisolated(unsafe) let preparedSession = session
+                continuation.resume(returning: preparedSession)
             }
         }
     }
@@ -186,7 +175,7 @@ private extension MediaAssetExporter {
     /// - parameter onCompletion: Called on successful export, with the local file URL of the exported asset.
     /// - parameter onError: Called if an error was encountered during export.
     ///
-    func exportGIF(forAsset asset: PHAsset, resource: PHAssetResource) async throws -> UploadableMedia {
+    func exportGIF(resource: PHAssetResource) async throws -> UploadableMedia {
         guard resource.uniformTypeIdentifier == UTType.gif.identifier else {
             throw AssetExportError.expectedPHAssetGIFType
         }
@@ -208,7 +197,7 @@ private extension MediaAssetExporter {
             manager.writeData(for: resource,
                               toFile: url,
                               options: options,
-                              completionHandler: { error in
+                              completionHandler: { @Sendable error in
                 if let error {
                     return continuation.resume(throwing: error)
                 }

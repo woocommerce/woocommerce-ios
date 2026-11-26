@@ -32,12 +32,9 @@ final class MockMediaStoresManager: DefaultStoresManager {
                 return
             }
             onCompletion(.success(media))
-        case .uploadMedia(_, _, _, _, _, let onCompletion):
-            guard let media else {
-                onCompletion(.failure(MediaActionError.unknown))
-                return
-            }
-            onCompletion(.success(media))
+        case .uploadMedia(_, _, _, _, _, let onCompletion), .uploadFile(_, _, _, _, let onCompletion):
+            let result: Result<Media, Error> = media.map { .success($0) } ?? .failure(MediaActionError.unknown)
+            MainActor.assumeIsolated { onCompletion(result) }
         case .retrieveMediaLibrary(_, _, _, _, _, let onCompletion):
             guard let media else {
                 onCompletion(.failure(MediaActionError.unknown))
@@ -45,12 +42,6 @@ final class MockMediaStoresManager: DefaultStoresManager {
             }
             onCompletion(.success([media]))
         case .updateProductID(_, _, _, let onCompletion):
-            guard let media else {
-                onCompletion(.failure(MediaActionError.unknown))
-                return
-            }
-            onCompletion(.success(media))
-        case .uploadFile(_, _, _, _, let onCompletion):
             guard let media else {
                 onCompletion(.failure(MediaActionError.unknown))
                 return

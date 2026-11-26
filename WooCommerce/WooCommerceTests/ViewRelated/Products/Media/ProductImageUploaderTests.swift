@@ -17,8 +17,7 @@ final class ProductImageUploaderTests: XCTestCase {
     private var testDefaults: UserDefaults!
     private var testUserDefaultsName: String!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
         mockFeatureFlagService = MockFeatureFlagService()
 
         // Create a truly unique UserDefaults instance for each test run
@@ -27,7 +26,7 @@ final class ProductImageUploaderTests: XCTestCase {
         storage = ProductImageStatusStorage(userDefaults: testDefaults, key: testUserDefaultsName)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         // Cancel all subscriptions
         errorsSubscription?.cancel()
         errorsSubscription = nil
@@ -48,8 +47,6 @@ final class ProductImageUploaderTests: XCTestCase {
         testDefaults.removeSuite(named: testUserDefaultsName)
         testDefaults = nil
         testUserDefaultsName = nil
-
-        super.tearDown()
     }
 
     private func createImageUploader(stores: StoresManager,

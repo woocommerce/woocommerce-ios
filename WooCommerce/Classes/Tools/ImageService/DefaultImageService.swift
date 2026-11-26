@@ -137,12 +137,14 @@ struct DefaultImageService: ImageService {
         encodedURL(from: string).map(httpsResource(for:))
     }
 
-    /// Returns `nil` for cancelled loads, e.g. on cell reuse.
+    /// Returns `nil` for cancelled loads, e.g. on cell reuse, and for items without an image URL.
     /// Includes only the host and scheme, as paths and queries can hold private data.
     static func loadFailureDescription(originalURL: URL?, error: Error) -> String? {
         let errorCode: String
         switch error as? KingfisherError {
         case .some(let kingfisherError) where kingfisherError.isTaskCancelled || kingfisherError.isNotCurrentTask:
+            return nil
+        case .imageSettingError(reason: .emptySource):
             return nil
         case .responseError(reason: .URLSessionError(let sessionError)):
             errorCode = "\((sessionError as NSError).code)"

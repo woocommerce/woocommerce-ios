@@ -466,6 +466,17 @@ final class DefaultImageServiceTests: XCTestCase {
         XCTAssertNil(description)
     }
 
+    func test_loadFailureDescription_when_source_is_empty_then_returns_nil() {
+        // Given
+        let error = KingfisherError.imageSettingError(reason: .emptySource)
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: nil, error: error)
+
+        // Then
+        XCTAssertNil(description)
+    }
+
     func test_loadFailureDescription_when_url_was_http_then_includes_original_scheme() {
         // Given
         let httpURL = URL(string: "http://woocommerce.com/fun")!

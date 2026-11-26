@@ -409,6 +409,7 @@ private extension POSTabCoordinator {
                     services: serviceAdaptor,
                     httpsConfigurationNotice: httpsConfigurationNotice,
                     itemProvider: itemProvider,
+                    cardPaymentHistory: POSCardPaymentHistoryProvider(stores: storesManager),
                     registerOnDismiss: { [weak hostingController] cleanup in
                         guard let hostingController,
                               !hostingController.isBeingDismissed,

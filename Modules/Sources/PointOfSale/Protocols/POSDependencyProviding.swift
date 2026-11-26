@@ -74,4 +74,5 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     @MainActor var externalNavigation: POSExternalNavigationProviding { get }
     @MainActor var externalViews: POSExternalViewProviding { get }
+    var onboardingGuidePreferences: POSOnboardingGuidePreferenceStoring { get }
 }

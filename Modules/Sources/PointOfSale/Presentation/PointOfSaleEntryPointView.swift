@@ -34,7 +34,7 @@ public struct PointOfSaleEntryPointView: View {
     @State private var lockSettings: POSLockSettings
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dismiss) private var dismiss
-    @State private var isOnboardingGuideDismissed = false
+    @State private var onboardingGuideModel: POSOnboardingGuideModel
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let registerOnDismiss: (@escaping () -> Void) -> Bool
@@ -94,6 +94,7 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         cardPaymentHistory: POSCardPaymentHistoryProviding? = nil,
          registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
         self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -191,6 +192,15 @@ public struct PointOfSaleEntryPointView: View {
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
         self.httpsConfigurationNotice = httpsConfigurationNotice
+        self._onboardingGuideModel = State(initialValue: POSOnboardingGuideModel(
+            siteID: siteID,
+            // The device idiom, not the size class, so iPad split view never shows the guide.
+            isEnabled: services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
+                && UIDevice.current.userInterfaceIdiom == .phone,
+            preferences: services.onboardingGuidePreferences,
+            cardPaymentHistory: cardPaymentHistory,
+            analytics: services.analytics
+        ))
     }
 
     public var body: some View {
@@ -201,12 +211,6 @@ public struct PointOfSaleEntryPointView: View {
                 .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
-    }
-
-    private var showsOnboardingGuide: Bool {
-        services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
-            && UIDevice.current.userInterfaceIdiom == .phone
-            && !isOnboardingGuideDismissed
     }
 
     private func content(isCompactLayout: Bool) -> some View {
@@ -228,16 +232,19 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .overlay {
-            // WOOMOB-4727 decides when the guide shows; for now the flag shows it each time POS opens on iPhone.
-            if showsOnboardingGuide {
-                POSOnboardingGuideView(onStartSelling: { isOnboardingGuideDismissed = true },
-                                       onExit: { dismiss() })
+            if onboardingGuideModel.visibility == .visible {
+                POSOnboardingGuideView(model: onboardingGuideModel, onExit: { dismiss() })
                     // VoiceOver stays in the guide while it covers POS.
                     .accessibilityElement(children: .contain)
                     .accessibilityAddTraits(.isModal)
             }
         }
-        .task {
+        .task(id: posEntryPointController.eligibilityState) {
+            await onboardingGuideModel.resolveVisibility(eligibilityState: posEntryPointController.eligibilityState)
+        }
+        // POS waits behind the guide, so its catalog sync starts only once the guide is gone.
+        .task(id: onboardingGuideModel.visibility) {
+            guard onboardingGuideModel.visibility == .hidden else { return }
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.

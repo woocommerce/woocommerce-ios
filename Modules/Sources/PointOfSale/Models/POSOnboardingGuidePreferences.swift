@@ -1,6 +1,6 @@
 import Foundation
 
-/// Public because the app target decides whether to show the guide before POS opens, while the POS module saves completion.
+/// Public because the app creates the one instance POS uses, passed in through `POSDependencyProviding`.
 public protocol POSOnboardingGuidePreferenceStoring {
     func hasCompletedGuide(for siteID: Int64) -> Bool
     func markGuideCompleted(for siteID: Int64)

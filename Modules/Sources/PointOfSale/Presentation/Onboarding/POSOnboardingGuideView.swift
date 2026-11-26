@@ -6,7 +6,7 @@ struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
     @State var currentPage = 0
 
-    let onStartSelling: () -> Void
+    let model: POSOnboardingGuideModel
     let onExit: () -> Void
 
     var body: some View {
@@ -36,21 +36,33 @@ struct POSOnboardingGuideView: View {
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
+        .onAppear {
+            model.stepViewed(currentStep)
+        }
+        .onChange(of: currentPage) {
+            model.stepViewed(currentStep)
+        }
     }
 
     private var steps: [POSOnboardingGuideStep] { POSOnboardingGuideStep.all }
 
+    private var currentStep: POSOnboardingGuideStep { steps[currentPage] }
+
     private func learnMore() {
-        // No-op until the video of a sale is ready.
+        // Only tracked until the video of a sale is ready.
+        model.videoTapped(on: currentStep)
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
         .init(primaryButton: .init(title: Localization.startSelling,
                                    accessibilityIdentifier: "pos-onboarding-guide-start-selling-button",
-                                   action: onStartSelling),
+                                   action: { model.startSellingTapped(on: currentStep) }),
               secondaryButton: .init(title: Localization.exit,
                                      accessibilityIdentifier: "pos-onboarding-guide-exit-button",
-                                     action: onExit))
+                                     action: {
+                                         model.exitTapped(on: currentStep)
+                                         onExit()
+                                     }))
     }
 }
 
@@ -152,8 +164,15 @@ private extension POSOnboardingGuideView {
 }
 
 #if DEBUG
+@MainActor
 private func onboardingGuidePreview(page: Int) -> some View {
-    POSOnboardingGuideView(currentPage: page, onStartSelling: {}, onExit: {})
+    POSOnboardingGuideView(currentPage: page,
+                           model: POSOnboardingGuideModel(siteID: 1,
+                                                          isEnabled: true,
+                                                          preferences: POSOnboardingGuidePreferences(),
+                                                          cardPaymentHistory: nil,
+                                                          analytics: EmptyPOSAnalytics()),
+                           onExit: {})
         .posPreviewSmallestPhone()
 }
 

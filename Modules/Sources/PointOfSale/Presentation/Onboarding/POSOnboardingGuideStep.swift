@@ -1,14 +1,25 @@
 import Foundation
 
-struct POSOnboardingGuideStep {
+struct POSOnboardingGuideStep: Equatable {
+    /// Stable step name sent with the guide's analytics events.
+    let analyticsValue: String
     let illustration: PointOfSaleAssets
     let title: String
     let message: String
 
     static let all: [POSOnboardingGuideStep] = [
-        .init(illustration: .store, title: Localization.sellInPersonTitle, message: Localization.sellInPersonMessage),
-        .init(illustration: .tshirtsSync, title: Localization.sameStoreTitle, message: Localization.sameStoreMessage),
-        .init(illustration: .readyForPayment, title: Localization.simpleSaleTitle, message: Localization.simpleSaleMessage)
+        .init(analyticsValue: "step_1",
+              illustration: .store,
+              title: Localization.sellInPersonTitle,
+              message: Localization.sellInPersonMessage),
+        .init(analyticsValue: "step_2",
+              illustration: .tshirtsSync,
+              title: Localization.sameStoreTitle,
+              message: Localization.sameStoreMessage),
+        .init(analyticsValue: "step_3",
+              illustration: .readyForPayment,
+              title: Localization.simpleSaleTitle,
+              message: Localization.simpleSaleMessage)
     ]
 }
 

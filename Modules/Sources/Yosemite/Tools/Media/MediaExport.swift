@@ -13,6 +13,7 @@ protocol MediaExporter {
 
     /// Export a media to another format.
     ///
+    @MainActor
     func export() async throws -> UploadableMedia
 }
 

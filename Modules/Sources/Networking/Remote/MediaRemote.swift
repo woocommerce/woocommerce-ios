@@ -1,7 +1,7 @@
 import Foundation
 
 /// Protocol for `MediaRemote` mainly used for mocking.
-public protocol MediaRemoteProtocol {
+public protocol MediaRemoteProtocol: Sendable {
     func loadMedia(siteID: Int64,
                    mediaID: Int64,
                    completion: @escaping (Result<WordPressMedia, Error>) -> Void)

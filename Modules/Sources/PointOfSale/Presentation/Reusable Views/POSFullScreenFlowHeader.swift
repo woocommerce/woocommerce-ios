@@ -43,6 +43,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
                     POSFullScreenFlowHeader(title: contentTitle ?? title,
                                             buttons: .init(title: contentTitle ?? title, backAction: backAction, closeAction: closeAction))
+                        .background(Color.posSurfaceBright)
                 }
                 .environment(\.posModalFlowStepNavigation, stepNavigation)
         } else {

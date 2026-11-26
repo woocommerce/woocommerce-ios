@@ -13,6 +13,7 @@ final class POSSecuritySettingsController {
     private(set) var roles: Set<POSLocalRole>?
     private(set) var isSaving = false
     private(set) var error: POSPINStoreError?
+    private(set) var guidedAccessGuide: POSGuidedAccessGuide?
     private enum ApprovalAction {
         case removeProtection
         case changeAdminPIN
@@ -49,6 +50,17 @@ final class POSSecuritySettingsController {
     var isApprovingProtectionRemoval: Bool { approvalRequest?.action == .removeProtection }
 
     var lockPreferences: POSLockPreferences { lockSettings.preferences }
+
+    func startGuidedAccessGuide() {
+        guard isVisible else {
+            return
+        }
+        guidedAccessGuide = POSGuidedAccessGuide()
+    }
+
+    func closeGuidedAccessGuide() {
+        guidedAccessGuide = nil
+    }
 
     func pinActions(for role: POSLocalRole) -> [POSPINAction] {
         guard let roles, role == .admin || offersCashierPINSetup else { return [] }

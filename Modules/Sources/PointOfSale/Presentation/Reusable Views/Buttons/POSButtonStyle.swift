@@ -117,6 +117,7 @@ private struct POSButtonStyleInternal: View {
             containerView {
                 ZStack(alignment: .center) {
                     configuration.label
+                        .multilineTextAlignment(.center)
                         .opacity(state == .idle ? 1 : 0)
                     progressView
                         .renderedIf(state == .loading)

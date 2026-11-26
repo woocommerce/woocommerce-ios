@@ -255,8 +255,8 @@ private extension POSLockScreenView {
             comment: "Button on the POS lock screen that starts PIN recovery with a fresh sign-in."
         )
         static let recoveryExplanation = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.signInToChangePIN",
-            value: "Sign in again with the account that is signed in to the app. Then choose a new admin PIN. Your current sale stays in POS.",
+            "pos.lockScreen.forgotPIN.signInThenContinue",
+            value: "Sign in with the account that is signed in to the app. Then choose a new admin PIN and continue using POS.",
             comment: "Explains the result of signing in to recover POS access and change the Admin PIN."
         )
         static let continueToSignIn = NSLocalizedString(

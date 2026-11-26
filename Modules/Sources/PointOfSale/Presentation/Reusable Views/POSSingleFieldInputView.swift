@@ -10,6 +10,7 @@ import WooFoundation
 /// Consumers provide domain-specific logic for validation, async actions, and analytics
 struct POSSingleFieldInputView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let title: String
     let placeholder: String
     let buttonTitle: String
@@ -29,6 +30,8 @@ struct POSSingleFieldInputView: View {
     var submitButtonAccessibilityIdentifier: String = ""
     var horizontalPadding: KeyPath<POSMetrics.Scale, CGFloat> = \.medium
     var fillsAvailableHeight: Bool = false
+    var keyboardFollowsNavigationPop: Bool = false
+    var closesOnEdgeSwipe: Bool = false
 
     @State private var selection: TextSelection?
     @State private var availableHeight: CGFloat = 0
@@ -46,12 +49,7 @@ struct POSSingleFieldInputView: View {
                     title: title,
                     backButtonConfiguration: .init(
                         state: buttonState != .idle ? .disabled : .enabled,
-                        action: {
-                            withAnimation {
-                                onClose()
-                                isTextFieldFocused = false
-                            }
-                        }
+                        action: close
                     )
                 )
 
@@ -73,14 +71,7 @@ struct POSSingleFieldInputView: View {
                         .focused($isTextFieldFocused)
                         .submitLabel(submitLabel)
                         .accessibilityIdentifier(textFieldAccessibilityIdentifier)
-                        .task {
-                            do {
-                                try await Task.sleep(for: .milliseconds(600))
-                            } catch {
-                                return
-                            }
-                            isTextFieldFocused = true
-                        }
+                        .posAutofocus($isTextFieldFocused)
                         .onChange(of: isTextFieldFocused) { _, focused in
                             if focused && selectAllOnFocus {
                                 selection = TextSelection(range: text.startIndex..<text.endIndex)
@@ -114,9 +105,9 @@ struct POSSingleFieldInputView: View {
                     .accessibilityIdentifier(submitButtonAccessibilityIdentifier)
                 }
                 .padding(.horizontal, metrics.padding[keyPath: horizontalPadding])
-                .padding(.bottom, fillsAvailableHeight ? metrics.padding.medium : keyboardFrame.height)
+                .padding(.bottom, pinsButtonAboveKeyboard ? metrics.padding.medium : keyboardFrame.height)
             }
-            .frame(minHeight: fillsAvailableHeight ? availableHeight : nil)
+            .frame(minHeight: pinsButtonAboveKeyboard ? availableHeight : nil)
             .animation(.easeInOut, value: errorMessage)
             .onChange(of: text) {
                 errorMessage = nil
@@ -129,12 +120,27 @@ struct POSSingleFieldInputView: View {
         }
         .background(Color.posSurfaceBright)
         .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { availableHeight = $0 }
+        .posEdgeSwipeBackAction(isEnabled: closesOnEdgeSwipe && buttonState == .idle, onBack: close)
     }
 }
 
 // MARK: - Helpers
 
 private extension POSSingleFieldInputView {
+    var pinsButtonAboveKeyboard: Bool {
+        fillsAvailableHeight || horizontalSizeClass == .compact
+    }
+
+    func close() {
+        withAnimation {
+            onClose()
+            // Device check, not size class: on iPad the keyboard stays up through a navigation pop.
+            if !keyboardFollowsNavigationPop || UIDevice.current.userInterfaceIdiom != .phone {
+                isTextFieldFocused = false
+            }
+        }
+    }
+
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
             return metrics.spacing.xSmall

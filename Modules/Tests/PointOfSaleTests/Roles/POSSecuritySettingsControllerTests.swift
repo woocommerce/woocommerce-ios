@@ -9,56 +9,7 @@ struct POSSecuritySettingsControllerTests {
     private let storage = InMemoryPOSSecureStorage()
     private let defaultsScope = POSSecurityTestDefaults()
 
-    @Test(arguments: POSGuidedAccessGuideSlide.allCases)
-    func test_settings_visit_when_locked_then_resumes_same_step_only_after_admin_unlock(slide: POSGuidedAccessGuideSlide) async throws {
-        // Given
-        let (controller, session, store) = makeSUT()
-        controller.load()
-        #expect(await save("1234", for: .admin, using: controller))
-        let credentials = try store.credentials()
-        controller.startGuidedAccessGuide()
-        let guide = try #require(controller.guidedAccessGuide)
-        guide.slide = slide
-        guide.isVisitingSettings = true
-
-        // When
-        session.lock()
-        controller.dismissGuidedAccessGuide()
-        #expect(!controller.resumeGuidedAccessGuide())
-        try await session.signIn(withPIN: "1234")
-
-        // Then
-        #expect(controller.resumeGuidedAccessGuide())
-        #expect(controller.guidedAccessGuide === guide)
-        #expect(guide.slide == slide)
-        #expect(!guide.isVisitingSettings)
-        #expect(!controller.resumeGuidedAccessGuide())
-        #expect(try store.credentials() == credentials)
-    }
-
-    @Test func test_settings_visit_when_cashier_unlocks_then_discards_guide() async throws {
-        // Given
-        let (controller, session, _) = makeSUT()
-        controller.load()
-        #expect(await save("1234", for: .admin, using: controller))
-        #expect(await save("5678", for: .cashier, using: controller))
-        controller.startGuidedAccessGuide()
-        controller.guidedAccessGuide?.isVisitingSettings = true
-
-        // When
-        session.lock()
-        controller.dismissGuidedAccessGuide()
-        try await session.signIn(withPIN: "5678")
-
-        // Then
-        #expect(!controller.resumeGuidedAccessGuide())
-        #expect(controller.guidedAccessGuide == nil)
-        controller.startGuidedAccessGuide()
-        #expect(controller.guidedAccessGuide == nil)
-    }
-
-    @Test(arguments: [false, true])
-    func test_close_when_guide_has_progress_then_preserves_saved_admin_pin_and_reopens_at_first_step(visitingSettings: Bool) async throws {
+    @Test func test_close_when_guide_has_progress_then_preserves_saved_admin_pin_and_reopens_at_first_step() async throws {
         // Given
         let (controller, _, store) = makeSUT()
         controller.load()
@@ -66,7 +17,6 @@ struct POSSecuritySettingsControllerTests {
         let credentials = try store.credentials()
         controller.startGuidedAccessGuide()
         controller.guidedAccessGuide?.slide = .start
-        controller.guidedAccessGuide?.isVisitingSettings = visitingSettings
 
         // When
         controller.closeGuidedAccessGuide()
@@ -76,24 +26,6 @@ struct POSSecuritySettingsControllerTests {
         #expect(try store.credentials() == credentials)
         controller.startGuidedAccessGuide()
         #expect(controller.guidedAccessGuide?.slide == .openSettings)
-        #expect(controller.guidedAccessGuide?.isVisitingSettings == false)
-    }
-
-    @Test func test_dismiss_when_not_visiting_settings_then_discards_progress() async {
-        // Given
-        let (controller, session, _) = makeSUT()
-        controller.load()
-        #expect(await save("1234", for: .admin, using: controller))
-        controller.startGuidedAccessGuide()
-        controller.guidedAccessGuide?.slide = .turnOn
-
-        // When
-        session.lock()
-        controller.dismissGuidedAccessGuide()
-
-        // Then
-        #expect(controller.guidedAccessGuide == nil)
-        #expect(!controller.resumeGuidedAccessGuide())
     }
 
     @Test func test_confirmation_when_other_role_changes_after_validation_then_final_save_still_rejects_duplicate() async throws {

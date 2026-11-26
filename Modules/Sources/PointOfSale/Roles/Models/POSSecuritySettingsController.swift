@@ -62,25 +62,6 @@ final class POSSecuritySettingsController {
         guidedAccessGuide = nil
     }
 
-    func dismissGuidedAccessGuide() {
-        // Only an intentional Settings visit survives dismissal of the protected Settings UI.
-        if guidedAccessGuide?.isVisitingSettings != true {
-            closeGuidedAccessGuide()
-        }
-    }
-
-    func resumeGuidedAccessGuide() -> Bool {
-        guard let guide = guidedAccessGuide, guide.isVisitingSettings, !session.isLocked else {
-            return false
-        }
-        guard isVisible else {
-            closeGuidedAccessGuide()
-            return false
-        }
-        guide.isVisitingSettings = false
-        return true
-    }
-
     func pinActions(for role: POSLocalRole) -> [POSPINAction] {
         guard let roles, role == .admin || offersCashierPINSetup else { return [] }
         guard roles.contains(role) else { return [.setUp] }

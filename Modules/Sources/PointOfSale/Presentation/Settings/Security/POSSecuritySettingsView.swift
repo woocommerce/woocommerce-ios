@@ -117,7 +117,7 @@ struct POSSecuritySettingsView: View {
         }
         presentation.cancel()
         controller.endPINEditing()
-        controller.dismissGuidedAccessGuide()
+        controller.closeGuidedAccessGuide()
         dismissApproval()
     }
 

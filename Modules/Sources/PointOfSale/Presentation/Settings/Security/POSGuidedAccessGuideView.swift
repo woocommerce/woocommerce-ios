@@ -256,12 +256,7 @@ private extension POSGuidedAccessGuideView {
         guard let url = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
-        guide.isVisitingSettings = true
-        Task {
-            if await UIApplication.shared.open(url) == false {
-                guide.isVisitingSettings = false
-            }
-        }
+        UIApplication.shared.open(url)
     }
 
     static func caption(for slide: POSGuidedAccessGuideSlide) -> String {

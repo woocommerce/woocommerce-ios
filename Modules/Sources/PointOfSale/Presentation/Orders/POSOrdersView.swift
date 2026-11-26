@@ -113,15 +113,11 @@ struct POSOrdersView: View {
     @ViewBuilder
     private func errorView(_ error: PointOfSaleErrorState) -> some View {
         ZStack {
-            VStack {
-                Spacer()
-                POSListErrorView(error: error, onAction: {
-                    Task { @MainActor in
-                        await orderListModel.ordersController.loadOrders()
-                    }
-                })
-                Spacer()
-            }
+            POSListErrorView(error: error, onAction: {
+                Task { @MainActor in
+                    await orderListModel.ordersController.loadOrders()
+                }
+            })
 
             VStack {
                 POSPageHeaderView(
@@ -138,16 +134,12 @@ struct POSOrdersView: View {
     @ViewBuilder
     private func emptyView() -> some View {
         ZStack {
-            VStack {
-                Spacer()
-                POSListEmptyView(
-                    viewModel: POSOrderListEmptyViewModel(isSearching: false)
-                ) {
-                    Task { @MainActor in
-                        await orderListModel.ordersController.loadOrders()
-                    }
+            POSListEmptyView(
+                viewModel: POSOrderListEmptyViewModel(isSearching: false)
+            ) {
+                Task { @MainActor in
+                    await orderListModel.ordersController.loadOrders()
                 }
-                Spacer()
             }
 
             VStack {

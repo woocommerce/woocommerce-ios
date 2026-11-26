@@ -95,7 +95,8 @@ private extension POSManagerOverrideView {
     }
 
     var pinEntry: some View {
-        POSPINEntryView(state: handler.pinEntryState,
+        POSPINEntryView(state: handler.pinEntryState(for: request.id),
+                        style: .approval,
                         onComplete: { pin in await handler.submit(pin: pin) })
     }
 

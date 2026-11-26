@@ -88,6 +88,10 @@ final class BillingInformationViewController: UIViewController {
         reloadSections()
     }
 
+    func reloadAddress() {
+        tableView?.reloadData()
+    }
+
     /// Helpers
     ///
     private let emailComposer = OrderEmailComposer()

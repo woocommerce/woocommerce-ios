@@ -304,8 +304,6 @@ struct POSLocalPINStoreTests {
 
         // When
         let clear = Task.detached { try storage.removeAll() }
-        // The blocked write holds the process-wide fence lock, which can starve the cooperative pool
-        // in parallel runs, so the release must not depend on a Swift concurrency task resuming.
         DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(50)) {
             storage.releaseWrite()
         }

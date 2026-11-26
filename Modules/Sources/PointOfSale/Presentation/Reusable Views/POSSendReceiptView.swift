@@ -55,7 +55,6 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        // The Return key submits even while the Send button is disabled.
         guard buttonState == .idle else { return }
         analytics.track(.pointOfSaleReceiptEmailSendTapped)
         guard isEmailValid else {

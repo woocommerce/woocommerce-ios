@@ -362,4 +362,90 @@ final class DefaultImageServiceTests: XCTestCase {
         // Then
         XCTAssertNil(imageURL)
     }
+
+    func test_loadFailureDescription_when_url_session_error_then_includes_host_and_code() {
+        // Given
+        let sessionError = NSError(domain: NSURLErrorDomain, code: NSURLErrorAppTransportSecurityRequiresSecureConnection)
+        let error = KingfisherError.responseError(reason: .URLSessionError(error: sessionError))
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: url, error: error)
+
+        // Then
+        XCTAssertEqual(description, "Image load failed. Host: woocommerce.com, original scheme: https, error: -1022")
+    }
+
+    func test_loadFailureDescription_when_invalid_status_code_then_includes_http_status() {
+        // Given
+        let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil)!
+        let error = KingfisherError.responseError(reason: .invalidHTTPStatusCode(response: response))
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: url, error: error)
+
+        // Then
+        XCTAssertEqual(description, "Image load failed. Host: woocommerce.com, original scheme: https, error: HTTP 404")
+    }
+
+    func test_loadFailureDescription_when_task_cancelled_then_returns_nil() {
+        // Given
+        let task = SessionDataTask(task: URLSession.shared.dataTask(with: url))
+        let error = KingfisherError.requestError(reason: .taskCancelled(task: task, token: 0))
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: url, error: error)
+
+        // Then
+        XCTAssertNil(description)
+    }
+
+    func test_loadFailureDescription_when_not_current_task_then_returns_nil() {
+        // Given
+        let error = KingfisherError.imageSettingError(reason: .notCurrentSourceTask(result: nil, error: nil, source: .network(url)))
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: url, error: error)
+
+        // Then
+        XCTAssertNil(description)
+    }
+
+    func test_loadFailureDescription_when_url_was_http_then_includes_original_scheme() {
+        // Given
+        let httpURL = URL(string: "http://woocommerce.com/fun")!
+        let sessionError = NSError(domain: NSURLErrorDomain, code: NSURLErrorAppTransportSecurityRequiresSecureConnection)
+        let error = KingfisherError.responseError(reason: .URLSessionError(error: sessionError))
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: httpURL, error: error)
+
+        // Then
+        XCTAssertEqual(description, "Image load failed. Host: woocommerce.com, original scheme: http, error: -1022")
+    }
+
+    func test_loadFailureDescription_when_error_is_not_from_kingfisher_then_includes_domain_and_code() {
+        // Given
+        let error = NSError(domain: "MockDownloadable", code: 1)
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: nil, error: error)
+
+        // Then
+        XCTAssertEqual(description, "Image load failed. Host: none, original scheme: none, error: MockDownloadable 1")
+    }
+
+    func test_loadFailureDescription_then_excludes_path_and_query() throws {
+        // Given
+        let imageURL = URL(string: "https://woocommerce.com/private/image.jpg?token=secret")!
+        let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut)
+
+        // When
+        let description = DefaultImageService.loadFailureDescription(originalURL: imageURL, error: error)
+
+        // Then
+        let unwrappedDescription = try XCTUnwrap(description)
+        XCTAssertEqual(unwrappedDescription, "Image load failed. Host: woocommerce.com, original scheme: https, error: NSURLErrorDomain -1001")
+        XCTAssertFalse(unwrappedDescription.contains("private"))
+        XCTAssertFalse(unwrappedDescription.contains("token"))
+    }
 }

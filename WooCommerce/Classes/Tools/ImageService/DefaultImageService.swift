@@ -44,6 +44,7 @@ struct DefaultImageService: ImageService {
 
                                                     completion?(image, nil)
                                                 case .failure(let kingfisherError):
+                                                    Self.logLoadFailure(originalURL: url, error: kingfisherError)
                                                     completion?(nil, .other(error: kingfisherError))
                                                 }
         }
@@ -54,6 +55,7 @@ struct DefaultImageService: ImageService {
                                            placeholder: UIImage? = nil,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
+        let originalURL = Self.encodedURL(from: url)
         let url = Self.imageURL(from: url)
 
         let targetSize: CGSize
@@ -81,6 +83,7 @@ struct DefaultImageService: ImageService {
                 let image = imageResult.image
                 completion?(image, nil)
             case .failure(let error):
+                Self.logLoadFailure(originalURL: originalURL, error: error)
                 completion?(nil, .other(error: error))
             }
         }
@@ -115,6 +118,7 @@ struct DefaultImageService: ImageService {
                 let image = imageResult.image
                 completion?(image, nil)
             case .failure(let error):
+                Self.logLoadFailure(originalURL: url, error: error)
                 completion?(nil, .other(error: error))
             }
         }
@@ -132,6 +136,26 @@ struct DefaultImageService: ImageService {
     static func imageURL(from string: String?) -> URL? {
         encodedURL(from: string).map(httpsURL(from:))
     }
+
+    /// Returns `nil` for cancelled loads, e.g. on cell reuse.
+    /// Includes only the host and scheme, as paths and queries can hold private data.
+    static func loadFailureDescription(originalURL: URL?, error: Error) -> String? {
+        let errorCode: String
+        switch error as? KingfisherError {
+        case .some(let kingfisherError) where kingfisherError.isTaskCancelled || kingfisherError.isNotCurrentTask:
+            return nil
+        case .responseError(reason: .URLSessionError(let sessionError)):
+            errorCode = "\((sessionError as NSError).code)"
+        case .responseError(reason: .invalidHTTPStatusCode(let response)):
+            errorCode = "HTTP \(response.statusCode)"
+        default:
+            let nsError = error as NSError
+            errorCode = "\(nsError.domain) \(nsError.code)"
+        }
+        let host = originalURL?.host ?? "none"
+        let scheme = originalURL?.scheme ?? "none"
+        return "Image load failed. Host: \(host), original scheme: \(scheme), error: \(errorCode)"
+    }
 }
 
 private extension DefaultImageService {
@@ -142,6 +166,13 @@ private extension DefaultImageService {
 
     static func httpsURL(from url: URL) -> URL {
         URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
+    }
+
+    static func logLoadFailure(originalURL: URL?, error: Error) {
+        guard let description = loadFailureDescription(originalURL: originalURL, error: error) else {
+            return
+        }
+        DDLogError(description)
     }
 }
 

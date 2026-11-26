@@ -6,6 +6,61 @@ import Testing
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSManagerOverrideHandlerTests {
+    @Test(arguments: [POSPINEntryState.waiting(remainingSeconds: 30), .unavailable])
+    func test_pinEntryState_when_request_is_closed_then_keeps_entry_disabled_without_availability_announcement(state: POSPINEntryState) {
+        // Given
+        let request = POSManagerOverrideRequest(capability: .createCoupons, reason: "Approval required")
+        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(), initialRequest: request, initialPINEntryState: state)
+        let previous = sut.pinEntryState(for: request.id)
+        let helper = POSPINEntryViewHelper()
+
+        // When
+        sut.cancel()
+        let dismissed = sut.pinEntryState(for: request.id)
+
+        // Then
+        #expect(previous == state)
+        #expect(dismissed == .checkingLockout)
+        #expect(!helper.isInputEnabled(for: dismissed))
+        #expect(helper.announcement(from: previous, to: dismissed) == nil)
+    }
+
+    @Test func test_pinEntryState_when_request_is_replaced_then_does_not_expose_new_request_state() async throws {
+        // Given
+        let previous = POSManagerOverrideRequest(capability: .createCoupons, reason: "Approval required")
+        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(),
+                                            initialRequest: previous,
+                                            initialPINEntryState: .waiting(remainingSeconds: 30))
+
+        // When
+        let approval = await present(sut)
+        let current = try #require(sut.request)
+
+        // Then
+        #expect(sut.pinEntryState(for: previous.id) == .checkingLockout)
+        #expect(sut.pinEntryState(for: current.id) == .idle)
+        await cancel(sut, approval)
+    }
+
+    @Test func test_pinEntryState_when_current_request_wait_ends_then_announces_entry_available() async throws {
+        // Given
+        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(remainingSeconds: 30)))
+        let sut = POSManagerOverrideHandler(session: session)
+        let approval = await present(sut)
+        let request = try #require(sut.request)
+        let previous = sut.pinEntryState(for: request.id)
+        session.checkLockoutResult = .success(())
+
+        // When
+        await sut.refreshWait()
+        let available = sut.pinEntryState(for: request.id)
+
+        // Then
+        #expect(available == .idle)
+        #expect(POSPINEntryViewHelper().announcement(from: previous, to: available) == .entryAvailable)
+        await cancel(sut, approval)
+    }
+
     @Test func test_requestApproval_when_attempt_state_is_unreadable_then_keeps_input_disabled_without_comparison() async {
         // Given
         let session = MockPOSAccessSession(checkLockoutResult: .failure(.unknown))

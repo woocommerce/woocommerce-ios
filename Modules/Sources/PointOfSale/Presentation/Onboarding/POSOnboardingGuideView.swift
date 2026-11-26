@@ -4,6 +4,7 @@ import SwiftUI
 /// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.openURL) private var openURL
     @State var currentPage = 0
 
     let model: POSOnboardingGuideModel
@@ -49,8 +50,8 @@ struct POSOnboardingGuideView: View {
     private var currentStep: POSOnboardingGuideStep { steps[currentPage] }
 
     private func learnMore() {
-        // Only tracked until the video of a sale is ready.
         model.videoTapped(on: currentStep)
+        openURL(Constants.videoURL)
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -149,6 +150,11 @@ private struct POSOnboardingGuideLearnMoreButton: View {
 }
 
 private extension POSOnboardingGuideView {
+    enum Constants {
+        // Placeholder until the video of a sale is published on YouTube.
+        static let videoURL = URL(string: "https://woocommerce.com/woocommerce-pos")!
+    }
+
     enum Localization {
         static let startSelling = NSLocalizedString(
             "pos.onboardingGuide.startSellingButton",

@@ -30,7 +30,7 @@ struct POSOnboardingGuideView: View {
 
             POSFlowButtonsView(configuration: buttonConfiguration)
                 .posStatusButtonsWidth(addsHorizontalPadding: false)
-                .posPhoneBottomButtonPadding()
+                .posBottomButtonPadding()
         }
         // The guide only shows on iPhone, so it keeps the phone scale in landscape too.
         .environment(\.posLayoutScale, .compact)

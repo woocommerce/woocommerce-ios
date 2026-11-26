@@ -14,6 +14,7 @@ private enum POSOrderDetailsNavigationDestination: Hashable {
 
 struct POSOrderDetailsView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let order: POSOrder
     let onBack: () -> Void
     @Binding private var detailNavigationPath: NavigationPath
@@ -84,7 +85,7 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    actionsSection(setup: availableActionsSetup)
+                    POSPageHeaderActions(actions: pageActions(for: order))
                 },
                 bottomContent: {
                     headerBottomContent(for: order)
@@ -278,17 +279,24 @@ private extension POSOrderDetailsView {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .posItemCardImage()
 
-            Text(customAmount.name)
-                .font(.posBodyLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-                .fixedSize(horizontal: false, vertical: true)
+            let layout = AnyLayout.posItemRowDetails(stacked: dynamicTypeSize.isAccessibilitySize, metrics: metrics)
+            layout {
+                Text(customAmount.name)
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Spacer()
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
 
-            Text(customAmount.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
+                Text(customAmount.formattedTotal)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.customAmountRowAccessibilityLabel(name: customAmount.name, total: customAmount.formattedTotal))
@@ -348,6 +356,7 @@ private extension POSOrderDetailsView {
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
+                .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
@@ -432,9 +441,15 @@ private extension POSOrderDetailsView {
     func productRow(item: POSOrderItem) -> some View {
         HStack(alignment: .center, spacing: metrics.spacing.medium) {
             productImageView(item: item)
-            productDetailsView(item: item)
-            Spacer()
-            productTotalView(item: item)
+            let layout = AnyLayout.posItemRowDetails(stacked: dynamicTypeSize.isAccessibilitySize, metrics: metrics)
+            layout {
+                productDetailsView(item: item)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
+                productTotalView(item: item)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(productRowAccessibilityLabel(for: item))
@@ -457,6 +472,7 @@ private extension POSOrderDetailsView {
         POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
             .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .posItemCardImage()
     }
 
     @ViewBuilder
@@ -553,59 +569,29 @@ private extension POSOrderDetailsView {
         }
     }
 
-    struct OrderDetailsActionsSetup {
-        let primary: OrderDetailsAction?
-        let secondary: [OrderDetailsAction]
-    }
-
-    var availableActionsSetup: OrderDetailsActionsSetup {
-        let email: OrderDetailsAction = .emailReceipt
+    func pageActions(for order: POSOrder) -> POSPageActions {
+        let email = pageAction(for: .emailReceipt)
 
         switch order.status {
         case .refunded:
-            return .init(primary: email, secondary: [])
+            return .init(primary: email)
         case .completed:
-            switch orderListModel.refundActionAvailability {
+            switch order.refundActionAvailability {
             case .available:
-                return .init(primary: .issueRefund, secondary: [email])
-
+                return .init(primary: pageAction(for: .issueRefund), secondary: [email])
             case .unavailable:
-                return .init(primary: email, secondary: [])
+                return .init(primary: email)
             }
         default:
-            return .init(primary: nil, secondary: [])
+            return .empty
         }
     }
 
-    @ViewBuilder
-    func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
-        if let primary = setup.primary {
-            HStack(spacing: metrics.spacing.large) {
-                Button(action: handler(for: primary)) {
-                    Text(primary.title)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                .accessibilityHint(primary.accessibilityHint)
-            }
-        }
-
-        if !setup.secondary.isEmpty {
-            POSMenu {
-                ForEach(setup.secondary) { action in
-                    POSMenuButton(action.title, action: handler(for: action))
-                        .accessibilityHint(action.accessibilityHint)
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .padding(metrics.padding.small)
-            }
-            .accessibilityLabel(POSMenuAccessibility.moreActions)
-        }
+    func pageAction(for action: OrderDetailsAction) -> POSPageAction {
+        POSPageAction(id: action.id,
+                      title: action.title,
+                      accessibilityHint: action.accessibilityHint,
+                      action: handler(for: action))
     }
 }
 

@@ -122,6 +122,20 @@ struct ItemListView: View {
                 // The regular pane is already inside the dashboard's horizontal safe bounds.
                 .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
+        // Root screens report here, not in each error view: hidden tabs and the list under search stay mounted.
+        // Transform instead of set, so a pushed ChildItemList can still report its own status screen.
+        .transformPreference(POSHidesCompactCartButtonPreferenceKey.self) { hides in
+            hides = hides || rootHidesCompactCartButton
+        }
+    }
+
+    private var rootHidesCompactCartButton: Bool {
+        guard posModel.viewStateCoordinatorForView.itemNavigationPath.isEmpty else {
+            return false
+        }
+        return ItemListViewHelper().hidesCompactCartButton(rootState: itemListState(selectedItemListType),
+                                                           isSearching: isSearching,
+                                                           isShowingPreSearch: isSearching && searchTerm.isEmpty)
     }
 
     var content: some View {
@@ -188,7 +202,7 @@ struct ItemListView: View {
                     itemListContent(selectedItemListType)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.posSurface)
+                .background(Color.posSurface.ignoresSafeArea())
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }
@@ -382,7 +396,7 @@ private extension ItemListView {
                             createCouponButton
                         }
 
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                        POSPageHeaderActionButton(systemName: "magnifyingglass", title: Localization.searchButtonTitle) {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
@@ -443,7 +457,7 @@ private extension ItemListView {
 private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
-        POSPageHeaderActionButton(systemName: "plus") {
+        POSPageHeaderActionButton(systemName: "plus", title: Localization.createCouponButtonTitle) {
             analytics.track(.pointOfSaleCouponsCreateTapped)
             requestCouponCreationPermission()
         }
@@ -572,6 +586,20 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let searchButtonTitle = NSLocalizedString(
+            "pos.itemlistview.searchButton.title",
+            value: "Search",
+            comment: "Accessibility label of the search button at the top of the Point of Sale item list, " +
+            "also shown when the button is long pressed at large text sizes."
+        )
+
+        static let createCouponButtonTitle = NSLocalizedString(
+            "pos.itemlistview.createCouponButton.title",
+            value: "Create coupon",
+            comment: "Accessibility label of the button at the top of the Point of Sale coupon list that creates a new coupon, " +
+            "also shown when the button is long pressed at large text sizes."
         )
 
         static let couponOverrideDescription = NSLocalizedString(

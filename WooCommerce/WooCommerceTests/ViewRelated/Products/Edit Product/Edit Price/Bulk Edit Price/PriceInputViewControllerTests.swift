@@ -20,6 +20,7 @@ final class PriceInputViewControllerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_view_controller_displays_notice_on_selected_regular_price_is_less_than_sale_price_validation_error() throws {
         // Given
         let noticePresenter = MockNoticePresenter()
@@ -44,6 +45,7 @@ final class PriceInputViewControllerTests: XCTestCase {
         XCTAssertEqual(notice.feedbackType, .error)
     }
 
+    @MainActor
     func test_view_controller_displays_notice_on_no_regular_price_validation_error() throws {
         // Given
         let noticePresenter = MockNoticePresenter()

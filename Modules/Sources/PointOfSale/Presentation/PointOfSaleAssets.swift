@@ -30,6 +30,8 @@ enum PointOfSaleAssets: CaseIterable {
     case lockShackleStroke
     case accessControl
     case checkCircle
+    case store
+    case tshirtsSync
 
     var image: Image {
         Image(imageName, bundle: .module)
@@ -97,6 +99,10 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-access-control"
         case .checkCircle:
             "pos-check-circle"
+        case .store:
+            "pos-store"
+        case .tshirtsSync:
+            "pos-tshirts-sync"
         }
     }
 }

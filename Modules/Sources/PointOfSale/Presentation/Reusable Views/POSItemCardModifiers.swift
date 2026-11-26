@@ -1,22 +1,28 @@
 import SwiftUI
 
+extension EnvironmentValues {
+    var posHidesItemCardImage: Bool {
+        dynamicTypeSize.isAccessibilitySize && posLayoutScale == .compact
+    }
+}
+
 private struct POSItemCardImageModifier: ViewModifier {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posHidesItemCardImage) private var hidesImage
 
     func body(content: Content) -> some View {
         content
-            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+            .renderedIf(!hidesImage)
     }
 }
 
 private struct POSItemCardTextPaddingModifier: ViewModifier {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posHidesItemCardImage) private var hidesImage
 
     private var multiplier: CGFloat {
         // The image is hidden at accessibility sizes, so the text sits on the card edge and needs the full padding.
-        dynamicTypeSize.isAccessibilitySize ? 1 : 1 / scale
+        hidesImage ? 1 : 1 / scale
     }
 
     func body(content: Content) -> some View {

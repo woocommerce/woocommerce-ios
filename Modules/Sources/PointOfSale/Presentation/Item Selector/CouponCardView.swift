@@ -8,6 +8,7 @@ struct CouponCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posHidesItemCardImage) private var hidesImage
 
     private var dimension: CGFloat {
         min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
@@ -29,7 +30,7 @@ struct CouponCardView: View {
                     .foregroundStyle(titleColor)
                     .font(Constants.itemTitleFont)
 
-                if imageState == .applied && dynamicTypeSize.isAccessibilitySize {
+                if imageState == .applied && hidesImage {
                     Label(Localization.appliedAccessibilityValue, systemImage: "checkmark")
                         .foregroundStyle(Color.posSuccess)
                         .font(Constants.itemDetailFont)

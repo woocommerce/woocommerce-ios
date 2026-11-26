@@ -266,7 +266,8 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large,
+                isPOSLocked: { session.isLocked })
 
             let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()

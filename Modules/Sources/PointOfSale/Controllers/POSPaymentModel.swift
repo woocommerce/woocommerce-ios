@@ -18,7 +18,7 @@ final class POSPaymentModel {
         didSet {
             guard oldValue != paymentState else { return }
             paymentStateChangesSubject.send((oldState: oldValue, newState: paymentState))
-            cancelCardPaymentWhileLocked()
+            cancelCardPaymentForLock()
         }
     }
     private let paymentStateChangesSubject: PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
@@ -87,16 +87,10 @@ final class POSPaymentModel {
         currentPaymentMethod != nil
     }
 
-    func cancelCardPaymentForLock() {
-        isLockedInBackground = true
-        cancelCardPaymentWhileLocked()
-    }
-
     func restartCardPaymentAfterUnlock() async {
-        isLockedInBackground = false
         guard let lockCancellation else { return }
         let isPaymentCancelled = await lockCancellation.value
-        guard !isLockedInBackground, self.lockCancellation == lockCancellation else { return }
+        guard !isPOSLocked(), self.lockCancellation == lockCancellation else { return }
         self.lockCancellation = nil
         guard isPaymentCancelled, canRestartCardPaymentAfterUnlock else { return }
         paymentState.card = .idle
@@ -112,8 +106,8 @@ final class POSPaymentModel {
         paymentState.activePaymentMethod == .card && paymentState.card != .processingPayment && !paymentState.isSuccess
     }
 
-    private func cancelCardPaymentWhileLocked() {
-        guard isLockedInBackground, lockCancellation == nil, isCardPaymentCancellableWhileLocked else { return }
+    func cancelCardPaymentForLock() {
+        guard isPOSLocked(), lockCancellation == nil, isCardPaymentCancellableWhileLocked else { return }
         let generation = startPaymentGeneration
         lockCancellation = Task { [weak self] in
             do {
@@ -152,6 +146,7 @@ final class POSPaymentModel {
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol
+    private let isPOSLocked: @MainActor () -> Bool
     /// Cadence for scan-to-pay polling. Defaults to 3 seconds; tests override to fire instantly.
     private let scanToPayPollInterval: TimeInterval
 
@@ -175,7 +170,6 @@ final class POSPaymentModel {
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
     private var lockCancellation: Task<Bool, Never>?
-    private var isLockedInBackground = false
     private var connectCardReaderTask: Task<Void, Never>?
     /// Connects the reader for a payment method tap, when `connectCardReaderTask` does not.
     private(set) var paymentStartConnectTask: Task<Void, Never>?
@@ -231,7 +225,8 @@ final class POSPaymentModel {
          scanToPayPollInterval: TimeInterval = 3,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .idle,
+         isPOSLocked: @escaping @MainActor () -> Bool = { false }) {
         let paymentStateChangesSubject = PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>()
         self.paymentStateChangesSubject = paymentStateChangesSubject
         self.paymentStateChanges = paymentStateChangesSubject.eraseToAnyPublisher()
@@ -248,6 +243,7 @@ final class POSPaymentModel {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.celebration = celebration
+        self.isPOSLocked = isPOSLocked
         self.scanToPayPollInterval = scanToPayPollInterval
         self.preferredConnectionMethod = preferredConnectionMethod
         self.cardPaymentSelectionMode = cardPaymentSelectionMode

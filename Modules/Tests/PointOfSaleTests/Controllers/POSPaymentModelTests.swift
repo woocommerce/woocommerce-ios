@@ -22,13 +22,16 @@ struct POSPaymentModelTests {
         provider.orderToReturn = Order.fake().copy(total: "10.00")
         provider.totalDecimalToReturn = 10
         var returnedToCart = false
+        var isLocked = true
         let sut = makePaymentController(cardPresentPaymentService: service,
                                         orderProvider: provider,
                                         configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCart = true }),
-                                        paymentState: PointOfSalePaymentState(card: card, cash: .idle))
+                                        paymentState: PointOfSalePaymentState(card: card, cash: .idle),
+                                        isPOSLocked: { isLocked })
 
         // When
         sut.cancelCardPaymentForLock()
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -47,10 +50,12 @@ struct POSPaymentModelTests {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
+        var isLocked = true
+        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state, isPOSLocked: { isLocked })
 
         // When
         sut.cancelCardPaymentForLock()
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -65,11 +70,13 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let state = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
-        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
+        var isLocked = true
+        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state, isPOSLocked: { isLocked })
         service.onCancelPaymentCalled = { throw CancellationError() }
 
         // When
         sut.cancelCardPaymentForLock()
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -85,7 +92,8 @@ struct POSPaymentModelTests {
         let provider = MockPOSPaymentOrderProvider()
         provider.orderToReturn = Order.fake().copy(total: "10.00")
         provider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider)
+        var isLocked = true
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, isPOSLocked: { isLocked })
         await sut.startPayment()
         service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap, .swipe, .insert], cancelPayment: {}))
         service.onCancelPaymentCalled = {
@@ -94,6 +102,7 @@ struct POSPaymentModelTests {
 
         // When
         sut.cancelCardPaymentForLock()
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -109,7 +118,8 @@ struct POSPaymentModelTests {
         let provider = MockPOSPaymentOrderProvider()
         provider.orderToReturn = Order.fake().copy(total: "10.00")
         provider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider)
+        var isLocked = true
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider, isPOSLocked: { isLocked })
         await sut.startPayment()
         service.paymentEvent = .show(eventDetails: .validatingOrder(cancelPayment: {}))
         var lockCancellationCount = 0
@@ -123,6 +133,7 @@ struct POSPaymentModelTests {
             await Task.yield()
         }
         let cancellationCountAfterReachingReader = lockCancellationCount
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -139,12 +150,15 @@ struct POSPaymentModelTests {
         let provider = MockPOSPaymentOrderProvider()
         provider.orderToReturn = Order.fake().copy(total: "10.00")
         provider.totalDecimalToReturn = 10
+        var isLocked = true
         let sut = makePaymentController(cardPresentPaymentService: service,
                                         orderProvider: provider,
-                                        paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle))
+                                        paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle),
+                                        isPOSLocked: { isLocked })
         var pendingCancellation: CheckedContinuation<Void, Never>?
         service.onCancelPaymentCalled = { await withCheckedContinuation { pendingCancellation = $0 } }
         sut.cancelCardPaymentForLock()
+        isLocked = false
         let firstUnlock = Task { await sut.restartCardPaymentAfterUnlock() }
         while pendingCancellation == nil {
             await Task.yield()
@@ -156,11 +170,13 @@ struct POSPaymentModelTests {
             cancellationCountDuringSecondLock += 1
             throw CancellationError()
         }
+        isLocked = true
         sut.cancelCardPaymentForLock()
         pendingCancellation?.resume()
         await firstUnlock.value
         let collectCountWhileLocked = service.spyCollectPaymentOrders.count
         service.onCancelPaymentCalled = nil
+        isLocked = false
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
@@ -174,11 +190,14 @@ struct POSPaymentModelTests {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        var isLocked = true
         let sut = makePaymentController(cardPresentPaymentService: service,
-                                        paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle))
+                                        paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle),
+                                        isPOSLocked: { isLocked })
         var pendingCancellation: CheckedContinuation<Void, Never>?
         service.onCancelPaymentCalled = { await withCheckedContinuation { pendingCancellation = $0 } }
         sut.cancelCardPaymentForLock()
+        isLocked = false
         let unlock = Task { await sut.restartCardPaymentAfterUnlock() }
         while pendingCancellation == nil {
             await Task.yield()
@@ -3849,7 +3868,8 @@ private func makePaymentController(
     scanToPayPollInterval: TimeInterval = 3,
     preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
     cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-    paymentState: PointOfSalePaymentState = .idle
+    paymentState: PointOfSalePaymentState = .idle,
+    isPOSLocked: @escaping @MainActor () -> Bool = { false }
 ) -> POSPaymentModel {
     let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
 
@@ -3870,7 +3890,8 @@ private func makePaymentController(
         scanToPayPollInterval: scanToPayPollInterval,
         preferredConnectionMethod: preferredConnectionMethod,
         cardPaymentSelectionMode: cardPaymentSelectionMode,
-        paymentState: paymentState)
+        paymentState: paymentState,
+        isPOSLocked: isPOSLocked)
 }
 
 private func makeCardDetails() -> CardPresentTransactionDetails {

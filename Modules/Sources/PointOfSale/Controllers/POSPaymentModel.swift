@@ -18,6 +18,7 @@ final class POSPaymentModel {
         didSet {
             guard oldValue != paymentState else { return }
             paymentStateChangesSubject.send((oldState: oldValue, newState: paymentState))
+            cancelCardPaymentWhileLocked()
         }
     }
     private let paymentStateChangesSubject: PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
@@ -86,15 +87,32 @@ final class POSPaymentModel {
         currentPaymentMethod != nil
     }
 
-    /// Processing is not cancelled: the payment may already be authorized, so its result shows after unlock.
     func cancelCardPaymentForLock() {
-        guard lockCancellation == nil, paymentState.activePaymentMethod == .card else { return }
-        switch paymentState.card {
-        case .validatingOrder, .preparingReader, .acceptingCard, .cardInserted:
-            break
-        case .idle, .validatingOrderError, .paymentIntentCreationError, .processingPayment, .paymentError, .cardPaymentSuccessful:
-            return
-        }
+        isLockedInBackground = true
+        cancelCardPaymentWhileLocked()
+    }
+
+    func restartCardPaymentAfterUnlock() async {
+        isLockedInBackground = false
+        guard let lockCancellation else { return }
+        self.lockCancellation = nil
+        guard await lockCancellation.value, canRestartCardPaymentAfterUnlock else { return }
+        paymentState.card = .idle
+        cardPresentPaymentInlineMessage = nil
+        await startPayment()
+    }
+
+    private var isCardPaymentCancellableWhileLocked: Bool {
+        paymentState.activePaymentMethod == .card && [.preparingReader, .acceptingCard, .cardInserted].contains(paymentState.card)
+    }
+
+    private var canRestartCardPaymentAfterUnlock: Bool {
+        !isLockedInBackground && paymentState.activePaymentMethod == .card
+            && paymentState.card != .processingPayment && !paymentState.isSuccess
+    }
+
+    private func cancelCardPaymentWhileLocked() {
+        guard isLockedInBackground, lockCancellation == nil, isCardPaymentCancellableWhileLocked else { return }
         let generation = startPaymentGeneration
         lockCancellation = Task { [weak self] in
             do {
@@ -105,16 +123,6 @@ final class POSPaymentModel {
                 return false
             }
         }
-    }
-
-    func restartCardPaymentAfterUnlock() async {
-        guard let lockCancellation else { return }
-        self.lockCancellation = nil
-        // The card may have been read before the cancellation reached the reader.
-        guard await lockCancellation.value, paymentState.card != .processingPayment, !paymentState.isSuccess else { return }
-        paymentState.card = .idle
-        cardPresentPaymentInlineMessage = nil
-        await startPayment()
     }
 
     /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
@@ -166,6 +174,7 @@ final class POSPaymentModel {
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
     private var lockCancellation: Task<Bool, Never>?
+    private var isLockedInBackground = false
     private var connectCardReaderTask: Task<Void, Never>?
     /// Connects the reader for a payment method tap, when `connectCardReaderTask` does not.
     private(set) var paymentStartConnectTask: Task<Void, Never>?

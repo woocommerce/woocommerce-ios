@@ -157,8 +157,7 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: posModel.paymentState.cash) { oldValue, newValue in
-            // Cleared on entry rather than exit, so the cash screen keeps its amount while it slides away.
-            if newValue == .collectingCash, oldValue != .collectingCash {
+            if PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: newValue) {
                 viewStateCoordinator.cashAmountInput = .init()
             }
         }

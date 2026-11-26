@@ -290,6 +290,34 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == false)
     }
 
+    // MARK: - Reset Cash Amount Input
+
+    @Test(arguments: [PointOfSaleCashPaymentState.idle, .paymentSuccess])
+    func shouldResetCashAmountInput_when_entering_collectingCash_returns_true(oldValue: PointOfSaleCashPaymentState) {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: .collectingCash)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func shouldResetCashAmountInput_when_staying_in_collectingCash_returns_false() {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: .collectingCash, newValue: .collectingCash)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [PointOfSaleCashPaymentState.idle, .paymentSuccess])
+    func shouldResetCashAmountInput_when_leaving_collectingCash_returns_false(newValue: PointOfSaleCashPaymentState) {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: .collectingCash, newValue: newValue)
+
+        // Then
+        #expect(result == false)
+    }
+
     // MARK: - Exit Decision Tests
 
     @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {

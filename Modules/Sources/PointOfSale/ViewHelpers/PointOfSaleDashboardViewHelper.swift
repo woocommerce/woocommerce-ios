@@ -51,6 +51,11 @@ struct PointOfSaleDashboardViewHelper {
         isPhoneLayout && cartIsEmpty
     }
 
+    /// Cleared on entry rather than exit, so the cash screen keeps its amount while it slides away.
+    static func shouldResetCashAmountInput(oldValue: PointOfSaleCashPaymentState, newValue: PointOfSaleCashPaymentState) -> Bool {
+        newValue == .collectingCash && oldValue != .collectingCash
+    }
+
     enum ExitDecision: Equatable {
         case showConfirmation
         case leave(tracksConfirmation: Bool)

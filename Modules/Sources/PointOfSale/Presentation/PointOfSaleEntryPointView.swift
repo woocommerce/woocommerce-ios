@@ -34,7 +34,7 @@ public struct PointOfSaleEntryPointView: View {
     @State private var lockSettings: POSLockSettings
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dismiss) private var dismiss
-    @State private var isOnboardingGuideDismissed = false
+    @State private var onboardingGuideModel: POSOnboardingGuideModel
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let registerOnDismiss: (@escaping () -> Void) -> Bool
@@ -191,6 +191,11 @@ public struct PointOfSaleEntryPointView: View {
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
         self.httpsConfigurationNotice = httpsConfigurationNotice
+        self._onboardingGuideModel = State(initialValue: POSOnboardingGuideModel(
+            siteID: siteID,
+            featureFlags: services.featureFlags,
+            analytics: services.analytics
+        ))
     }
 
     public var body: some View {
@@ -203,16 +208,11 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var showsOnboardingGuide: Bool {
-        services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
-            && UIDevice.current.userInterfaceIdiom == .phone
-            && !isOnboardingGuideDismissed
-    }
-
     private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
+                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice,
+                                         opensAfterOnboardingGuide: onboardingGuideModel.wasShown)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
                     // Lock modifiers capture their session once; keep this branch gated on the model created after accessSession is set.
@@ -228,16 +228,19 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .overlay {
-            // WOOMOB-4727 decides when the guide shows; for now the flag shows it each time POS opens on iPhone.
-            if showsOnboardingGuide {
-                POSOnboardingGuideView(onStartSelling: { isOnboardingGuideDismissed = true },
-                                       onExit: { dismiss() })
+            if onboardingGuideModel.visibility == .visible {
+                POSOnboardingGuideView(model: onboardingGuideModel, onExit: { dismiss() })
                     // VoiceOver stays in the guide while it covers POS.
                     .accessibilityElement(children: .contain)
                     .accessibilityAddTraits(.isModal)
             }
         }
-        .task {
+        .onChange(of: posEntryPointController.eligibilityState, initial: true) { _, eligibilityState in
+            onboardingGuideModel.resolveVisibility(eligibilityState: eligibilityState)
+        }
+        // POS waits behind the guide, so its catalog sync starts only once the guide is gone.
+        .task(id: onboardingGuideModel.visibility) {
+            guard onboardingGuideModel.visibility == .hidden else { return }
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.

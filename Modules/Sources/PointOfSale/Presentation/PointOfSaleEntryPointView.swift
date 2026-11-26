@@ -197,7 +197,6 @@ public struct PointOfSaleEntryPointView: View {
             // The device idiom, not the size class, so iPad split view never shows the guide.
             isEnabled: services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
                 && UIDevice.current.userInterfaceIdiom == .phone,
-            preferences: services.onboardingGuidePreferences,
             cardPaymentHistory: cardPaymentHistory,
             analytics: services.analytics
         ))

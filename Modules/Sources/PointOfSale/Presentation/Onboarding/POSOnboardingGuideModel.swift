@@ -20,7 +20,7 @@ final class POSOnboardingGuideModel {
 
     init(siteID: Int64,
          isEnabled: Bool,
-         preferences: POSOnboardingGuidePreferenceStoring,
+         preferences: POSOnboardingGuidePreferenceStoring = POSOnboardingGuidePreferences(),
          cardPaymentHistory: POSCardPaymentHistoryProviding?,
          analytics: POSAnalyticsProviding) {
         self.siteID = siteID

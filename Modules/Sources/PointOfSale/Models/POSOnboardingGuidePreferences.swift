@@ -1,23 +1,22 @@
 import Foundation
 
-/// Public because the app creates the one instance POS uses, passed in through `POSDependencyProviding`.
-public protocol POSOnboardingGuidePreferenceStoring {
+protocol POSOnboardingGuidePreferenceStoring {
     func hasCompletedGuide(for siteID: Int64) -> Bool
     func markGuideCompleted(for siteID: Int64)
 }
 
-public struct POSOnboardingGuidePreferences: POSOnboardingGuidePreferenceStoring {
+struct POSOnboardingGuidePreferences: POSOnboardingGuidePreferenceStoring {
     private let userDefaults: UserDefaults
 
-    public init(userDefaults: UserDefaults = .standard) {
+    init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
     }
 
-    public func hasCompletedGuide(for siteID: Int64) -> Bool {
+    func hasCompletedGuide(for siteID: Int64) -> Bool {
         userDefaults.bool(forKey: POSOnboardingGuidePersistence.key(for: siteID))
     }
 
-    public func markGuideCompleted(for siteID: Int64) {
+    func markGuideCompleted(for siteID: Int64) {
         userDefaults.set(true, forKey: POSOnboardingGuidePersistence.key(for: siteID))
     }
 }

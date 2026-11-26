@@ -12,12 +12,8 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
-import protocol PointOfSale.POSOnboardingGuidePreferenceStoring
-import struct PointOfSale.POSOnboardingGuidePreferences
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
-    let onboardingGuidePreferences: POSOnboardingGuidePreferenceStoring = POSOnboardingGuidePreferences()
-
     init() {
     }
 

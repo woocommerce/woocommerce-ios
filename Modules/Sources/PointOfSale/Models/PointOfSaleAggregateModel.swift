@@ -169,7 +169,8 @@ protocol PointOfSaleAggregateModelProtocol {
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences()) {
+         customAmountTaxPreferences: POSCustomAmountTaxPreferenceStoring = POSCustomAmountTaxPreferences(),
+         isPOSLocked: @escaping @MainActor () -> Bool = { false }) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -215,7 +216,8 @@ protocol PointOfSaleAggregateModelProtocol {
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             preferredConnectionMethod: preferredConnectionMethod,
             cardPaymentSelectionMode: cardPaymentSelectionMode,
-            paymentState: paymentState)
+            paymentState: paymentState,
+            isPOSLocked: isPOSLocked)
         weakSelf = self
 
         setupReaderReconnectionObservation()

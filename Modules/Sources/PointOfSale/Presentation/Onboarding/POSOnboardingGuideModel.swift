@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 import struct WooFoundation.WooAnalyticsEvent
 
 /// Decides once per POS session whether the onboarding guide covers POS, and records the merchant's choice.
@@ -11,29 +11,43 @@ final class POSOnboardingGuideModel {
         case hidden
     }
 
-    private(set) var visibility: Visibility
+    private(set) var visibility: Visibility = .undetermined
 
     private let siteID: Int64
+    private let featureFlags: POSFeatureFlagProviding
+    private let deviceIdiom: UIUserInterfaceIdiom
     private let preferences: POSOnboardingGuidePreferenceStoring
     private let cardPaymentHistory: POSCardPaymentHistoryProviding?
     private let analytics: POSAnalyticsProviding
 
     init(siteID: Int64,
-         isEnabled: Bool,
+         featureFlags: POSFeatureFlagProviding,
+         deviceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          preferences: POSOnboardingGuidePreferenceStoring = POSOnboardingGuidePreferences(),
          cardPaymentHistory: POSCardPaymentHistoryProviding?,
          analytics: POSAnalyticsProviding) {
         self.siteID = siteID
+        self.featureFlags = featureFlags
+        self.deviceIdiom = deviceIdiom
         self.preferences = preferences
         self.cardPaymentHistory = cardPaymentHistory
         self.analytics = analytics
-        self.visibility = isEnabled && !preferences.hasCompletedGuide(for: siteID) ? .undetermined : .hidden
     }
 
-    /// The first known eligibility settles the decision: a store that becomes eligible later in the session
-    /// has already started POS behind the guide.
+    /// Settles once per POS session. The checks that don't need eligibility run first, so POS doesn't wait for it
+    /// when the guide can't show. A store that becomes eligible later in the session has already started POS.
     func resolveVisibility(eligibilityState: POSEligibilityState?) async {
-        guard visibility == .undetermined, let eligibilityState else {
+        guard visibility == .undetermined else {
+            return
+        }
+        // The device idiom, not the size class, so iPad split view never shows the guide.
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide),
+              deviceIdiom == .phone,
+              !preferences.hasCompletedGuide(for: siteID) else {
+            visibility = .hidden
+            return
+        }
+        guard let eligibilityState else {
             return
         }
         guard eligibilityState == .eligible else {

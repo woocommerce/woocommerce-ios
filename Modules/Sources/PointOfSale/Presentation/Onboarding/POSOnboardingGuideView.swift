@@ -168,7 +168,7 @@ private extension POSOnboardingGuideView {
 private func onboardingGuidePreview(page: Int) -> some View {
     POSOnboardingGuideView(currentPage: page,
                            model: POSOnboardingGuideModel(siteID: 1,
-                                                          isEnabled: true,
+                                                          featureFlags: EmptyPOSFeatureFlags(),
                                                           preferences: POSOnboardingGuidePreferences(),
                                                           cardPaymentHistory: nil,
                                                           analytics: EmptyPOSAnalytics()),

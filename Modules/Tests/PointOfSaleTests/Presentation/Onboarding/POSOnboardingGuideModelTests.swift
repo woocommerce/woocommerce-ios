@@ -1,5 +1,5 @@
-import Foundation
 import Testing
+import UIKit
 @testable import PointOfSale
 
 @MainActor
@@ -9,43 +9,64 @@ struct POSOnboardingGuideModelTests {
     private let cardPaymentHistory = MockPOSCardPaymentHistory()
     private let analytics = MockPOSAnalytics()
 
-    private func makeSUT(isEnabled: Bool = true) -> POSOnboardingGuideModel {
-        POSOnboardingGuideModel(siteID: siteID,
-                                isEnabled: isEnabled,
-                                preferences: preferences,
-                                cardPaymentHistory: cardPaymentHistory,
-                                analytics: analytics)
+    private func makeSUT(isFlagEnabled: Bool = true,
+                         deviceIdiom: UIUserInterfaceIdiom = .phone) -> POSOnboardingGuideModel {
+        let featureFlags = MockFeatureFlagService()
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleOnboardingGuide] = isFlagEnabled
+        return POSOnboardingGuideModel(siteID: siteID,
+                                       featureFlags: featureFlags,
+                                       deviceIdiom: deviceIdiom,
+                                       preferences: preferences,
+                                       cardPaymentHistory: cardPaymentHistory,
+                                       analytics: analytics)
     }
 
     private var steps: [POSOnboardingGuideStep] { POSOnboardingGuideStep.all }
 
     // MARK: - Visibility
 
-    @Test func init_when_disabled_then_guide_is_hidden() {
-        // When
-        let sut = makeSUT(isEnabled: false)
-
-        // Then
-        #expect(sut.visibility == .hidden)
-    }
-
-    @Test func init_when_store_already_started_selling_then_guide_is_hidden() {
-        // Given
-        preferences.completedSiteIDs = [siteID]
-
-        // When
-        let sut = makeSUT()
-
-        // Then
-        #expect(sut.visibility == .hidden)
-    }
-
-    @Test func init_when_enabled_for_new_store_then_visibility_is_undetermined() {
+    @Test func init_then_visibility_is_undetermined() {
         // When
         let sut = makeSUT()
 
         // Then
         #expect(sut.visibility == .undetermined)
+    }
+
+    @Test func resolveVisibility_when_flag_disabled_then_hides_guide_before_eligibility_is_known() async {
+        // Given
+        let sut = makeSUT(isFlagEnabled: false)
+
+        // When
+        await sut.resolveVisibility(eligibilityState: nil)
+
+        // Then
+        #expect(sut.visibility == .hidden)
+    }
+
+    @Test func resolveVisibility_when_on_iPad_then_hides_guide_before_eligibility_is_known() async {
+        // Given
+        let sut = makeSUT(deviceIdiom: .pad)
+
+        // When
+        await sut.resolveVisibility(eligibilityState: nil)
+
+        // Then
+        #expect(sut.visibility == .hidden)
+    }
+
+    @Test func resolveVisibility_when_store_already_completed_guide_then_hides_guide_without_checking_payments() async {
+        // Given
+        preferences.completedSiteIDs = [siteID]
+        let sut = makeSUT()
+
+        // When
+        await sut.resolveVisibility(eligibilityState: .eligible)
+
+        // Then
+        #expect(sut.visibility == .hidden)
+        #expect(cardPaymentHistory.requestedSiteIDs.isEmpty)
+        #expect(analytics.events.isEmpty)
     }
 
     @Test func resolveVisibility_when_eligibility_unknown_then_stays_undetermined() async {
@@ -84,21 +105,6 @@ struct POSOnboardingGuideModelTests {
         // Then
         #expect(sut.visibility == .hidden)
         #expect(analytics.events.isEmpty)
-    }
-
-    @Test func resolveVisibility_when_card_payment_history_unavailable_then_guide_shows() async {
-        // Given
-        let sut = POSOnboardingGuideModel(siteID: siteID,
-                                          isEnabled: true,
-                                          preferences: preferences,
-                                          cardPaymentHistory: nil,
-                                          analytics: analytics)
-
-        // When
-        await sut.resolveVisibility(eligibilityState: .eligible)
-
-        // Then
-        #expect(sut.visibility == .visible)
     }
 
     @Test func resolveVisibility_when_ineligible_then_guide_is_hidden_without_checking_payments() async {

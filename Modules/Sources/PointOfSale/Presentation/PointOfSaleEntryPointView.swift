@@ -194,9 +194,7 @@ public struct PointOfSaleEntryPointView: View {
         self.httpsConfigurationNotice = httpsConfigurationNotice
         self._onboardingGuideModel = State(initialValue: POSOnboardingGuideModel(
             siteID: siteID,
-            // The device idiom, not the size class, so iPad split view never shows the guide.
-            isEnabled: services.featureFlags.isFeatureFlagEnabled(.pointOfSaleOnboardingGuide)
-                && UIDevice.current.userInterfaceIdiom == .phone,
+            featureFlags: services.featureFlags,
             cardPaymentHistory: cardPaymentHistory,
             analytics: services.analytics
         ))

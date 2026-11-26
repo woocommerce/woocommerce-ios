@@ -36,7 +36,7 @@ struct CartView: View {
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             ZStack {
                 VStack(spacing: 0) {
                     CartHeaderView(
@@ -64,9 +64,7 @@ struct CartView: View {
                         checkoutButton
                             .padding(.horizontal, metrics.padding.medium)
                             .padding(.top, metrics.padding.medium)
-                            .padding(.bottom, horizontalSizeClass == .compact ?
-                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom,
-                                                                          metrics: metrics) : metrics.padding.medium)
+                            .posFooterBottomPadding()
                             .accessibilityAddTraits(.isHeader)
                             .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                             .zIndex(1)

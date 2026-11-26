@@ -266,7 +266,8 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large,
+                isPOSLocked: { session.isLocked })
 
             let cleanup = { [posModel, posModalManager, session, siteID, onPointOfSaleModeActiveStateChange] in
                 session.endSession()
@@ -310,6 +311,11 @@ public struct PointOfSaleEntryPointView: View {
             guard lockSettings.preferences.locksInBackground,
                   accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
+            posModel?.paymentModel.cancelCardPaymentForLock()
+        }
+        .onChange(of: accessSession.isLocked) { _, isLocked in
+            guard !isLocked, let paymentModel = posModel?.paymentModel else { return }
+            Task { await paymentModel.restartCardPaymentAfterUnlock() }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             let session = accessSession

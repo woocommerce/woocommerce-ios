@@ -3,6 +3,7 @@ import SwiftUI
 struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var modalManager: POSModalManager
     let controller: POSSecuritySettingsController
     @State private var presentation = POSSecurityPINPresentation()
     @State private var approval = POSManagerOverrideHandler()
@@ -12,15 +13,12 @@ struct POSSecuritySettingsView: View {
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             if controller.roles?.isEmpty == true {
+                if horizontalSizeClass == .compact {
+                    POSPageHeaderView(title: "")
+                }
                 POSAccessControlSetupView {
                     controller.load()
                     presentation.present(.editor(controller.makePINSetupFlow(for: .admin)))
-                }
-                .overlay(alignment: .top) {
-                    if horizontalSizeClass == .compact {
-                        POSPageHeaderView(title: "")
-                            .background(Color.posSurface)
-                    }
                 }
             } else {
                 POSPageHeaderView(title: Localization.title)
@@ -47,7 +45,10 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .foregroundStyle(Color.posOnSurface)
         .disabled(controller.isSaving || presentation.isTransitioning)
-        .onAppear { controller.load() }
+        .onAppear {
+            controller.load()
+            isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
+        }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in
             if let request {
@@ -64,8 +65,11 @@ struct POSSecuritySettingsView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.guidedAccessStatusDidChangeNotification)) { _ in
             isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
+        }
         .posModal(item: presentationBinding,
-                  compactStyle: presentation.destination?.compactStyle ?? .fullScreen(title: Localization.title),
+                  compactStyle: presentation.destination?.compactStyle ?? .pinEntry,
                   onDismissCompleted: { destination in
                       guard controller.isVisible else { endEditing(); return }
                       presentation.dismissalCompleted(for: destination)
@@ -75,9 +79,16 @@ struct POSSecuritySettingsView: View {
                 POSManagerOverrideView(handler: approval, request: request)
                     .posManagerOverrideModalSizing()
             case .editor(let flow):
-                POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor)
+                POSPINSetupFlowView(flow: flow, controller: controller, close: closeEditor) {
+                    startGuidedAccessGuide(afterDismissing: flow)
+                }
+            case .guidedAccessGuide:
+                if let guide = controller.guidedAccessGuide {
+                    POSGuidedAccessGuideView(guide: guide, close: closeGuidedAccessGuide)
+                }
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("pos-security-settings")
     }
 
@@ -89,15 +100,43 @@ struct POSSecuritySettingsView: View {
             case .approval:
                 presentation.cancel()
                 dismissApproval()
+            case .guidedAccessGuide:
+                closeGuidedAccessGuide()
             case nil: break
             }
         })
     }
 
     private func endEditing() {
+        if case .guidedAccessGuide? = presentation.destination {
+            // This cover reuses its modal manager after a lock; finish guide ownership before it detaches.
+            modalManager.onDisappear()
+        }
         presentation.cancel()
         controller.endPINEditing()
+        controller.closeGuidedAccessGuide()
         dismissApproval()
+    }
+
+    private func startGuidedAccessGuide() {
+        controller.startGuidedAccessGuide()
+        if controller.guidedAccessGuide != nil {
+            presentation.present(.guidedAccessGuide)
+        }
+    }
+
+    private func startGuidedAccessGuide(afterDismissing editor: POSPINSetupFlow) {
+        guard presentation.dismissEditorForGuide(editor) else {
+            return
+        }
+        controller.endPINEditing()
+        controller.load()
+        controller.startGuidedAccessGuide()
+    }
+
+    private func closeGuidedAccessGuide() {
+        controller.closeGuidedAccessGuide()
+        presentation.cancel()
     }
 
     private func closeEditor() {
@@ -152,8 +191,7 @@ struct POSSecuritySettingsView: View {
                         .background(Color.posDefault)
                         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 } else {
-                    // WOOMOB-4595 connects the Guided Access guide.
-                    Button(Localization.setUpGuidedAccessButton) {}
+                    Button(Localization.setUpGuidedAccessButton, action: startGuidedAccessGuide)
                         .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary))
                         .accessibilityLabel(Localization.setUpGuidedAccess)
                 }
@@ -397,6 +435,7 @@ struct POSSecuritySettingsView: View {
 }
 
 private struct POSSecuritySettingRow<Accessory: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posMetrics) private var metrics
     let title: String
@@ -432,7 +471,8 @@ private struct POSSecuritySettingRow<Accessory: View>: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    // The screen foreground tints hierarchical secondary text in light mode.
+                    .foregroundStyle(colorScheme == .light ? AnyShapeStyle(Color.secondary) : AnyShapeStyle(.secondary))
             }
         }
         .fixedSize(horizontal: false, vertical: true)

@@ -221,6 +221,7 @@ struct PointOfSaleDashboardView: View {
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
+            _ = session.consumeAdminPINChangeAuthorization()
             Task {
                 await posModel.checkStaleSyncStatus()
             }

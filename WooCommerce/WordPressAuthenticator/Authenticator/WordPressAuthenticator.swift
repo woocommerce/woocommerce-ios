@@ -236,13 +236,11 @@ import WordPressUI
     @MainActor
     public class func makeSiteCredentialEntryController(
         siteURL: String,
-        username: String,
         onSubmit: @escaping @MainActor (String, String, @escaping @MainActor (String) -> Void) -> Void
     ) -> UIViewController? {
         guard let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) else { return nil }
         let fields = LoginFields()
         fields.siteAddress = siteURL
-        fields.username = username
         controller.loginFields = fields
         controller.onSubmitCredentials = onSubmit
         return controller

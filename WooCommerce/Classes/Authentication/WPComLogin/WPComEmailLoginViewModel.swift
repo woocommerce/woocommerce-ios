@@ -23,7 +23,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         case .posPINRecovery:
-            ""
+            Localization.recoveryTitle
         }
     }
 
@@ -32,14 +32,16 @@ final class WPComEmailLoginViewModel: ObservableObject {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
         case .posPINRecovery:
-            ""
+            Localization.recoverySubtitle
         }
     }
 
     var primaryButtonTitle: String {
         switch flow {
-        case .jetpackSetup, .posPINRecovery:
+        case .jetpackSetup:
             titleString
+        case .posPINRecovery:
+            Localization.recoveryContinue
         }
     }
 
@@ -219,6 +221,21 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let recoveryTitle = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.title",
+            value: "Sign in to WordPress.com",
+            comment: "Title of the WordPress.com email screen in POS PIN recovery."
+        )
+        static let recoverySubtitle = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.subtitle",
+            value: "Use the WordPress.com account that is signed in to the app.",
+            comment: "Subtitle of the WordPress.com email screen in POS PIN recovery."
+        )
+        static let recoveryContinue = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.continue",
+            value: "Continue",
+            comment: "Button that submits the email or username in POS PIN recovery."
         )
         static let unknownUsername = NSLocalizedString(
             "wpComEmailLoginViewModel.unknownUsername",

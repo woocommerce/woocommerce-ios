@@ -4,20 +4,21 @@ import Testing
 
 struct POSPINRecoveryIdentityTests {
     @Test(arguments: [
-        ("STOREADMIN", #"{"username":"storeadmin","roles":["administrator"]}"#, POSPINRecoveryIdentity.sameEligibleAccount),
-        ("ADMIN@EXAMPLE.COM", #"{"data":{"email":"admin@example.com","roles":["shop_manager"]}}"#, .sameEligibleAccount),
-        ("other", #"{"username":"storeadmin","roles":["administrator"]}"#, .differentAccount),
-        ("storeadmin", #"{"username":"storeadmin","roles":["subscriber"]}"#, .notEligible),
-        ("storeadmin", #"{"username":"storeadmin"}"#, .failed),
+        (#"{"id":7,"roles":["administrator"]}"#, POSPINRecoveryIdentity.sameEligibleAccount),
+        (#"{"data":{"id":7,"roles":["shop_manager"]}}"#, .sameEligibleAccount),
+        (#"{"id":8,"username":"storeadmin","email":"storeadmin","roles":["administrator"]}"#, .differentAccount),
+        (#"{"roles":["administrator"]}"#, .differentAccount),
+        (#"{"id":7,"roles":["subscriber"]}"#, .notEligible),
+        (#"{"id":7}"#, .failed),
     ])
-    func test_siteIdentity_when_site_returns_a_user_then_matches_account_and_eligibility(
-        login: String, payload: String, expected: POSPINRecoveryIdentity
+    func test_siteIdentity_when_site_returns_a_user_then_matches_user_ID_and_eligibility(
+        payload: String, expected: POSPINRecoveryIdentity
     ) {
         // Given
         let data = Data(payload.utf8)
 
         // When
-        let result = POSPINRecoveryIdentity.siteIdentity(statusCode: 200, data: data, expectedLogin: login)
+        let result = POSPINRecoveryIdentity.siteIdentity(statusCode: 200, data: data, expectedUserID: 7)
 
         // Then
         #expect(result == expected)

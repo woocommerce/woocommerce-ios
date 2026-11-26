@@ -15,6 +15,13 @@ enum WPComLoginFlow {
         case .posPINRecovery: nil
         }
     }
+
+    var allowsAccountCreation: Bool {
+        if case .jetpackSetup = self {
+            return true
+        }
+        return false
+    }
 }
 
 /// Coordinates navigation for the login flow with WPCom accounts.
@@ -34,7 +41,7 @@ final class WPComLoginCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
               flow: flow,
-              allowAccountCreation: true,
+              allowAccountCreation: flow.allowsAccountCreation,
               accountService: accountService,
               onPasswordUIRequest: { email in self.showPasswordUIForLogin(email: email) },
               onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
@@ -64,17 +71,11 @@ final class WPComLoginCoordinator {
         navigationController.show(emailLoginController, sender: self)
     }
 
-    func start(with email: String, username: String? = nil) async {
+    func start(with email: String) async {
         do {
             let passwordless = try await checkPasswordlessAccount(email: email)
-            guard !Task.isCancelled else { return }
-            if passwordless {
-                await handleMagicLink(email: email)
-            } else {
-                showPasswordUIForLogin(email: email, username: username)
-            }
+            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            guard !Task.isCancelled else { return }
             showAlert(message: error.localizedDescription)
         }
     }
@@ -88,6 +89,14 @@ final class WPComLoginCoordinator {
 
 // MARK: - Login steps
 private extension WPComLoginCoordinator {
+    func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+        if isPasswordlessAccount {
+            await handleMagicLink(email: email)
+        } else {
+            showPasswordUIForLogin(email: email)
+        }
+    }
+
     func handleMagicLink(email: String) async {
         do {
             try await requestAuthenticationLink(email: email)
@@ -101,10 +110,9 @@ private extension WPComLoginCoordinator {
         }
     }
 
-    func showPasswordUIForLogin(email: String, username: String? = nil) {
+    func showPasswordUIForLogin(email: String) {
         let viewModel = WPComPasswordLoginViewModel(
             email: email,
-            username: username,
             onMagicLinkRequest: { [weak self] email in
                 await self?.handleMagicLink(email: email)
             },
@@ -117,7 +125,7 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.completeLogin(username: username ?? email, authToken: authToken)
+                self?.completeLogin(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             title: title,

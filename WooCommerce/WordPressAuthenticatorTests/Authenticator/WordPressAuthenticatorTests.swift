@@ -21,13 +21,15 @@ class WordPressAuthenticatorTests: XCTestCase {
         // Given
         var submittedUsername: String?
         var submittedPassword: String?
-        let entry = WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: "https://example.com", username: "storeadmin") {
+        let entry = WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: "https://example.com") {
             username, password, _ in
             submittedUsername = username
             submittedPassword = password
         }
         let controller = try XCTUnwrap(entry as? SiteCredentialsViewController)
         controller.loadViewIfNeeded()
+        XCTAssertEqual(controller.loginFields.username, "")
+        controller.loginFields.username = "storeadmin"
         controller.loginFields.password = "fixture-password"
 
         // When

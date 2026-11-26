@@ -56,9 +56,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private lazy var appName: String = {
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
         let model = UIDevice.current.model
-        return bundleIdentifier + ".ios-app-client." + model
+        return bundleIdentifier + ".ios-app-client." + model + appNameSuffix
     }()
 
+    private let appNameSuffix: String
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private var subscriptions: Set<AnyCancellable> = []
     private var webViewInitialLoad = true
@@ -72,7 +73,9 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
              controller.present(alert, animated: true, completion: completion)
          },
          onCancel: @escaping () -> Void = {},
+         appNameSuffix: String = "",
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
+        self.appNameSuffix = appNameSuffix
         self.viewModel = viewModel
         self.previousViewController = previousViewController
         self.onSuccess = onSuccess

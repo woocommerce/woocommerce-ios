@@ -13,7 +13,6 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     /// Email address of the WPCom account
     let email: String
 
-    private let username: String
     private let siteURL: String
     private let loginFacade: LoginFacade
     private var loginFields = LoginFields()
@@ -26,7 +25,6 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     init(siteURL: String = "",
          email: String,
-         username: String? = nil,
          loginFacade: LoginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                                 dotcomSecret: ApiCredentials.dotcomSecret,
                                                 userAgent: UserAgent.defaultUserAgent),
@@ -36,7 +34,6 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
          onLoginSuccess: @escaping (String) async -> Void) {
         self.siteURL = siteURL
         self.email = email
-        self.username = username ?? email
         self.loginFacade = loginFacade
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMultifactorCodeRequest = onMultifactorCodeRequest
@@ -88,7 +85,7 @@ private extension WPComPasswordLoginViewModel {
 
     func createLoginFields() -> LoginFields {
         let loginFields = LoginFields()
-        loginFields.username = username
+        loginFields.username = email
         loginFields.password = password
         loginFields.siteAddress = siteURL
         loginFields.userIsDotCom = true

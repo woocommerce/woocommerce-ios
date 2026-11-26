@@ -33,7 +33,7 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
 
     public static func verifySiteCredentials(endpoints: CookieNonceAuthenticationEndpoints,
                                              session: URLSession,
-                                             expectedLogin: String) async -> Self {
+                                             expectedUserID: Int64) async -> Self {
         do {
             let nonceRequest = URLRequest(url: try endpoints.nonceURL(), cachePolicy: .reloadIgnoringLocalCacheData)
             let nonceResponse = try await response(for: nonceRequest, session: session)
@@ -42,7 +42,7 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
                   var userRequest = siteUserRequest(for: endpoints.siteURL) else { return .failed }
             userRequest.setValue(nonce, forHTTPHeaderField: "X-WP-Nonce")
             let userResponse = try await response(for: userRequest, session: session)
-            return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedLogin: expectedLogin)
+            return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedUserID: expectedUserID)
         } catch {
             DDLogError("⛔️ POS recovery could not verify site credentials")
             return .failed
@@ -53,7 +53,7 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
                                                   login: String,
                                                   password: String,
                                                   appID: String,
-                                                  expectedLogin: String) async -> Self {
+                                                  expectedUserID: Int64) async -> Self {
         guard let site = URL(string: siteURL),
               let userRequest = siteUserRequest(for: site) else { return .cleanupFailed }
         let session = URLSession(configuration: .ephemeral)
@@ -70,13 +70,13 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
             DDLogError("⛔️ POS recovery could not verify browser authorization")
             return .failed
         }
-        return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedLogin: expectedLogin)
+        return siteIdentity(statusCode: userResponse.statusCode, data: userResponse.data, expectedUserID: expectedUserID)
     }
 
-    static func siteIdentity(statusCode: Int, data: Data, expectedLogin: String? = nil) -> Self {
-        if statusCode == 403, expectedLogin == nil { return .notEligible }
+    static func siteIdentity(statusCode: Int, data: Data, expectedUserID: Int64? = nil) -> Self {
+        if statusCode == 403, expectedUserID == nil { return .notEligible }
         guard statusCode == 200, let user = try? JSONDecoder().decode(SiteUser.self, from: data) else { return .failed }
-        if let login = expectedLogin?.lowercased(), user.username?.lowercased() != login, user.email?.lowercased() != login {
+        if let expectedUserID, user.id != expectedUserID {
             return .differentAccount
         }
         return user.roles.compactMap(User.Role.init(rawValue:)).contains { $0.isEligible() } ? .sameEligibleAccount : .notEligible
@@ -96,19 +96,17 @@ private extension POSPINRecoveryIdentity {
     }
 
     struct SiteUser: Decodable {
-        let username: String?
-        let email: String?
+        let id: Int64?
         let roles: [String]
 
         private enum CodingKeys: String, CodingKey {
-            case data, username, email, roles
+            case data, id, roles
         }
 
         init(from decoder: Decoder) throws {
             let response = try decoder.container(keyedBy: CodingKeys.self)
             let user = try response.contains(.data) ? response.nestedContainer(keyedBy: CodingKeys.self, forKey: .data) : response
-            username = try user.decodeIfPresent(String.self, forKey: .username)
-            email = try user.decodeIfPresent(String.self, forKey: .email)
+            id = try user.decodeIfPresent(Int64.self, forKey: .id)
             roles = try user.decode([String].self, forKey: .roles)
         }
     }
@@ -131,7 +129,7 @@ private extension POSPINRecoveryIdentity {
     static func siteUserRequest(for site: URL) -> URLRequest? {
         siteRequest(for: site, route: "/wp/v2/users/me", query: [
             URLQueryItem(name: "context", value: "edit"),
-            URLQueryItem(name: "_fields", value: "username,email,roles")
+            URLQueryItem(name: "_fields", value: "id,roles")
         ])
     }
 

@@ -32,7 +32,7 @@ final class SiteCredentialsViewController: LoginViewController {
     private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
     private let configuration: WordPressAuthenticatorConfiguration
-    var onSubmitCredentials: (@MainActor (String, String, @escaping @MainActor (String) -> Void) -> Void)?
+    var credentialSubmission: SiteCredentialSubmission = AuthenticatorSiteCredentialSubmission()
 
     private var isWPCom: Bool {
         return loginFields.siteAddress == LoginFields.wpComSiteAddress
@@ -124,8 +124,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if onSubmitCredentials == nil, isBeingDismissed || navigationController?.isBeingDismissed == true {
-            WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
+        if isBeingDismissed || navigationController?.isBeingDismissed == true {
+            credentialSubmission.cancel()
         }
     }
 
@@ -134,9 +134,7 @@ final class SiteCredentialsViewController: LoginViewController {
         guard parent == nil else {
             return
         }
-        if onSubmitCredentials == nil {
-            WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
-        }
+        credentialSubmission.cancel()
         // Not viewWillDisappear/isMovingFromParent: a cancelled back-swipe fires those and comes
         // back here, and `isWPCom` is read at submit time.
         loginFields.restoreSiteAddressAfterWPComFallback()
@@ -592,15 +590,7 @@ private extension SiteCredentialsViewController {
             return
         }
 
-        if let onSubmitCredentials {
-            configureViewLoading(true)
-            onSubmitCredentials(loginFields.username, loginFields.password) { [weak self] message in
-                self?.configureViewLoading(false)
-                self?.displayError(message: message, moveVoiceOverFocus: true)
-            }
-        } else {
-            authenticateSiteCredentials(verifying: nil)
-        }
+        credentialSubmission.submit(from: self)
     }
 
     /// Submits the address the merchant entered for the endpoint currently being recovered.
@@ -896,11 +886,15 @@ extension SiteCredentialsViewController {
         return siteAddress
     }
 
+    func authenticateEnteredCredentials() {
+        authenticateSiteCredentials(verifying: nil)
+    }
+
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        if onSubmitCredentials != nil || (configuration.enableManualSiteCredentialLogin && !isWPCom) {
+        if credentialSubmission.usesManualEntry(configuration: configuration, isWPCom: isWPCom) {
             // asks the delegate to handle the login
             if recoveryEndpoint == nil {
                 validateFormAndTriggerDelegate()
@@ -937,4 +931,43 @@ extension SiteCredentialsViewController {
             displayError(error, sourceTag: sourceTag)
         }
     }
+}
+
+@MainActor
+protocol SiteCredentialSubmission {
+    func usesManualEntry(configuration: WordPressAuthenticatorConfiguration, isWPCom: Bool) -> Bool
+    func submit(from controller: SiteCredentialsViewController)
+    func cancel()
+}
+
+struct AuthenticatorSiteCredentialSubmission: SiteCredentialSubmission {
+    func usesManualEntry(configuration: WordPressAuthenticatorConfiguration, isWPCom: Bool) -> Bool {
+        configuration.enableManualSiteCredentialLogin && !isWPCom
+    }
+
+    func submit(from controller: SiteCredentialsViewController) {
+        controller.authenticateEnteredCredentials()
+    }
+
+    func cancel() {
+        WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
+    }
+}
+
+struct CustomSiteCredentialSubmission: SiteCredentialSubmission {
+    let onSubmit: @MainActor (String, String, @escaping @MainActor (String) -> Void) -> Void
+
+    func usesManualEntry(configuration: WordPressAuthenticatorConfiguration, isWPCom: Bool) -> Bool {
+        true
+    }
+
+    func submit(from controller: SiteCredentialsViewController) {
+        controller.configureViewLoading(true)
+        onSubmit(controller.loginFields.username, controller.loginFields.password) { [weak controller] message in
+            controller?.configureViewLoading(false)
+            controller?.displayError(message: message, moveVoiceOverFocus: true)
+        }
+    }
+
+    func cancel() {}
 }

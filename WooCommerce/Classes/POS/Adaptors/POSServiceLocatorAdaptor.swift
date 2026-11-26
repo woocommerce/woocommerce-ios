@@ -12,7 +12,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
-import protocol PointOfSale.POSPINRecoveryProviding
+import enum PointOfSale.POSPINRecoveryResult
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
@@ -40,10 +40,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     @MainActor var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
-    }
-
-    @MainActor var pinRecovery: POSPINRecoveryProviding? {
-        POSPINRecoveryAdaptor()
     }
 }
 
@@ -130,5 +126,9 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
+    }
+
+    func createPINRecoveryView(siteID: Int64, onCompletion: @escaping (POSPINRecoveryResult) -> Void) -> AnyView {
+        AnyView(POSPINRecoveryView(siteID: siteID, onCompletion: onCompletion))
     }
 }

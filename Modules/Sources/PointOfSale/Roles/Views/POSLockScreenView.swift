@@ -5,7 +5,7 @@ struct POSLockScreenView: View {
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.posLockPresenter) private var lockPresenter
+    @Environment(\.posExternalViews) private var externalViews
     @ScaledMetric(relativeTo: .body) private var statusLineHeight = POSPINEntryView.lockScreenStatusRowHeight
     @State private var model: POSLockScreenModel
     @State private var illustrationFrame: CGRect = .zero
@@ -14,18 +14,18 @@ struct POSLockScreenView: View {
     @State private var intro = POSLockScreenIntro()
     @StateObject private var recoveryDialogManager = POSModalManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
+    @StateObject private var sheetManager = POSSheetManager()
     @State private var recoveryStep: RecoveryStep?
+    @State private var recoveryRequest: RecoveryRequest?
     @AccessibilityFocusState private var isTitleFocused: Bool
     private let animatesLock: Bool
-    private let recovery: POSPINRecoveryProviding?
     #if DEBUG
     private var previewEnteredPIN: String?
     #endif
 
-    init(session: POSAccessSession, recovery: POSPINRecoveryProviding? = nil) {
+    init(session: POSAccessSession) {
         self._model = State(initialValue: POSLockScreenModel(session: session))
         self.animatesLock = true
-        self.recovery = recovery
     }
 
     var body: some View {
@@ -57,8 +57,8 @@ struct POSLockScreenView: View {
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .posDialog(item: recoveryDialogItem, onDismissCompleted: { _ in
-            guard recoveryStep == .confirmed, let recovery else { return }
-            startRecovery(using: recovery)
+            guard recoveryStep == .confirmed else { return }
+            startRecovery()
         }) { step in
             return if step == .failed {
                 POSDialog(title: Localization.recoveryFailed,
@@ -68,12 +68,22 @@ struct POSLockScreenView: View {
                 Self.recoveryExplanation(onContinue: { recoveryStep = .confirmed }, onCancel: { recoveryStep = nil })
             }
         }
+        .posSheet(item: $recoveryRequest, onDismiss: { recoveryRequest?.complete(.canceled) }) { request in
+            externalViews.createPINRecoveryView(siteID: request.siteID) { result in
+                request.complete(result)
+                recoveryRequest = nil
+            }
+            .interactiveDismissDisabled()
+        }
         .posRootModal()
         .environmentObject(recoveryDialogManager)
         .environmentObject(coverManager)
+        .environmentObject(sheetManager)
         .task { await model.observeWait() }
         .onDisappear {
             intro.cancel()
+            recoveryRequest?.complete(.canceled)
+            recoveryRequest = nil
             if recoveryDialogManager.isPresented {
                 recoveryDialogManager.dismiss()
             }
@@ -115,20 +125,18 @@ private extension POSLockScreenView {
                 .offset(y: introOffset(viewportSize: viewportSize).height)
                 .allowsHitTesting(!isIntroActive)
                 .accessibilityHidden(isIntroActive)
-            if recovery != nil {
-                Button { recoveryStep = .explanation } label: {
-                    Text(Localization.forgotPIN)
-                        .font(.posBodySmallRegular(underline: true))
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
-                }
-                .disabled(model.isSigningIn || recoveryStep != nil)
-                .accessibilityIdentifier("pos-lock-forgot-pin")
-                .opacity(showsContent ? 1 : 0)
-                .allowsHitTesting(!isIntroActive)
-                .accessibilityHidden(isIntroActive)
+            Button { recoveryStep = .explanation } label: {
+                Text(Localization.forgotPIN)
+                    .font(.posBodySmallRegular(underline: true))
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             }
+            .disabled(model.isSigningIn || recoveryStep != nil)
+            .accessibilityIdentifier("pos-lock-forgot-pin")
+            .opacity(showsContent ? 1 : 0)
+            .allowsHitTesting(!isIntroActive)
+            .accessibilityHidden(isIntroActive)
         }
     }
 
@@ -140,16 +148,15 @@ private extension POSLockScreenView {
         })
     }
 
-    func startRecovery(using recovery: POSPINRecoveryProviding) {
+    func startRecovery() {
         recoveryStep = .signIn
-        let started = lockPresenter?.startRecovery { presenter in
+        Task {
             let outcome = await model.recoverWithFreshSignIn { siteID in
-                await recovery.authenticateForPINRecovery(siteID: siteID, from: presenter)
+                await withCheckedContinuation { continuation in
+                    recoveryRequest = RecoveryRequest(siteID: siteID, continuation: continuation)
+                }
             }
-            recoveryStep = outcome == .failed && !Task.isCancelled && model.isLocked ? .failed : nil
-        }
-        if started != true {
-            recoveryStep = .failed
+            recoveryStep = outcome == .failed && model.isLocked ? .failed : nil
         }
     }
 
@@ -160,6 +167,25 @@ private extension POSLockScreenView {
                                        accessibilityIdentifier: "pos-pin-recovery-continue",
                                        action: onContinue),
                   secondaryAction: .init(title: Localization.cancel, action: onCancel))
+    }
+
+    final class RecoveryRequest: Identifiable, Equatable {
+        let siteID: Int64
+        private var continuation: CheckedContinuation<POSPINRecoveryResult, Never>?
+
+        init(siteID: Int64, continuation: CheckedContinuation<POSPINRecoveryResult, Never>) {
+            self.siteID = siteID
+            self.continuation = continuation
+        }
+
+        func complete(_ result: POSPINRecoveryResult) {
+            continuation?.resume(returning: result)
+            continuation = nil
+        }
+
+        static func == (lhs: RecoveryRequest, rhs: RecoveryRequest) -> Bool {
+            lhs === rhs
+        }
     }
 
     enum RecoveryStep: Identifiable, Hashable {
@@ -294,7 +320,6 @@ extension POSLockScreenView {
     init(model: POSLockScreenModel, animatesLock: Bool = false) {
         self._model = State(initialValue: model)
         self.animatesLock = animatesLock
-        self.recovery = nil
     }
 
     static func preview(_ state: POSPINEntryState, enteredPIN: String? = nil) -> POSLockScreenView {

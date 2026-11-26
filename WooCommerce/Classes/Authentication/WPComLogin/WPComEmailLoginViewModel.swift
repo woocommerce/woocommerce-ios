@@ -135,7 +135,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
                 return
             }
 
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, failure: error))
             onError(error.localizedDescription)
         }
     }
@@ -165,16 +165,22 @@ final class WPComEmailLoginViewModel: ObservableObject {
             onMagicLinkSent(email, forAccountCreation)
         } catch {
             onError(error.localizedDescription)
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
         }
     }
 }
 
 private extension WPComEmailLoginViewModel {
+    func trackJetpackSetup(_ event: WooAnalyticsEvent) {
+        if flow.isJetpackSetup {
+            analytics.track(event: event)
+        }
+    }
+
     @MainActor
     func handleUnkownUserError(emailOrUsername: String, error: Error) async {
         guard emailOrUsername.isValidEmail() else {
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, failure: error))
             onError(Localization.unknownUsername)
             return
         }

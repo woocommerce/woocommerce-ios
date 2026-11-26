@@ -2,54 +2,79 @@ import SwiftUI
 import UIKit
 import WordPressAuthenticator
 import Yosemite
-import protocol PointOfSale.POSPINRecoveryProviding
 import enum PointOfSale.POSPINRecoveryResult
 
+struct POSPINRecoveryView: UIViewControllerRepresentable {
+    let siteID: Int64
+    let onCompletion: (POSPINRecoveryResult) -> Void
+
+    func makeCoordinator() -> POSPINRecoveryAdaptor {
+        POSPINRecoveryAdaptor()
+    }
+
+    func makeUIViewController(context: Context) -> UINavigationController {
+        context.coordinator.start(siteID: siteID, onCompletion: onCompletion)
+    }
+
+    func updateUIViewController(_ controller: UINavigationController, context: Context) {}
+
+    static func dismantleUIViewController(_ controller: UINavigationController, coordinator: POSPINRecoveryAdaptor) {
+        coordinator.cancel()
+    }
+}
+
 @MainActor
-final class POSPINRecoveryAdaptor: POSPINRecoveryProviding {
+final class POSPINRecoveryAdaptor {
     private let stores: StoresManager
+    private var flow: POSPINRecoveryModalFlow?
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }
 
-    func authenticateForPINRecovery(siteID: Int64, from presenter: UIViewController) async -> POSPINRecoveryResult {
+    func start(siteID: Int64, onCompletion: @escaping (POSPINRecoveryResult) -> Void) -> UINavigationController {
         let sessionManager = stores.sessionManager
         guard stores.isAuthenticated,
               sessionManager.defaultStoreID == siteID,
               let credentials = sessionManager.defaultCredentials,
-              presenter.viewIfLoaded?.window != nil,
-              presenter.presentedViewController == nil,
-              !Task.isCancelled else {
-            return .failed
+              let flow = makeFlow(for: credentials, siteID: siteID) else {
+            Task { @MainActor in onCompletion(.failed) }
+            return UINavigationController()
         }
-
-        let outcome: POSPINRecoveryOutcome
-        switch credentials {
-        case let .wporg(_, _, siteAddress):
-            guard let userID = await siteUserID(siteID: siteID) else { return .failed }
-            let endpoints = sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
-            outcome = await POSPINRecoverySiteSignIn(siteURL: siteAddress, expectedUserID: userID, endpoints: endpoints).present(from: presenter)
-        case let .applicationPassword(_, _, siteAddress):
-            guard let userID = await siteUserID(siteID: siteID) else { return .failed }
-            outcome = await POSPINRecoveryBrowserSignIn(siteURL: siteAddress, expectedUserID: userID).present(from: presenter)
-        case .wpcom:
-            guard let account = sessionManager.defaultAccount else {
-                return .failed
+        self.flow = flow
+        return flow.start { [weak self, stores] outcome in
+            self?.flow = nil
+            switch outcome {
+            case .verified where stores.isAuthenticated
+                && sessionManager.defaultStoreID == siteID
+                && sessionManager.defaultCredentials == credentials:
+                onCompletion(.verified(siteID: siteID))
+            case .canceled:
+                onCompletion(.canceled)
+            default:
+                onCompletion(.failed)
             }
-            outcome = await POSPINRecoveryWPComSignIn(account: account, siteID: siteID).present(from: presenter)
         }
-
-        guard outcome == .verified,
-              stores.isAuthenticated,
-              sessionManager.defaultStoreID == siteID,
-              sessionManager.defaultCredentials == credentials else {
-            return outcome == .canceled ? .canceled : .failed
-        }
-        return .verified(siteID: siteID)
     }
 
-    private func siteUserID(siteID: Int64) async -> Int64? {
+    func cancel() {
+        flow?.end()
+        flow = nil
+    }
+
+    private func makeFlow(for credentials: Credentials, siteID: Int64) -> POSPINRecoveryModalFlow? {
+        switch credentials {
+        case let .wporg(_, _, siteAddress):
+            let endpoints = stores.sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
+            return POSPINRecoverySiteSignIn(siteURL: siteAddress, siteID: siteID, stores: stores, endpoints: endpoints)
+        case let .applicationPassword(_, _, siteAddress):
+            return POSPINRecoveryBrowserSignIn(siteURL: siteAddress, siteID: siteID, stores: stores)
+        case .wpcom:
+            return stores.sessionManager.defaultAccount.map { POSPINRecoveryWPComSignIn(account: $0, siteID: siteID) }
+        }
+    }
+
+    static func siteUserID(siteID: Int64, stores: StoresManager) async -> Int64? {
         await withCheckedContinuation { continuation in
             stores.dispatch(UserAction.retrieveUser(siteID: siteID) { result in
                 switch result {
@@ -118,22 +143,22 @@ private extension POSPINRecoveryIdentity {
 @MainActor
 private class POSPINRecoveryModalFlow: NSObject {
     let navigationController = UINavigationController()
-    private var continuation: CheckedContinuation<POSPINRecoveryOutcome, Never>?
-    var isPresenting: Bool { continuation != nil }
+    private var completion: ((POSPINRecoveryOutcome) -> Void)?
+    var isPresenting: Bool { completion != nil }
 
-    func present(root: UIViewController, from presenter: UIViewController) async -> POSPINRecoveryOutcome {
-        await withTaskCancellationHandler {
-            await withCheckedContinuation { continuation in
-                self.continuation = continuation
-                addCancelButton(to: root)
-                navigationController.viewControllers = [root]
-                navigationController.modalPresentationStyle = .formSheet
-                navigationController.isModalInPresentation = true
-                presenter.present(navigationController, animated: true)
-            }
-        } onCancel: { [weak self] in
-            Task { @MainActor in self?.cancel() }
+    func start(onCompletion: @escaping (POSPINRecoveryOutcome) -> Void) -> UINavigationController {
+        completion = onCompletion
+        guard let root = makeRoot() else {
+            Task { @MainActor [weak self] in self?.finish(.failed) }
+            return navigationController
         }
+        addCancelButton(to: root)
+        navigationController.viewControllers = [root]
+        return navigationController
+    }
+
+    func makeRoot() -> UIViewController? {
+        nil
     }
 
     func addCancelButton(to controller: UIViewController) {
@@ -147,18 +172,17 @@ private class POSPINRecoveryModalFlow: NSObject {
         finish(.canceled)
     }
 
+    func end() {
+        willFinish()
+        completion = nil
+    }
+
     func willFinish() {}
 
     func finish(_ outcome: POSPINRecoveryOutcome) {
-        guard let continuation else { return }
-        self.continuation = nil
-        guard navigationController.presentingViewController != nil else {
-            continuation.resume(returning: outcome)
-            return
-        }
-        navigationController.dismiss(animated: true) {
-            continuation.resume(returning: outcome)
-        }
+        guard let completion else { return }
+        self.completion = nil
+        completion(outcome)
     }
 
     func showError(_ message: String, onDismiss: (() -> Void)? = nil) {
@@ -181,7 +205,7 @@ private final class POSPINRecoveryWPComSignIn: POSPINRecoveryModalFlow {
         self.siteID = siteID
     }
 
-    func present(from presenter: UIViewController) async -> POSPINRecoveryOutcome {
+    override func makeRoot() -> UIViewController? {
         let coordinator = WPComLoginCoordinator(flow: .posPINRecovery,
                                                 navigationController: navigationController) { [weak self] credentials in
             self?.verify(credentials)
@@ -189,8 +213,7 @@ private final class POSPINRecoveryWPComSignIn: POSPINRecoveryModalFlow {
         self.coordinator = coordinator
         navigationController.delegate = self
         coordinator.startWithoutEmail()
-        guard let root = navigationController.viewControllers.first else { return .failed }
-        return await present(root: root, from: presenter)
+        return navigationController.viewControllers.first
     }
 
     override func willFinish() {
@@ -236,16 +259,18 @@ extension POSPINRecoveryWPComSignIn: UINavigationControllerDelegate {
 @MainActor
 private final class POSPINRecoveryBrowserSignIn: POSPINRecoveryModalFlow {
     private let siteURL: String
-    private let expectedUserID: Int64
+    private let siteID: Int64
+    private let stores: StoresManager
     private var verificationTask: Task<Void, Never>?
 
-    init(siteURL: String, expectedUserID: Int64) {
+    init(siteURL: String, siteID: Int64, stores: StoresManager) {
         self.siteURL = siteURL
-        self.expectedUserID = expectedUserID
+        self.siteID = siteID
+        self.stores = stores
     }
 
-    func present(from presenter: UIViewController) async -> POSPINRecoveryOutcome {
-        await present(root: makeAuthorizationController(), from: presenter)
+    override func makeRoot() -> UIViewController? {
+        makeAuthorizationController()
     }
 
     private func makeAuthorizationController() -> UIViewController {
@@ -263,18 +288,14 @@ private final class POSPINRecoveryBrowserSignIn: POSPINRecoveryModalFlow {
         let login = applicationPassword.wpOrgUsername
         let password = applicationPassword.password.secretValue
         let appID = applicationPassword.uuid
-        verificationTask = Task { @MainActor [weak self, siteURL, expectedUserID] in
+        verificationTask = Task { @MainActor [weak self, siteURL, siteID, stores] in
+            let expectedUserID = await POSPINRecoveryAdaptor.siteUserID(siteID: siteID, stores: stores)
             // WordPress already created this credential. Remove it even if the user closes the sheet.
             let identity = await POSPINRecoveryIdentity.verifyBrowserAuthorization(siteURL: siteURL,
                                                                                    login: login,
                                                                                    password: password,
                                                                                    appID: appID,
                                                                                    expectedUserID: expectedUserID)
-            if identity == .cleanupFailed {
-                ServiceLocator.crashLogging.logMessage("POS PIN recovery could not remove a temporary application password",
-                                                       properties: nil,
-                                                       level: .error)
-            }
             guard let self, isPresenting else { return }
             if identity == .sameEligibleAccount {
                 finish(.verified)
@@ -298,23 +319,23 @@ private final class POSPINRecoveryBrowserSignIn: POSPINRecoveryModalFlow {
 @MainActor
 private final class POSPINRecoverySiteSignIn: POSPINRecoveryModalFlow {
     private let siteURL: String
-    private let expectedUserID: Int64
+    private let siteID: Int64
+    private let stores: StoresManager
     private let endpoints: CookieNonceAuthenticationEndpoints?
     private var useCase: SiteCredentialLoginUseCase?
     private var verificationTask: Task<Void, Never>?
 
-    init(siteURL: String, expectedUserID: Int64, endpoints: CookieNonceAuthenticationEndpoints?) {
+    init(siteURL: String, siteID: Int64, stores: StoresManager, endpoints: CookieNonceAuthenticationEndpoints?) {
         self.siteURL = siteURL
-        self.expectedUserID = expectedUserID
+        self.siteID = siteID
+        self.stores = stores
         self.endpoints = endpoints
     }
 
-    func present(from presenter: UIViewController) async -> POSPINRecoveryOutcome {
-        let controller = WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: siteURL) { [weak self] username, password, onFailure in
+    override func makeRoot() -> UIViewController? {
+        WordPressAuthenticator.makeSiteCredentialEntryController(siteURL: siteURL) { [weak self] username, password, onFailure in
             self?.signIn(username: username, password: password, onFailure: onFailure)
         }
-        guard let controller else { return .failed }
-        return await present(root: controller, from: presenter)
     }
 
     override func willFinish() {
@@ -328,10 +349,15 @@ private final class POSPINRecoverySiteSignIn: POSPINRecoveryModalFlow {
         let useCase = SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, cookieJar: cookieJar)
         useCase.setupHandlers(onLoginSuccess: { [weak self] provenEndpoints in
             guard let self, isPresenting else { return }
-            verificationTask = Task { @MainActor [weak self, expectedUserID] in
+            verificationTask = Task { @MainActor [weak self, siteID, stores] in
                 let session = URLSession(configuration: SiteCredentialLoginUseCase.makeSessionConfiguration(cookieJar: cookieJar))
-                let identity = await POSPINRecoveryIdentity.verifySiteCredentials(endpoints: provenEndpoints,
-                                                                                  session: session, expectedUserID: expectedUserID)
+                let identity: POSPINRecoveryIdentity
+                if let expectedUserID = await POSPINRecoveryAdaptor.siteUserID(siteID: siteID, stores: stores) {
+                    identity = await POSPINRecoveryIdentity.verifySiteCredentials(endpoints: provenEndpoints,
+                                                                                 session: session, expectedUserID: expectedUserID)
+                } else {
+                    identity = .failed
+                }
                 session.invalidateAndCancel()
                 cookieJar.cookies?.forEach(cookieJar.deleteCookie)
                 guard let self, !Task.isCancelled, isPresenting else { return }

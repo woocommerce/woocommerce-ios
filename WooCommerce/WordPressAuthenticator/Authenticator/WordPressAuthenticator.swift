@@ -242,7 +242,7 @@ import WordPressUI
         let fields = LoginFields()
         fields.siteAddress = siteURL
         controller.loginFields = fields
-        controller.onSubmitCredentials = onSubmit
+        controller.credentialSubmission = CustomSiteCredentialSubmission(onSubmit: onSubmit)
         return controller
     }
 

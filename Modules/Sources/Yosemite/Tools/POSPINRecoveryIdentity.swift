@@ -53,7 +53,7 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
                                                   login: String,
                                                   password: String,
                                                   appID: String,
-                                                  expectedUserID: Int64) async -> Self {
+                                                  expectedUserID: Int64?) async -> Self {
         guard let site = URL(string: siteURL),
               let userRequest = siteUserRequest(for: site) else { return .cleanupFailed }
         let session = URLSession(configuration: .ephemeral)
@@ -63,10 +63,10 @@ public enum POSPINRecoveryIdentity: Equatable, Sendable {
 
         // The approval returns an app_id. WordPress deletes the password by its own UUID.
         guard await removeApplicationPassword(from: site, appID: appID, authorization: authorization, session: session) else {
-            DDLogError("⛔️ POS recovery could not confirm temporary credential removal")
+            DDLogWarn("⚠️ POS recovery could not confirm temporary credential removal")
             return .cleanupFailed
         }
-        guard let userResponse else {
+        guard let userResponse, let expectedUserID else {
             DDLogError("⛔️ POS recovery could not verify browser authorization")
             return .failed
         }

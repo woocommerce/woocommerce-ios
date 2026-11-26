@@ -16,7 +16,7 @@ enum WPComLoginFlow {
         }
     }
 
-    var allowsAccountCreation: Bool {
+    var isJetpackSetup: Bool {
         if case .jetpackSetup = self {
             return true
         }
@@ -41,7 +41,7 @@ final class WPComLoginCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
               flow: flow,
-              allowAccountCreation: flow.allowsAccountCreation,
+              allowAccountCreation: flow.isJetpackSetup,
               accountService: accountService,
               onPasswordUIRequest: { email in self.showPasswordUIForLogin(email: email) },
               onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
@@ -166,7 +166,8 @@ private extension WPComLoginCoordinator {
                              onUseUsernamePassword: { self.showWPComUsernameLogin() },
                              onError: { [weak self] message in
                                  self?.showAlert(message: message)
-                             })
+                             },
+                             tracksJetpackSetup: flow.isJetpackSetup)
         )
         navigationController.show(magicLinkRequestController, sender: self)
     }

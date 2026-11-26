@@ -118,7 +118,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.EUR],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.wisepad3],
+                supportedReaders: [.wisepad3, .tapToPay],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "4.4.0"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
@@ -136,7 +136,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.SGD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.wisepad3],
+                supportedReaders: [.wisepad3, .tapToPay],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "4.4.0"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
@@ -156,7 +156,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.NZD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.wisepad3],
+                supportedReaders: [.wisepad3, .tapToPay],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "4.4.0"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")

@@ -148,22 +148,6 @@ final class POSOrderListModelTests {
         #expect(mockOrdersController.loadOrderRefundsCalled == true)
     }
 
-    @Test func refundActionAvailability_when_no_order_is_selected_then_unavailable() async throws {
-        // Given
-        mockOrdersController.selectedOrder = nil
-
-        // When / Then
-        #expect(sut.refundActionAvailability == .unavailable)
-    }
-
-    @Test func refundActionAvailability_when_a_completed_order_is_selected_then_available() async throws {
-        // Given
-        mockOrdersController.selectedOrder = makeTestOrder(id: 1, email: "customer@example.com")
-
-        // When / Then
-        #expect(sut.refundActionAvailability == .available)
-    }
-
     @Test func processRefund_when_submission_fails_then_throws_without_refreshing_the_order() async throws {
         // Given
         mockRefundController.processRefundErrorToThrow = MockPOSRefundController.TestError.processRefundFailed

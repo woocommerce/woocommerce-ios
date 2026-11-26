@@ -10,10 +10,6 @@
 # build-products.tar and is the slowest step in the pipeline. The pipeline step
 # is soft_fail while the guard is advisory.
 
-if .buildkite/commands/should-skip-job.sh --job-type validation; then
-  exit 0
-fi
-
 "$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 CURRENT_JSON="strict-concurrency-current.json"

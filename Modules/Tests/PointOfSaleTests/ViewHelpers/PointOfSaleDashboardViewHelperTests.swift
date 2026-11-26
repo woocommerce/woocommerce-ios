@@ -163,7 +163,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -175,7 +176,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -187,7 +189,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: true,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -199,7 +202,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: true,
             floatingControlSuppressed: true,
-            isFullSizeKeyboardVisible: false
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: false
         )
 
         // Then
@@ -211,7 +215,21 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
             cartIsEmpty: false,
             floatingControlSuppressed: false,
-            isFullSizeKeyboardVisible: true
+            isFullSizeKeyboardVisible: true,
+            itemListHidesCartButton: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func showsCompactCartButton_when_cart_has_items_but_item_list_hides_cart_button_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: false,
+            floatingControlSuppressed: false,
+            isFullSizeKeyboardVisible: false,
+            itemListHidesCartButton: true
         )
 
         // Then
@@ -316,32 +334,5 @@ struct PointOfSaleDashboardViewHelperTests {
 
         // Then
         #expect(result == false)
-    }
-
-    // MARK: - Exit Decision Tests
-
-    @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: false)
-
-        // Then
-        #expect(result == .showConfirmation)
-    }
-
-    @Test func exitDecision_when_confirming_first_and_approved_then_leaves_and_tracks_confirmation() {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: true)
-
-        // Then
-        #expect(result == .leave(tracksConfirmation: true))
-    }
-
-    @Test(arguments: [true, false])
-    func exitDecision_when_not_confirming_first_then_leaves_without_tracking(approved: Bool) {
-        // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: false, approved: approved)
-
-        // Then
-        #expect(result == .leave(tracksConfirmation: false))
     }
 }

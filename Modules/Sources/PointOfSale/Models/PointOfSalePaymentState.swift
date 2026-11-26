@@ -99,13 +99,15 @@ struct PointOfSalePaymentState: Equatable {
     /// network call in flight, QR being scanned). Success and cash flows aren't suppressed
     /// - the cashier can re-enter their PIN from the lock screen if they need to keep working.
     var isAutoLockSuppressing: Bool {
-        switch card {
-        case .validatingOrder, .preparingReader, .acceptingCard,
-             .cardInserted, .processingPayment:
-            return true
-        case .idle, .validatingOrderError, .paymentIntentCreationError, .paymentError,
-             .cardPaymentSuccessful:
-            break
+        if activePaymentMethod == .card {
+            switch card {
+            case .validatingOrder, .preparingReader, .acceptingCard,
+                 .cardInserted, .processingPayment:
+                return true
+            case .idle, .validatingOrderError, .paymentIntentCreationError, .paymentError,
+                 .cardPaymentSuccessful:
+                break
+            }
         }
         switch cash {
         case .idle, .collectingCash, .paymentSuccess:

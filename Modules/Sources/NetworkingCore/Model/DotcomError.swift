@@ -28,9 +28,9 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     /// Jetpack is not connected
     ///
     /// This can be caused by an `unknown_token` error from Jetpack
-    /// or an `invalid_blog` error from WordPress.com Stats.
+    /// or an `invalid_blog` error from WordPress.com Stats. `code` keeps which one it was, for logs.
     ///
-    case jetpackNotConnected(data: [String: AnyDecodable]? = nil)
+    case jetpackNotConnected(code: String? = nil, data: [String: AnyDecodable]? = nil)
 
     /// WordPress.com no longer recognises the site ID sent by the app.
     ///
@@ -106,9 +106,10 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
             self = .statsModuleDisabled(data: data)
         case Constants.restTermInvalid where message == ErrorMessages.resourceDoesNotExist:
             self = .resourceDoesNotExist(data: data)
-        case Constants.unknownToken,
-            Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
-            self = .jetpackNotConnected(data: data)
+        case Constants.unknownToken:
+            self = .jetpackNotConnected(code: Constants.unknownToken, data: data)
+        case Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
+            self = .jetpackNotConnected(code: Constants.invalidBlog, data: data)
         case Constants.unknownBlog:
             self = .unknownBlog(data: data)
         case Constants.invalidSignature:
@@ -137,6 +138,37 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     /// parsed `DotcomError`.
     ///
     static let invalidSignatureCode = Constants.invalidSignature
+
+    /// The error identifier the server sent, for logs and analytics.
+    ///
+    public var rawCode: String? {
+        switch self {
+        case .empty:
+            return nil
+        case .unauthorized:
+            return Constants.unauthorized
+        case .invalidToken:
+            return Constants.invalidToken
+        case .requestFailed:
+            return Constants.requestFailed
+        case .noRestRoute:
+            return Constants.noRestRoute
+        case .jetpackNotConnected(let code, _):
+            return code
+        case .unknownBlog:
+            return Constants.unknownBlog
+        case .invalidSignature:
+            return Constants.invalidSignature
+        case .unknown(let code, _, _):
+            return code
+        case .noStatsPermission:
+            return Constants.unauthorized
+        case .statsModuleDisabled:
+            return Constants.invalidBlog
+        case .resourceDoesNotExist:
+            return Constants.restTermInvalid
+        }
+    }
 
     /// Coding Keys
     ///
@@ -196,6 +228,21 @@ extension DotcomError: CustomStringConvertible {
             )
             return String.localizedStringWithFormat(messageFormat, code, theMessage)
         }
+    }
+}
+
+
+// MARK: - CustomDebugStringConvertible Conformance
+//
+extension DotcomError: CustomDebugStringConvertible {
+
+    /// Not localized: it is meant for logs, where the raw code tells merged cases apart.
+    ///
+    public var debugDescription: String {
+        guard let rawCode else {
+            return description
+        }
+        return "\(description) (code: \(rawCode))"
     }
 }
 

@@ -9,7 +9,6 @@ struct PointOfSaleCollectCashView: View {
     @Environment(\.posNavigationRouter) private var router
     @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(\.keyboardObserver) private var keyboardObserver
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
@@ -162,8 +161,8 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func cancelCashPayment() {
-        // In compact layout the navigation pop takes the keyboard along with the screen.
-        if horizontalSizeClass != .compact {
+        // Device check, not size class: only on iPhone the navigation pop takes the keyboard along with the screen.
+        if UIDevice.current.userInterfaceIdiom != .phone {
             isTextFieldFocused = false
         }
         Task { @MainActor in

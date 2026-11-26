@@ -134,7 +134,8 @@ private extension POSSingleFieldInputView {
     func close() {
         withAnimation {
             onClose()
-            if !keyboardFollowsNavigationPop || horizontalSizeClass != .compact {
+            // Device check, not size class: on iPad the keyboard stays up through a navigation pop.
+            if !keyboardFollowsNavigationPop || UIDevice.current.userInterfaceIdiom != .phone {
                 isTextFieldFocused = false
             }
         }

@@ -34,11 +34,6 @@ struct PointOfSaleDashboardView: View {
         self.opensAfterOnboardingGuide = opensAfterOnboardingGuide
     }
 
-    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
-    /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
-    /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
-    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
-
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
     }
@@ -159,8 +154,8 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingBarcodeScannerSetup = false
             }
         }
-        .onChange(of: posModel.paymentState.cash) { _, newValue in
-            if newValue != .collectingCash {
+        .onChange(of: posModel.paymentState.cash) { oldValue, newValue in
+            if PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: newValue) {
                 viewStateCoordinator.cashAmountInput = .init()
             }
         }
@@ -429,6 +424,7 @@ struct PointOfSaleDashboardView: View {
             TotalsView()
         }
         .background(Color.posSurface)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbar(.hidden, for: .navigationBar)
     }
 
@@ -494,16 +490,14 @@ struct PointOfSaleDashboardView: View {
                         .foregroundColor(.posOnSurface)
                         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
-                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
+                .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
+        .accessibilityShowsLargeContentViewer {
+            Label(Localization.phoneMenuAccessibilityLabel, systemImage: "ellipsis")
+        }
         .accessibilityIdentifier("pos-compact-overflow-menu")
-    }
-
-    private var phoneOverflowMenuConstrainedSize: CGFloat {
-        max(POSHeaderLayoutConstants.minHeight,
-            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     private var phoneCartItemsCount: Int {

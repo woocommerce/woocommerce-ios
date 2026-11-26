@@ -3,7 +3,7 @@ import UIKit
 
 /// Exports a media item of `UIImage` type to be uploadable.
 ///
-final class MediaUIImageExporter: MediaExporter {
+final class MediaUIImageExporter: MediaExporter, Sendable {
 
     let mediaDirectoryType: MediaDirectory
 
@@ -24,7 +24,8 @@ final class MediaUIImageExporter: MediaExporter {
         self.mediaDirectoryType = mediaDirectoryType
     }
 
-    func export() throws -> UploadableMedia {
+    @concurrent
+    nonisolated func export() async throws -> UploadableMedia {
         guard let imageData = image.jpegData(compressionQuality: 1.0) else {
             throw ExportError.cannotConvertToJPEG
         }

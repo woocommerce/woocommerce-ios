@@ -9,6 +9,25 @@ struct POSSecuritySettingsControllerTests {
     private let storage = InMemoryPOSSecureStorage()
     private let defaultsScope = POSSecurityTestDefaults()
 
+    @Test func test_close_when_guide_has_progress_then_preserves_saved_admin_pin_and_reopens_at_first_step() async throws {
+        // Given
+        let (controller, _, store) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        let credentials = try store.credentials()
+        controller.startGuidedAccessGuide()
+        controller.guidedAccessGuide?.slide = .start
+
+        // When
+        controller.closeGuidedAccessGuide()
+
+        // Then
+        #expect(controller.guidedAccessGuide == nil)
+        #expect(try store.credentials() == credentials)
+        controller.startGuidedAccessGuide()
+        #expect(controller.guidedAccessGuide?.slide == .openSettings)
+    }
+
     @Test func test_confirmation_when_other_role_changes_after_validation_then_final_save_still_rejects_duplicate() async throws {
         // Given
         let (controller, _, store) = makeSUT()

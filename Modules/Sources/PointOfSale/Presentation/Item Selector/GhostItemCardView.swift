@@ -64,8 +64,7 @@ struct GhostItemCardView: View {
                                    font: configuration.detailFont)
             }
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
+            .posItemCardTextPadding()
         }
     }
 }

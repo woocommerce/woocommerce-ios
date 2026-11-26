@@ -86,16 +86,35 @@ final class POSPaymentModel {
         currentPaymentMethod != nil
     }
 
-    func cancelCardPaymentForLock() async {
-        guard paymentState.activePaymentMethod == .card, paymentState.isAutoLockSuppressing else { return }
-        let generation = startPaymentGeneration
-        do {
-            try await cardPresentPaymentService.cancelPayment()
-            guard startPaymentGeneration == generation, !paymentState.isSuccess else { return }
-            configuration.intentCreationErrorExitAction.action()
-        } catch {
-            DDLogWarn("Failed to cancel card payment when locking POS: \(error)")
+    /// Processing is not cancelled: the payment may already be authorized, so its result shows after unlock.
+    func cancelCardPaymentForLock() {
+        guard lockCancellation == nil, paymentState.activePaymentMethod == .card else { return }
+        switch paymentState.card {
+        case .validatingOrder, .preparingReader, .acceptingCard, .cardInserted:
+            break
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .processingPayment, .paymentError, .cardPaymentSuccessful:
+            return
         }
+        let generation = startPaymentGeneration
+        lockCancellation = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+                return self?.startPaymentGeneration == generation
+            } catch {
+                DDLogWarn("Failed to cancel card payment when locking POS: \(error)")
+                return false
+            }
+        }
+    }
+
+    func restartCardPaymentAfterUnlock() async {
+        guard let lockCancellation else { return }
+        self.lockCancellation = nil
+        // The card may have been read before the cancellation reached the reader.
+        guard await lockCancellation.value, paymentState.card != .processingPayment, !paymentState.isSuccess else { return }
+        paymentState.card = .idle
+        cardPresentPaymentInlineMessage = nil
+        await startPayment()
     }
 
     /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
@@ -146,6 +165,7 @@ final class POSPaymentModel {
     /// have been enqueued as Tasks) can detect they've been superseded.
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
+    private var lockCancellation: Task<Bool, Never>?
     private var connectCardReaderTask: Task<Void, Never>?
     /// Connects the reader for a payment method tap, when `connectCardReaderTask` does not.
     private(set) var paymentStartConnectTask: Task<Void, Never>?

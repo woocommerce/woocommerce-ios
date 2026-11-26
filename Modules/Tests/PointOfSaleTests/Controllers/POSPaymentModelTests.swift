@@ -13,67 +13,91 @@ import enum WooFoundationCore.WooAnalyticsStat
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
-    @Test(arguments: [PointOfSaleCardPaymentState.acceptingCard, .processingPayment]) @MainActor
-    func test_cancelCardPaymentForLock_when_card_payment_is_active_then_cancels_before_returning_to_checkout(card: PointOfSaleCardPaymentState) async {
+    @Test(arguments: [PointOfSaleCardPaymentState.validatingOrder, .preparingReader, .acceptingCard, .cardInserted]) @MainActor
+    func test_restartCardPaymentAfterUnlock_when_lock_cancelled_card_payment_then_restarts_on_checkout(card: PointOfSaleCardPaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        let state = PointOfSalePaymentState(card: card, cash: .idle)
         let provider = MockPOSPaymentOrderProvider()
-        var returnedToCheckout = false
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        var returnedToCart = false
         let sut = makePaymentController(cardPresentPaymentService: service,
                                         orderProvider: provider,
-                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }),
-                                        paymentState: state)
-        service.onCancelPaymentCalled = {
-            #expect(!returnedToCheckout)
-            #expect(sut.paymentState == state)
-        }
+                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCart = true }),
+                                        paymentState: PointOfSalePaymentState(card: card, cash: .idle))
 
         // When
-        await sut.cancelCardPaymentForLock()
+        sut.cancelCardPaymentForLock()
+        await sut.restartCardPaymentAfterUnlock()
 
         // Then
         #expect(service.cancelPaymentCalled)
-        #expect(returnedToCheckout)
-        #expect(provider.provideOrderCallCount == 0)
+        #expect(service.spyCollectPaymentOrders.count == 1)
+        #expect(!returnedToCart)
     }
 
     @Test(arguments: [PointOfSalePaymentState.idle,
+                      PointOfSalePaymentState(card: .processingPayment, cash: .idle),
+                      PointOfSalePaymentState(card: .paymentError, cash: .idle),
                       PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash),
                       PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)]) @MainActor
-    func test_cancelCardPaymentForLock_when_no_card_payment_is_active_then_does_not_request_cancellation(state: PointOfSalePaymentState) async {
+    func test_cancelCardPaymentForLock_when_card_payment_cannot_be_cancelled_then_keeps_payment_after_unlock(state: PointOfSalePaymentState) async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
         let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
 
         // When
-        await sut.cancelCardPaymentForLock()
+        sut.cancelCardPaymentForLock()
+        await sut.restartCardPaymentAfterUnlock()
 
         // Then
         #expect(!service.cancelPaymentCalled)
+        #expect(!service.collectPaymentWasCalled)
         #expect(sut.paymentState == state)
     }
 
     @Test @MainActor
-    func test_cancelCardPaymentForLock_when_cancellation_fails_then_keeps_checkout() async {
+    func test_restartCardPaymentAfterUnlock_when_lock_cancellation_fails_then_does_not_restart() async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        var returnedToCheckout = false
         let state = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
-        let sut = makePaymentController(cardPresentPaymentService: service,
-                                        configuration: .cart(onNewOrder: {}, onEditOrder: { returnedToCheckout = true }),
-                                        paymentState: state)
+        let sut = makePaymentController(cardPresentPaymentService: service, paymentState: state)
         service.onCancelPaymentCalled = { throw CancellationError() }
 
         // When
-        await sut.cancelCardPaymentForLock()
+        sut.cancelCardPaymentForLock()
+        await sut.restartCardPaymentAfterUnlock()
 
         // Then
-        #expect(!returnedToCheckout)
+        #expect(!service.collectPaymentWasCalled)
         #expect(sut.paymentState == state)
+    }
+
+    @Test @MainActor
+    func test_restartCardPaymentAfterUnlock_when_card_is_read_before_cancellation_then_keeps_processing() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider)
+        await sut.startPayment()
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap, .swipe, .insert], cancelPayment: {}))
+        service.onCancelPaymentCalled = {
+            service.paymentEvent = .show(eventDetails: .processing)
+        }
+
+        // When
+        sut.cancelCardPaymentForLock()
+        await sut.restartCardPaymentAfterUnlock()
+
+        // Then
+        #expect(sut.paymentState.card == .processingPayment)
+        #expect(service.spyCollectPaymentOrders.count == 1)
     }
 
     // MARK: - Payment starts that end without a payment

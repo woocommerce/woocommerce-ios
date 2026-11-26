@@ -364,7 +364,7 @@ final class ServiceLocator {
     /// Provides the access point to the receipt printer device service used to discover and connect to physical printers.
     /// - Returns: An implementation of the ReceiptPrinterServiceProtocol protocol.
     static var posReceiptPrinterService: ReceiptPrinterServiceProtocol {
-        ReceiptPrinterService(printerDiscoveryService: _printerDiscovery)
+        ReceiptPrinterService(printerDiscoveryService: _printerDiscovery, currencySettings: currencySettings)
     }
 
     /// Provides access point to the ConnectivityObserver.

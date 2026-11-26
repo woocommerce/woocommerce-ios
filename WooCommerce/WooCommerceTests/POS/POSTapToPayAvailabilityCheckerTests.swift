@@ -129,7 +129,8 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     // MARK: - All Gates Pass
 
-    @Test func checkAvailability_when_all_gates_pass_then_returns_available() async {
+    @Test(arguments: [CountryCode.US, .GB, .NL, .IE, .FI, .LU, .NZ, .SG])
+    func checkAvailability_when_all_gates_pass_then_returns_available(countryCode: CountryCode) async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
@@ -139,7 +140,7 @@ struct POSTapToPayAvailabilityCheckerTests {
         }
         let eligibilityService = MockPOSEligibilityService()
         eligibilityService.cachedTabVisibility[siteID] = true
-        let sut = makeSUT(stores: stores, eligibilityService: eligibilityService)
+        let sut = makeSUT(countryCode: countryCode, stores: stores, eligibilityService: eligibilityService)
 
         // When
         let result = await sut.checkAvailability()

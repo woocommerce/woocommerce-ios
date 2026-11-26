@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import protocol Alamofire.URLRequestConvertible
+import enum WooFoundationCore.SensitiveDataSanitizer
 
 // `@unchecked` only because the class is `open`: Swift checks `Sendable` on final classes only. Its own stored
 // properties are `Sendable` `let`s. Subclasses inherit the conformance unchecked, so they must keep only `Sendable`
@@ -287,7 +288,10 @@ open class Remote: NSObject, @unchecked Sendable {
                 // read, an expired token or an unknown blog has to reach the notifications the rest of
                 // the app listens for.
                 handleResponseError(error: error, for: request)
-                DDLogDebug("Response body error on a headers-only request: \(error)")
+                if !(error is DotcomError) {
+                    // `validateResponse` already logged the DotcomError.
+                    DDLogDebug("Response body error on a headers-only request: \(String(reflecting: error))")
+                }
             }
             return headers ?? [:]
         } catch {
@@ -371,7 +375,7 @@ private extension Remote {
                     self?.logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
                     self?.handleResponseError(error: error, for: request)
                     self?.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                    DDLogError("<> Mapping Error: \(error)")
+                    Self.logMappingErrorIfNeeded(error)
                 }
                 completion(result)
             }
@@ -388,10 +392,18 @@ private extension Remote {
                                            outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
-            DDLogError("<> Mapping Error: \(error)")
+            Self.logMappingErrorIfNeeded(error)
             handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
             throw error
         }
+    }
+
+    /// Skips DotcomErrors: only `DotcomValidator` makes them in `validateAndMap`, and `validateResponse` logs each one.
+    static func logMappingErrorIfNeeded(_ error: Error) {
+        guard !(error is DotcomError) else {
+            return
+        }
+        DDLogError("<> Mapping Error: \(String(reflecting: error))")
     }
 }
 
@@ -453,6 +465,9 @@ private extension Remote {
         do {
             try request.responseDataValidator().validate(data: data)
         } catch {
+            if let dotcomError = error as? DotcomError {
+                DDLogError(dotcomErrorLogMessage(dotcomError, request: request, tunneled: recorder != nil))
+            }
             recordStoreConnectionFailure(error: error, for: request, recorder: recorder)
             throw error
         }
@@ -562,6 +577,10 @@ private extension Remote {
             Self.recordStoreConnectionFailure(error: networkError, for: request, recorder: connectionErrorRecorder(for: request))
             return networkError
         } catch {
+            if let dotcomError = error as? DotcomError {
+                let tunneled = network.usesJetpackTunnel(for: request.originalResponseRequest)
+                DDLogError(Self.dotcomErrorLogMessage(dotcomError, request: request, tunneled: tunneled))
+            }
             Self.recordStoreConnectionFailure(error: error, for: request, recorder: connectionErrorRecorder(for: request))
             return error
         }
@@ -592,6 +611,29 @@ private extension Remote {
             JSONParsingErrorUserInfoKey.path: path,
             JSONParsingErrorUserInfoKey.entityName: entityName
         ].compactMapValues { $0 })
+    }
+}
+
+extension Remote {
+    /// Names the site, path and auth path, since the same code can mean a per-user or a site-wide failure.
+    ///
+    static func dotcomErrorLogMessage(_ error: DotcomError, request: Request, tunneled: Bool) -> String {
+        let siteID = affectedSiteID(for: request).map { String($0) } ?? "none"
+        let path = request.pathForAnalytics.map { SensitiveDataSanitizer.sanitize($0) } ?? "none"
+        let connection: String = {
+            switch request.originalResponseRequest {
+            case is JetpackRequest:
+                return tunneled ? "jetpack_tunnel" : "application_password"
+            case is DotcomRequest:
+                return "wpcom"
+            default:
+                return "other"
+            }
+        }()
+        // Only the case label, since `.unknown` carries the free-form server message.
+        let caseName = Mirror(reflecting: error).children.first?.label ?? "unknown"
+        let code = error.rawCode ?? "none"
+        return "<> DotcomError: case=\(caseName), code=\(code), site_id=\(siteID), path=\(path), connection=\(connection)"
     }
 }
 

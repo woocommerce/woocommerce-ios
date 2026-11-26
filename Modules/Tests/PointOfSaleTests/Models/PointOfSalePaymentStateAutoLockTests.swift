@@ -40,6 +40,8 @@ private extension PointOfSalePaymentState {
             PointOfSalePaymentState(card: $0, cash: .idle)
         } + [
             PointOfSalePaymentState(card: .idle, cash: .collectingCash),
+            PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash),
+            PointOfSalePaymentState(card: .acceptingCard, cash: .paymentSuccess),
             PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
             PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .paymentSuccess),
             PointOfSalePaymentState(card: .idle, cash: .idle, markAsPaid: .confirming),

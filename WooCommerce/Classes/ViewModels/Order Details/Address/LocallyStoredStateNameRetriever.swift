@@ -5,6 +5,11 @@ import Storage
 /// Retrieves the locally stored state name of an address.
 ///
 final class LocallyStoredStateNameRetriever {
+    // WooCommerce countries with mostly or all numeric state codes (e.g. CN24), unreadable to merchants.
+    static let countriesWithNumericStateCodes: Set<String> = [
+        "AL", "BD", "BG", "CN", "DO", "DZ", "HR", "JM", "JP", "KE", "KN", "PA", "PY", "RS", "TH", "TR", "TZ", "UA", "UG", "UM", "ZM"
+    ]
+
     private let storageManager: StorageManagerType
 
     private lazy var sharedDerivedStorage: StorageType = {
@@ -22,6 +27,11 @@ final class LocallyStoredStateNameRetriever {
     ///
     func retrieveLocallyStoredStateName(of address: Address) -> String? {
         retrieveLocallyStoredStateName(for: address.state, countryCode: address.country)
+    }
+
+    func hasLocallyStoredCountry(code: String) -> Bool {
+        let predicate = NSPredicate(format: "code LIKE[c] %@", code)
+        return sharedDerivedStorage.countObjects(ofType: Storage.Country.self, matching: predicate) > 0
     }
 }
 

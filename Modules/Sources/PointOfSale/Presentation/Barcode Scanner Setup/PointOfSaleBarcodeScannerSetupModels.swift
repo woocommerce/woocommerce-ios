@@ -83,6 +83,11 @@ enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
     case testScanTimedOut
     case complete
 
+    /// A timeout keeps the test page and only changes its text, so it must not slide in as a new page.
+    var pageID: PointOfSaleBarcodeScannerStepID {
+        self == .testScanTimedOut ? .test : self
+    }
+
     var analyticsValue: String? {
         switch self {
         case .setupBarcodeHID:

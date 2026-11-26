@@ -227,23 +227,21 @@ struct POSPINEntryViewHelperTests {
         #expect(message == "Too many incorrect attempts.\nTry again in \(duration).")
     }
 
-    @Test(arguments: [true, false])
-    func test_announcement_when_check_rejects_PIN_then_announces_error_once(announcesWaits: Bool) {
+    @Test func test_announcement_when_check_rejects_PIN_then_announces_error_once() {
         // Given / When
-        let rejected = helper.announcement(from: .loading, to: .error(kind: .invalidPIN), announcesWaits: announcesWaits)
-        let unchanged = helper.announcement(from: .error(kind: .invalidPIN), to: .error(kind: .invalidPIN), announcesWaits: announcesWaits)
+        let rejected = helper.announcement(from: .loading, to: .error(kind: .invalidPIN))
+        let unchanged = helper.announcement(from: .error(kind: .invalidPIN), to: .error(kind: .invalidPIN))
 
         // Then
         #expect(rejected == .status(.error(.invalidPIN)))
         #expect(unchanged == nil)
     }
 
-    @Test(arguments: [(true, POSPINEntryState.loading), (false, .loading), (true, .checkingLockout), (true, .waiting(remainingSeconds: 1))])
-    func test_announcement_when_check_becomes_unavailable_then_announces_once_across_retries(announcesWaits: Bool,
-                                                                                         previousState: POSPINEntryState) {
+    @Test(arguments: [POSPINEntryState.loading, .checkingLockout, .waiting(remainingSeconds: 1)])
+    func test_announcement_when_check_becomes_unavailable_then_announces_once_across_retries(previousState: POSPINEntryState) {
         // Given / When
-        let failed = helper.announcement(from: previousState, to: .unavailable, announcesWaits: announcesWaits)
-        let retried = helper.announcement(from: .unavailable, to: .unavailable, announcesWaits: announcesWaits)
+        let failed = helper.announcement(from: previousState, to: .unavailable)
+        let retried = helper.announcement(from: .unavailable, to: .unavailable)
 
         // Then
         #expect(failed == .status(.unavailable))
@@ -251,9 +249,9 @@ struct POSPINEntryViewHelperTests {
     }
 
     @Test(arguments: [POSPINEntryState.loading, .checkingLockout, .error(kind: .invalidPIN)])
-    func test_announcement_when_wait_starts_on_lock_screen_then_announces_remaining_wait(previousState: POSPINEntryState) {
+    func test_announcement_when_wait_starts_then_announces_remaining_wait(previousState: POSPINEntryState) {
         // Given / When
-        let announcement = helper.announcement(from: previousState, to: .waiting(remainingSeconds: 30), announcesWaits: true)
+        let announcement = helper.announcement(from: previousState, to: .waiting(remainingSeconds: 30))
 
         // Then
         #expect(announcement == .status(.lockout(remainingSeconds: 30)))
@@ -261,35 +259,25 @@ struct POSPINEntryViewHelperTests {
 
     @Test func test_announcement_when_countdown_ticks_then_stays_silent() {
         // Given / When
-        let announcement = helper.announcement(from: .waiting(remainingSeconds: 30), to: .waiting(remainingSeconds: 29), announcesWaits: true)
+        let announcement = helper.announcement(from: .waiting(remainingSeconds: 30), to: .waiting(remainingSeconds: 29))
 
         // Then
         #expect(announcement == nil)
     }
 
     @Test(arguments: [POSPINEntryState.waiting(remainingSeconds: 1), .unavailable])
-    func test_announcement_when_keypad_becomes_available_on_lock_screen_then_announces_entry(previousState: POSPINEntryState) {
+    func test_announcement_when_keypad_becomes_available_then_announces_entry(previousState: POSPINEntryState) {
         // Given / When
-        let announcement = helper.announcement(from: previousState, to: .idle, announcesWaits: true)
+        let announcement = helper.announcement(from: previousState, to: .idle)
 
         // Then
         #expect(announcement == .entryAvailable)
     }
 
-    @Test func test_announcement_when_waits_are_not_announced_then_keeps_wait_changes_silent() {
-        // Given / When
-        let started = helper.announcement(from: .loading, to: .waiting(remainingSeconds: 30), announcesWaits: false)
-        let ended = helper.announcement(from: .waiting(remainingSeconds: 1), to: .idle, announcesWaits: false)
-
-        // Then
-        #expect(started == nil)
-        #expect(ended == nil)
-    }
-
     @Test(arguments: [(POSPINEntryState.checkingLockout, POSPINEntryState.idle), (.idle, .loading), (.loading, .idle), (.error(kind: .invalidPIN), .loading)])
     func test_announcement_when_entry_or_brief_check_changes_then_stays_silent(oldState: POSPINEntryState, newState: POSPINEntryState) {
         // Given / When
-        let announcement = helper.announcement(from: oldState, to: newState, announcesWaits: true)
+        let announcement = helper.announcement(from: oldState, to: newState)
 
         // Then
         #expect(announcement == nil)

@@ -53,9 +53,12 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let contentAssembler: ReceiptContentAssembler
 
+    /// `currencySettings` should be the store's shared instance: store switches update it in place,
+    /// so receipts keep using the current store's separators, decimals and symbol position.
     public init(printerDiscoveryService: PrinterDiscoveryService,
+                currencySettings: CurrencySettings,
                 receiptTextRenderer: ReceiptTextRenderer = ReceiptTextRenderer()) {
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.printerDiscoveryService = printerDiscoveryService
         self.receiptTextRenderer = receiptTextRenderer
         self.currencyFormatter = currencyFormatter

@@ -9,7 +9,8 @@ extension POSDialog {
                   message: failure.message,
                   primaryAction: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
                   secondaryAction: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) }),
-                  closeAction: .init(accessibilityLabel: Localization.closeButtonAccessibilityLabel, action: close))
+                  closeAction: .init(accessibilityLabel: Localization.closeButtonAccessibilityLabel, action: close),
+                  maximumDynamicTypeSize: .accessibility1)
     }
 }
 

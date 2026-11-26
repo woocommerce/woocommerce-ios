@@ -1,51 +1,19 @@
 import SwiftUI
 
 struct POSAccessControlSetupView: View {
-    @Environment(\.posMetrics) private var metrics
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let onGetStarted: () -> Void
 
     var body: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: metrics.spacing.xLarge) {
-                    PointOfSaleAssets.accessControl.decorativeImage
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: Constants.artworkSize.width, height: Constants.artworkSize.height)
-                    VStack(spacing: metrics.spacing.small) {
-                        Text(Localization.title)
-                            .font(.posBodyXLargeBold)
-                            .foregroundStyle(Color.posOnSurface)
-                            .accessibilityAddTraits(.isHeader)
-                        Text(Localization.message)
-                            .font(.posBodyLargeRegular())
-                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    }
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    Button(Localization.getStarted, action: onGetStarted)
-                        .buttonStyle(POSFilledButtonStyle(size: .normal))
-                        .frame(maxWidth: Constants.buttonMaxWidth)
-                        .accessibilityIdentifier("pos-security-get-started")
-                }
-                .posContentPadding(.horizontal, metrics.padding.xxLarge)
-                .posPadding(.vertical, \.medium)
-                .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * navigationInset))
-            }
-            .contentMargins(.vertical, navigationInset, for: .scrollContent)
-            .scrollBounceBehavior(.basedOnSize)
-        }
+        POSListEmptyView(viewModel: EmptyViewModel(),
+                         actionAccessibilityIdentifier: "pos-security-get-started",
+                         onAction: onGetStarted)
     }
 
-    private var navigationInset: CGFloat {
-        // Equal insets keep the content centered in the full pane while clearing the phone's Back control.
-        horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight + metrics.padding.medium + metrics.padding.large : 0
-    }
-
-    private enum Constants {
-        static let artworkSize = CGSize(width: 140, height: 137)
-        static let buttonMaxWidth: CGFloat = 612
+    private struct EmptyViewModel: POSListEmptyViewModelProtocol {
+        let title = Localization.title
+        let subtitle = Localization.message
+        let buttonTitle: String? = Localization.getStarted
+        let icon = PointOfSaleAssets.accessControl.decorativeImage
     }
 
     private enum Localization {

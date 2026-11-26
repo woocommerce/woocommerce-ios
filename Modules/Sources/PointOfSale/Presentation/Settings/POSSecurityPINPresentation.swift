@@ -15,13 +15,6 @@ final class POSSecurityPINPresentation {
             }
         }
 
-        var compactStyle: POSModalCompactStyle {
-            switch self {
-            case .approval: .managerApproval
-            case .editor: .fullScreen(title: "")
-            }
-        }
-
         static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
     }
 

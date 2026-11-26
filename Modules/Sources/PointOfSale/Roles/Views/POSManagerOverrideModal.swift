@@ -14,7 +14,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .onChange(of: session.isLocked) { _, isLocked in
                 if isLocked { handler.cancel() }
             }
-            .posModal(item: requestBinding, compactStyle: .managerApproval) { request in
+            .posModal(item: requestBinding, compactStyle: .pinEntry) { request in
                 modalContent(for: request)
             }
     }

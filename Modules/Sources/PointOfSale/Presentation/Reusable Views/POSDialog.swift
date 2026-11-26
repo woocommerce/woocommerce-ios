@@ -27,19 +27,22 @@ struct POSDialog {
     let primaryAction: Action
     let secondaryAction: Action?
     let closeAction: CloseAction?
+    let maximumDynamicTypeSize: DynamicTypeSize
 
     init(icon: Icon? = nil,
          title: String,
          message: String,
          primaryAction: Action,
          secondaryAction: Action? = nil,
-         closeAction: CloseAction? = nil) {
+         closeAction: CloseAction? = nil,
+         maximumDynamicTypeSize: DynamicTypeSize = .accessibility5) {
         self.icon = icon
         self.title = title
         self.message = message
         self.primaryAction = primaryAction
         self.secondaryAction = secondaryAction
         self.closeAction = closeAction
+        self.maximumDynamicTypeSize = maximumDynamicTypeSize
     }
 }
 
@@ -95,6 +98,7 @@ struct POSDialogView: View {
         }
         .padding(metrics.padding.medium)
         .frame(maxWidth: metrics.dialogMaxWidth)
+        .dynamicTypeSize(...dialog.maximumDynamicTypeSize)
     }
 
     private var texts: some View {

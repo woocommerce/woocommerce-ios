@@ -53,7 +53,6 @@ struct BlazeEditAdView: View {
                         viewModel.didTapCancel()
                         dismiss()
                     }
-                    .buttonStyle(TextButtonStyle())
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
@@ -61,7 +60,6 @@ struct BlazeEditAdView: View {
                         viewModel.didTapSave()
                         dismiss()
                     }
-                    .buttonStyle(TextButtonStyle())
                     .disabled(!viewModel.isSaveButtonEnabled)
                 }
             }

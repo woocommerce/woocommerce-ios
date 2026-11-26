@@ -1,6 +1,5 @@
 import SwiftUI
 import UIKit
-import WebKit
 import WordPressAuthenticator
 import Yosemite
 import protocol PointOfSale.POSPINRecoveryProviding
@@ -258,7 +257,6 @@ private final class POSPINRecoveryBrowserSignIn: POSPINRecoveryModalFlow {
         ApplicationPasswordAuthorizationWebViewController(
             viewModel: ApplicationPasswordAuthorizationViewModel(siteURL: siteURL),
             previousViewController: nil,
-            websiteDataStore: .nonPersistent(),
             onSuccess: { [weak self] applicationPassword, _ in
                 self?.verify(applicationPassword)
             })

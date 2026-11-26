@@ -142,7 +142,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
-        let expectedError = DotcomError.resourceDoesNotExist() as NSError
+        let expectedError = DotcomError.resourceDoesNotExist()
 
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
@@ -178,14 +178,14 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         assertAnalyticEventLogged(name: name, expectedProperties: expectedProperties)
     }
 
-    private func assertAnalyticEventLogged(name: String, message: Yosemite.JustInTimeMessage, error: Error) {
-        let error = error as NSError
+    private func assertAnalyticEventLogged(name: String, message: Yosemite.JustInTimeMessage, error: DotcomError) {
+        let nsError = error as NSError
         let expectedProperties = ["jitm_id": message.messageID,
                                   "jitm_group": message.featureClass,
                                   "source": "my_store",
-                                  "error_domain": String(error.domain),
-                                  "error_description": error.debugDescription,
-                                  "error_code": String(error.code)]
+                                  "error_domain": String(nsError.domain),
+                                  "error_description": error.description,
+                                  "error_code": String(nsError.code)]
         assertAnalyticEventLogged(name: name, expectedProperties: expectedProperties)
     }
 

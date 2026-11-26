@@ -337,9 +337,12 @@ private struct POSGuidedAccessSettingsScene: View {
             Group {
                 label(Localization.general, size: 8, color: .posOnSurfaceVariantHighest, width: width - 2 * Canvas.inset)
                     .at(Canvas.inset, Canvas.generalGroupY - 8)
-                listGroup([0, 56, 28, 40], y: Canvas.generalGroupY, showsHeader: false)
+                groupCard(y: Canvas.generalGroupY)
+                rowIcon(.posShadow).at(Canvas.contentX, Constants.guidedAccessRowY - Canvas.rowIcon / 2)
                 label(POSSecuritySettingsView.Localization.guidedAccess, size: 9, width: width - 80)
                     .at(Canvas.rowTextX, Constants.guidedAccessRowY - Canvas.rowIcon / 2 - 4)
+                rowAccessory(y: Constants.guidedAccessRowY - Canvas.rowIcon / 2)
+                listRows([56, 28, 40], y: Constants.guidedAccessRowY - Canvas.rowIcon / 2 + Canvas.rowPitch)
                 RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                     .strokeBorder(Color.posOnSurface)
                     .frame(width: width - 32, height: Canvas.rowPitch)
@@ -353,20 +356,27 @@ private struct POSGuidedAccessSettingsScene: View {
     }
 
     @ViewBuilder
-    // A zero width draws a row without a text bar, for a row that shows a label instead.
-    private func listGroup(_ widths: [CGFloat], y: CGFloat, showsHeader: Bool = true) -> some View {
-        if showsHeader {
-            block(40, Canvas.bar, .posOutlineVariant).at(Canvas.inset, y)
-        }
+    private func listGroup(_ widths: [CGFloat], y: CGFloat) -> some View {
+        block(40, Canvas.bar, .posOutlineVariant).at(Canvas.inset, y)
+        groupCard(y: y)
+        listRows(widths, y: y + Canvas.groupCardOffset + Canvas.cardPadding)
+    }
+
+    private func groupCard(y: CGFloat) -> some View {
         card(width: layout.pageWidth - 2 * Canvas.inset, height: Canvas.groupCardHeight).at(Canvas.inset, y + Canvas.groupCardOffset)
+    }
+
+    private func listRows(_ widths: [CGFloat], y: CGFloat) -> some View {
         ForEach(Array(widths.enumerated()), id: \.offset) { index, width in
-            let rowY = y + Canvas.groupCardOffset + Canvas.cardPadding + CGFloat(index) * Canvas.rowPitch
-            rowIcon(index == 0 && width == 0 ? .posShadow : .posOutlineVariant).at(Canvas.contentX, rowY)
-            if width > 0 {
-                block(width, Canvas.bar, .posOutlineVariant).at(Canvas.rowTextX, rowY + 2)
-            }
-            block(16, Canvas.bar, .posOutlineVariant).at(layout.pageWidth - Canvas.contentX - 16, rowY + 2)
+            let rowY = y + CGFloat(index) * Canvas.rowPitch
+            rowIcon(.posOutlineVariant).at(Canvas.contentX, rowY)
+            block(width, Canvas.bar, .posOutlineVariant).at(Canvas.rowTextX, rowY + 2)
+            rowAccessory(y: rowY)
         }
+    }
+
+    private func rowAccessory(y: CGFloat) -> some View {
+        block(16, Canvas.bar, .posOutlineVariant).at(layout.pageWidth - Canvas.contentX - 16, y + 2)
     }
 }
 

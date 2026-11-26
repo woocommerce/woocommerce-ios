@@ -48,9 +48,6 @@ struct POSSecuritySettingsView: View {
         .onAppear {
             controller.load()
             isGuidedAccessActive = UIAccessibility.isGuidedAccessEnabled
-            if controller.guidedAccessGuide != nil {
-                presentation.present(.guidedAccessGuide)
-            }
         }
         .onDisappear(perform: endEditing)
         .onChange(of: approval.request) { _, request in

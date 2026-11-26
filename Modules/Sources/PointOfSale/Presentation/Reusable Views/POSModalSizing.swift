@@ -29,7 +29,7 @@ struct POSModalSizing: ViewModifier {
             // The flow header brings its own top spacing.
             content
                 .padding(.horizontal, metrics.padding.xxLarge)
-                .padding(.bottom, metrics.padding.medium)
+                .posFooterBottomPadding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             content

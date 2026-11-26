@@ -4,6 +4,12 @@
 26.2
 -----
 - [*] POS: On iPhone, full-screen pages now slide up to open and slide down to close, and the barcode scanner and receipt printer setups slide between their steps. [https://github.com/woocommerce/woocommerce-ios/pull/18441]
+- [***] In-Person Payments: Tap to Pay on iPhone is now available for stores in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18405]
+- [*] Cancel is no longer cut off to "Ca…" on payments setup, the admin role required screen and Blaze Edit Ad. [https://github.com/woocommerce/woocommerce-ios/pull/18470]
+- [*] POS: The recent search shadow is no longer cut on the search screen before typing, and that screen now has even gaps under the section titles, with more space between the sections. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
+- [*] POS: On iPhone, the Cart button no longer shows under Retry on the "Unable to load coupons" and "No supported variations found" screens. [https://github.com/woocommerce/woocommerce-ios/pull/18439]
+- [*] POS: On iPhone, order details actions (Issue refund, Email receipt) are now in the ellipsis menu in the header, so the order number has more room. [https://github.com/woocommerce/woocommerce-ios/pull/18453]
+- [*] Order details now show state names instead of codes like CN24 for China and other countries with numeric state codes. [https://github.com/woocommerce/woocommerce-ios/pull/18452]
 - [*] POS: On iPhone, the refund reason Add button now sits right above the keyboard, and the Select items and Review refund screens line up with their headers. [https://github.com/woocommerce/woocommerce-ios/pull/18430]
 - [*] POS: On iPhone, payment buttons on Checkout no longer stay disabled after a payment that could not start, for example Tap to Pay on a $0.00 order. [https://github.com/woocommerce/woocommerce-ios/pull/18419]
 - [*] POS: Coupon search now shows a coupon illustration and a short hint before you type, instead of an almost empty screen. Empty and error screens now keep their illustration while the keyboard is up and scroll if it doesn't fit, and the search "not found" messages are shorter. [https://github.com/woocommerce/woocommerce-ios/pull/18431]
@@ -12,8 +18,10 @@
 - [*] POS: On iPhone, the search keyboard now closes after you tap a product or an order in search results, so it no longer covers the Cart button or the refund screens. [https://github.com/woocommerce/woocommerce-ios/pull/18417]
 - [***] POS: Custom amounts is now available in POS [https://github.com/woocommerce/woocommerce-ios/pull/18400/]
 - [*] Login: Site-credential login now completes only once if Retry is tapped again while sign-in is still in progress. [https://github.com/woocommerce/woocommerce-ios/pull/18429]
+- [*] Login: WP-Admin sign-in now starts with a fresh web session. [https://github.com/woocommerce/woocommerce-ios/pull/18450]
 - [*] Login: Stores that require a security challenge during site-credentials login can now continue signing in through WP-Admin. [https://github.com/woocommerce/woocommerce-ios/pull/18412]
 - [*] Login: On stores that move WP-Admin, for example with WP Ghost, WP-Admin pages in the app now open the moved address after signing in with store credentials, instead of a missing /wp-admin/ page. [https://github.com/woocommerce/woocommerce-ios/pull/18407]
+- [*] Login: WordPress.com-hosted stores signed in with a WP-Admin QR code no longer show WordPress.com-only AI and Themes features that cannot work with that session. [https://github.com/woocommerce/woocommerce-ios/pull/18438]
 - [**] POS: Point of Sale is now available on iPhone in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18404]
 - [*] Dashboard: The Most recent orders card now updates when an order's status or details change in the app, or the order is trashed. [https://github.com/woocommerce/woocommerce-ios/pull/18406]
 - [*] Dashboard: Unsaved card changes in Customize no longer reset after opening Control Center or returning to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18413]
@@ -34,7 +42,6 @@
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
 - [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
 - [*] Order creation: Custom amounts are no longer lost when the phone uses Eastern Arabic numerals. [https://github.com/woocommerce/woocommerce-ios/pull/18382]
-
 - [**] Orders and Products: Bluetooth and USB barcode scanners now work outside POS. Scan on the Orders or Products screen, while creating an order, or on the camera scanner screen. [https://github.com/woocommerce/woocommerce-ios/pull/18378]
 - [*] Dashboard: The Performance and Top Performers cards no longer get stuck after failing to load. The time range picker now stays visible, so another range can be picked to recover. [https://github.com/woocommerce/woocommerce-ios/pull/17355]
 - [*] Login: Browser sign-in for site credentials now only saves a password approved on the store you're logging into. [https://github.com/woocommerce/woocommerce-ios/pull/18321]

@@ -143,23 +143,8 @@ private extension POSGuidedAccessGuideView {
     }
 
     var pageIndicator: some View {
-        HStack(spacing: metrics.spacing.small) {
-            ForEach(POSGuidedAccessGuideSlide.allCases, id: \.self) { page in
-                Capsule()
-                    .fill(page == slide ? Color.posOnSurfaceVariantHighest : .clear)
-                    .strokeBorder(page == slide ? .clear : Color.posOutline)
-                    .frame(width: page == slide ? Constants.activeDotWidth : Constants.dotSize, height: Constants.dotSize)
-            }
-        }
-        .accessibilityElement()
-        .accessibilityLabel(String.localizedStringWithFormat(Localization.step, slide.rawValue + 1, POSGuidedAccessGuideSlide.allCases.count))
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: show(slide.next)
-            case .decrement: show(slide.previous)
-            @unknown default: break
-            }
-        }
+        POSPageIndicator(pageCount: POSGuidedAccessGuideSlide.allCases.count,
+                         currentPage: Binding(get: { slide.rawValue }, set: { show(POSGuidedAccessGuideSlide(rawValue: $0)) }))
     }
 
     func caption(reservingHeight: Bool) -> some View {
@@ -272,8 +257,6 @@ private extension POSGuidedAccessGuideView {
         static let maximumCompactScale: CGFloat = 1.25
         static let minimumIllustrationHeight: CGFloat = 180
         static let arrowSize = POSHeaderLayoutConstants.compactBackButtonSize
-        static let dotSize: CGFloat = 10
-        static let activeDotWidth: CGFloat = 40
         static let swipeDistance: CGFloat = 24
         static let slideDuration: TimeInterval = 0.35
     }
@@ -314,9 +297,6 @@ extension POSGuidedAccessGuideView {
                                                 comment: "Accessibility label of the arrow that shows the previous step of the Guided Access guide.")
         static let next = NSLocalizedString("pos.guidedAccessGuide.next", value: "Next step",
                                             comment: "Accessibility label of the arrow that shows the next step of the Guided Access guide.")
-        static let step = NSLocalizedString("pos.guidedAccessGuide.step", value: "Step %1$d of %2$d",
-                                            comment: "Accessibility label of the page indicator in the Guided Access guide. " +
-                                            "%1$d is the current step and %2$d is the number of steps.")
     }
 }
 

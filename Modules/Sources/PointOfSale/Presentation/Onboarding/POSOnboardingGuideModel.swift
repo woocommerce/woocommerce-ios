@@ -22,12 +22,12 @@ final class POSOnboardingGuideModel {
 
     init(siteID: Int64,
          featureFlags: POSFeatureFlagProviding,
-         deviceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+         deviceIdiom: UIUserInterfaceIdiom? = nil,
          preferences: POSOnboardingGuidePreferenceStoring = POSOnboardingGuidePreferences(),
          analytics: POSAnalyticsProviding) {
         self.siteID = siteID
         self.featureFlags = featureFlags
-        self.deviceIdiom = deviceIdiom
+        self.deviceIdiom = deviceIdiom ?? UIDevice.current.userInterfaceIdiom
         self.preferences = preferences
         self.analytics = analytics
     }

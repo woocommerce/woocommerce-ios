@@ -27,6 +27,7 @@ struct SearchResultVariationCardView: View {
                 scale: 1
             )
             .frame(width: dimension, height: dimension)
+            .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(parentProduct.name)
@@ -45,8 +46,7 @@ struct SearchResultVariationCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
+            .posItemCardTextPadding()
 
             Spacer()
         }

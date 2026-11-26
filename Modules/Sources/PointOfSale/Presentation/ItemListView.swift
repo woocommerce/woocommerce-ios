@@ -202,7 +202,7 @@ struct ItemListView: View {
                     itemListContent(selectedItemListType)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.posSurface)
+                .background(Color.posSurface.ignoresSafeArea())
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }

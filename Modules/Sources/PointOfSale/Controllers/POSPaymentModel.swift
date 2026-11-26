@@ -95,8 +95,10 @@ final class POSPaymentModel {
     func restartCardPaymentAfterUnlock() async {
         isLockedInBackground = false
         guard let lockCancellation else { return }
+        let isPaymentCancelled = await lockCancellation.value
+        guard !isLockedInBackground, self.lockCancellation == lockCancellation else { return }
         self.lockCancellation = nil
-        guard await lockCancellation.value, canRestartCardPaymentAfterUnlock else { return }
+        guard isPaymentCancelled, canRestartCardPaymentAfterUnlock else { return }
         paymentState.card = .idle
         cardPresentPaymentInlineMessage = nil
         await startPayment()
@@ -107,8 +109,7 @@ final class POSPaymentModel {
     }
 
     private var canRestartCardPaymentAfterUnlock: Bool {
-        !isLockedInBackground && paymentState.activePaymentMethod == .card
-            && paymentState.card != .processingPayment && !paymentState.isSuccess
+        paymentState.activePaymentMethod == .card && paymentState.card != .processingPayment && !paymentState.isSuccess
     }
 
     private func cancelCardPaymentWhileLocked() {

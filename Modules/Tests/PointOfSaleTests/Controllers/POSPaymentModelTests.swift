@@ -119,7 +119,9 @@ struct POSPaymentModelTests {
         sut.cancelCardPaymentForLock()
         let cancellationCountDuringValidation = lockCancellationCount
         service.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
-        await Task.yield()
+        while lockCancellationCount == 0 {
+            await Task.yield()
+        }
         let cancellationCountAfterReachingReader = lockCancellationCount
         await sut.restartCardPaymentAfterUnlock()
 
@@ -149,14 +151,20 @@ struct POSPaymentModelTests {
         }
 
         // When
+        var cancellationCountDuringSecondLock = 0
+        service.onCancelPaymentCalled = {
+            cancellationCountDuringSecondLock += 1
+            throw CancellationError()
+        }
         sut.cancelCardPaymentForLock()
-        service.onCancelPaymentCalled = nil
         pendingCancellation?.resume()
         await firstUnlock.value
         let collectCountWhileLocked = service.spyCollectPaymentOrders.count
+        service.onCancelPaymentCalled = nil
         await sut.restartCardPaymentAfterUnlock()
 
         // Then
+        #expect(cancellationCountDuringSecondLock == 0)
         #expect(collectCountWhileLocked == 0)
         #expect(service.spyCollectPaymentOrders.count == 1)
     }

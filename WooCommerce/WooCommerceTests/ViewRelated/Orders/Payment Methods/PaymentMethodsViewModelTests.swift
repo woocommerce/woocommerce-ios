@@ -58,20 +58,20 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let loadingStates: [Bool] = await waitForAsync { promise in
-            viewModel.$showLoadingIndicator
+        let operations: [PaymentMethodsViewModel.LoadingOperation?] = await waitForAsync { promise in
+            viewModel.$loadingOperation
                 .dropFirst() // Initial value
                 .collect(2)  // Collect toggle
                 .first()
-                .sink { loadingStates in
-                    promise(loadingStates)
+                .sink { operations in
+                    promise(operations)
                 }
                 .store(in: &self.subscriptions)
             await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
-        XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
+        XCTAssertEqual(operations, [.recordingCashPayment, nil])
     }
 
     func test_view_is_disabled_while_loading_is_enabled() async {
@@ -1168,16 +1168,15 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(calledOnSuccess)
     }
 
-    func test_collect_payment_when_paid_update_is_delayed_then_details_opens_with_paid_order() async throws {
+    func test_collect_payment_when_refresh_is_pending_then_waits_to_call_on_success() async throws {
         // Given
         let pendingOrder = Order.fake().copy(status: .pending)
         let paidOrder = pendingOrder.copy(status: .completed, datePaid: .some(Date()))
         storage.insertSampleOrder(readOnlyOrder: pendingOrder)
-        var storedOrder = pendingOrder
-        var statusOnReturn: OrderStatusEnum?
+        var didCallOnSuccess = false
         var finishRefresh: (@Sendable (Result<Order, Error>) -> Void)?
         let refreshStarted = expectation(description: "Started the order refresh")
-        let returnedToDetails = expectation(description: "Returned to order details")
+        let paymentCompleted = expectation(description: "Called onSuccess after refreshing the order")
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             guard case let .retrieveOrderRemotely(siteID, orderID, completion) = action else {
                 return XCTFail("Expected a remote order refresh")
@@ -1195,19 +1194,19 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(),
                                  useCase: MockCollectOrderPaymentUseCase(onCollectResult: .success(())),
                                  onSuccess: {
-            statusOnReturn = storedOrder.status
-            returnedToDetails.fulfill()
+            didCallOnSuccess = true
+            paymentCompleted.fulfill()
         }, onFailure: { XCTFail("Expected a successful payment") })
         await fulfillment(of: [refreshStarted], timeout: 2)
 
         // Then
-        XCTAssertNil(statusOnReturn, "Order details opened before the paid order was available")
+        XCTAssertFalse(didCallOnSuccess)
+        XCTAssertEqual(viewModel.loadingOperation, .refreshingCardOrder)
         XCTAssertTrue(viewModel.showLoadingIndicator)
         XCTAssertFalse(viewModel.shouldEnableSwipeToDismiss)
-        storedOrder = paidOrder
         try XCTUnwrap(finishRefresh)(.success(paidOrder))
-        await fulfillment(of: [returnedToDetails], timeout: 2)
-        XCTAssertEqual(statusOnReturn, .completed)
+        await fulfillment(of: [paymentCompleted], timeout: 2)
+        XCTAssertNil(viewModel.loadingOperation)
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 

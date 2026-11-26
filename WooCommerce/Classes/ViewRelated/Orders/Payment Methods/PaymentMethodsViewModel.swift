@@ -30,9 +30,16 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
 
-    /// Defines if the view should show a loading indicator.
-    ///
-    @Published private(set) var showLoadingIndicator = false
+    enum LoadingOperation: Equatable {
+        case recordingCashPayment
+        case refreshingCardOrder
+    }
+
+    @Published private(set) var loadingOperation: LoadingOperation?
+
+    var showLoadingIndicator: Bool {
+        loadingOperation != nil
+    }
 
     /// Stores the payment link for the order.
     ///
@@ -212,7 +219,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     @MainActor
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
-        showLoadingIndicator = true
+        loadingOperation = .recordingCashPayment
         do {
             try await markOrderCompletedWithCashOnDelivery()
             updateOrderAsynchronously()
@@ -431,7 +438,7 @@ private extension PaymentMethodsViewModel {
     }
 
     func finishOrderPaidByCashFlow() {
-        showLoadingIndicator = false
+        loadingOperation = nil
         presentNoticeSubject.send(.completed)
         trackFlowCompleted(method: .cash, cardReaderType: .none)
     }
@@ -548,11 +555,11 @@ private extension PaymentMethodsViewModel {
 
     @MainActor
     func returnToOrderDetails(after refreshTask: Task<Void, Never>, onCompletion: @escaping () -> Void) {
-        showLoadingIndicator = true
-        // A trial payment needs its completion to start the refund even after the payment screen closes.
-        Task { @MainActor in
+        loadingOperation = .refreshingCardOrder
+        // Retain self so closing the payment screen during the refresh still lets the trial refund start.
+        Task { @MainActor [self] in
             await refreshTask.value
-            showLoadingIndicator = false
+            loadingOperation = nil
             onCompletion()
         }
     }

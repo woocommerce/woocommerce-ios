@@ -99,8 +99,7 @@ struct POSPINEntryViewHelper {
     }
 
     /// Announces each state boundary once. Countdown ticks stay silent; the status element reports the remaining wait on demand.
-    func announcement(from oldState: POSPINEntryState, to newState: POSPINEntryState,
-                      announcesWaits: Bool) -> POSPINAnnouncement? {
+    func announcement(from oldState: POSPINEntryState, to newState: POSPINEntryState) -> POSPINAnnouncement? {
         switch (oldState, newState) {
         case (_, .error(let kind)) where oldState != newState:
             return .status(.error(kind))
@@ -109,9 +108,9 @@ struct POSPINEntryViewHelper {
         case (.waiting, .waiting):
             return nil
         case (_, .waiting(let remainingSeconds)):
-            return announcesWaits ? .status(.lockout(remainingSeconds: remainingSeconds)) : nil
+            return .status(.lockout(remainingSeconds: remainingSeconds))
         case (.waiting, .idle), (.unavailable, .idle):
-            return announcesWaits ? .entryAvailable : nil
+            return .entryAvailable
         default:
             return nil
         }

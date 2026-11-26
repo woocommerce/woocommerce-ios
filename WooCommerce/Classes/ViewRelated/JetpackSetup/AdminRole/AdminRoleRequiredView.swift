@@ -110,7 +110,6 @@ struct AdminRoleRequiredView: View {
                 Button(Localization.cancelAction) {
                     onClose()
                 }
-                .buttonStyle(TextButtonStyle())
             }
         }
     }

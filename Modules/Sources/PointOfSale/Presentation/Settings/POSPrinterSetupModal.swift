@@ -26,6 +26,7 @@ struct POSPrinterSetupModal: View {
         modalCore
             .frame(maxWidth: modalMaxWidth, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false
@@ -54,36 +55,34 @@ struct POSPrinterSetupModal: View {
         return isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
     }
 
-    @ViewBuilder
     private var modalCore: some View {
-        let core = VStack(spacing: metrics.spacing.xLarge) {
-            stepContent
+        POSModalFlowSteps(step: controller.discoveryState.step) {
+            let core = VStack(spacing: metrics.spacing.xLarge) {
+                stepContent
 
-            if let buttonConfiguration {
-                POSFlowButtonsView(configuration: buttonConfiguration)
+                if let buttonConfiguration {
+                    POSFlowButtonsView(configuration: buttonConfiguration)
+                }
+            }
+            .posModalCloseButton(action: {
+                isPresented = false
+            })
+
+            if isFullScreenFlow {
+                // Same padding as the other phone flows, so the buttons line up.
+                core.posModalSizing()
+            } else {
+                core.padding(metrics.padding.xLarge)
             }
         }
-        .posModalCloseButton(action: {
-            isPresented = false
-        })
-
-        if isFullScreenFlow {
-            // Same padding as the other phone flows, so the buttons line up.
-            core
-                .posModalSizing()
-                .background(Color.posSurfaceBright)
-        } else {
-            core
-                .padding(metrics.padding.xLarge)
-                .background(Color.posSurfaceBright)
-        }
+        .background(Color.posSurfaceBright)
     }
 
     @ViewBuilder
     private var stepContent: some View {
         let step = HStack {
             Spacer()
-            POSPrinterSetupContent(controller: controller)
+            POSPrinterSetupContent(controller: controller, state: controller.discoveryState)
             Spacer()
         }
         if isFullScreenFlow {
@@ -105,13 +104,15 @@ private struct POSPrinterSetupContent: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     let controller: POSPrinterConnectionController
+    // Passed in, not read from the controller, so the page sliding out keeps showing its own state.
+    let state: PrinterDiscoveryState
 
     var body: some View {
-        switch controller.discoveryState {
+        switch state {
         case .idle:
             messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
-                           title: Localization.pairTitle,
-                           message: pairMessage)
+                           title: pairContent.title,
+                           message: pairContent.message)
         case .searching:
             progressContent(message: Localization.searching)
         case .noPrintersFound:
@@ -139,12 +140,12 @@ private struct POSPrinterSetupContent: View {
 
     /// On the pairing step, call out the disabled Bluetooth permission when that's the blocker;
     /// otherwise show the standard pair-in-Settings guidance.
-    private var pairMessage: String {
+    private var pairContent: (title: String, message: String) {
         switch controller.bluetoothAuthorization {
         case .denied:
-            return Localization.enableBluetoothInstruction
+            return (Localization.enableBluetoothTitle, Localization.enableBluetoothInstruction)
         case .notDetermined, .allowed:
-            return Localization.pairInstruction
+            return (Localization.pairTitle, Localization.pairInstruction)
         }
     }
 
@@ -246,6 +247,12 @@ private extension POSPrinterSetupContent {
             "pos.printerSetup.pair.title",
             value: "Pair your printer",
             comment: "Title for the printer pairing step in POS settings.")
+
+        static let enableBluetoothTitle = NSLocalizedString(
+            "pos.printerSetup.pair.enableBluetoothTitle",
+            value: "Turn on Bluetooth access",
+            comment: "Title for the receipt printer pairing step in POS settings when the app's Bluetooth "
+                + "permission is disabled.")
 
         static let pairInstruction = NSLocalizedString(
             "pos.printerSetup.pair.pairInSettingsInstruction",
@@ -355,13 +362,7 @@ private extension POSPrinterSetupModal {
                 secondaryButton: .init(title: Localization.keepSearchingButton, action: {
                     controller.keepSearching(skipping: device)
                 }))
-        case .foundMultiple:
-            return .init(
-                primaryButton: nil,
-                secondaryButton: .init(title: Localization.cancelButton, action: {
-                    isPresented = false
-                }))
-        case .searching, .connecting:
+        case .foundMultiple, .searching, .connecting:
             return nil
         }
     }
@@ -400,6 +401,21 @@ extension POSModalCompactStyle {
     }
 }
 
+private extension PrinterDiscoveryState {
+    /// The printer list grows in place while the search continues, so it stays one step.
+    /// The modal opens idle and starts searching at once, so these two share a step and nothing slides on open.
+    var step: PrinterDiscoveryState {
+        switch self {
+        case .foundMultiple:
+            return .foundMultiple([])
+        case .idle:
+            return .searching
+        default:
+            return self
+        }
+    }
+}
+
 // MARK: - Constants
 private extension POSPrinterSetupModal {
     enum Constants {
@@ -427,11 +443,6 @@ private extension POSPrinterSetupModal {
             "pos.printerSetup.foundOne.keepSearchingButton",
             value: "Keep Searching",
             comment: "Button to skip the discovered receipt printer and keep searching in POS settings.")
-
-        static let cancelButton = NSLocalizedString(
-            "pos.printerSetup.foundMultiple.cancelButton",
-            value: "Cancel",
-            comment: "Button to close the receipt printer setup without connecting in POS settings.")
 
         static let searchAgainButton = NSLocalizedString(
             "pos.printerSetup.searchAgainButton",

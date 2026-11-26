@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Kingfisher
+import NetworkingCore
 import UIKit
 
 private extension URL {
@@ -34,7 +35,7 @@ struct DefaultImageService: ImageService {
     }
 
     func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
-        return imageDownloader.downloadImage(with: url) { result in
+        return imageDownloader.downloadImage(with: Self.httpsURL(from: url)) { result in
                                                 switch result {
                                                 case .success(let image):
                                                     if shouldCacheImage {
@@ -43,6 +44,7 @@ struct DefaultImageService: ImageService {
 
                                                     completion?(image, nil)
                                                 case .failure(let kingfisherError):
+                                                    Self.logLoadFailure(originalURL: url, error: kingfisherError)
                                                     completion?(nil, .other(error: kingfisherError))
                                                 }
         }
@@ -53,8 +55,8 @@ struct DefaultImageService: ImageService {
                                            placeholder: UIImage? = nil,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
-        let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        let url = URL(string: encodedString ?? "")
+        let originalURL = Self.encodedURL(from: url)
+        let resource = Self.imageResource(from: url)
 
         let targetSize: CGSize
         if !imageView.bounds.isEmpty {
@@ -72,7 +74,7 @@ struct DefaultImageService: ImageService {
             shouldCacheImage: true
         )
 
-        imageView.kf.setImage(with: url,
+        imageView.kf.setImage(with: resource,
                               placeholder: placeholder,
                               options: options,
                               progressBlock: progressBlock) { result in
@@ -81,6 +83,7 @@ struct DefaultImageService: ImageService {
                 let image = imageResult.image
                 completion?(image, nil)
             case .failure(let error):
+                Self.logLoadFailure(originalURL: originalURL, error: error)
                 completion?(nil, .other(error: error))
             }
         }
@@ -104,7 +107,7 @@ struct DefaultImageService: ImageService {
         }
 
         return KingfisherManager.shared.retrieveImage(
-            with: url,
+            with: Self.httpsResource(for: url),
             options: buildImageRetrieveOptions(
                 targetSize: scaledSize,
                 shouldCacheImage: shouldCacheImage
@@ -115,6 +118,7 @@ struct DefaultImageService: ImageService {
                 let image = imageResult.image
                 completion?(image, nil)
             case .failure(let error):
+                Self.logLoadFailure(originalURL: url, error: error)
                 completion?(nil, .other(error: error))
             }
         }
@@ -126,6 +130,56 @@ struct DefaultImageService: ImageService {
 
     func storeImageInCache(_ image: UIImage, for url: URL) {
         imageCache.store(image, forKey: url.imageCacheKey)
+    }
+
+    /// Stores can return `http://` image URLs, which App Transport Security blocks.
+    static func imageResource(from string: String?) -> KF.ImageResource? {
+        encodedURL(from: string).map(httpsResource(for:))
+    }
+
+    /// Returns `nil` for cancelled loads, e.g. on cell reuse, and for items without an image URL.
+    /// Includes only the host and scheme, as paths and queries can hold private data.
+    static func loadFailureDescription(originalURL: URL?, error: Error) -> String? {
+        let errorCode: String
+        switch error as? KingfisherError {
+        case .some(let kingfisherError) where kingfisherError.isTaskCancelled || kingfisherError.isNotCurrentTask:
+            return nil
+        case .imageSettingError(reason: .emptySource):
+            return nil
+        case .responseError(reason: .URLSessionError(let sessionError)):
+            errorCode = "\((sessionError as NSError).code)"
+        case .responseError(reason: .invalidHTTPStatusCode(let response)):
+            errorCode = "HTTP \(response.statusCode)"
+        default:
+            let nsError = error as NSError
+            errorCode = "\(nsError.domain) \(nsError.code)"
+        }
+        let host = originalURL?.host ?? "none"
+        let scheme = originalURL?.scheme ?? "none"
+        return "Image load failed. Host: \(host), original scheme: \(scheme), error: \(errorCode)"
+    }
+}
+
+private extension DefaultImageService {
+    static func encodedURL(from string: String?) -> URL? {
+        let encodedString = string?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        return URL(string: encodedString ?? "")
+    }
+
+    static func httpsURL(from url: URL) -> URL {
+        URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
+    }
+
+    /// Caches under the caller's URL, so `retrieveImageFromCache` and `storeImageInCache` with that URL still match.
+    static func httpsResource(for url: URL) -> KF.ImageResource {
+        KF.ImageResource(downloadURL: httpsURL(from: url), cacheKey: url.imageCacheKey)
+    }
+
+    static func logLoadFailure(originalURL: URL?, error: Error) {
+        guard let description = loadFailureDescription(originalURL: originalURL, error: error) else {
+            return
+        }
+        DDLogError(description)
     }
 }
 

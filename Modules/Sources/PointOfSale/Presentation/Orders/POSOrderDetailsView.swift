@@ -14,6 +14,7 @@ private enum POSOrderDetailsNavigationDestination: Hashable {
 
 struct POSOrderDetailsView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let order: POSOrder
     let onBack: () -> Void
     @Binding private var detailNavigationPath: NavigationPath
@@ -280,16 +281,22 @@ private extension POSOrderDetailsView {
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .posItemCardImage()
 
-            Text(customAmount.name)
-                .font(.posBodyLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-                .fixedSize(horizontal: false, vertical: true)
+            let layout = AnyLayout.posItemRowDetails(stacked: dynamicTypeSize.isAccessibilitySize, metrics: metrics)
+            layout {
+                Text(customAmount.name)
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Spacer()
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
 
-            Text(customAmount.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
+                Text(customAmount.formattedTotal)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.customAmountRowAccessibilityLabel(name: customAmount.name, total: customAmount.formattedTotal))
@@ -434,9 +441,15 @@ private extension POSOrderDetailsView {
     func productRow(item: POSOrderItem) -> some View {
         HStack(alignment: .center, spacing: metrics.spacing.medium) {
             productImageView(item: item)
-            productDetailsView(item: item)
-            Spacer()
-            productTotalView(item: item)
+            let layout = AnyLayout.posItemRowDetails(stacked: dynamicTypeSize.isAccessibilitySize, metrics: metrics)
+            layout {
+                productDetailsView(item: item)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
+                productTotalView(item: item)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(productRowAccessibilityLabel(for: item))

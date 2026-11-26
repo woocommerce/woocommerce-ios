@@ -32,6 +32,14 @@ private struct POSItemCardTextPaddingModifier: ViewModifier {
     }
 }
 
+extension AnyLayout {
+    static func posItemRowDetails(stacked: Bool, metrics: POSMetrics) -> AnyLayout {
+        stacked
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: metrics.spacing.xSmall))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: metrics.spacing.medium))
+    }
+}
+
 extension View {
     func posItemCardImage() -> some View {
         modifier(POSItemCardImageModifier())

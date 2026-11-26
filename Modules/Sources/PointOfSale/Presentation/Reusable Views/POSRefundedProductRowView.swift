@@ -4,6 +4,7 @@ import struct Yosemite.POSRefundItem
 /// A reusable row displaying a refunded product with image, name, quantity × price, and refund total.
 struct POSRefundedProductRowView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let item: POSRefundItem
     var accessibilityLabel: String?
 
@@ -21,24 +22,30 @@ struct POSRefundedProductRowView: View {
                     .posItemCardImage()
             }
 
-            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
-                Text(item.name)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .fixedSize(horizontal: false, vertical: true)
+            let layout = AnyLayout.posItemRowDetails(stacked: dynamicTypeSize.isAccessibilitySize, metrics: metrics)
+            layout {
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                    Text(item.name)
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                if !item.isLumpSum {
-                    Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    if !item.isLumpSum {
+                        Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
                 }
+
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
+
+                Text(item.formattedTotal)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
             }
-
-            Spacer()
-
-            Text(item.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel ?? defaultAccessibilityLabel)

@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] Plugin updates and other store pages that open in Safari inside the app can now be closed by dragging them down. [https://github.com/woocommerce/woocommerce-ios/pull/18476]
 - [*] POS: On iPhone, full-screen pages now slide up to open and slide down to close, and the barcode scanner and receipt printer setups slide between their steps. [https://github.com/woocommerce/woocommerce-ios/pull/18441]
 - [***] In-Person Payments: Tap to Pay on iPhone is now available for stores in the Netherlands, Ireland, Finland, Luxembourg, New Zealand and Singapore. [https://github.com/woocommerce/woocommerce-ios/pull/18405]
 - [*] Cancel is no longer cut off to "Ca…" on payments setup, the admin role required screen and Blaze Edit Ad. [https://github.com/woocommerce/woocommerce-ios/pull/18470]

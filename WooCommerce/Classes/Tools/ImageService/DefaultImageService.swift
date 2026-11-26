@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Kingfisher
+import NetworkingCore
 import UIKit
 
 private extension URL {
@@ -34,7 +35,7 @@ struct DefaultImageService: ImageService {
     }
 
     func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
-        return imageDownloader.downloadImage(with: url) { result in
+        return imageDownloader.downloadImage(with: Self.httpsURL(from: url)) { result in
                                                 switch result {
                                                 case .success(let image):
                                                     if shouldCacheImage {
@@ -53,8 +54,7 @@ struct DefaultImageService: ImageService {
                                            placeholder: UIImage? = nil,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
-        let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        let url = URL(string: encodedString ?? "")
+        let url = Self.imageURL(from: url)
 
         let targetSize: CGSize
         if !imageView.bounds.isEmpty {
@@ -104,7 +104,7 @@ struct DefaultImageService: ImageService {
         }
 
         return KingfisherManager.shared.retrieveImage(
-            with: url,
+            with: Self.httpsURL(from: url),
             options: buildImageRetrieveOptions(
                 targetSize: scaledSize,
                 shouldCacheImage: shouldCacheImage
@@ -126,6 +126,22 @@ struct DefaultImageService: ImageService {
 
     func storeImageInCache(_ image: UIImage, for url: URL) {
         imageCache.store(image, forKey: url.imageCacheKey)
+    }
+
+    /// Stores can return `http://` image URLs, which App Transport Security blocks.
+    static func imageURL(from string: String?) -> URL? {
+        encodedURL(from: string).map(httpsURL(from:))
+    }
+}
+
+private extension DefaultImageService {
+    static func encodedURL(from string: String?) -> URL? {
+        let encodedString = string?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        return URL(string: encodedString ?? "")
+    }
+
+    static func httpsURL(from url: URL) -> URL {
+        URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
     }
 }
 

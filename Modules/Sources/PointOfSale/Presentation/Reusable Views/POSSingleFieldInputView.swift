@@ -10,6 +10,7 @@ import WooFoundation
 /// Consumers provide domain-specific logic for validation, async actions, and analytics
 struct POSSingleFieldInputView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let title: String
     let placeholder: String
     let buttonTitle: String
@@ -127,13 +128,13 @@ struct POSSingleFieldInputView: View {
 
 private extension POSSingleFieldInputView {
     var pinsButtonAboveKeyboard: Bool {
-        fillsAvailableHeight || UIDevice.current.userInterfaceIdiom == .phone
+        fillsAvailableHeight || horizontalSizeClass == .compact
     }
 
     func close() {
         withAnimation {
             onClose()
-            if !keyboardFollowsNavigationPop || UIDevice.current.userInterfaceIdiom != .phone {
+            if !keyboardFollowsNavigationPop || horizontalSizeClass != .compact {
                 isTextFieldFocused = false
             }
         }

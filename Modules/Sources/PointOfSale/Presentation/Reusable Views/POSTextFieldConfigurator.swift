@@ -111,13 +111,14 @@ extension View {
 }
 
 private struct POSAutofocusModifier: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState.Binding var isFocused: Bool
     @State private var hasBeenFocused = false
 
     func body(content: Content) -> some View {
         content
             .configureUnderlyingTextField { textField in
-                guard UIDevice.current.userInterfaceIdiom == .phone, !hasBeenFocused else {
+                guard horizontalSizeClass == .compact, !hasBeenFocused else {
                     return
                 }
                 if textField.becomeFirstResponder() {

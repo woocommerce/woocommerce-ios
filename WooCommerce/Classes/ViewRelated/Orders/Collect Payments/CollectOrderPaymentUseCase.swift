@@ -216,7 +216,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)
                 onCancel()
-            case .none:
+            case .failed, .none:
                 break
             }
         }

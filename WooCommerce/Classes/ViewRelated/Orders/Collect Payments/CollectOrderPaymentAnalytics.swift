@@ -58,7 +58,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         case .canceled(_, let paymentGatewayAccount):
             self.connectedReader = nil
             self.paymentGatewayAccount = paymentGatewayAccount
-        case .none:
+        case .failed, .none:
             break
         }
     }

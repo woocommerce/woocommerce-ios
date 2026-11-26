@@ -14,7 +14,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
 
     private var connectedReaders: [CardReader]
     private var discoveredReaders: [CardReader]
-    private var failDiscovery: Bool
+    var failDiscovery: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
     private var selectedPaymentGatewayAccount: Yosemite.PaymentGatewayAccount?

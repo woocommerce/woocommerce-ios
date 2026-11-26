@@ -114,10 +114,33 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
         await fulfillment(of: [didNotEmitResult], timeout: 0.2)
         cancellable.cancel()
     }
+
+    func test_start_when_discovery_fails_and_alert_is_closed_then_emits_failed_result() async {
+        // Given
+        stores.failDiscovery = true
+        let sut = makeSUT(bluetoothAlertsMode: .closeScanFailure)
+
+        let didEmitFailure = expectation(description: "failed result emitted")
+        let cancellable = sut.readerConnection
+            .compactMap { $0 }
+            .sink { result in
+                if case .failed = result {
+                    didEmitFailure.fulfill()
+                }
+            }
+
+        // When
+        await sut.start(discoveryMethod: .bluetoothScan)
+        onboardingPresenter.completeOnboarding()
+
+        // Then
+        await fulfillment(of: [didEmitFailure], timeout: 1.0)
+        cancellable.cancel()
+    }
 }
 
 private extension CardPresentPaymentPreflightControllerTests {
-    func makeSUT() -> CardPresentPaymentPreflightController<
+    func makeSUT(bluetoothAlertsMode: MockCardReaderSettingsAlertsMode = .connectFoundReader) -> CardPresentPaymentPreflightController<
         TapToPayReaderConnectionAlertsProvider,
         MockCardReaderSettingsAlerts,
         MockCardPresentPaymentAlertsPresenter
@@ -136,7 +159,7 @@ private extension CardPresentPaymentPreflightControllerTests {
             stores: stores,
             knownReaderProvider: MockKnownReaderProvider(knownReader: nil),
             alertsPresenter: alertsPresenter,
-            alertsProvider: MockCardReaderSettingsAlerts(mode: .connectFoundReader),
+            alertsProvider: MockCardReaderSettingsAlerts(mode: bluetoothAlertsMode),
             configuration: Mocks.configuration,
             analyticsTracker: analyticsTracker,
             locationService: locationService

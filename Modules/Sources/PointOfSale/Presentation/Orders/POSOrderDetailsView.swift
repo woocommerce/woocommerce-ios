@@ -85,7 +85,7 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    actionsSection(setup: availableActionsSetup)
+                    POSPageHeaderActions(actions: pageActions(for: order))
                 },
                 bottomContent: {
                     headerBottomContent(for: order)
@@ -569,59 +569,29 @@ private extension POSOrderDetailsView {
         }
     }
 
-    struct OrderDetailsActionsSetup {
-        let primary: OrderDetailsAction?
-        let secondary: [OrderDetailsAction]
-    }
-
-    var availableActionsSetup: OrderDetailsActionsSetup {
-        let email: OrderDetailsAction = .emailReceipt
+    func pageActions(for order: POSOrder) -> POSPageActions {
+        let email = pageAction(for: .emailReceipt)
 
         switch order.status {
         case .refunded:
-            return .init(primary: email, secondary: [])
+            return .init(primary: email)
         case .completed:
-            switch orderListModel.refundActionAvailability {
+            switch order.refundActionAvailability {
             case .available:
-                return .init(primary: .issueRefund, secondary: [email])
-
+                return .init(primary: pageAction(for: .issueRefund), secondary: [email])
             case .unavailable:
-                return .init(primary: email, secondary: [])
+                return .init(primary: email)
             }
         default:
-            return .init(primary: nil, secondary: [])
+            return .empty
         }
     }
 
-    @ViewBuilder
-    func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
-        if let primary = setup.primary {
-            HStack(spacing: metrics.spacing.large) {
-                Button(action: handler(for: primary)) {
-                    Text(primary.title)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                .accessibilityHint(primary.accessibilityHint)
-            }
-        }
-
-        if !setup.secondary.isEmpty {
-            POSMenu {
-                ForEach(setup.secondary) { action in
-                    POSMenuButton(action.title, action: handler(for: action))
-                        .accessibilityHint(action.accessibilityHint)
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .padding(metrics.padding.small)
-            }
-            .accessibilityLabel(POSMenuAccessibility.moreActions)
-        }
+    func pageAction(for action: OrderDetailsAction) -> POSPageAction {
+        POSPageAction(id: action.id,
+                      title: action.title,
+                      accessibilityHint: action.accessibilityHint,
+                      action: handler(for: action))
     }
 }
 

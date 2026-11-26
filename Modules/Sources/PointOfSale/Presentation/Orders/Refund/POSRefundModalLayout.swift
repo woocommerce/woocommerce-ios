@@ -125,8 +125,7 @@ extension View {
     }
 }
 
-/// Refund actions share the horizontal and top padding of other compact POS actions.
-/// They retain bottom padding inside the safe area; the cart measures its bottom inset separately.
+/// Full-screen refund actions share the padding of other POS bottom actions.
 /// Regular-width sheets keep their existing in-card padding.
 struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
@@ -139,19 +138,11 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
             content
                 .frame(maxWidth: .infinity)
                 .frame(maxWidth: maxWidth)
-                .if(horizontalSizeClass == .compact) {
-                    $0.posPhoneBottomButtonPadding()
-                }
-                .if(horizontalSizeClass != .compact) {
-                    $0
-                        .padding(.horizontal, metrics.padding.medium)
-                        .padding(.top, metrics.padding.medium)
-                        .padding(.bottom, metrics.padding.medium)
-                }
+                .posBottomButtonPadding()
                 .frame(maxWidth: .infinity)
         } else if horizontalSizeClass == .compact {
             content
-                .posPhoneBottomButtonPadding()
+                .posBottomButtonPadding()
         } else {
             content
                 .padding(metrics.padding.xLarge)

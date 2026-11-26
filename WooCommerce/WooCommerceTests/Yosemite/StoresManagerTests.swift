@@ -4,6 +4,7 @@ import XCTest
 import Networking
 import Storage
 import TestKit
+import WordPressAuthenticator
 @testable import WooCommerce
 @testable import PointOfSale
 import Yosemite
@@ -91,6 +92,70 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(manager.isAuthenticated)
         XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
+    }
+
+    func test_restore_wordpress_site_when_wpcom_hosted_and_authenticated_with_application_password_then_marks_site_as_non_wpcom() throws {
+        // Given
+        let session = MockSessionManager()
+        session.defaultCredentials = SessionSettings.applicationPasswordCredentials
+        session.defaultStoreID = WooConstants.placeholderStoreID
+        let state = MockAuthenticatedStoresManagerState(
+            credentials: SessionSettings.applicationPasswordCredentials,
+            sessionManager: session
+        )
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
+        let manager = DefaultStoresManager(
+            sessionManager: session,
+            notificationCenter: MockNotificationCenter.testingInstance,
+            stateFactory: { _ in state },
+            wordPressComSiteInfoFetcher: { _, completion in
+                completion(.success(siteInfo))
+            }
+        )
+        let site = Site.fake().copy(isWordPressComStore: false)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+        let action = try XCTUnwrap(state.receivedActions.first { $0 is WordPressSiteAction } as? WordPressSiteAction)
+        guard case let .fetchSiteInfo(_, _, completion) = action else {
+            return XCTFail("Expected a fetchSiteInfo action")
+        }
+        completion(.success(site))
+
+        // Then
+        XCTAssertFalse(try XCTUnwrap(session.defaultSite).isWordPressComStore)
+    }
+
+    func test_restore_wordpress_site_when_wpcom_hosted_and_authenticated_with_wpcom_then_marks_site_as_wpcom() throws {
+        // Given
+        let session = MockSessionManager()
+        session.defaultCredentials = SessionSettings.wpcomCredentials
+        session.defaultStoreID = WooConstants.placeholderStoreID
+        let state = MockAuthenticatedStoresManagerState(
+            credentials: SessionSettings.wpcomCredentials,
+            sessionManager: session
+        )
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
+        let manager = DefaultStoresManager(
+            sessionManager: session,
+            notificationCenter: MockNotificationCenter.testingInstance,
+            stateFactory: { _ in state },
+            wordPressComSiteInfoFetcher: { _, completion in
+                completion(.success(siteInfo))
+            }
+        )
+        let site = Site.fake().copy(isWordPressComStore: false)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+        let action = try XCTUnwrap(state.receivedActions.first { $0 is WordPressSiteAction } as? WordPressSiteAction)
+        guard case let .fetchSiteInfo(_, _, completion) = action else {
+            return XCTFail("Expected a fetchSiteInfo action")
+        }
+        completion(.success(site))
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(session.defaultSite).isWordPressComStore)
     }
 
     func test_authenticated_state_relaunch_passes_restored_custom_endpoints_to_network_factory() throws {
@@ -322,6 +387,42 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(preferences.isTaxable(for: 123))
         XCTAssertEqual(defaults.object(forKey: POSCustomAmountTaxPersistence.key(for: 456)) as? Bool, false)
+    }
+
+    @MainActor
+    func test_deauthenticate_when_onboarding_guide_is_completed_then_clears_all_stores() throws {
+        // Given
+        let suiteName = "StoresManagerTests.onboardingGuide.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSOnboardingGuidePreferences(userDefaults: defaults)
+        preferences.markGuideCompleted(for: 123)
+        preferences.markGuideCompleted(for: 456)
+
+        // When
+        manager.deauthenticate()
+
+        // Then
+        XCTAssertFalse(preferences.hasCompletedGuide(for: 123))
+        XCTAssertFalse(preferences.hasCompletedGuide(for: 456))
+    }
+
+    @MainActor
+    func test_removeDefaultStore_when_onboarding_guide_is_completed_then_preserves_it() throws {
+        // Given
+        let suiteName = "StoresManagerTests.onboardingGuide.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = DefaultStoresManager(sessionManager: MockSessionManager(), defaults: defaults)
+        let preferences = POSOnboardingGuidePreferences(userDefaults: defaults)
+        preferences.markGuideCompleted(for: 123)
+
+        // When
+        manager.removeDefaultStore()
+
+        // Then
+        XCTAssertTrue(preferences.hasCompletedGuide(for: 123))
     }
 
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.
@@ -1590,6 +1691,24 @@ private final class MockStoresManagerState: StoresManagerState {
     func didEnter() { }
 
     func onAction(_ action: Action) {
+        receivedActions.append(action)
+    }
+}
+
+private final class MockAuthenticatedStoresManagerState: AuthenticatedState {
+    private(set) var receivedActions: [Action] = []
+
+    init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
+        super.init(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            networkFactory: { _, _, _, _ in
+                AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            }
+        )
+    }
+
+    override func onAction(_ action: Action) {
         receivedActions.append(action)
     }
 }

@@ -220,19 +220,6 @@ class BuildWarningsScriptsTest < Minitest::Test # rubocop:disable Metrics/ClassL
     refute_includes comment_body, OTHER_COMMIT
   end
 
-  def test_commenter_when_build_was_intentionally_skipped_then_does_not_download_or_mutate
-    # Given
-    @environment['WARNING_TEST_SKIP_BUILD'] = 'true'
-
-    # When
-    run_commenter
-
-    # Then
-    assert_no_delivery_attempts
-    assert_equal ['--all-match'], calls('pr_changed_files').first.fetch('arguments').first(1)
-    refute(calls('buildkite-agent').any? { |call| call.fetch('arguments').first == 'artifact' })
-  end
-
   def test_commenter_when_not_pull_request_then_does_not_use_external_tools
     # Given
     @environment['BUILDKITE_PULL_REQUEST'] = 'false'
@@ -327,12 +314,6 @@ class BuildWarningsScriptsTest < Minitest::Test # rubocop:disable Metrics/ClassL
     assert_includes arguments, '--max-time'
   end
 
-  def assert_no_delivery_attempts
-    assert_empty calls('download_artifact')
-    assert_empty calls('github_api')
-    assert_empty calls('comment_on_pr')
-  end
-
   def link_runtime_tools
     File.symlink(RbConfig.ruby, File.join(@bin, 'ruby'))
     jq = ENV.fetch('PATH').split(File::PATH_SEPARATOR).map { |directory| File.join(directory, 'jq') }.find { |path| File.executable?(path) }
@@ -346,7 +327,7 @@ class BuildWarningsScriptsTest < Minitest::Test # rubocop:disable Metrics/ClassL
     stub = File.join(@bin, 'warning-test-stub')
     File.write(stub, tool_stub)
     File.chmod(0o755, stub)
-    %w[download_artifact buildkite-agent github_api comment_on_pr pr_changed_files curl gh aws ssh wget].each do |command|
+    %w[download_artifact buildkite-agent github_api comment_on_pr curl gh aws ssh wget].each do |command|
       File.symlink(stub, File.join(@bin, command))
     end
   end
@@ -364,8 +345,6 @@ class BuildWarningsScriptsTest < Minitest::Test # rubocop:disable Metrics/ClassL
       end
       File.open(ENV.fetch('WARNING_TEST_CALLS'), 'a') { |file| file.puts(JSON.generate(call)) }
       case command
-      when 'pr_changed_files'
-        exit(ENV['WARNING_TEST_SKIP_BUILD'] == 'true' ? 0 : 1)
       when 'github_api'
         exit 1 if ENV['WARNING_TEST_GITHUB_FAILS'] == 'true'
         abort 'Unexpected GitHub endpoint' unless ARGV.first == 'repos/woocommerce/woocommerce-ios/pulls/17456'

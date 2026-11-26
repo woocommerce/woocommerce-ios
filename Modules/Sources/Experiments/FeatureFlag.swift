@@ -131,4 +131,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
+
+    /// Shows the first-visit onboarding guide in Point of Sale on iPhone until the merchant taps Start selling.
+    ///
+    case pointOfSaleOnboardingGuide
 }

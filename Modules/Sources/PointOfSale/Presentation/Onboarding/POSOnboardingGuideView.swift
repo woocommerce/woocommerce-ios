@@ -75,10 +75,9 @@ private struct POSOnboardingGuideStepView: View {
 
     private var illustrationHeight: CGFloat {
         // Smaller in landscape, where there's little height.
-        verticalSizeClass == .compact ? 64 : 120
+        POSMetrics.onboardingGuideIllustrationHeight(isVerticallyCompact: verticalSizeClass == .compact)
     }
-    // As in the design, a fixed text height keeps the titles in line across steps.
-    @ScaledMetric private var textMinHeight: CGFloat = 144
+    @ScaledMetric private var textMinHeight: CGFloat = POSMetrics.onboardingGuideTextMinHeight
 
     var body: some View {
         VStack(spacing: metrics.spacing.xxLarge) {

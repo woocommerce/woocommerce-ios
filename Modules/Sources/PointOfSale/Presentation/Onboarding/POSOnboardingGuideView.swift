@@ -1,11 +1,12 @@
 import SwiftUI
+import WooFoundation
 
 /// Full-screen guide shown on iPhone when POS opens, until the merchant taps Start selling in person.
 /// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.openURL) private var openURL
     @State var currentPage = 0
+    @State private var videoURL: URL?
 
     let model: POSOnboardingGuideModel
     let onExit: () -> Void
@@ -37,6 +38,7 @@ struct POSOnboardingGuideView: View {
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
+        .safariSheet(url: $videoURL)
         .onAppear {
             model.stepViewed(currentStep)
         }
@@ -51,7 +53,7 @@ struct POSOnboardingGuideView: View {
 
     private func learnMore() {
         model.videoTapped(on: currentStep)
-        openURL(Constants.videoURL)
+        videoURL = Constants.videoURL
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -150,8 +152,7 @@ private struct POSOnboardingGuideLearnMoreButton: View {
 
 private extension POSOnboardingGuideView {
     enum Constants {
-        // Placeholder until the video of a sale is published on YouTube.
-        static let videoURL = URL(string: "https://woocommerce.com/woocommerce-pos")!
+        static let videoURL = URL(string: "https://www.youtube.com/shorts/WjeOYVoAITY")!
     }
 
     enum Localization {

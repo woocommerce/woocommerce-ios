@@ -12,6 +12,7 @@ final class POSOnboardingGuideModel {
     }
 
     private(set) var visibility: Visibility = .undetermined
+    private(set) var wasShown = false
 
     private let siteID: Int64
     private let featureFlags: POSFeatureFlagProviding
@@ -52,6 +53,7 @@ final class POSOnboardingGuideModel {
             return
         }
         visibility = .visible
+        wasShown = true
         analytics.track(event: WooAnalyticsEvent.POSOnboardingGuide.shown())
     }
 

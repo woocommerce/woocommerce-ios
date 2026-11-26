@@ -211,7 +211,8 @@ public struct PointOfSaleEntryPointView: View {
     private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
+                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice,
+                                         opensAfterOnboardingGuide: onboardingGuideModel.wasShown)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
                     // Lock modifiers capture their session once; keep this branch gated on the model created after accessSession is set.

@@ -86,6 +86,7 @@ struct POSOnboardingGuideModelTests {
 
         // Then
         #expect(sut.visibility == .visible)
+        #expect(sut.wasShown)
         #expect(analytics.events.map(\.eventName) == ["pos_onboarding_shown"])
     }
 
@@ -98,6 +99,7 @@ struct POSOnboardingGuideModelTests {
 
         // Then
         #expect(sut.visibility == .hidden)
+        #expect(sut.wasShown == false)
     }
 
     @Test func resolveVisibility_when_store_becomes_eligible_after_being_ineligible_then_guide_stays_hidden() {
@@ -138,6 +140,7 @@ struct POSOnboardingGuideModelTests {
 
         // Then
         #expect(sut.visibility == .hidden)
+        #expect(sut.wasShown)
         #expect(preferences.markedSiteIDs == [siteID])
         let event = try #require(analytics.events.last)
         #expect(event.eventName == "pos_onboarding_start_selling_tapped")

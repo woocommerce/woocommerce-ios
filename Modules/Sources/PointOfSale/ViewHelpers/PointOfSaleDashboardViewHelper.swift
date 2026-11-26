@@ -53,6 +53,11 @@ struct PointOfSaleDashboardViewHelper {
     static func shouldDismissCompactCartSheet(isPhoneLayout: Bool, cartIsEmpty: Bool) -> Bool {
         isPhoneLayout && cartIsEmpty
     }
+
+    /// Cleared on entry rather than exit, so the cash screen keeps its amount while it slides away.
+    static func shouldResetCashAmountInput(oldValue: PointOfSaleCashPaymentState, newValue: PointOfSaleCashPaymentState) -> Bool {
+        newValue == .collectingCash && oldValue != .collectingCash
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {

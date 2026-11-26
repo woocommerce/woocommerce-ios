@@ -101,3 +101,48 @@ extension View {
         }
     }
 }
+
+// MARK: - Autofocus
+
+extension View {
+    func posAutofocus(_ isFocused: FocusState<Bool>.Binding) -> some View {
+        modifier(POSAutofocusModifier(isFocused: isFocused))
+    }
+}
+
+private struct POSAutofocusModifier: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @FocusState.Binding var isFocused: Bool
+    @State private var hasBeenFocused = false
+
+    func body(content: Content) -> some View {
+        content
+            .configureUnderlyingTextField { textField in
+                guard horizontalSizeClass == .compact, !hasBeenFocused else {
+                    return
+                }
+                if textField.becomeFirstResponder() {
+                    hasBeenFocused = true
+                }
+            }
+            .onChange(of: isFocused, initial: true) { _, focused in
+                if focused {
+                    hasBeenFocused = true
+                }
+            }
+            .task {
+                do {
+                    try await Task.sleep(for: .milliseconds(600))
+                } catch {
+                    return
+                }
+                guard !hasBeenFocused else {
+                    return
+                }
+                isFocused = true
+            }
+            .onDisappear {
+                hasBeenFocused = false
+            }
+    }
+}

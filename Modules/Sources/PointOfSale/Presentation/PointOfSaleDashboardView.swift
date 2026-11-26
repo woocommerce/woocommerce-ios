@@ -151,8 +151,8 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingBarcodeScannerSetup = false
             }
         }
-        .onChange(of: posModel.paymentState.cash) { _, newValue in
-            if newValue != .collectingCash {
+        .onChange(of: posModel.paymentState.cash) { oldValue, newValue in
+            if PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: newValue) {
                 viewStateCoordinator.cashAmountInput = .init()
             }
         }
@@ -415,6 +415,7 @@ struct PointOfSaleDashboardView: View {
             TotalsView()
         }
         .background(Color.posSurface)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbar(.hidden, for: .navigationBar)
     }
 

@@ -136,7 +136,7 @@ struct POSNavigationDestinationEmailReceiptView: View {
     @Environment(\.posNavigationRouter) private var router
 
     var body: some View {
-        POSSendReceiptView(onDismiss: {
+        POSSendReceiptView(keyboardFollowsNavigationPop: true, onDismiss: {
             router.pop()
         }) { email in
             try await paymentModel.sendReceipt(to: email)

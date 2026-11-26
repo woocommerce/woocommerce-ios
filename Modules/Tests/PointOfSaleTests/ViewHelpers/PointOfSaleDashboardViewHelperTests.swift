@@ -308,30 +308,31 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == false)
     }
 
-    // MARK: - Exit Decision Tests
+    // MARK: - Reset Cash Amount Input
 
-    @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {
+    @Test(arguments: [PointOfSaleCashPaymentState.idle, .paymentSuccess])
+    func shouldResetCashAmountInput_when_entering_collectingCash_returns_true(oldValue: PointOfSaleCashPaymentState) {
         // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: false)
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: .collectingCash)
 
         // Then
-        #expect(result == .showConfirmation)
+        #expect(result == true)
     }
 
-    @Test func exitDecision_when_confirming_first_and_approved_then_leaves_and_tracks_confirmation() {
+    @Test func shouldResetCashAmountInput_when_staying_in_collectingCash_returns_false() {
         // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: true, approved: true)
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: .collectingCash, newValue: .collectingCash)
 
         // Then
-        #expect(result == .leave(tracksConfirmation: true))
+        #expect(result == false)
     }
 
-    @Test(arguments: [true, false])
-    func exitDecision_when_not_confirming_first_then_leaves_without_tracking(approved: Bool) {
+    @Test(arguments: [PointOfSaleCashPaymentState.idle, .paymentSuccess])
+    func shouldResetCashAmountInput_when_leaving_collectingCash_returns_false(newValue: PointOfSaleCashPaymentState) {
         // When
-        let result = PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: false, approved: approved)
+        let result = PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: .collectingCash, newValue: newValue)
 
         // Then
-        #expect(result == .leave(tracksConfirmation: false))
+        #expect(result == false)
     }
 }

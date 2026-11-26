@@ -41,9 +41,11 @@ struct ProductImageUploaderKey: Equatable, Hashable {
 protocol ProductImageUploaderProtocol {
 
     /// Emits active image uploads
+    @MainActor
     var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> { get }
 
     /// Emits product image upload errors.
+    @MainActor
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> { get }
 
     /// Called for product image upload use cases (e.g. product/variation form, downloadable product list).
@@ -88,6 +90,7 @@ protocol ProductImageUploaderProtocol {
     /// Triggers a notice about background image upload for a product if needed.
     /// - Parameter key: identifiable information about the product.
     ///
+    @MainActor
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter)
 
     /// Determines whether there are unsaved changes on a product's images.
@@ -101,14 +104,19 @@ protocol ProductImageUploaderProtocol {
 
     /// Resets all internal states and tracking of image uploads for connected stores.
     /// Called when the user is logged out.
+    @MainActor
     func reset()
 }
 
 /// Supports background image upload and product images update after the user leaves the product form.
 final class ProductImageUploader: ProductImageUploaderProtocol {
 
-    let imageStatusStorage: ProductImageStatusStorage
+    private let imageStatusStorageOverride: ProductImageStatusStorage?
 
+    @MainActor
+    private lazy var imageStatusStorage = imageStatusStorageOverride ?? ProductImageStatusStorage()
+
+    @MainActor
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             return imageStatusStorage.errorsPublisher
@@ -149,6 +157,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             return imageStatusStorage.statusesPublisher
@@ -194,11 +203,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol? = nil,
-         imageStatusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
+         imageStatusStorage: ProductImageStatusStorage? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.imagesProductIDUpdaterOverride = imagesProductIDUpdater
-        self.imageStatusStorage = imageStatusStorage
+        self.imageStatusStorageOverride = imageStatusStorage
 
         // Observe when the app enters background.
         NotificationCenter.default.addObserver(self,
@@ -257,6 +266,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         statusUpdatesExcludedProductKeys.remove(key)
     }
 
+    @MainActor
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             let statuses = imageStatusStorage.getAllStatuses(for: key.siteID, productID: key.productOrVariationID)
@@ -335,6 +345,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
@@ -347,6 +358,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         imagesSaverByProduct = [:]
     }
 
+    @MainActor
     private func scheduleUploadInProgressNotificationIfNeeded() {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             let statuses = imageStatusStorage.getAllStatuses()
@@ -372,6 +384,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     @objc private func appDidEnterBackground() {
         self.scheduleUploadInProgressNotificationIfNeeded()
     }
@@ -439,6 +452,7 @@ private extension ProductImageUploader {
         imageUploadSubscriptions.insert(observationToken)
     }
 
+    @MainActor
     func removeProductFromActiveUploads(key: Key) {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             imageStatusStorage.removeStatus(where: { status in

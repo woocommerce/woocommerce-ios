@@ -4,7 +4,7 @@ import Photos
 
 /// Exports media to the local file system for remote upload.
 ///
-protocol MediaExportService {
+protocol MediaExportService: Sendable {
     /// Exports a media asset to the local file system so that it is uploadable, asynchronously.
     ///
     /// - Parameters:
@@ -12,6 +12,7 @@ protocol MediaExportService {
     ///   - filename: optional filename.
     ///   - altText: optional alt text.
     /// - Returns: Media that is ready to be uploaded remotely.
+    @MainActor
     func export(_ exportable: ExportableAsset, filename: String?, altText: String?) async throws -> UploadableMedia
 }
 

@@ -18,6 +18,7 @@ final class POSPaymentModel {
         didSet {
             guard oldValue != paymentState else { return }
             paymentStateChangesSubject.send((oldState: oldValue, newState: paymentState))
+            cancelCardPaymentForLock()
         }
     }
     private let paymentStateChangesSubject: PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>
@@ -86,6 +87,39 @@ final class POSPaymentModel {
         currentPaymentMethod != nil
     }
 
+    func restartCardPaymentAfterUnlock() async {
+        guard let lockCancellation else { return }
+        let isPaymentCancelled = await lockCancellation.value
+        guard !isPOSLocked(), self.lockCancellation == lockCancellation else { return }
+        self.lockCancellation = nil
+        guard isPaymentCancelled, canRestartCardPaymentAfterUnlock else { return }
+        paymentState.card = .idle
+        cardPresentPaymentInlineMessage = nil
+        await startPayment()
+    }
+
+    private var isCardPaymentCancellableWhileLocked: Bool {
+        paymentState.activePaymentMethod == .card && [.preparingReader, .acceptingCard, .cardInserted].contains(paymentState.card)
+    }
+
+    private var canRestartCardPaymentAfterUnlock: Bool {
+        paymentState.activePaymentMethod == .card && paymentState.card != .processingPayment && !paymentState.isSuccess
+    }
+
+    func cancelCardPaymentForLock() {
+        guard isPOSLocked(), lockCancellation == nil, isCardPaymentCancellableWhileLocked else { return }
+        let generation = startPaymentGeneration
+        lockCancellation = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+                return self?.startPaymentGeneration == generation
+            } catch {
+                DDLogWarn("Failed to cancel card payment when locking POS: \(error)")
+                return false
+            }
+        }
+    }
+
     /// True while a payment method tap is still starting: its reader connection is running, or Tap to Pay
     /// has not reported its first payment state yet. The wait for a Bluetooth reader that starts on its own
     /// when checkout opens does not count, so the other payment methods stay available during it.
@@ -112,6 +146,7 @@ final class POSPaymentModel {
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol
+    private let isPOSLocked: @MainActor () -> Bool
     /// Cadence for scan-to-pay polling. Defaults to 3 seconds; tests override to fire instantly.
     private let scanToPayPollInterval: TimeInterval
 
@@ -134,6 +169,7 @@ final class POSPaymentModel {
     /// have been enqueued as Tasks) can detect they've been superseded.
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
+    private var lockCancellation: Task<Bool, Never>?
     private var connectCardReaderTask: Task<Void, Never>?
     /// Connects the reader for a payment method tap, when `connectCardReaderTask` does not.
     private(set) var paymentStartConnectTask: Task<Void, Never>?
@@ -189,7 +225,8 @@ final class POSPaymentModel {
          scanToPayPollInterval: TimeInterval = 3,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .idle,
+         isPOSLocked: @escaping @MainActor () -> Bool = { false }) {
         let paymentStateChangesSubject = PassthroughSubject<(oldState: PointOfSalePaymentState, newState: PointOfSalePaymentState), Never>()
         self.paymentStateChangesSubject = paymentStateChangesSubject
         self.paymentStateChanges = paymentStateChangesSubject.eraseToAnyPublisher()
@@ -206,6 +243,7 @@ final class POSPaymentModel {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.celebration = celebration
+        self.isPOSLocked = isPOSLocked
         self.scanToPayPollInterval = scanToPayPollInterval
         self.preferredConnectionMethod = preferredConnectionMethod
         self.cardPaymentSelectionMode = cardPaymentSelectionMode

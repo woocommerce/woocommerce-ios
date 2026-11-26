@@ -38,7 +38,7 @@ public enum MediaAction: Action {
                      mediaAsset: ExportableAsset,
                      altText: String?,
                      filename: String?,
-                     onCompletion: (Result<Media, Error>) -> Void)
+                     onCompletion: @MainActor @Sendable (Result<Media, Error>) -> Void)
 
     /// Uploads a local file to the site's WP Media Library.
     ///
@@ -46,7 +46,7 @@ public enum MediaAction: Action {
                     productID: Int64,
                     localURL: URL,
                     altText: String?,
-                    onCompletion: (Result<Media, Error>) -> Void)
+                    onCompletion: @MainActor @Sendable (Result<Media, Error>) -> Void)
 
     /// Updates the `parent_id` of the media using the provided `productID`.
     ///

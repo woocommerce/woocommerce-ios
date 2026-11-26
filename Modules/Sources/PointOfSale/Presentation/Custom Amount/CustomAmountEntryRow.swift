@@ -30,6 +30,7 @@ struct CustomAmountEntryRow: View {
                         }
                 }
                 .frame(width: dimension, height: dimension)
+                .posItemCardImage()
 
                 VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                     Text(Localization.title)
@@ -43,8 +44,7 @@ struct CustomAmountEntryRow: View {
                         .foregroundStyle(Constants.detailColor)
                         .font(Constants.itemDetailFont)
                 }
-                .padding(.horizontal, metrics.padding.medium * (1 / scale))
-                .padding(.vertical, metrics.padding.small * (1 / scale))
+                .posItemCardTextPadding()
                 Spacer()
             }
             .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

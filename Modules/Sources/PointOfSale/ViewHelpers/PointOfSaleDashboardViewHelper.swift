@@ -54,17 +54,9 @@ struct PointOfSaleDashboardViewHelper {
         isPhoneLayout && cartIsEmpty
     }
 
-    enum ExitDecision: Equatable {
-        case showConfirmation
-        case leave(tracksConfirmation: Bool)
-    }
-
-    /// The approval prompt already confirms the exit, so an approved exit leaves POS without the confirmation.
-    static func exitDecision(confirmingFirst: Bool, approved: Bool) -> ExitDecision {
-        guard confirmingFirst else {
-            return .leave(tracksConfirmation: false)
-        }
-        return approved ? .leave(tracksConfirmation: true) : .showConfirmation
+    /// Cleared on entry rather than exit, so the cash screen keeps its amount while it slides away.
+    static func shouldResetCashAmountInput(oldValue: PointOfSaleCashPaymentState, newValue: PointOfSaleCashPaymentState) -> Bool {
+        newValue == .collectingCash && oldValue != .collectingCash
     }
 }
 

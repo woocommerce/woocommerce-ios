@@ -26,6 +26,7 @@ struct POSPrinterSetupModal: View {
         modalCore
             .frame(maxWidth: modalMaxWidth, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false
@@ -110,8 +111,8 @@ private struct POSPrinterSetupContent: View {
         switch controller.discoveryState {
         case .idle:
             messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
-                           title: Localization.pairTitle,
-                           message: pairMessage)
+                           title: pairContent.title,
+                           message: pairContent.message)
         case .searching:
             progressContent(message: Localization.searching)
         case .noPrintersFound:
@@ -139,12 +140,12 @@ private struct POSPrinterSetupContent: View {
 
     /// On the pairing step, call out the disabled Bluetooth permission when that's the blocker;
     /// otherwise show the standard pair-in-Settings guidance.
-    private var pairMessage: String {
+    private var pairContent: (title: String, message: String) {
         switch controller.bluetoothAuthorization {
         case .denied:
-            return Localization.enableBluetoothInstruction
+            return (Localization.enableBluetoothTitle, Localization.enableBluetoothInstruction)
         case .notDetermined, .allowed:
-            return Localization.pairInstruction
+            return (Localization.pairTitle, Localization.pairInstruction)
         }
     }
 
@@ -246,6 +247,12 @@ private extension POSPrinterSetupContent {
             "pos.printerSetup.pair.title",
             value: "Pair your printer",
             comment: "Title for the printer pairing step in POS settings.")
+
+        static let enableBluetoothTitle = NSLocalizedString(
+            "pos.printerSetup.pair.enableBluetoothTitle",
+            value: "Turn on Bluetooth access",
+            comment: "Title for the receipt printer pairing step in POS settings when the app's Bluetooth "
+                + "permission is disabled.")
 
         static let pairInstruction = NSLocalizedString(
             "pos.printerSetup.pair.pairInSettingsInstruction",
@@ -355,13 +362,7 @@ private extension POSPrinterSetupModal {
                 secondaryButton: .init(title: Localization.keepSearchingButton, action: {
                     controller.keepSearching(skipping: device)
                 }))
-        case .foundMultiple:
-            return .init(
-                primaryButton: nil,
-                secondaryButton: .init(title: Localization.cancelButton, action: {
-                    isPresented = false
-                }))
-        case .searching, .connecting:
+        case .foundMultiple, .searching, .connecting:
             return nil
         }
     }
@@ -427,11 +428,6 @@ private extension POSPrinterSetupModal {
             "pos.printerSetup.foundOne.keepSearchingButton",
             value: "Keep Searching",
             comment: "Button to skip the discovered receipt printer and keep searching in POS settings.")
-
-        static let cancelButton = NSLocalizedString(
-            "pos.printerSetup.foundMultiple.cancelButton",
-            value: "Cancel",
-            comment: "Button to close the receipt printer setup without connecting in POS settings.")
 
         static let searchAgainButton = NSLocalizedString(
             "pos.printerSetup.searchAgainButton",

@@ -7,8 +7,8 @@ struct TapToPayEducationStepsFactory {
         switch configuration.countryCode {
         case .US:
             return createUS()
-        case .GB:
-            return createGB(configuration: configuration)
+        case .GB, .FI, .IE, .LU, .NL, .NZ, .SG:
+            return createWithPIN(configuration: configuration)
         default:
             return createUS()
         }
@@ -30,14 +30,14 @@ struct TapToPayEducationStepsFactory {
         ]
     }
 
-    // MARK: - GB
+    // MARK: - Countries where a card PIN can be requested
 
-    private static func createGB(configuration: CardPresentPaymentsConfiguration) -> [TapToPayEducationStepViewModel] {
+    private static func createWithPIN(configuration: CardPresentPaymentsConfiguration) -> [TapToPayEducationStepViewModel] {
         [
             .init(title: Localization.Intro.title,
                   imageName: "tap-to-pay-education-intro-gb",
                   description: Localization.Intro.description,
-                  limit: .init(configuration: configuration)),
+                  limit: configuration.contactlessLimitAmount == nil ? nil : .init(configuration: configuration)),
             .init(title: Localization.ContactlessCard.title,
                   imageName: "tap-to-pay-education-contactless-cards-gb",
                   descriptionSteps: Localization.ContactlessCard.descriptionSteps),
@@ -165,11 +165,11 @@ private enum Localization {
         )
 
         static let description = NSLocalizedString(
-            "tapToPay.education.step.fallbackMethod.description",
+            "tapToPay.education.step.fallbackMethod.descriptionWithCardReader",
             value: "Some cards are not able to complete contactless transactions using a PIN, which can result in payment failure.\n\n" +
                    "Ask the customer if they have another contactless card or digital wallet and select Try Collecting Again to " +
                    "continue the transaction using Tap to Pay on iPhone.\n\nOtherwise, select Try Another Payment Method and choose a " +
-                   "supported alternative, such as Cash, Share Payment Link, Cash Reader, or Scan to Pay.",
+                   "supported alternative, such as Cash, Share Payment Link, Card Reader, or Scan to Pay.",
             comment: "Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using " +
                      "another contactless payment method or alternative payment options."
         )

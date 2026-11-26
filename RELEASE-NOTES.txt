@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [**] POS: On iPhone, a short guide now introduces POS and how to start selling in person. [https://github.com/woocommerce/woocommerce-ios/pull/18479]
 - [*] On iPhone Duo, carrier search results in Add Tracking start right below the search bar, and the Bulk Update loading placeholder sits below the navigation bar. [https://github.com/woocommerce/woocommerce-ios/pull/18482]
 - [*] POS: Pressing Return on the Email receipt screen while a receipt is sending no longer sends a second email. [https://github.com/woocommerce/woocommerce-ios/pull/18480]
 - [*] POS: On iPhone, the keyboard on Email receipt, Refund reason, Cash payment and custom amount screens now comes up together with the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18461]

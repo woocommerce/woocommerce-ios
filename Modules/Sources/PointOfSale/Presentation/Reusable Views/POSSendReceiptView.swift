@@ -55,15 +55,16 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
+        guard buttonState == .idle else { return }
         analytics.track(.pointOfSaleReceiptEmailSendTapped)
+        guard isEmailValid else {
+            errorMessage = Localization.emailValidationErrorText
+            return
+        }
+        buttonState = .loading
+        errorMessage = nil
         Task { @MainActor in
-            guard isEmailValid else {
-                errorMessage = Localization.emailValidationErrorText
-                return
-            }
-            buttonState = .loading
             do {
-                errorMessage = nil
                 try await onSendReceipt(trimmedEmail)
 
                 withAnimation {

@@ -3,6 +3,7 @@
 
 26.2
 -----
+- [*] POS: Pressing Return on the Email receipt screen while a receipt is sending no longer sends a second email. [https://github.com/woocommerce/woocommerce-ios/pull/18480]
 - [*] POS: On iPhone, the keyboard on Email receipt, Refund reason, Cash payment and custom amount screens now comes up together with the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18461]
 - [*] POS: With large accessibility text sizes, item cards hide the image so names stay readable, the iPhone header leaves more room for the Products and Coupons tabs, and two-line button labels are centered. [https://github.com/woocommerce/woocommerce-ios/pull/18455]
 - [*] Plugin updates and other store pages that open in Safari inside the app can now be closed by dragging them down. [https://github.com/woocommerce/woocommerce-ios/pull/18476]

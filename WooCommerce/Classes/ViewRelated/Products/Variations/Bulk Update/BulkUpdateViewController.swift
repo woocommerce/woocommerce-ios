@@ -16,6 +16,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
                                                                                                 cellClass: ValueOneTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                tableViewStyle: .grouped,
                                                                                                 isScrollEnabled: false))
 
     private var sections: [Section] = []

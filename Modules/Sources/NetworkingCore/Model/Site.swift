@@ -320,12 +320,6 @@ public extension Site {
         return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
     }
 
-    /// Returns the site's named timezone (e.g. "Europe/Madrid"), which follows daylight saving time,
-    /// falling back to `siteTimezone` when the site uses a manual UTC offset instead of a named zone.
-    var siteNamedTimezone: TimeZone {
-        TimeZone(identifier: timezone) ?? siteTimezone
-    }
-
     /// Returns true only if the site is hosted on WP.com and is private.
     ///
     var isPrivateWPCOMSite: Bool {

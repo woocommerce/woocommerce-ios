@@ -365,10 +365,8 @@ private extension POSTabCoordinator {
                                                                            currencySettings: currencySettings,
                                                                            serverRefundPreviewUseCase: serverRefundPreviewUseCase)
 
-                // Receipts use the named timezone so paid dates across a daylight saving change match the email receipt.
-                let receiptTimezone = storesManager.sessionManager.defaultSite?.siteNamedTimezone ?? .current
                 let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
-                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService(siteTimezone: receiptTimezone) : nil
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService(siteTimezone: siteTimezone) : nil
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,

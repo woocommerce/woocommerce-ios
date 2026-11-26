@@ -226,21 +226,15 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: session.isLocked) { _, isLocked in
-            if !isLocked {
-                resumeGuidedAccessGuide()
-                return
-            }
             // Locking ends the current staff context; dismiss dashboard-owned presentations
             // so the next signed-in staff member does not inherit them.
+            guard isLocked else { return }
             exitFlow.cancel()
             showSupport = false
             showDocumentation = false
             showSettings = false
             showOrders = false
             posModel.customAmountFlow = nil
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            resumeGuidedAccessGuide()
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -695,12 +689,6 @@ struct PointOfSaleDashboardView: View {
 }
 
 private extension PointOfSaleDashboardView {
-    func resumeGuidedAccessGuide() {
-        if posModel.settingsController.securityController?.resumeGuidedAccessGuide() == true {
-            showSettings = true
-        }
-    }
-
     var supportForm: some View {
         NavigationView {
             externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)

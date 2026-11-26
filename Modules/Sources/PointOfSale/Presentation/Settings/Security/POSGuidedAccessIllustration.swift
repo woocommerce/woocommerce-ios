@@ -58,7 +58,7 @@ struct POSGuidedAccessIllustration: View {
         let color = isPowerHighlighted || reduceMotion ? Color.posPrimary : .posOutlineVariant
         return ZStack(alignment: .topLeading) {
             ForEach(layout.volumeButtons, id: \.self) { y in
-                block(2, 21, .posOutlineVariant).at(layout.origin.x - 2, y)
+                block(2, 20, .posOutlineVariant).at(layout.origin.x - 2, y)
             }
             if layout.isPhone {
                 UnevenRoundedRectangle(bottomTrailingRadius: 2, topTrailingRadius: 2)
@@ -310,61 +310,62 @@ private struct POSGuidedAccessSettingsScene: View {
     private var sidebar: some View {
         ZStack(alignment: .topLeading) {
             Color.posSurfaceBright.frame(width: layout.sidebarWidth)
-            block(layout.sidebarWidth - 19, 20, Constants.fill).at(11, 17)
-            block(layout.sidebarWidth - 9, 19, Constants.fill).at(5, 170).opacity(isPageShown ? 1 : 0)
+            block(layout.sidebarWidth - 2 * Canvas.inset, Canvas.rowPitch, Constants.fill).at(Canvas.inset, 16)
+            block(layout.sidebarWidth - 8, Canvas.rowPitch, Constants.fill).at(4, Canvas.accessibilityRowY - 4).opacity(isPageShown ? 1 : 0)
             ForEach(layout.sidebarRows, id: \.y) { row in
-                block(11, 11, .posOutlineVariant, radius: POSCornerRadiusStyle.extraSmall.value).at(11, row.y)
-                block(row.width, 8, .posOutlineVariant).at(26, row.y + 1)
+                rowIcon(.posOutlineVariant).at(Canvas.inset, row.y)
+                block(row.width, Canvas.bar, .posOutlineVariant).at(Canvas.sidebarTextX, row.y + 2)
             }
-            block(11, 11, Constants.settingsBlue, radius: POSCornerRadiusStyle.extraSmall.value).at(11, 174)
-            label(Localization.accessibility, size: 10, weight: .bold, width: layout.sidebarWidth - 34).at(26, 169)
+            rowIcon(Constants.settingsBlue).at(Canvas.inset, Canvas.accessibilityRowY)
+            label(Localization.accessibility, size: 10, weight: .bold, width: layout.sidebarWidth - 36)
+                .at(Canvas.sidebarTextX, Canvas.accessibilityRowY - 4)
         }
     }
 
     private var accessibilityPage: some View {
         let width = layout.pageWidth
         return ZStack(alignment: .topLeading) {
-            card(width: width - 24, height: 86).at(11, 17)
-            block(23, 23, Constants.settingsBlue, radius: POSCornerRadiusStyle.medium.value).at(19, 27)
-            label(Localization.accessibility, size: 10, weight: .bold, width: width - 40).at(19, 51)
-            block(width - 39, 8, .posOutlineVariant).at(19, 74)
-            block(width - 54, 8, .posOutlineVariant).at(19, 88)
-            listGroup([23, 41, 28, 41], y: 113)
+            card(width: width - 2 * Canvas.inset, height: 88).at(Canvas.inset, 16)
+            block(24, 24, Constants.settingsBlue, radius: POSCornerRadiusStyle.medium.value).at(Canvas.contentX, 24)
+            label(Localization.accessibility, size: 10, weight: .bold, width: width - 40).at(Canvas.contentX, 52)
+            block(width - 40, Canvas.bar, .posOutlineVariant).at(Canvas.contentX, 76)
+            block(width - 56, Canvas.bar, .posOutlineVariant).at(Canvas.contentX, 88)
+            listGroup([24, 40, 28, 40], y: Canvas.firstGroupY)
             ForEach(0..<layout.extraGroups, id: \.self) { index in
-                listGroup([41, 28, 57, 23], y: 218 + CGFloat(index) * Constants.groupPitch)
+                listGroup([40, 28, 56, 24], y: Canvas.generalGroupY + CGFloat(index) * Constants.groupPitch)
             }
             Group {
-                label(Localization.general, size: 8, color: .posOnSurfaceVariantHighest, width: width - 24).at(11, 210)
-                card(width: width - 24, height: 83).at(11, 228)
-                block(11, 11, .posShadow, radius: POSCornerRadiusStyle.extraSmall.value).at(18, 237)
-                label(POSSecuritySettingsView.Localization.guidedAccess, size: 9, width: width - 79).at(33, 232)
-                block(15, 8, .posOutlineVariant).at(width - 34, 238)
-                listRows([57, 28, 41], y: 255)
+                label(Localization.general, size: 8, color: .posOnSurfaceVariantHighest, width: width - 2 * Canvas.inset)
+                    .at(Canvas.inset, Canvas.generalGroupY - 8)
+                listGroup([0, 56, 28, 40], y: Canvas.generalGroupY, showsHeader: false)
+                label(POSSecuritySettingsView.Localization.guidedAccess, size: 9, width: width - 80)
+                    .at(Canvas.rowTextX, Constants.guidedAccessRowY - Canvas.rowIcon / 2 - 4)
                 RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                     .strokeBorder(Color.posOnSurface)
-                    .frame(width: width - 30, height: 17)
+                    .frame(width: width - 32, height: Canvas.rowPitch)
                     .opacity(shownStep > 2 ? 1 : 0)
-                    .at(14, 234)
-                listGroup([41, 23, 57, 28], y: 321)
-                listGroup([28, 41, 23, 57], y: 321 + Constants.groupPitch)
+                    .at(16, Constants.guidedAccessRowY - Canvas.rowPitch / 2)
+                listGroup([40, 24, 56, 28], y: Canvas.generalGroupY + Constants.groupPitch)
+                listGroup([28, 40, 24, 56], y: Canvas.generalGroupY + 2 * Constants.groupPitch)
             }
             .offset(y: layout.generalShift)
         }
     }
 
     @ViewBuilder
-    private func listGroup(_ widths: [CGFloat], y: CGFloat) -> some View {
-        block(40, 8, .posOutlineVariant).at(11, y)
-        card(width: layout.pageWidth - 24, height: 83).at(11, y + 12)
-        listRows(widths, y: y + 21)
-    }
-
-    private func listRows(_ widths: [CGFloat], y: CGFloat) -> some View {
+    // A zero width draws a row without a text bar, for a row that shows a label instead.
+    private func listGroup(_ widths: [CGFloat], y: CGFloat, showsHeader: Bool = true) -> some View {
+        if showsHeader {
+            block(40, Canvas.bar, .posOutlineVariant).at(Canvas.inset, y)
+        }
+        card(width: layout.pageWidth - 2 * Canvas.inset, height: Canvas.groupCardHeight).at(Canvas.inset, y + Canvas.groupCardOffset)
         ForEach(Array(widths.enumerated()), id: \.offset) { index, width in
-            let rowY = y + CGFloat(index) * 18
-            block(11, 11, .posOutlineVariant, radius: POSCornerRadiusStyle.extraSmall.value).at(18, rowY)
-            block(width, 8, .posOutlineVariant).at(33, rowY + 1)
-            block(15, 8, .posOutlineVariant).at(layout.pageWidth - 34, rowY + 1)
+            let rowY = y + Canvas.groupCardOffset + Canvas.cardPadding + CGFloat(index) * Canvas.rowPitch
+            rowIcon(index == 0 && width == 0 ? .posShadow : .posOutlineVariant).at(Canvas.contentX, rowY)
+            if width > 0 {
+                block(width, Canvas.bar, .posOutlineVariant).at(Canvas.rowTextX, rowY + 2)
+            }
+            block(16, Canvas.bar, .posOutlineVariant).at(layout.pageWidth - Canvas.contentX - 16, rowY + 2)
         }
     }
 }
@@ -402,36 +403,37 @@ private struct POSGuidedAccessPasscodePages: View {
 
     @ViewBuilder
     private var pageHeader: some View {
-        block(16, 16, .posOutlineVariant).at(11, 9)
-        block(71, 8, .posOutlineVariant).at((width - 73) / 2, 14)
+        block(16, 16, .posOutlineVariant).at(Canvas.inset, 8)
+        block(72, Canvas.bar, .posOutlineVariant).at((width - 72) / 2, 12)
     }
 
     private var guidedAccessPage: some View {
         ZStack(alignment: .topLeading) {
             pageHeader
-            card(width: width - 24, height: 28).at(11, 38)
-            label(POSSecuritySettingsView.Localization.guidedAccess, size: 9, width: width - 64).at(19, 42)
+            settingsCard(at: Canvas.firstCardY)
+            label(POSSecuritySettingsView.Localization.guidedAccess, size: 9, width: width - 64).at(Canvas.contentX, Canvas.firstCardY + 4)
             Capsule()
                 .fill(step > 0 ? Color.posSuccess : .posOnSurfaceVariantLowest)
-                .frame(width: 15, height: 8)
+                .frame(width: 16, height: Canvas.bar)
                 .overlay(alignment: step > 0 ? .trailing : .leading) {
                     Circle().fill(Color.posOnPrimary).frame(width: 6, height: 6).frame(width: 8, height: 8)
                 }
-                .at(width - 34, 48)
+                .at(width - Canvas.contentX - 16, Canvas.firstCardY + 10)
             Group {
-                block(width - 24, 6, .posOutlineVariant).at(11, 72)
-                block(width - 80, 6, .posOutlineVariant).at(11, 82)
+                block(width - 2 * Canvas.inset, Canvas.bar, .posOutlineVariant).at(Canvas.inset, 72)
+                block(width - 80, Canvas.bar, .posOutlineVariant).at(Canvas.inset, 84)
             }
             .revealed(step > 1)
             Group {
-                card(width: width - 24, height: 28).at(11, 101)
-                label(Localization.passcodeSettings, size: 9, width: width - 40).at(19, 105)
+                settingsCard(at: Canvas.passcodeCardY)
+                label(Localization.passcodeSettings, size: 9, width: width - 40).at(Canvas.contentX, Canvas.passcodeCardY + 4)
             }
             .revealed(step > 2)
-            ForEach(Array([50, 93, 84].enumerated()), id: \.offset) { index, barWidth in
+            ForEach(Array([48, 92, 84].enumerated()), id: \.offset) { index, barWidth in
+                let y = Canvas.passcodeCardY + 40 + CGFloat(index) * 40
                 Group {
-                    card(width: width - 24, height: 28).at(11, 143 + CGFloat(index) * 39)
-                    block(barWidth, 8, .posOutlineVariant).at(19, 153 + CGFloat(index) * 39)
+                    settingsCard(at: y)
+                    block(barWidth, Canvas.bar, .posOutlineVariant).at(Canvas.contentX, y + 10)
                 }
                 .revealed(step > 3 + index)
             }
@@ -441,11 +443,15 @@ private struct POSGuidedAccessPasscodePages: View {
     private var passcodePage: some View {
         ZStack(alignment: .topLeading) {
             pageHeader
-            card(width: width - 24, height: 28).at(11, 38)
-            label(Localization.setPasscode, size: 9, color: Constants.settingsBlue, width: width - 40).at(19, 42)
-            card(width: width - 24, height: 28).at(11, 77)
-            block(93, 8, .posOutlineVariant).at(19, 87)
+            settingsCard(at: Canvas.firstCardY)
+            label(Localization.setPasscode, size: 9, color: Constants.settingsBlue, width: width - 40).at(Canvas.contentX, Canvas.firstCardY + 4)
+            settingsCard(at: Canvas.firstCardY + 40)
+            block(92, Canvas.bar, .posOutlineVariant).at(Canvas.contentX, Canvas.firstCardY + 50)
         }
+    }
+
+    private func settingsCard(at y: CGFloat) -> some View {
+        card(width: width - 2 * Canvas.inset, height: Canvas.settingsCardHeight).at(Canvas.inset, y)
     }
 
     private var keypad: some View {
@@ -468,25 +474,25 @@ private struct POSGuidedAccessPOSScene: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            block(48, 16, .posOutline).at(layout.posInset, 14)
-            block(48, 16, .posOutlineVariant).at(layout.posInset + 55, 14)
+            block(48, 16, .posOutline).at(layout.posInset, 12)
+            block(48, 16, .posOutlineVariant).at(layout.posInset + 56, 12)
             if layout.isPhone {
-                block(16, 16, .posOutlineVariant).at(layout.screen.width - 48, 14)
-                block(16, 16, .posOutlineVariant).at(layout.screen.width - 28, 14)
+                block(16, 16, .posOutlineVariant).at(layout.screen.width - 48, 12)
+                block(16, 16, .posOutlineVariant).at(layout.screen.width - 28, 12)
             } else {
-                Color.posSurfaceBright.frame(width: 132).offset(x: 243)
-                block(16, 16, .posOutlineVariant).at(206, 14)
-                block(48, 16, .posOutline).at(255, 14)
+                Color.posSurfaceBright.frame(width: layout.screen.width - Canvas.cartX).offset(x: Canvas.cartX)
+                block(16, 16, .posOutlineVariant).at(layout.posInset + layout.posRowWidth - 16, 12)
+                block(48, 16, .posOutline).at(Canvas.cartX + Canvas.inset, 12)
             }
             ForEach(0..<layout.posRows, id: \.self) { index in
                 ZStack(alignment: .topLeading) {
-                    card(width: layout.posRowWidth, height: 47)
-                    Constants.fill.frame(width: 52, height: 47)
-                    block(75, 10, .posOnSurfaceVariantLowest).at(65, 11)
-                    block(50, 8, .posOutlineVariant).at(65, 28)
+                    card(width: layout.posRowWidth, height: Canvas.posRowHeight)
+                    Constants.fill.frame(width: Canvas.posRowHeight, height: Canvas.posRowHeight)
+                    block(76, Canvas.bar, .posOnSurfaceVariantLowest).at(60, 12)
+                    block(48, Canvas.bar, .posOutlineVariant).at(60, 28)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
-                .at(layout.posInset, 54 + CGFloat(index) * Constants.posRowPitch)
+                .at(layout.posInset, Canvas.posFirstRowY + CGFloat(index) * Constants.posRowPitch)
             }
             activeMessage
                 .scaleEffect(showsActiveMessage ? 1 : 0.9)
@@ -579,6 +585,11 @@ private func card(width: CGFloat, height: CGFloat) -> some View {
 }
 
 @MainActor
+private func rowIcon(_ color: Color) -> some View {
+    block(Canvas.rowIcon, Canvas.rowIcon, color, radius: POSCornerRadiusStyle.extraSmall.value)
+}
+
+@MainActor
 private func label(_ text: String, size: CGFloat, weight: Font.Weight = .regular, color: Color = .posOnSurface, width: CGFloat) -> some View {
     let scale = size / 14
     return Text(text)
@@ -646,12 +657,12 @@ private struct Layout {
     }
 
     var sidebarRows: [(y: CGFloat, width: CGFloat)] {
-        let rows: [(y: CGFloat, width: CGFloat)] = [(52, 46), (72, 17), (92, 31), (112, 23), (132, 14), (154, 23), (194, 39), (214, 39)]
+        let rows: [(y: CGFloat, width: CGFloat)] = [(52, 48), (72, 16), (92, 32), (112, 24), (132, 16), (152, 24), (192, 40), (212, 40)]
         guard isPhone else {
             return rows
         }
         // A phone is taller than the list of the design, so more rows fill its screen.
-        let extraRows = stride(from: CGFloat(234), to: screen.height - 16, by: 20).enumerated().map { index, y in
+        let extraRows = stride(from: CGFloat(232), to: screen.height - 16, by: Canvas.rowPitch).enumerated().map { index, y in
             (y: y, width: rows[index % rows.count].width)
         }
         return rows + extraRows
@@ -670,13 +681,13 @@ private struct Layout {
     }
 
     var volumeButtons: [CGFloat] {
-        isPhone ? [70, 96] : [origin.y + 34, origin.y + 58]
+        isPhone ? [68, 96] : [origin.y + 32, origin.y + 56]
     }
 
     var powerTouch: CGPoint {
         isPhone
             ? CGPoint(x: origin.x + screen.width + Constants.powerDepth / 2, y: 100)
-            : CGPoint(x: origin.x + 53, y: origin.y - Constants.powerDepth / 2)
+            : CGPoint(x: origin.x + 54, y: origin.y - Constants.powerDepth / 2)
     }
 
     var powerPressOffset: CGSize {
@@ -685,11 +696,11 @@ private struct Layout {
     }
 
     var sidebarTouch: CGPoint {
-        CGPoint(x: sidebarWidth / 2, y: 179)
+        CGPoint(x: sidebarWidth / 2, y: Canvas.accessibilityRowY + Canvas.rowIcon / 2)
     }
 
     var dragStart: CGPoint {
-        CGPoint(x: pageCenterX, y: screen.height - 74)
+        CGPoint(x: pageCenterX, y: screen.height - 72)
     }
 
     var guidedAccessTouch: CGPoint {
@@ -697,15 +708,15 @@ private struct Layout {
     }
 
     var switchTouch: CGPoint {
-        CGPoint(x: pageX + pageWidth - 27, y: 52)
+        CGPoint(x: pageX + pageWidth - Canvas.contentX - 8, y: Canvas.firstCardY + Canvas.settingsCardHeight / 2)
     }
 
     var passcodeRowTouch: CGPoint {
-        CGPoint(x: pageCenterX, y: 115)
+        CGPoint(x: pageCenterX, y: Canvas.passcodeCardY + Canvas.settingsCardHeight / 2)
     }
 
     var setPasscodeTouch: CGPoint {
-        CGPoint(x: pageCenterX, y: 52)
+        CGPoint(x: pageCenterX, y: Canvas.firstCardY + Canvas.settingsCardHeight / 2)
     }
 
     var keypadOrigin: CGPoint {
@@ -714,7 +725,7 @@ private struct Layout {
     }
 
     func keyOrigin(_ key: Int) -> CGPoint {
-        CGPoint(x: keypadOrigin.x + 15 + CGFloat(key % 3) * 39, y: keypadOrigin.y + 15 + CGFloat(key / 3) * 41)
+        CGPoint(x: keypadOrigin.x + 16 + CGFloat(key % 3) * 40, y: keypadOrigin.y + 16 + CGFloat(key / 3) * 40)
     }
 
     var activeMessageOrigin: CGPoint {
@@ -726,11 +737,11 @@ private struct Layout {
     }
 
     var posRowWidth: CGFloat {
-        isPhone ? screen.width - 2 * posInset : 209
+        isPhone ? screen.width - 2 * posInset : Canvas.cartX - posInset - Canvas.inset
     }
 
     var posRows: Int {
-        isPhone ? min(5, Int((screen.height - 54) / Constants.posRowPitch)) : 4
+        isPhone ? min(5, Int((screen.height - Canvas.posFirstRowY) / Constants.posRowPitch)) : 4
     }
 
     private var pageCenterX: CGFloat {
@@ -744,10 +755,10 @@ private enum Constants {
     // From a closed iPhone Duo, whose screen is 1.4 times taller than wide, to the tallest phones.
     static let phoneRatios: ClosedRange<CGFloat> = 1.3...2.2
     // The middle of the Guided Access row on the Accessibility page, and the distance between the groups of that page.
-    static let guidedAccessRowY: CGFloat = 242
-    static let groupPitch: CGFloat = 105
-    static let posRowPitch: CGFloat = 53
-    static let keypadSize = CGSize(width: 139, height: 144)
+    static let guidedAccessRowY = Canvas.generalGroupY + Canvas.groupCardOffset + Canvas.cardPadding + Canvas.rowIcon / 2
+    static let groupPitch: CGFloat = 112
+    static let posRowPitch = Canvas.posRowHeight + 8
+    static let keypadSize = CGSize(width: 144, height: 144)
     static let powerLength: CGFloat = 36
     static let powerDepth: CGFloat = 4
     static let pressedPowerDepth: CGFloat = 1.5
@@ -758,7 +769,7 @@ private enum Constants {
     static let keypadStep = 8
     static let passcodeKeys = [0, 4, 8, 5]
     static let flowSteps = keypadStep + passcodeKeys.count
-    static let keySize: CGFloat = 31
+    static let keySize: CGFloat = 32
     static let touchSize: CGFloat = 18
     static let startDelay: Duration = .milliseconds(600)
     static let beat: Duration = .milliseconds(450)
@@ -786,6 +797,29 @@ private enum Constants {
     static let fill = Color.posOutlineVariant.opacity(0.5)
     // The palette has no token for the blue of the Accessibility icon and of links in iOS Settings.
     static let settingsBlue = Color(uiColor: .systemBlue)
+}
+
+// Drawing coordinates on a 4-point grid, in device screen units before the illustration is scaled to fit.
+private enum Canvas {
+    static let inset: CGFloat = 12
+    static let cardPadding: CGFloat = 8
+    static let contentX = inset + cardPadding
+    static let rowIcon: CGFloat = 12
+    static let rowTextX = contentX + rowIcon + 4
+    static let sidebarTextX = inset + rowIcon + 4
+    static let bar: CGFloat = 8
+    static let rowPitch: CGFloat = 20
+    static let accessibilityRowY: CGFloat = 172
+    static let firstGroupY: CGFloat = 112
+    static let generalGroupY = firstGroupY + Constants.groupPitch
+    static let groupCardOffset: CGFloat = 12
+    static let groupCardHeight = 2 * cardPadding + 3 * rowPitch + rowIcon
+    static let settingsCardHeight: CGFloat = 28
+    static let firstCardY: CGFloat = 36
+    static let passcodeCardY: CGFloat = 104
+    static let cartX: CGFloat = 244
+    static let posRowHeight: CGFloat = 48
+    static let posFirstRowY: CGFloat = 52
 }
 
 private enum Localization {

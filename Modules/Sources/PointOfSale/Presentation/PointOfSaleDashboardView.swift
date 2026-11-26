@@ -242,6 +242,11 @@ struct PointOfSaleDashboardView: View {
         }
         .onAppear {
             trackTimeForInitialLoadingState()
+            // POS can open straight to content, e.g. after the onboarding guide has waited for eligibility,
+            // so no change to content would follow.
+            if viewState == .content {
+                trackElapsedTimeForInitialLoadingState()
+            }
             loadItemsWhenEligible()
         }
         .onChange(of: viewState) { oldValue, newValue in

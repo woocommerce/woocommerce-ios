@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 import Fakes
 @testable import Yosemite
 @testable import Hardware
@@ -232,6 +233,26 @@ struct ReceiptPrinterServiceTests {
         #expect(printedText.contains("4242"))
     }
 
+    @Test func test_printReceipt_with_order_when_store_timezone_differs_from_device_then_prints_paid_date_in_store_timezone() async throws {
+        // Given
+        // 2023-11-14 22:13:20 UTC: already Nov 15 in Bangkok, still Nov 14 in Honolulu.
+        let datePaid = Date(timeIntervalSince1970: 1_700_000_000)
+        let storeTimeZone = try #require(TimeZone(identifier: "Asia/Bangkok"))
+        let otherTimeZone = try #require(TimeZone(identifier: "Pacific/Honolulu"))
+        let sut = makeService(siteTimezone: storeTimeZone)
+        let order = Order.fake().copy(orderID: 42, currency: "USD", datePaid: datePaid, total: "10.00")
+
+        // When
+        try await sut.printReceipt(order: order, storeInformation: .empty, cardDetails: nil)
+
+        // Then
+        let printedText = try #require(printerDiscoveryService.printedText)
+        let storeDate = ReceiptTextRenderer.makeDateFormatter(timeZone: storeTimeZone).string(from: datePaid)
+        let otherDate = ReceiptTextRenderer.makeDateFormatter(timeZone: otherTimeZone).string(from: datePaid)
+        #expect(printedText.contains(storeDate))
+        #expect(printedText.contains(otherDate) == false)
+    }
+
     @Test func test_printReceipt_with_order_when_service_throws_then_propagates_error() async {
         // Given
         let sut = makeService()
@@ -246,8 +267,11 @@ struct ReceiptPrinterServiceTests {
 }
 
 private extension ReceiptPrinterServiceTests {
-    func makeService(currencySettings: CurrencySettings = CurrencySettings()) -> ReceiptPrinterService {
-        ReceiptPrinterService(printerDiscoveryService: printerDiscoveryService, currencySettings: currencySettings)
+    func makeService(currencySettings: CurrencySettings = CurrencySettings(),
+                     siteTimezone: TimeZone = .gmt) -> ReceiptPrinterService {
+        ReceiptPrinterService(printerDiscoveryService: printerDiscoveryService,
+                              currencySettings: currencySettings,
+                              siteTimezone: siteTimezone)
     }
 
     enum SampleError: Error, Equatable {

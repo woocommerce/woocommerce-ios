@@ -7,11 +7,7 @@ struct ReceiptTextRendererTests {
     private let builder: ReceiptTextRenderer
 
     init() {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        formatter.dateFormat = "yyyy-MM-dd"
-        builder = ReceiptTextRenderer(dateFormatter: formatter)
+        builder = ReceiptTextRenderer(dateFormatter: Self.makeFixedDateFormatter())
     }
 
     @Test func test_makeReceiptText_when_card_details_present_then_renders_store_items_totals_and_card_block() {
@@ -241,7 +237,7 @@ struct ReceiptTextRendererTests {
     @Test(arguments: ["\n", "\r\n", "\r"])
     func test_makeReceiptText_when_store_address_is_multiline_then_each_line_is_centered_independently(lineBreak: String) {
         // Given
-        let renderer = ReceiptTextRenderer(lineWidth: 20)
+        let renderer = ReceiptTextRenderer(lineWidth: 20, dateFormatter: Self.makeFixedDateFormatter())
         let storeInformation = ReceiptStoreInformation(storeName: nil,
                                                        storeAddress: "AB" + lineBreak + "CDEFGH",
                                                        phone: nil,
@@ -285,9 +281,67 @@ struct ReceiptTextRendererTests {
             String(repeating: " ", count: 11) + "shop@everyday-pay.example"
         ])
     }
+
+    @Test func test_makeDateFormatter_when_store_timezone_differs_from_device_then_formats_in_store_timezone() throws {
+        // Given
+        // 2023-11-14 22:13:20 UTC: already Nov 15 in Bangkok, still Nov 14 in Honolulu.
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        let locale = Locale(identifier: "en_US")
+        let bangkok = try #require(TimeZone(identifier: "Asia/Bangkok"))
+        let honolulu = try #require(TimeZone(identifier: "Pacific/Honolulu"))
+
+        // When
+        let bangkokText = ReceiptTextRenderer.makeDateFormatter(timeZone: bangkok, locale: locale).string(from: date)
+        let honoluluText = ReceiptTextRenderer.makeDateFormatter(timeZone: honolulu, locale: locale).string(from: date)
+
+        // Then
+        #expect(bangkokText.contains("Nov 15, 2023"))
+        #expect(bangkokText.contains("5:13"))
+        #expect(honoluluText.contains("Nov 14, 2023"))
+        #expect(honoluluText.contains("12:13"))
+    }
+
+    @Test(arguments: ["en_TH", "th_TH", "ja_JP@calendar=japanese"])
+    func test_makeDateFormatter_when_device_locale_uses_non_gregorian_calendar_then_prints_gregorian_year(localeIdentifier: String) throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        let storeTimeZone = try #require(TimeZone(identifier: "Asia/Bangkok"))
+        let formatter = ReceiptTextRenderer.makeDateFormatter(timeZone: storeTimeZone, locale: Locale(identifier: localeIdentifier))
+
+        // When
+        let text = formatter.string(from: date)
+
+        // Then
+        // 2023 is 2566 in the Buddhist era and Reiwa 5 in the Japanese calendar.
+        #expect(text.contains("2023"))
+        #expect(text.contains("2566") == false)
+        #expect(text.contains("BE") == false)
+    }
+
+    @Test func test_makeReceiptText_when_using_store_date_formatter_then_prints_paid_date_in_store_timezone() throws {
+        // Given
+        let storeTimeZone = try #require(TimeZone(identifier: "Asia/Bangkok"))
+        let renderer = ReceiptTextRenderer(dateFormatter: ReceiptTextRenderer.makeDateFormatter(timeZone: storeTimeZone,
+                                                                                                 locale: Locale(identifier: "en_TH")))
+
+        // When
+        let receipt = renderer.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        #expect(receipt.contains("15 Nov 2023"))
+        #expect(receipt.contains("2566") == false)
+    }
 }
 
 private extension ReceiptTextRendererTests {
+    static func makeFixedDateFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }
+
     func makeContent(orderNote: String? = nil,
                      lineItems: [ReceiptLineItem] = [ReceiptLineItem(title: "T-Shirt", quantity: "1", amount: "$25.00", attributes: [])],
                      cartTotals: [ReceiptTotalLine] = [ReceiptTotalLine(description: "Subtotal", amount: "$25.00"),

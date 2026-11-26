@@ -366,7 +366,7 @@ private extension POSTabCoordinator {
                                                                            serverRefundPreviewUseCase: serverRefundPreviewUseCase)
 
                 let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
-                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService(siteTimezone: siteTimezone) : nil
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,

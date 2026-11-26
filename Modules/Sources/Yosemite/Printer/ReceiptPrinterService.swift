@@ -1,3 +1,4 @@
+import Foundation
 import Hardware
 import Networking
 import WooFoundation
@@ -55,12 +56,13 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     /// `currencySettings` should be the store's shared instance: store switches update it in place,
     /// so receipts keep using the current store's separators, decimals and symbol position.
+    /// `siteTimezone` is the store's timezone, used for the paid date.
     public init(printerDiscoveryService: PrinterDiscoveryService,
                 currencySettings: CurrencySettings,
-                receiptTextRenderer: ReceiptTextRenderer = ReceiptTextRenderer()) {
+                siteTimezone: TimeZone) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.printerDiscoveryService = printerDiscoveryService
-        self.receiptTextRenderer = receiptTextRenderer
+        self.receiptTextRenderer = ReceiptTextRenderer(dateFormatter: ReceiptTextRenderer.makeDateFormatter(timeZone: siteTimezone))
         self.currencyFormatter = currencyFormatter
         self.contentAssembler = ReceiptContentAssembler(currencyFormatter: currencyFormatter)
     }

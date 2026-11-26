@@ -30,6 +30,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @State private var backAction: POSModalFlowAction?
     @State private var contentTitle: String?
     @State private var closeAccessibilityIdentifier: String?
+    @State private var stepNavigation = POSModalFlowStepNavigation()
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -44,6 +45,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                                             buttons: .init(title: contentTitle ?? title, backAction: backAction, closeAction: closeAction))
                         .background(Color.posSurfaceBright)
                 }
+                .environment(\.posModalFlowStepNavigation, stepNavigation)
         } else {
             content
         }
@@ -96,6 +98,7 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 }
 
 private struct POSFullScreenFlowHeader: View {
+    @Environment(\.posModalFlowStepNavigation) private var stepNavigation
     let title: String
     let buttons: POSFullScreenFlowHeaderButtons
 
@@ -131,7 +134,13 @@ private struct POSFullScreenFlowHeader: View {
         switch leading {
         case .back(let backAction):
             return .init(state: backAction.isEnabled ? .enabled : .disabled,
-                         action: { backAction.perform() },
+                         action: {
+                guard stepNavigation?.isSettled != false else {
+                    return
+                }
+                stepNavigation?.goBackwardOnNextStep()
+                backAction.perform()
+            },
                          accessibilityIdentifier: backAction.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
                          accessibilityLabel: POSFullScreenFlowHeaderLocalization.backAccessibilityLabel)
         case .close(let closeAction):

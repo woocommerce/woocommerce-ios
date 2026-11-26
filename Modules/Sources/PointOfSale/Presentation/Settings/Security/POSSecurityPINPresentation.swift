@@ -19,8 +19,7 @@ final class POSSecurityPINPresentation {
 
         var compactStyle: POSModalCompactStyle {
             switch self {
-            case .approval: .managerApproval
-            case .editor: .fullScreen(title: "")
+            case .approval, .editor: .pinEntry
             case .guidedAccessGuide: .fullScreen(title: POSGuidedAccessGuideView.Localization.title)
             }
         }

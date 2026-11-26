@@ -93,15 +93,15 @@ struct POSSecurityPINPresentationTests {
         let style = POSSecurityPINPresentation.Destination.editor(editor).compactStyle
 
         // Then
-        #expect(style == .fullScreen(title: ""))
+        #expect(style == .pinEntry)
     }
 
-    @Test func test_approval_when_presented_then_keeps_approval_header() {
+    @Test func test_approval_when_presented_then_leaves_title_in_pin_content() {
         // When
         let style = makeApproval().compactStyle
 
         // Then
-        #expect(style == .managerApproval)
+        #expect(style == .pinEntry)
     }
 
     @Test(arguments: [false, true])

@@ -53,7 +53,7 @@ struct POSOnboardingGuideView: View {
 
     private func learnMore() {
         model.videoTapped(on: currentStep)
-        videoURL = Constants.videoURL
+        videoURL = POSConstants.URLs.pointOfSaleOnboardingVideo.asURL()
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
@@ -151,10 +151,6 @@ private struct POSOnboardingGuideLearnMoreButton: View {
 }
 
 private extension POSOnboardingGuideView {
-    enum Constants {
-        static let videoURL = URL(string: "https://www.youtube.com/shorts/WjeOYVoAITY")!
-    }
-
     enum Localization {
         static let startSelling = NSLocalizedString(
             "pos.onboardingGuide.startSellingButton",

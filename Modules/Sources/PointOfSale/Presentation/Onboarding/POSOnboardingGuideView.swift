@@ -6,7 +6,7 @@ struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
     @State var currentPage = 0
 
-    let onStartSelling: () -> Void
+    let model: POSOnboardingGuideModel
     let onExit: () -> Void
 
     var body: some View {
@@ -36,21 +36,33 @@ struct POSOnboardingGuideView: View {
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
+        .onAppear {
+            model.stepViewed(currentStep)
+        }
+        .onChange(of: currentPage) {
+            model.stepViewed(currentStep)
+        }
     }
 
     private var steps: [POSOnboardingGuideStep] { POSOnboardingGuideStep.all }
 
+    private var currentStep: POSOnboardingGuideStep { steps[currentPage] }
+
     private func learnMore() {
-        // No-op until the video of a sale is ready.
+        // Only tracked until the video of a sale is ready.
+        model.videoTapped(on: currentStep)
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
         .init(primaryButton: .init(title: Localization.startSelling,
                                    accessibilityIdentifier: "pos-onboarding-guide-start-selling-button",
-                                   action: onStartSelling),
+                                   action: { model.startSellingTapped(on: currentStep) }),
               secondaryButton: .init(title: Localization.exit,
                                      accessibilityIdentifier: "pos-onboarding-guide-exit-button",
-                                     action: onExit))
+                                     action: {
+                                         model.exitTapped(on: currentStep)
+                                         onExit()
+                                     }))
     }
 }
 
@@ -63,10 +75,9 @@ private struct POSOnboardingGuideStepView: View {
 
     private var illustrationHeight: CGFloat {
         // Smaller in landscape, where there's little height.
-        verticalSizeClass == .compact ? 64 : 120
+        POSMetrics.onboardingGuideIllustrationHeight(isVerticallyCompact: verticalSizeClass == .compact)
     }
-    // As in the design, a fixed text height keeps the titles in line across steps.
-    @ScaledMetric private var textMinHeight: CGFloat = 144
+    @ScaledMetric private var textMinHeight: CGFloat = POSMetrics.onboardingGuideTextMinHeight
 
     var body: some View {
         VStack(spacing: metrics.spacing.xxLarge) {
@@ -152,8 +163,14 @@ private extension POSOnboardingGuideView {
 }
 
 #if DEBUG
+@MainActor
 private func onboardingGuidePreview(page: Int) -> some View {
-    POSOnboardingGuideView(currentPage: page, onStartSelling: {}, onExit: {})
+    POSOnboardingGuideView(currentPage: page,
+                           model: POSOnboardingGuideModel(siteID: 1,
+                                                          featureFlags: EmptyPOSFeatureFlags(),
+                                                          preferences: POSOnboardingGuidePreferences(),
+                                                          analytics: EmptyPOSAnalytics()),
+                           onExit: {})
         .posPreviewSmallestPhone()
 }
 

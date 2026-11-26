@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Basic information of a WordPress.com user
-public struct DotcomUser: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct DotcomUser: Decodable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// User ID in WP.com
     public let id: Int64

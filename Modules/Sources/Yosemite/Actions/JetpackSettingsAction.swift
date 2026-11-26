@@ -5,5 +5,5 @@ import Foundation
 public enum JetpackSettingsAction: Action {
     /// Enables the provided Jetpack module
     ///
-    case enableJetpackModule(_ module: JetpackModule, siteID: Int64, completion: (Result<Void, Error>) -> Void)
+    case enableJetpackModule(_ module: JetpackModule, siteID: Int64, completion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 }

@@ -18,7 +18,7 @@ struct JetpackConnectionDataMapper: Mapper {
 /// JetpackConnectionData Disposable Entity:
 /// This entity allows us to parse JetpackUser with JSONDecoder.
 ///
-public struct JetpackConnectionData: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct JetpackConnectionData: Decodable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// The connection state for the authenticated user
     public let currentUser: JetpackUser
 

@@ -13,9 +13,10 @@ public final class POSScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [firstProductCardGetter],
+            // The header is interactive even while the catalog loads. Product actions wait for their own cards.
+            expectedElementGetters: [{ $0.buttons["pos-search-button"] }],
             app: app,
-            waitTimeout: 60
+            waitTimeout: 15
         )
     }
 
@@ -430,6 +431,10 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func confirmExitPOS() throws -> TabNavComponent {
+        try Self.confirmExitPOS(in: app)
+    }
+
+    static func confirmExitPOS(in app: XCUIApplication) throws -> TabNavComponent {
         let exitButton = app.buttons["pos-exit-confirm-button"]
 
         XCTAssertTrue(exitButton.waitForIsHittable(timeout: 10), "Exit POS confirmation button should be tappable.")

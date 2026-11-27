@@ -52,7 +52,7 @@ public final class TabNavComponent: ScreenObject {
         do {
             return try POSScreen(app: app)
         } catch ScreenObject.WaitForScreenError.timedOut {
-            throw TabNavigationError.posProductListTimedOut
+            throw TabNavigationError.posCatalogScreenTimedOut
         }
     }
     @discardableResult
@@ -118,6 +118,6 @@ private extension TabNavComponent {
         case selectionTimedOut(tab: String)
         case posTabNotReady
         case posTabDidNotOpen
-        case posProductListTimedOut
+        case posCatalogScreenTimedOut
     }
 }

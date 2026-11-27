@@ -4,9 +4,6 @@ import XCTest
 // periphery: ignore - used for UI testing
 @MainActor
 public final class POSIneligibleScreen: ScreenObject {
-    private let ineligibleViewGetter: (XCUIApplication) -> XCUIElement = {
-        $0.descendants(matching: .any)["pos-ineligible-view"]
-    }
     private let titleGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["pos-ineligible-title"]
     }
@@ -27,9 +24,9 @@ public final class POSIneligibleScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ineligibleViewGetter],
+            expectedElementGetters: [dismissButtonGetter],
             app: app,
-            waitTimeout: 30
+            waitTimeout: 15
         )
     }
 
@@ -46,6 +43,6 @@ public final class POSIneligibleScreen: ScreenObject {
     public func tapExitPOS() throws -> TabNavComponent {
         XCTAssertTrue(dismissButton.waitForIsHittable(timeout: 5), "Exit POS button should be tappable.")
         dismissButton.tap()
-        return try TabNavComponent(app: app)
+        return try POSScreen.confirmExitPOS(in: app)
     }
 }

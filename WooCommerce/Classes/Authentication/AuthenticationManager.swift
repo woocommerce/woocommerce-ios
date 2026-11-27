@@ -946,6 +946,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
+    @MainActor
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         if let wporg = credentials.wporg {
             stores.authenticate(

@@ -2,14 +2,14 @@ import Combine
 import Foundation
 import Networking
 import Storage
+import Synchronization
 
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
-    private let siteSynchronizationStateLock = NSLock()
-    private var siteSynchronizationsAreActive = true
+    private let siteSynchronizationState = SiteSynchronizationState()
 
     override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
@@ -71,9 +71,7 @@ public class AccountStore: Store {
 
     /// Prevents in-flight site synchronizations from updating storage after their session ends.
     public func cancelSiteSynchronizations() {
-        siteSynchronizationStateLock.lock()
-        siteSynchronizationsAreActive = false
-        siteSynchronizationStateLock.unlock()
+        siteSynchronizationState.cancel()
         let pendingCancellables = cancellables
         cancellables.removeAll()
         pendingCancellables.forEach { $0.cancel() }
@@ -87,14 +85,14 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
-    func synchronizeAccount(onCompletion: @escaping (Result<Account, Error>) -> Void) {
+    func synchronizeAccount(onCompletion: @escaping @MainActor @Sendable (Result<Account, Error>) -> Void) {
         remote.loadAccount { [weak self] result in
             if case let .success(account) = result {
                 self?.upsertStoredAccount(readOnlyAccount: account, onCompletion: {
                     onCompletion(result)
                 })
             } else {
-                onCompletion(result)
+                MainActor.assumeIsolated { onCompletion(result) }
             }
         }
     }
@@ -103,14 +101,14 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
     /// User ID is passed along because the API doesn't include it in the response.
     ///
-    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (Result<AccountSettings, Error>) -> Void) {
+    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<AccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(for: userID) { [weak self] result in
             if case let .success(accountSettings) = result {
                 self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings, onCompletion: {
                     onCompletion(result)
                 })
             } else {
-                onCompletion(result)
+                MainActor.assumeIsolated { onCompletion(result) }
             }
         }
     }
@@ -121,23 +119,26 @@ private extension AccountStore {
     func loadAndSynchronizeSite(siteID: Int64,
                                 forcedUpdate: Bool,
                                 shouldSynchronize: Bool,
-                                onCompletion: @escaping (Result<SiteLoadResult, Error>) -> Void) {
+                                onCompletion: @escaping @Sendable (Result<SiteLoadResult, Error>) -> Void) {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success((site: site, synchronizationResult: nil)))
         } else if shouldSynchronize == false {
             onCompletion(.failure(SynchronizeSiteError.unknownSite))
         } else {
-            synchronizeSites { [weak self] result in
-                guard let self, self.canApplySiteSynchronization else {
+            synchronizeSites { [weak siteSynchronizationState, storageManager] result in
+                guard siteSynchronizationState?.isActive == true else {
                     return onCompletion(.failure(CancellationError()))
                 }
+                if case let .failure(error) = result, error is CancellationError {
+                    return onCompletion(.failure(error))
+                }
                 guard case let .success(synchronizationResult) = result else {
-                    if let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
+                    if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
                         return onCompletion(.success((site: site, synchronizationResult: nil)))
                     }
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
                 }
-                guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+                guard let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 onCompletion(.success((site: site, synchronizationResult: synchronizationResult)))
@@ -146,34 +147,37 @@ private extension AccountStore {
     }
 
     func synchronizeSitesAndReturnSelectedSiteInfo(for siteAddress: String,
-                                                    onCompletion: @escaping (Result<SelectedSiteSynchronizationResult, Error>) -> Void) {
+                                                    onCompletion: @escaping @Sendable (Result<SelectedSiteSynchronizationResult, Error>) -> Void) {
         guard canApplySiteSynchronization else {
             return onCompletion(.failure(CancellationError()))
         }
-        let onCompletion = siteSynchronizationCompletion(onCompletion)
+        let request = SiteSynchronizationRequest(completion: onCompletion)
         remote.loadSites()
-            .handleEvents(receiveCancel: { onCompletion(.failure(CancellationError())) })
+            .handleEvents(receiveCancel: { [weak siteSynchronizationState] in
+                request.cancel(sessionIsActive: siteSynchronizationState?.isActive == true)
+            })
             .sink { [weak self] result in
                 switch result {
                 case .success(let sites):
                     guard let self, self.canApplySiteSynchronization else {
-                        return onCompletion(.failure(CancellationError()))
+                        return request.complete(.failure(CancellationError()))
                     }
                     guard let selectedSite = sites.first(where: { $0.url == siteAddress }) else {
-                        return onCompletion(.failure(NetworkError.notFound()))
+                        return request.complete(.failure(NetworkError.notFound()))
                     }
-                    self.upsertStoredSitesInBackground(readOnlySites: sites) { wasApplied in
-                        guard wasApplied, self.canApplySiteSynchronization else {
-                            return onCompletion(.failure(CancellationError()))
+                    guard request.beginPersistence() else { return }
+                    self.upsertStoredSitesInBackground(readOnlySites: sites) { [siteSynchronizationState = self.siteSynchronizationState] wasApplied in
+                        guard wasApplied, siteSynchronizationState.isActive else {
+                            return request.complete(.failure(CancellationError()))
                         }
                         let synchronizationResult = SiteSynchronizationResult(
                             containsJetpackConnectionPackageSites: sites.contains(where: { $0.isJetpackCPConnected }),
                             siteIDs: sites.map(\.siteID)
                         )
-                        onCompletion(.success((site: selectedSite, synchronizationResult: synchronizationResult)))
+                        request.complete(.success((site: selectedSite, synchronizationResult: synchronizationResult)))
                     }
                 case .failure(let error):
-                    onCompletion(.failure(error))
+                    request.complete(.failure(error))
                 }
             }
             .store(in: &cancellables)
@@ -181,11 +185,11 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
+    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping @Sendable (Result<SiteSynchronizationResult, Error>) -> Void) {
         guard canApplySiteSynchronization else {
             return onCompletion(.failure(CancellationError()))
         }
-        let onCompletion = siteSynchronizationCompletion(onCompletion)
+        let request = SiteSynchronizationRequest(completion: onCompletion)
         remote.loadSites()
             .flatMap { [weak self] result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
@@ -226,24 +230,28 @@ private extension AccountStore {
                     return Just<Result<[Site], Error>>(result).eraseToAnyPublisher()
                 }
             }
-            .handleEvents(receiveCancel: { onCompletion(.failure(CancellationError())) })
+            .handleEvents(receiveCancel: { [weak siteSynchronizationState] in
+                request.cancel(sessionIsActive: siteSynchronizationState?.isActive == true)
+            })
             .sink { [weak self] result in
                 switch result {
                 case .success(let sites):
                     guard let self, self.canApplySiteSynchronization else {
-                        return onCompletion(.failure(CancellationError()))
+                        return request.complete(.failure(CancellationError()))
                     }
                     let containsJCPSites = sites.contains(where: { $0.isJetpackCPConnected })
                     sites.forEach { self.persistHTTPSConfigurationRequirement(from: $0) }
+                    guard request.beginPersistence() else { return }
+                    let siteSynchronizationState = self.siteSynchronizationState
                     self.upsertStoredSitesInBackground(readOnlySites: sites, preservingSiteID: preservingSiteID) { wasApplied in
-                        guard wasApplied, self.canApplySiteSynchronization else {
-                            return onCompletion(.failure(CancellationError()))
+                        guard wasApplied, siteSynchronizationState.isActive else {
+                            return request.complete(.failure(CancellationError()))
                         }
-                        onCompletion(.success(.init(containsJetpackConnectionPackageSites: containsJCPSites,
+                        request.complete(.success(.init(containsJetpackConnectionPackageSites: containsJCPSites,
                                                     siteIDs: sites.map(\.siteID))))
                     }
                 case .failure(let error):
-                    onCompletion(.failure(error))
+                    request.complete(.failure(error))
                 }
             }.store(in: &cancellables)
     }
@@ -257,7 +265,7 @@ private extension AccountStore {
 
     /// Loads the site plan for the default site.
     ///
-    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         remote.loadSitePlan(for: siteID) { [weak self] result in
             switch result {
             case .success(let siteplan):
@@ -265,7 +273,7 @@ private extension AccountStore {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                MainActor.assumeIsolated { onCompletion(.failure(error)) }
             }
         }
     }
@@ -296,8 +304,8 @@ private extension AccountStore {
         remote.updateCrashReportingOptOut(optOut: optOut, completion: onCompletion)
     }
 
-    func loadNotificationSettings(deviceID: Int64, onCompletion: @escaping (Result<NotificationSettings, Error>) -> Void) {
-        Task {
+    func loadNotificationSettings(deviceID: Int64, onCompletion: @escaping @Sendable (Result<NotificationSettings, Error>) -> Void) {
+        Task { [remote] in
             do {
                 let settings = try await remote.loadNotificationSettings(deviceID: deviceID)
                 onCompletion(.success(settings))
@@ -307,8 +315,8 @@ private extension AccountStore {
         }
     }
 
-    func updateNotificationSettings(notificationSettings: NotificationSettings, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        Task {
+    func updateNotificationSettings(notificationSettings: NotificationSettings, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        Task { [remote] in
             do {
                 try await remote.updateNotificationSettings(with: notificationSettings)
                 onCompletion(.success(()))
@@ -318,8 +326,8 @@ private extension AccountStore {
         }
     }
 
-    func closeAccount(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        Task {
+    func closeAccount(onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        Task { [remote] in
             do {
                 try await remote.closeAccount()
                 onCompletion(.success(()))
@@ -337,40 +345,40 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Account Entity into the Storage Layer.
     ///
-    func upsertStoredAccount(readOnlyAccount: Networking.Account, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
+    func upsertStoredAccount(readOnlyAccount: Networking.Account, onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ storage in
             let storageAccount = storage.loadAccount(userID: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
             storageAccount.update(with: readOnlyAccount)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly AccountSettings Entity into the Storage Layer.
     ///
-    func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
+    func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings, onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ storage in
             let storageAccount = storage.loadAccountSettings(userID: readOnlyAccountSettings.userID) ??
             storage.insertNewObject(ofType: Storage.AccountSettings.self)
             storageAccount.update(with: readOnlyAccountSettings)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
-    func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ derivedStorage in
+    func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ derivedStorage in
             let storageSite = derivedStorage.loadSite(siteID: plan.siteID)
             storageSite?.plan = plan.shortName
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
     func upsertStoredSitesInBackground(readOnlySites: [Networking.Site],
                                       preservingSiteID: Int64? = nil,
-                                      onCompletion: @escaping (Bool) -> Void) {
-        storageManager.performAndSave({ [weak self] derivedStorage -> Bool in
-            guard self?.canApplySiteSynchronization == true else {
+                                      onCompletion: @escaping @Sendable (Bool) -> Void) {
+        storageManager.performAndSave({ [weak siteSynchronizationState] derivedStorage -> Bool in
+            guard siteSynchronizationState?.isActive == true else {
                 return false
             }
 
@@ -395,24 +403,67 @@ extension AccountStore {
 }
 
 private extension AccountStore {
-    /// Cancellation and a pending storage callback can both finish a synchronization.
-    /// Consume its completion once, invoking it outside the lock to allow reentrant actions.
-    func siteSynchronizationCompletion<T>(_ onCompletion: @escaping (Result<T, Error>) -> Void) -> (Result<T, Error>) -> Void {
-        let lock = NSLock()
-        var completion: ((Result<T, Error>) -> Void)? = onCompletion
-        return { result in
-            lock.lock()
-            let callback = completion
-            completion = nil
-            lock.unlock()
-            callback?(result)
+    var canApplySiteSynchronization: Bool {
+        siteSynchronizationState.isActive
+    }
+
+    func performAndSaveOnMain(_ operation: @escaping @Sendable (StorageType) -> Void,
+                              completion: @escaping @MainActor @Sendable () -> Void) {
+        storageManager.performAndSave(operation, completion: {
+            MainActor.assumeIsolated { completion() }
+        }, on: .main)
+    }
+}
+
+private final class SiteSynchronizationState: Sendable {
+    private let active = Mutex(true)
+
+    var isActive: Bool {
+        active.withLock { $0 }
+    }
+
+    func cancel() {
+        active.withLock { $0 = false }
+    }
+}
+
+private final class SiteSynchronizationRequest<Output: Sendable>: Sendable {
+    private typealias Completion = @Sendable (Result<Output, Error>) -> Void
+
+    private struct State {
+        var completion: Completion?
+        var persistencePending = false
+    }
+
+    private let state: Mutex<State>
+
+    init(completion: @escaping @Sendable (Result<Output, Error>) -> Void) {
+        state = Mutex(State(completion: completion))
+    }
+
+    func beginPersistence() -> Bool {
+        state.withLock {
+            guard $0.completion != nil else { return false }
+            $0.persistencePending = true
+            return true
         }
     }
 
-    var canApplySiteSynchronization: Bool {
-        siteSynchronizationStateLock.lock()
-        defer { siteSynchronizationStateLock.unlock() }
-        return siteSynchronizationsAreActive
+    func complete(_ result: Result<Output, Error>) {
+        takeCompletion()?(result)
+    }
+
+    func cancel(sessionIsActive: Bool) {
+        takeCompletion(allowPendingPersistence: !sessionIsActive)?(.failure(CancellationError()))
+    }
+
+    private func takeCompletion(allowPendingPersistence: Bool = true) -> Completion? {
+        state.withLock {
+            guard allowPendingPersistence || !$0.persistencePending else { return nil }
+            let completion = $0.completion
+            $0.completion = nil
+            return completion
+        }
     }
 }
 

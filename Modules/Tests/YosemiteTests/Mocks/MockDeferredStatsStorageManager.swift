@@ -23,11 +23,7 @@ final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
                         completion: (@Sendable () -> Void)?,
                         on queue: DispatchQueue) {
         let storageManager = storageManager
-        pendingWrite.withLock {
-            precondition($0 == nil, "Execute the pending write before queuing another")
-            $0 = { storageManager.performAndSave(operation, completion: completion, on: queue) }
-        }
-        onWriteQueued()
+        enqueueWrite { storageManager.performAndSave(operation, completion: completion, on: queue) }
     }
 
     func performPendingWrite() {
@@ -42,7 +38,16 @@ final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
     func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
                                      completion: @escaping @Sendable (Result<T, Error>) -> Void,
                                      on queue: DispatchQueue) {
-        storageManager.performAndSave(operation, completion: completion, on: queue)
+        let storageManager = storageManager
+        enqueueWrite { storageManager.performAndSave(operation, completion: completion, on: queue) }
+    }
+
+    private func enqueueWrite(_ write: @escaping @Sendable () -> Void) {
+        pendingWrite.withLock {
+            precondition($0 == nil, "Execute the pending write before queuing another")
+            $0 = write
+        }
+        onWriteQueued()
     }
 
     func reset(onCompletion: (@Sendable () -> Void)?) {

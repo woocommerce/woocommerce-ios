@@ -251,7 +251,7 @@ struct ItemListView: View {
                 itemsController: itemsController(itemListType),
                 node: .root,
                 itemActionHandler: actionHandler(itemListType),
-                onItemSelected: itemListType.isSearching ? dismissSearchKeyboardIfNeeded : nil,
+                onItemSelected: itemListType.isSearching ? { dismissSearchKeyboardIfNeeded() } : nil,
                 willLoadMore: {
                     analyticsTracker.trackNextPageWillLoad()
                 },

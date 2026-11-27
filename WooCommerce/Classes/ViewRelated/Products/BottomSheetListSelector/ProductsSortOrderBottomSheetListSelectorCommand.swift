@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-private extension ProductsSortOrder {
+extension ProductsSortOrder {
     /// Title shown on the action sheet.
     ///
     var actionSheetTitle: String {

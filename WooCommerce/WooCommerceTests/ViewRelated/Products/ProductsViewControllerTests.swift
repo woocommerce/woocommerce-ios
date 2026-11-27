@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import Testing
 import UIKit
 import Yosemite
@@ -28,6 +29,8 @@ struct ProductsViewControllerTests {
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
         let refreshControl = try attachedRefreshControl(in: table)
+        // Only the design-system header may add a child; the list itself stays in the table.
+        let hasOnlyHeaderChildren = { controller.children.allSatisfy { $0 is UIHostingController<StoreProductListRail> } }
         let showsEmptyState = {
             usesStoreDesignSystem ? table.tableFooterView is StoreOrderListFooterView : table.tableFooterView is ListEmptyView
         }
@@ -45,7 +48,8 @@ struct ProductsViewControllerTests {
         #expect((loadingCell is StoreProductListTableViewCell) == usesStoreDesignSystem)
         #expect((loadingCell is ProductsTabProductTableViewCell) != usesStoreDesignSystem)
         #expect(loadingCell.accessibilityIdentifier == nil)
-        #expect(controller.children.isEmpty)
+        #expect(hasOnlyHeaderChildren())
+        #expect(controller.children.count == (usesStoreDesignSystem ? 1 : 0))
 
         // When: the request fails
         let failSync = try #require(completeSync)
@@ -54,7 +58,7 @@ struct ProductsViewControllerTests {
         // Then: empty content stays in that table, with the same refresh control
         #expect((0..<table.numberOfSections).allSatisfy { table.numberOfRows(inSection: $0) == 0 })
         #expect(showsEmptyState())
-        #expect(controller.children.isEmpty)
+        #expect(hasOnlyHeaderChildren())
         #expect(refreshControl.superview === table)
 
         // When: retry completes with an empty result
@@ -95,6 +99,61 @@ struct ProductsViewControllerTests {
         #expect((cell is StoreProductListTableViewCell) == usesStoreDesignSystem)
         #expect((cell is ProductsTabProductTableViewCell) != usesStoreDesignSystem)
         #expect(cell.accessibilityIdentifier == "Shirt")
+    }
+
+    @Test
+    func test_filters_when_design_system_flag_is_on_then_header_shows_the_active_filter_count() throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: MockStorageManager(), siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in },
+                                                 usesStoreDesignSystem: true)
+        controller.loadViewIfNeeded()
+        let header = { try #require(controller.children.compactMap { $0 as? UIHostingController<StoreProductListRail> }.first).rootView }
+        #expect(try header().filterTitle == "Filter")
+        #expect(try header().hasActiveFilters == false)
+
+        // When
+        controller.viewModel.filters = FilterProductListViewModel.Filters(stockStatus: .outOfStock,
+                                                                          productStatus: nil,
+                                                                          promotableProductType: nil,
+                                                                          productCategory: nil,
+                                                                          favoriteProduct: nil,
+                                                                          numberOfActiveFilters: 1)
+
+        // Then: merchants see that a filter is narrowing the list
+        #expect(try header().filterTitle == "Filter (1)")
+        #expect(try header().hasActiveFilters)
+    }
+
+    @Test
+    func test_sort_order_when_design_system_flag_is_on_and_one_is_chosen_then_list_and_header_use_it() throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: MockStorageManager(), siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in },
+                                                 usesStoreDesignSystem: true)
+        controller.loadViewIfNeeded()
+        let header = { try #require(controller.children.compactMap { $0 as? UIHostingController<StoreProductListRail> }.first).rootView }
+        // `.nameAscending` is the default, so choosing it would not show a change.
+        try #require(controller.viewModel.sortOrder != .dateDescending)
+
+        // When
+        try header().onSortOrderSelected(.dateDescending)
+
+        // Then: the sheet's choice sorts the list and the header shows it
+        #expect(controller.viewModel.sortOrder == .dateDescending)
+        #expect(try header().sortOrder == .dateDescending)
     }
 
     @Test

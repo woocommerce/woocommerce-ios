@@ -44,6 +44,7 @@ final class ProductsViewController: UIViewController {
     private lazy var emptyStateView = ListEmptyView()
     private lazy var storeEmptyStateView = StoreOrderListFooterView(fillsAvailableHeight: true)
     private lazy var storeFooterSpinnerView = StoreOrderListFooterView()
+    private lazy var storeHeaderView = StoreProductListHeaderView(parent: self)
     let usesStoreDesignSystem: Bool
 
     /// Pull To Refresh Support.
@@ -863,9 +864,41 @@ private extension ProductsViewController {
     }
 
     private func setupToolbar() {
-        let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
+        toolbar.backgroundColor = toolbarBackgroundColor
+        if usesStoreDesignSystem {
+            storeHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            toolbar.addSubview(storeHeaderView)
+            // The horizontal safe area keeps the chips in line with the rows in landscape, like the legacy buttons.
+            NSLayoutConstraint.activate([
+                storeHeaderView.leadingAnchor.constraint(equalTo: toolbar.safeAreaLayoutGuide.leadingAnchor),
+                storeHeaderView.trailingAnchor.constraint(equalTo: toolbar.safeAreaLayoutGuide.trailingAnchor),
+                storeHeaderView.topAnchor.constraint(equalTo: toolbar.topAnchor),
+                storeHeaderView.bottomAnchor.constraint(equalTo: toolbar.bottomAnchor)
+            ])
+            updateStoreHeader(filters: viewModel.filters)
+        } else {
+            setupLegacyToolbarButtons()
+        }
+
+        if #available(iOS 26.0, *) {
+            toolbarHeightConstraint.isActive = false
+            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
+            toolbarBottomSeparator.backgroundColor = .clear
+        } else {
+            if usesStoreDesignSystem {
+                // The header sizes itself, so the fixed toolbar height would clip it at large text sizes.
+                toolbarHeightConstraint.isActive = false
+            }
+            // The Orders design-system header has no line under it; rows meet the header directly.
+            toolbarBottomSeparator.isHidden = usesStoreDesignSystem
+            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        }
+        toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
+    }
+
+    private func setupLegacyToolbarButtons() {
         let sortButton = UIButton(frame: .zero)
-        sortButton.setTitle(sortTitle, for: .normal)
+        sortButton.setTitle(Localization.sortButtonTitle, for: .normal)
         sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
@@ -889,17 +922,7 @@ private extension ProductsViewController {
             }
         }
 
-        toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
-
-        if #available(iOS 26.0, *) {
-            toolbarHeightConstraint.isActive = false
-            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
-            toolbarBottomSeparator.backgroundColor = .clear
-        } else {
-            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
-        }
-        toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
     }
 
     private func configureLiquidGlassHeaderOverlay() {
@@ -1550,9 +1573,7 @@ private extension ProductsViewController {
 
     @objc func sortButtonTapped(sender: UIButton) {
         ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
-        let title = NSLocalizedString("Sort by",
-                                      comment: "Message title for sort products action bottom sheet")
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.sortSheetTitle)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: viewModel.sortOrder) { [weak self] selectedSortOrder in
             self?.dismiss(animated: true, completion: nil)
             guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {
@@ -1775,6 +1796,13 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
+        guard !usesStoreDesignSystem else {
+            return updateStoreHeader(filters: filters)
+        }
+        filterButton.setTitle(filterTitle(filters: filters), for: .normal)
+    }
+
+    func filterTitle(filters: FilterProductListViewModel.Filters) -> String {
         let activeFilterCount = filters.numberOfActiveFilters
 
         let titleWithoutActiveFilters =
@@ -1782,10 +1810,25 @@ private extension ProductsViewController {
         let titleFormatWithActiveFilters =
             NSLocalizedString("Filter (%ld)", comment: "Title of the toolbar button to filter products with filters applied.")
 
-        let title = activeFilterCount > 0 ?
+        return activeFilterCount > 0 ?
             String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
+    }
 
-        filterButton.setTitle(title, for: .normal)
+    /// `$filters` emits before the new value is stored, so callers pass the filters to show.
+    func updateStoreHeader(filters: FilterProductListViewModel.Filters) {
+        storeHeaderView.configure(sortTitle: Localization.sortButtonTitle,
+                                  sortOrder: viewModel.sortOrder,
+                                  filterTitle: filterTitle(filters: filters),
+                                  hasActiveFilters: filters.numberOfActiveFilters > 0,
+                                  onSortTapped: {
+            ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
+        }, onSortOrderSelected: { [weak self] sortOrder in
+            guard let self else { return }
+            viewModel.sortOrder = sortOrder
+            updateStoreHeader(filters: viewModel.filters)
+        }, onFilter: { [weak self] in
+            self?.filterButtonTapped()
+        })
     }
 }
 
@@ -1833,6 +1876,8 @@ private extension ProductsViewController {
     }
 
     enum Localization {
+        static let sortButtonTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
+        static let sortSheetTitle = NSLocalizedString("Sort by", comment: "Message title for sort products action bottom sheet")
         static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
         static let bulkEditingNavBarButtonHint = NSLocalizedString(
             "Edit status or price for multiple products at once",

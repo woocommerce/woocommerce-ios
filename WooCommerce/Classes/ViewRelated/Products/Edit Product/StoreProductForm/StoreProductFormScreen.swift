@@ -2,7 +2,7 @@ import StoreDesignSystem
 import SwiftUI
 
 struct StoreProductFormScreen<PinnedContent: View>: View {
-    @Bindable private var store: StoreProductFormRendererStore
+    private let store: StoreProductFormRendererStore
     @FocusState private var isNameFocused: Bool
     private let pinnedContent: PinnedContent
 
@@ -95,7 +95,7 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
         Group {
             if isEditable {
                 TextField(Localization.namePlaceholder,
-                          text: $store.productName,
+                          text: productNameInput,
                           prompt: Text(Localization.namePlaceholder).foregroundStyle(Color.storeOnSurfaceVariant),
                           axis: .vertical)
                     .tint(Color.storePrimary)
@@ -109,6 +109,20 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
         }
         .modifier(NameStyle())
         .accessibilityIdentifier("product-title")
+    }
+
+    private var productNameInput: Binding<String> {
+        Binding(get: { store.productName }, set: { name in
+            // A vertical TextField can deliver Return as a newline through its binding.
+            if name.contains(where: \.isNewline) {
+                let insertions = name.difference(from: store.productName).insertions
+                if insertions.count == 1, case .insert(_, let character, _) = insertions[0], character.isNewline {
+                    isNameFocused = false
+                    return
+                }
+            }
+            store.productName = name
+        })
     }
 
     private func readOnlyName(_ name: String) -> some View {

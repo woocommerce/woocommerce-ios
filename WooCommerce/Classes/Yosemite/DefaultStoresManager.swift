@@ -20,8 +20,6 @@ class DefaultStoresManager: StoresManager {
 
     typealias WordPressComSiteInfoFetcher = (String, @escaping (Result<WordPressComSiteInfo, Error>) -> Void) -> Void
 
-    private let callbackOwner = MainActorWeakReference<DefaultStoresManager>()
-
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
@@ -195,7 +193,6 @@ class DefaultStoresManager: StoresManager {
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.grdbManagerProvider = grdbManagerProvider
         self.wordPressComSiteInfoFetcher = wordPressComSiteInfoFetcher
-        callbackOwner.bindDuringInitialization(self)
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -221,22 +218,23 @@ class DefaultStoresManager: StoresManager {
             return state.onAction(action)
         }
 
-        let callbackOwner = callbackOwner
+        // StoresManager.dispatch is nonisolated until WOOMOB-4186; Dispatcher calls run on main.
+        nonisolated(unsafe) let manager = self
         switch accountAction {
         case let .loadAndSynchronizeSite(siteID, forcedUpdate, shouldSynchronize, onCompletion):
             MainActor.assumeIsolated {
-                callbackOwner.value?.loadAndSynchronizeSite(siteID: siteID,
-                                       forcedUpdate: forcedUpdate,
-                                       shouldSynchronize: shouldSynchronize,
-                                       onCompletion: onCompletion)
+                manager.loadAndSynchronizeSite(siteID: siteID,
+                                               forcedUpdate: forcedUpdate,
+                                               shouldSynchronize: shouldSynchronize,
+                                               onCompletion: onCompletion)
             }
         case let .synchronizeSites(siteIDToPreserve, onCompletion):
             MainActor.assumeIsolated {
-                callbackOwner.value?.synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
+                manager.synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
             }
         case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
             MainActor.assumeIsolated {
-                callbackOwner.value?.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
+                manager.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
             }
         default:
             state.onAction(action)
@@ -388,9 +386,9 @@ class DefaultStoresManager: StoresManager {
     func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)? = nil) -> StoresManager {
         let selectedSiteID = preservingSelectedSite ? sessionManager.defaultStoreID : nil
         let group = DispatchGroup()
-        let callbackOwner = callbackOwner
+        // StoresManager declares no isolation until WOOMOB-4186; this runs on main.
+        nonisolated(unsafe) let manager = self
         MainActor.assumeIsolated {
-            guard let manager = callbackOwner.value else { return }
             group.enter()
             manager.synchronizeAccount { [weak manager] _ in
                 group.enter()
@@ -1169,10 +1167,11 @@ private extension DefaultStoresManager {
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
     func restoreJetpackSiteAndSynchronizeIfNeeded(with siteID: Int64) {
-        let callbackOwner = callbackOwner
-        guard let handleResult = MainActor.assumeIsolated({
-            callbackOwner.value?.makeRestoreJetpackSiteCompletion(siteID: siteID)
-        }) else { return }
+        // StoresManager declares no isolation until WOOMOB-4186; this runs on main.
+        nonisolated(unsafe) let manager = self
+        let handleResult = MainActor.assumeIsolated {
+            manager.makeRestoreJetpackSiteCompletion(siteID: siteID)
+        }
         dispatch(AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { result in
             guard case .success = result else { return }
             runOnMainActor { handleResult(result) }
@@ -1335,26 +1334,6 @@ protocol StoresManagerState {
 //
 enum StoresManagerError: Error {
     case missingDefaultSite
-}
-
-@MainActor
-final class MainActorWeakReference<Owner: AnyObject> {
-    // Legacy constructors bind the weak reference once before publishing the owner.
-    nonisolated(unsafe) private weak var reference: Owner?
-
-    nonisolated init() {}
-
-    nonisolated func bindDuringInitialization(_ owner: Owner) {
-        reference = owner
-    }
-
-    var value: Owner? {
-        reference
-    }
-
-    nonisolated var isAlive: Bool {
-        reference != nil
-    }
 }
 
 func runOnMainActor(_ operation: @escaping @MainActor @Sendable () -> Void) {

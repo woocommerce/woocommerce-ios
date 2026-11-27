@@ -137,7 +137,6 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
-    private let callbackOwner = MainActorWeakReference<PushNotificationsManager>()
     private let analytics: Analytics
     private let storageManager: StorageManagerType
 
@@ -185,7 +184,6 @@ final class PushNotificationsManager: PushNotesManager {
             featureFlagService: featureFlagService,
             stores: configuration.storesManager
         )
-        callbackOwner.bindDuringInitialization(self)
         observeLoggedInStateForSelfDrivenPushEligibility()
     }
 }
@@ -528,9 +526,11 @@ extension PushNotificationsManager {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
-            registerForWPComPushNotificationsIfPossible { [callbackOwner] deviceID in
+            // PushNotesManager declares no isolation yet; remove with WOOMOB-4073.
+            nonisolated(unsafe) weak let manager = self
+            registerForWPComPushNotificationsIfPossible { deviceID in
                 MainActor.assumeIsolated {
-                    guard let manager = callbackOwner.value else { return }
+                    guard let manager else { return }
                     manager.enableWPComPushNotifications(siteIDs: fallbackSites, deviceID: deviceID) { success in
                         if success {
                             manager.deleteWooPushRegistrations(for: fallbackSites)
@@ -980,9 +980,9 @@ private extension PushNotificationsManager {
             return
         }
         let deviceID = registrationState.deviceID
-        let callbackOwner = callbackOwner
+        // PushNotesManager declares no isolation yet; remove with WOOMOB-4073.
+        nonisolated(unsafe) let manager = self
         MainActor.assumeIsolated {
-            guard let manager = callbackOwner.value else { return }
             manager.enableWPComPushNotifications(siteIDs: [siteID], deviceID: deviceID) { [weak manager] enabled in
                 guard enabled, let manager,
                       manager.stores.isAuthenticated,
@@ -1261,8 +1261,10 @@ private extension PushNotificationsManager {
             ])
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)
-        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [analytics, callbackOwner] result in
-            guard callbackOwner.isAlive else { return }
+        // Lifetime-only reference; remove with WOOMOB-4073.
+        nonisolated(unsafe) weak let manager = self
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [analytics] result in
+            guard manager != nil else { return }
             switch result {
             case .success:
                 analytics.track(.wpcomDeviceDisablePushNotificationsSuccess)

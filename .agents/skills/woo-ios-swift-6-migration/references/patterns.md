@@ -77,6 +77,8 @@ Do not use `DispatchQueue.main.sync` from an initializer that can run inside a l
 
 Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.assumeIsolated` only if the framework guarantees main-actor delivery and the body accesses UI state. Test the callback path. A documented main-queue notification callback can meet these conditions. For app-owned protocols, declare isolation that the compiler checks. An `assumeIsolated` wrapper reached from a nonisolated requirement can add a `sending` warning for each captured value. In one uploader, the count went from 7 to 14.
 
+If a nonisolated requirement on the main thread must call main-actor methods on its non-`Sendable` owner before the owner can be isolated, alias the owner in a local `nonisolated(unsafe) let manager = self`. Capture the alias in the `assumeIsolated` closure. Use `weak let` only where the original code captured `[weak self]`. Comment on the missing contract and the issue that removes it. Do not add a wrapper type that holds the owner. The wrapper still needs unsafe storage and adds an initialization-order rule. It also hides each unchecked use from reviewers. See `StatsStoreV4` (#18148) and `DefaultStoresManager` (WOOMOB-4175).
+
 When a remote strengthens a completion to `@MainActor @Sendable`, propagate `@Sendable` through action cases and forwarding helpers. A declaration-level `@preconcurrency` annotation does not suppress the complete-checking warning when a Swift 5 caller forwards a non-`Sendable` closure. Keep the main-actor annotation at the delivery boundary; upstream layers that only forward the closure do not need to become main-actor isolated.
 
 ## Test fixtures and mocks

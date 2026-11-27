@@ -78,3 +78,15 @@ final class StoreProductListTableViewCell: UITableViewCell {
         .margins(.all, 0)
     }
 }
+
+extension StoreProductListTableViewCell: @MainActor SearchResultCell {
+    typealias SearchModel = ProductsTabProductViewModel
+
+    static func register(for tableView: UITableView) {
+        tableView.register(self)
+    }
+
+    func configureCell(searchModel: ProductsTabProductViewModel) {
+        configure(viewModel: searchModel, showsDivider: true, isChecked: nil)
+    }
+}

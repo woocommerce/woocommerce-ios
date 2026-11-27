@@ -358,6 +358,64 @@ struct ProductsSplitViewCoordinatorTests {
         let list = try #require(primaryNavigationController.topViewController as? ProductsViewController)
         #expect(list.usesStoreDesignSystem == isFlagOn)
     }
+
+    @Test(arguments: [true, false])
+    func test_search_then_shows_the_search_cell_that_matches_the_storeDesignSystem_flag(isFlagOn: Bool) throws {
+        // Given: flag off must keep the shipped legacy search cell
+        let featureFlagService = makeFeatureFlagService(usesStoreDesignSystem: isFlagOn)
+        let (_, primaryNavigationController, _) = try makeSUT(featureFlagService: featureFlagService)
+        let list = try #require(primaryNavigationController.topViewController)
+        list.loadViewIfNeeded()
+        let searchButton = try #require(list.navigationItem.rightBarButtonItems?.first { $0.accessibilityIdentifier == "product-search-button" })
+
+        // When
+        UIApplication.shared.sendAction(try #require(searchButton.action), to: searchButton.target, from: searchButton, for: nil)
+
+        // Then
+        let search = primaryNavigationController.topViewController
+        #expect((search is SearchViewController<StoreProductListTableViewCell, ProductSearchUICommand>) == isFlagOn)
+        #expect((search is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>) == !isFlagOn)
+    }
+
+    @Test(arguments: [true, false])
+    func test_navigationController_willShow_and_didShow_productSearch_in_either_design_then_hides_primary_navigation_bar(
+        usesStoreDesignSystem: Bool
+    ) throws {
+        // Given: the coordinator must recognise product search with either list design's cell
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: CollapsedSplitViewController(style: .doubleColumn))
+        let command = ProductSearchUICommand(siteID: 123, onProductSelection: { _ in }, onCancel: {})
+        let searchViewController: UIViewController = usesStoreDesignSystem
+            ? SearchViewController(storeID: 123, command: command, cellType: StoreProductListTableViewCell.self, cellSeparator: .none)
+            : SearchViewController(storeID: 123, command: command, cellType: ProductsTabProductTableViewCell.self, cellSeparator: .none)
+        primaryNavigationController.setViewControllers([searchViewController], animated: false)
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.navigationController(primaryNavigationController, willShow: searchViewController, animated: false)
+        sut.navigationController(primaryNavigationController, didShow: searchViewController, animated: false)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden)
+        #expect(primaryNavigationController.navigationBar.isHidden)
+    }
+
+    @Test
+    func test_navigationController_didShow_when_UIKit_passes_a_null_view_controller_in_collapsed_layout_with_content_then_does_not_crash() throws {
+        // Given: content shown, then collapsed, as when deleting a product on iPad
+        let splitViewController = CollapsibleSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        sut.didExpand()
+        splitViewController.stubbedIsCollapsed = true
+        // UIKit passes null to `didShow` after `removeAllContent`, though Swift types it as non-optional.
+        let nullViewController = unsafeBitCast(0, to: UIViewController.self)
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.navigationController(primaryNavigationController, didShow: nullViewController, animated: true)
+
+        // Then
+        #expect(primaryNavigationController.navigationBar.isHidden == false)
+    }
 }
 
 private extension ProductsSplitViewCoordinatorTests {
@@ -383,6 +441,11 @@ private extension ProductsSplitViewCoordinatorTests {
 
 private final class CollapsedSplitViewController: UISplitViewController {
     override var isCollapsed: Bool { true }
+}
+
+private final class CollapsibleSplitViewController: UISplitViewController {
+    var stubbedIsCollapsed = false
+    override var isCollapsed: Bool { stubbedIsCollapsed }
 }
 
 private final class MockInteractiveTransitionCoordinator: NSObject, UIViewControllerTransitionCoordinator {

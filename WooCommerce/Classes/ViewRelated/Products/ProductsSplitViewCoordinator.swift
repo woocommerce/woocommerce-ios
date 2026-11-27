@@ -175,14 +175,25 @@ private extension ProductsSplitViewCoordinator {
                 }, onCancel: { [weak self] in
                     self?.cancelProductSearch()
                 })
-                let searchViewController = SearchViewController(storeID: siteID,
+                let isSelectedObject: (StorageProduct, Product?) -> Bool = { $0.productID == $1?.productID }
+                let searchViewController: UIViewController
+                if featureFlagService.usesStoreDesignSystem {
+                    searchViewController = SearchViewController(storeID: siteID,
+                                                                command: searchCommand,
+                                                                cellType: StoreProductListTableViewCell.self,
+                                                                cellSeparator: .none,
+                                                                selectedObject: selectedProduct,
+                                                                isSelectedObject: isSelectedObject,
+                                                                featureFlagService: featureFlagService)
+                } else {
+                    searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,
                                                                 cellType: ProductsTabProductTableViewCell.self,
                                                                 cellSeparator: .none,
                                                                 selectedObject: selectedProduct,
-                                                                isSelectedObject: {
-                    $0.productID == $1?.productID
-                })
+                                                                isSelectedObject: isSelectedObject,
+                                                                featureFlagService: featureFlagService)
+                }
                 primaryNavigationController.viewControllers = [searchViewController]
         }
     }
@@ -325,6 +336,8 @@ private extension ProductsSplitViewCoordinator {
             case let productsViewController as ProductsViewController:
                 productsViewController.selectFirstProductIfAvailable()
             case let productSearchViewController as SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>:
+                productSearchViewController.selectFirstObjectIfAvailable()
+            case let productSearchViewController as SearchViewController<StoreProductListTableViewCell, ProductSearchUICommand>:
                 productSearchViewController.selectFirstObjectIfAvailable()
             case let .some(viewController):
                 assertionFailure("Unexpected type for the products tab primary view controller: \(viewController)")
@@ -506,7 +519,7 @@ private extension ProductsSplitViewCoordinator {
         guard navigationController == primaryNavigationController else {
             return
         }
-        let isShowingProductSearch = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        let isShowingProductSearch = isProductSearch(viewController)
 
         // UIKit does not scrub a navigation-bar visibility animation with an interactive pop. Starting that animation in
         // `willShow` can therefore leave the product detail bar visible briefly after the swipe finishes. Wait until UIKit
@@ -533,7 +546,7 @@ private extension ProductsSplitViewCoordinator {
         guard navigationController == primaryNavigationController else {
             return
         }
-        let shouldHideNavigationBar = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        let shouldHideNavigationBar = isProductSearch(viewController)
         guard primaryNavigationController.navigationBar.isHidden != shouldHideNavigationBar else {
             return
         }
@@ -554,7 +567,7 @@ private extension ProductsSplitViewCoordinator {
                                                                                     didShow viewController: UIViewController,
                                                                                     animated: Bool) -> Bool {
         let isNavigatingToProductList = viewController == productsViewController ||
-        viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        isProductSearch(viewController)
         return animated && splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
     }
@@ -574,9 +587,16 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func isShowingProductListInPrimaryNavigationController() -> Bool {
-        let viewController = primaryNavigationController.topViewController
-        return viewController == productsViewController ||
-            viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        guard let viewController = primaryNavigationController.topViewController else {
+            return false
+        }
+        return viewController == productsViewController || isProductSearch(viewController)
+    }
+
+    // UIKit can pass null to the delegate; concrete class casts tolerate it, protocol casts crash.
+    func isProductSearch(_ viewController: UIViewController) -> Bool {
+        viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand> ||
+            viewController is SearchViewController<StoreProductListTableViewCell, ProductSearchUICommand>
     }
 
     func productShownInSecondaryContent() -> Product? {

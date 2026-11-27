@@ -63,7 +63,7 @@ final class MediaImageExporter: MediaExporter {
         self.imageSourceWriter = imageSourceWriter
     }
 
-    func export() throws -> UploadableMedia {
+    nonisolated func export() throws -> UploadableMedia {
         try exportImage(data: data, fileName: filename, altText: altText, typeHint: typeHint)
     }
 

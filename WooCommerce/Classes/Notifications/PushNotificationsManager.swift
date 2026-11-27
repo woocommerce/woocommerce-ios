@@ -526,11 +526,15 @@ extension PushNotificationsManager {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
-            registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
-                guard let self else { return }
-                self.enableWPComPushNotifications(siteIDs: fallbackSites, deviceID: deviceID) { success in
-                    if success {
-                        self.deleteWooPushRegistrations(for: fallbackSites)
+            // PushNotesManager declares no isolation yet; remove with WOOMOB-4073.
+            nonisolated(unsafe) weak let manager = self
+            registerForWPComPushNotificationsIfPossible { deviceID in
+                MainActor.assumeIsolated {
+                    guard let manager else { return }
+                    manager.enableWPComPushNotifications(siteIDs: fallbackSites, deviceID: deviceID) { success in
+                        if success {
+                            manager.deleteWooPushRegistrations(for: fallbackSites)
+                        }
                     }
                 }
             }
@@ -975,13 +979,18 @@ private extension PushNotificationsManager {
         guard hasFallback else {
             return
         }
-        enableWPComPushNotifications(siteIDs: [siteID], deviceID: registrationState.deviceID) { [weak self] enabled in
-            guard enabled, let self,
-                  self.stores.isAuthenticated,
-                  self.registrationState.deviceToken == deviceToken else {
-                return
+        let deviceID = registrationState.deviceID
+        // PushNotesManager declares no isolation yet; remove with WOOMOB-4073.
+        nonisolated(unsafe) let manager = self
+        MainActor.assumeIsolated {
+            manager.enableWPComPushNotifications(siteIDs: [siteID], deviceID: deviceID) { [weak manager] enabled in
+                guard enabled, let manager,
+                      manager.stores.isAuthenticated,
+                      manager.registrationState.deviceToken == deviceToken else {
+                    return
+                }
+                manager.scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRefreshInterval)
             }
-            self.scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRefreshInterval)
         }
     }
 
@@ -1252,8 +1261,10 @@ private extension PushNotificationsManager {
             ])
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)
-        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
-            guard let self else { return }
+        // Lifetime-only reference; remove with WOOMOB-4073.
+        nonisolated(unsafe) weak let manager = self
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [analytics] result in
+            guard manager != nil else { return }
             switch result {
             case .success:
                 analytics.track(.wpcomDeviceDisablePushNotificationsSuccess)
@@ -1269,7 +1280,8 @@ private extension PushNotificationsManager {
     /// - Note: re-enables both `newComment` and `storeOrder` — any custom WPCom preference was
     ///   already lost when we disabled them on Woo registration.
     ///
-    func enableWPComPushNotifications(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Bool) -> Void) {
+    @MainActor
+    func enableWPComPushNotifications(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping @MainActor @Sendable (Bool) -> Void) {
         guard let deviceID, let deviceIDInt = Int64(deviceID),
               siteIDs.isNotEmpty,
               !configuration.storesManager.isAuthenticatedWithoutWPCom else {
@@ -1281,26 +1293,27 @@ private extension PushNotificationsManager {
             ])
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)
-        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
-            // `AccountStore` invokes this completion off the main thread; hop back before touching
-            // state and dispatching the follow-up teardown action (the Dispatcher is main-thread only).
-            let handleResult = {
-                guard let self else { return onCompletion(false) }
-                switch result {
-                case .success:
-                    self.analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
-                    onCompletion(true)
-                case .failure(let error):
-                    self.analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
-                    onCompletion(false)
-                }
+        let handleResult = makeWPComPushNotificationCompletion(onCompletion: onCompletion)
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings) { result in
+            runOnMainActor { handleResult(result) }
+        })
+    }
+
+    @MainActor
+    private func makeWPComPushNotificationCompletion(
+        onCompletion: @escaping @MainActor @Sendable (Bool) -> Void
+    ) -> @MainActor @Sendable (Result<Void, Error>) -> Void {
+        { [weak self] result in
+            guard let self else { return onCompletion(false) }
+            switch result {
+            case .success:
+                self.analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
+                onCompletion(true)
+            case .failure(let error):
+                self.analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
+                onCompletion(false)
             }
-            if Thread.isMainThread {
-                handleResult()
-            } else {
-                DispatchQueue.main.async(execute: handleResult)
-            }
-        }))
+        }
     }
 
     /// Deletes the store-side Woo push token records for the given sites, unmarking each site

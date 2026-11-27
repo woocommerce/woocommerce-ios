@@ -141,7 +141,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
 // MARK: - Private helpers
 private extension NoWooErrorViewModel {
     func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
-        let action = AccountAction.synchronizeSites { [weak self] _ in
+        let handleResult: @MainActor @Sendable () -> Void = { [weak self] in
             guard let self else { return }
 
             let matcher = ULAccountMatcher()
@@ -163,7 +163,9 @@ private extension NoWooErrorViewModel {
             viewController.navigationController?.dismiss(animated: true)
             self.setupCompletionHandler(site.siteID)
         }
-        stores.dispatch(action)
+        stores.dispatch(AccountAction.synchronizeSites { _ in
+            runOnMainActor { handleResult() }
+        })
     }
 
     func showInProgressView(in viewController: UIViewController) {

@@ -39,7 +39,11 @@ final class ProductsViewController: UIViewController {
     // Match UITableView's installed rows even while refresh updates change the backing store.
     private var presentedProducts: [ProductListItem] = []
     private var isShowingLoadingRows = false
+    // UIKit also sets `tableView.isEditing` while a row is swiped open, so select mode is tracked separately.
+    private var isSelectingProducts = false
     private lazy var emptyStateView = ListEmptyView()
+    private lazy var storeEmptyStateView = StoreOrderListFooterView(fillsAvailableHeight: true)
+    private lazy var storeFooterSpinnerView = StoreOrderListFooterView()
     let usesStoreDesignSystem: Bool
 
     /// Pull To Refresh Support.
@@ -134,7 +138,7 @@ final class ProductsViewController: UIViewController {
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
-    private var topBannerView: TopBannerView?
+    private var topBannerView: UIView?
 
     private var selectedProductListener: EntityListener<Product>?
 
@@ -462,7 +466,9 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     @objc func startBulkEditing() {
+        isSelectingProducts = true
         tableView.setEditing(true, animated: true)
+        reloadRowsForCheckboxesIfNeeded()
 
         // Disable pull-to-refresh while editing
         uninstallRefreshControl()
@@ -477,7 +483,9 @@ private extension ProductsViewController {
         }
 
         viewModel.deselectAll()
+        isSelectingProducts = false
         tableView.setEditing(false, animated: true)
+        reloadRowsForCheckboxesIfNeeded()
         onTableViewEditingEnd.send(())
 
         bulkEditButton.isEnabled = false
@@ -492,6 +500,12 @@ private extension ProductsViewController {
     func updatedSelectedItems() {
         updateNavigationBarTitleForEditing()
         bulkEditButton.isEnabled = viewModel.bulkEditActionIsEnabled
+    }
+
+    /// Design-system cells draw their own checkbox; rows prepared off screen need the redraw too.
+    func reloadRowsForCheckboxesIfNeeded() {
+        guard usesStoreDesignSystem else { return }
+        tableView.reloadData()
     }
 
     @objc func selectAllProducts() {
@@ -748,10 +762,20 @@ private extension ProductsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.backgroundColor = usesStoreDesignSystem ? UIColor(Color.storeSurface) : .listBackground
-        tableView.tableFooterView = footerSpinnerView
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: false))
+            storeFooterSpinnerView.show(in: tableView)
+        } else {
+            tableView.tableFooterView = footerSpinnerView
+        }
         tableView.separatorStyle = .none
 
-        tableView.allowsMultipleSelectionDuringEditing = true
+        if usesStoreDesignSystem {
+            // The view model owns the checked products, so taps in select mode only toggle them.
+            tableView.allowsSelectionDuringEditing = true
+        } else {
+            tableView.allowsMultipleSelectionDuringEditing = true
+        }
         tableView.accessibilityIdentifier = "products-table-view"
 
         installRefreshControl()
@@ -1071,22 +1095,27 @@ private extension ProductsViewController {
     /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
     ///
     func requestAndShowErrorTopBannerView(for error: Error) {
-        let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
-            expandedStateChangeHandler: { [weak self] in
-                self?.view.setNeedsLayout()
-            },
-            onTroubleshootButtonPressed: { [weak self] in
-                guard let self else { return }
-
-                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
-            },
-            onContactSupportButtonPressed: { [weak self] in
-                guard let self else { return }
-                let supportForm = SupportFormHostingController(
-                    viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
-                )
-                supportForm.show(from: self)
+        let errorBanner: UIView
+        if usesStoreDesignSystem {
+            errorBanner = StoreProductListErrorBannerView(error: error, onExpandedStateChange: { [weak self] in
+                self?.updateTableHeaderViewHeight()
+            }, onTroubleshoot: { [weak self] in
+                self?.showTroubleshooting(for: error)
+            }, onContactSupport: { [weak self] in
+                self?.showSupportForm()
             })
+        } else {
+            errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
+                expandedStateChangeHandler: { [weak self] in
+                    self?.view.setNeedsLayout()
+                },
+                onTroubleshootButtonPressed: { [weak self] in
+                    self?.showTroubleshooting(for: error)
+                },
+                onContactSupportButtonPressed: { [weak self] in
+                    self?.showSupportForm()
+                })
+        }
         // Resolve the new banner's initial layout without animating its content from zero-sized frames.
         UIView.performWithoutAnimation {
             topBannerContainerView.updateSubview(errorBanner)
@@ -1094,6 +1123,17 @@ private extension ProductsViewController {
             updateTableHeaderViewHeight()
             tableView.tableHeaderView?.layoutIfNeeded()
         }
+    }
+
+    func showTroubleshooting(for error: Error) {
+        WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+    }
+
+    func showSupportForm() {
+        let supportForm = SupportFormHostingController(
+            viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+        )
+        supportForm.show(from: self)
     }
 
     func hideTopBannerView() {
@@ -1184,6 +1224,8 @@ private extension ProductsViewController {
             .map { $0.0 }
             .sink { [weak self] selectedProduct in
                 guard let self, !isShowingLoadingRows else { return }
+                // A table selection would tint the open product's row as if checked; leaving select mode restores it.
+                guard !(usesStoreDesignSystem && isSelectingProducts) else { return }
 
                 refreshUpdates.perform {
                     defer {
@@ -1307,8 +1349,11 @@ extension ProductsViewController: UITableViewDataSource {
                                                     isPriceShown: true)
         if usesStoreDesignSystem {
             let cell = tableView.dequeueReusableCell(StoreProductListTableViewCell.self, for: indexPath)
+            let isChecked: Bool? = isSelectingProducts
+                ? presentedProduct(at: indexPath).map { self.viewModel.productIsSelected($0) } ?? false
+                : nil
             // Every page change reloads all rows, so the previous last row regains its divider.
-            cell.configure(viewModel: viewModel, showsDivider: indexPath.row < presentedProducts.count - 1, isChecked: nil)
+            cell.configure(viewModel: viewModel, showsDivider: indexPath.row < presentedProducts.count - 1, isChecked: isChecked)
             return cell
         }
 
@@ -1336,6 +1381,15 @@ extension ProductsViewController: UITableViewDelegate {
         }
     }
 
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        // Design-system cells draw their own checkbox instead of the system selection circle.
+        usesStoreDesignSystem ? .none : .delete
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        !usesStoreDesignSystem
+    }
+
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Constants.estimatedRowHeight
     }
@@ -1355,7 +1409,15 @@ extension ProductsViewController: UITableViewDelegate {
             return
         }
 
-        if tableView.isEditing {
+        if isSelectingProducts, usesStoreDesignSystem {
+            if viewModel.productIsSelected(product) {
+                viewModel.deselectProduct(product)
+            } else {
+                viewModel.selectProduct(product)
+            }
+            updatedSelectedItems()
+            tableView.reloadRows(at: [indexPath], with: .none)
+        } else if tableView.isEditing, !usesStoreDesignSystem {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
@@ -1368,7 +1430,8 @@ extension ProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard !isShowingLoadingRows else { return }
-        guard tableView.isEditing else {
+        // Design-system select mode toggles on tap, so implicit single-selection deselects must not uncheck.
+        guard tableView.isEditing, !usesStoreDesignSystem else {
             return
         }
 
@@ -1395,7 +1458,7 @@ extension ProductsViewController: UITableViewDelegate {
         estimatedRowHeights[indexPath] = cell.frame.height
 
         // Restore cell selection state
-        if tableView.isEditing {
+        if tableView.isEditing, !usesStoreDesignSystem {
             guard let product = presentedProduct(at: indexPath) else {
                 return
             }
@@ -1535,7 +1598,11 @@ private extension ProductsViewController {
     func displayEmptyState() {
         guard !isShowingLoadingRows else { return }
         configureEmptyStateView()
-        emptyStateView.show(in: tableView)
+        if usesStoreDesignSystem {
+            storeEmptyStateView.show(in: tableView)
+        } else {
+            emptyStateView.show(in: tableView)
+        }
     }
 
     func configureEmptyStateView() {
@@ -1555,6 +1622,20 @@ private extension ProductsViewController {
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
+        if usesStoreDesignSystem {
+            storeEmptyStateView.setContent(StoreOrderListEmptyView(title: message,
+                                                                   titleIsStrong: true,
+                                                                   emphasizedTitle: nil,
+                                                                   details: details,
+                                                                   image: .productBlouseImage,
+                                                                   actionTitle: buttonTitle,
+                                                                   action: { [weak self] in
+                guard let self else { return }
+                // The SwiftUI button has no UIView, so the iPad popover anchors to the navigation bar's add button.
+                addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: true)
+            }))
+            return
+        }
         emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
@@ -1572,6 +1653,18 @@ private extension ProductsViewController {
                                         comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
         let buttonTitle = NSLocalizedString("Clear Filters",
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
+        if usesStoreDesignSystem {
+            storeEmptyStateView.setContent(StoreOrderListEmptyView(title: message,
+                                                                   titleIsStrong: false,
+                                                                   emphasizedTitle: nil,
+                                                                   details: nil,
+                                                                   image: .productBlouseImage,
+                                                                   actionTitle: buttonTitle,
+                                                                   action: { [weak self] in
+                self?.clearFilter()
+            }))
+            return
+        }
         emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
@@ -1583,11 +1676,16 @@ private extension ProductsViewController {
     }
 
     func updateEmptyStateHeight() {
-        emptyStateView.updateHeight(in: tableView)
+        if usesStoreDesignSystem {
+            storeEmptyStateView.updateHeight(in: tableView)
+        } else {
+            emptyStateView.updateHeight(in: tableView)
+        }
     }
 
     func removeEmptyState() {
-        if tableView.tableFooterView === emptyStateView {
+        let shownEmptyStateView: UIView = usesStoreDesignSystem ? storeEmptyStateView : emptyStateView
+        if tableView.tableFooterView === shownEmptyStateView {
             tableView.tableFooterView = footerEmptyView
         }
     }
@@ -1698,6 +1796,11 @@ private extension ProductsViewController {
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
     func ensureFooterSpinnerIsStarted() {
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: true))
+            storeFooterSpinnerView.show(in: tableView)
+            return
+        }
         tableView.tableFooterView = footerSpinnerView
         footerSpinnerView.startAnimating()
     }
@@ -1705,7 +1808,11 @@ private extension ProductsViewController {
     /// Stops animating the Footer Spinner.
     ///
     private func ensureFooterSpinnerIsStopped() {
-        footerSpinnerView.stopAnimating()
+        if usesStoreDesignSystem {
+            storeFooterSpinnerView.setContent(StoreOrderListProgressView(isAnimating: false))
+        } else {
+            footerSpinnerView.stopAnimating()
+        }
         tableView.tableFooterView = footerEmptyView
     }
 }

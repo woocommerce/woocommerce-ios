@@ -8,8 +8,8 @@ import YosemiteTestHelpers
 @MainActor
 @Suite(.serialized)
 struct ProductsViewControllerTests {
-    @Test
-    func test_sync_when_loading_fails_and_retries_then_keeps_content_in_the_main_table() throws {
+    @Test(arguments: [false, true])
+    func test_sync_when_loading_fails_and_retries_then_keeps_content_in_the_main_table(usesStoreDesignSystem: Bool) throws {
         // Given
         let originalStores = ServiceLocator.stores
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -23,20 +23,28 @@ struct ProductsViewControllerTests {
         let controller = ProductsViewController(siteID: Int64.max,
                                                  resultsController: makeResultsController(storage: MockStorageManager(), siteID: Int64.max),
                                                  selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
-                                                 navigateToContent: { _ in })
+                                                 navigateToContent: { _ in },
+                                                 usesStoreDesignSystem: usesStoreDesignSystem)
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
         let refreshControl = try attachedRefreshControl(in: table)
+        let showsEmptyState = {
+            usesStoreDesignSystem ? table.tableFooterView is StoreOrderListFooterView : table.tableFooterView is ListEmptyView
+        }
 
         // When: the first page is loading
         controller.viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
 
-        // Then: placeholders are non-interactive rows in the main table
+        // Then: placeholders are non-interactive rows in the main table, drawn by the flag's cell type
         #expect(table.numberOfSections == 1)
         #expect(table.numberOfRows(inSection: 0) == 3)
         let firstRow = IndexPath(row: 0, section: 0)
         #expect(controller.tableView(table, willSelectRowAt: firstRow) == nil)
         #expect(controller.tableView(table, trailingSwipeActionsConfigurationForRowAt: firstRow) == nil)
+        let loadingCell = controller.tableView(table, cellForRowAt: firstRow)
+        #expect((loadingCell is StoreProductListTableViewCell) == usesStoreDesignSystem)
+        #expect((loadingCell is ProductsTabProductTableViewCell) != usesStoreDesignSystem)
+        #expect(loadingCell.accessibilityIdentifier == nil)
         #expect(controller.children.isEmpty)
 
         // When: the request fails
@@ -45,20 +53,20 @@ struct ProductsViewControllerTests {
 
         // Then: empty content stays in that table, with the same refresh control
         #expect((0..<table.numberOfSections).allSatisfy { table.numberOfRows(inSection: $0) == 0 })
-        #expect(table.tableFooterView is ListEmptyView)
+        #expect(showsEmptyState())
         #expect(controller.children.isEmpty)
         #expect(refreshControl.superview === table)
 
         // When: retry completes with an empty result
         controller.viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
         #expect(table.numberOfRows(inSection: 0) == 3)
-        #expect(!(table.tableFooterView is ListEmptyView))
+        #expect(!showsEmptyState())
         let finishRetry = try #require(completeSync)
         finishRetry(.success(false))
 
         // Then
         #expect((0..<table.numberOfSections).allSatisfy { table.numberOfRows(inSection: $0) == 0 })
-        #expect(table.tableFooterView is ListEmptyView)
+        #expect(showsEmptyState())
         #expect(controller.tableView === table)
         #expect(refreshControl.superview === table)
     }
@@ -87,6 +95,73 @@ struct ProductsViewControllerTests {
         #expect((cell is StoreProductListTableViewCell) == usesStoreDesignSystem)
         #expect((cell is ProductsTabProductTableViewCell) != usesStoreDesignSystem)
         #expect(cell.accessibilityIdentifier == "Shirt")
+    }
+
+    @Test
+    func test_select_mode_when_design_system_flag_is_on_then_tapping_a_row_toggles_its_check() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        try await insert(makeProducts(["Shirt", "Hat"], firstID: 1), into: storage)
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in },
+                                                 usesStoreDesignSystem: true)
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        let bulkEditItem = try #require(controller.navigationItem.rightBarButtonItems?.first {
+            $0.action == NSSelectorFromString("startBulkEditing")
+        })
+        let startBulkEditing = try #require(bulkEditItem.action)
+        UIApplication.shared.sendAction(startBulkEditing, to: bulkEditItem.target, from: bulkEditItem, for: nil)
+        let firstRow = IndexPath(row: 0, section: 0)
+        let isChecked = { controller.tableView(table, cellForRowAt: firstRow).accessibilityTraits.contains(.selected) }
+
+        // Then: the system selection circle is replaced by the cell's checkbox
+        #expect(controller.tableView(table, editingStyleForRowAt: firstRow) == .none)
+        #expect(!controller.tableView(table, shouldIndentWhileEditingRowAt: firstRow))
+
+        // When
+        controller.tableView(table, didSelectRowAt: firstRow)
+
+        // Then
+        #expect(controller.viewModel.selectedProductsCount == 1)
+        #expect(controller.viewModel.bulkEditActionIsEnabled)
+        #expect(isChecked())
+
+        // When: a second tap on the same row
+        controller.tableView(table, didSelectRowAt: firstRow)
+
+        // Then: it unchecks, rather than staying selected like a table row would
+        #expect(controller.viewModel.selectedProductsCount == 0)
+        #expect(!controller.viewModel.bulkEditActionIsEnabled)
+        #expect(!isChecked())
+    }
+
+    @Test
+    func test_select_mode_when_design_system_flag_is_off_then_keeps_the_system_selection_circles() throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: MockStorageManager(), siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+
+        // When
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        let firstRow = IndexPath(row: 0, section: 0)
+
+        // Then: the shipped list keeps UIKit's default editing style and indent
+        #expect(controller.tableView(table, editingStyleForRowAt: firstRow) == .delete)
+        #expect(controller.tableView(table, shouldIndentWhileEditingRowAt: firstRow))
     }
 
     @Test

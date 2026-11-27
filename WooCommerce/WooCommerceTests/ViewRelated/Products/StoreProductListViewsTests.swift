@@ -91,6 +91,54 @@ struct StoreProductListViewsTests {
         #expect(!uncheckedTraits.contains(.selected))
         #expect(!cell.accessibilityTraits.contains(.selected))
     }
+
+    // MARK: - Error banner
+
+    @Test
+    func test_error_banner_when_toggled_then_flips_expansion_and_asks_to_remeasure() {
+        // Given: the banner starts expanded so the merchant sees the troubleshooting actions
+        var remeasureCount = 0
+        let banner = StoreProductListErrorBannerView(error: URLError(.notConnectedToInternet),
+                                                     onExpandedStateChange: { remeasureCount += 1 },
+                                                     onTroubleshoot: {},
+                                                     onContactSupport: {})
+        #expect(banner.isExpanded)
+
+        // When
+        banner.toggleExpanded()
+
+        // Then: the table header height depends on the banner, so the controller must re-measure
+        #expect(!banner.isExpanded)
+        #expect(remeasureCount == 1)
+
+        // When
+        banner.toggleExpanded()
+
+        // Then
+        #expect(banner.isExpanded)
+        #expect(remeasureCount == 2)
+    }
+
+    @Test
+    func test_error_banner_when_pinned_in_a_container_then_Auto_Layout_measures_its_height() {
+        // Given: the table header pins the banner by constraints and measures with systemLayoutSizeFitting
+        let banner = StoreProductListErrorBannerView(error: URLError(.notConnectedToInternet),
+                                                     onExpandedStateChange: {},
+                                                     onTroubleshoot: {},
+                                                     onContactSupport: {})
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: 390, height: 0))
+        container.addSubview(banner)
+        container.pinSubviewToAllEdges(banner)
+
+        // When
+        let size = container.systemLayoutSizeFitting(CGSize(width: 390, height: 0),
+                                                     withHorizontalFittingPriority: .required,
+                                                     verticalFittingPriority: .defaultLow)
+
+        // Then
+        #expect(!banner.translatesAutoresizingMaskIntoConstraints)
+        #expect(size.height > 0)
+    }
 }
 
 private extension StoreProductListViewsTests {

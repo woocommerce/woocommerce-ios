@@ -16,7 +16,7 @@ struct POSOnboardingGuideView: View {
             TabView(selection: $currentPage) {
                 ForEach(steps.indices, id: \.self) { index in
                     POSOnboardingGuideStepView(step: steps[index],
-                                               onLearnMore: index == steps.indices.last ? learnMore : nil)
+                                               onLearnMore: index == steps.indices.last ? { learnMore() } : nil)
                         .scrollVerticallyIfNeeded()
                         .tag(index)
                 }

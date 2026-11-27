@@ -8,6 +8,7 @@ import SwiftUI
 
 /// View model for `AddEditCoupon` view
 ///
+@MainActor
 final class AddEditCouponViewModel: ObservableObject {
 
     private let siteID: Int64
@@ -358,9 +359,12 @@ final class AddEditCouponViewModel: ObservableObject {
             withTimeInterval: inputWarningDurationInSeconds,
             repeats: false) { [weak self] timer in
                 timer.invalidate()
-                self?.amountWarningTimer = nil
-                self?.isDisplayingAmountWarning = false
-                self?.amountField = "100"
+                // The timer is scheduled on the main run loop.
+                MainActor.assumeIsolated {
+                    self?.amountWarningTimer = nil
+                    self?.isDisplayingAmountWarning = false
+                    self?.amountField = "100"
+                }
             }
     }
 

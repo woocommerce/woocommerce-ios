@@ -19,12 +19,15 @@ struct MockCouponActionHandler: MockActionHandler {
     }
 
     func handle(action: ActionType) {
+        // The dashboard dispatches these coupon actions through MockStoresManager on the main thread.
         switch action {
         case .loadMostActiveCoupons(_, _, _, _, let onCompletion):
-            onCompletion(.success(objectGraph.couponReports))
+            let reports = objectGraph.couponReports
+            MainActor.assumeIsolated { onCompletion(.success(reports)) }
         case .loadCoupons(_, _, let onCompletion):
-            save(mocks: objectGraph.coupons, as: StorageCoupon.self) { _ in }
-            onCompletion(.success(objectGraph.coupons))
+            let coupons = objectGraph.coupons
+            save(mocks: coupons, as: StorageCoupon.self) { _ in }
+            MainActor.assumeIsolated { onCompletion(.success(coupons)) }
         default:
             unimplementedAction(action: action)
         }

@@ -2,6 +2,7 @@ import XCTest
 @testable import enum Yosemite.SettingAction
 @testable import WooCommerce
 
+@MainActor
 final class EnableAnalyticsViewModelTests: XCTestCase {
 
     func test_enableAnalytics_triggers_onSuccess_if_request_succeeds() {
@@ -11,10 +12,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
         var onSuccessTriggered = false
         var onFailureTriggered = false
-        let onSuccess: () -> Void = {
+        let onSuccess: @MainActor @Sendable () -> Void = {
             onSuccessTriggered = true
         }
-        let onFailure: () -> Void = {
+        let onFailure: @MainActor @Sendable () -> Void = {
             onFailureTriggered = true
         }
 
@@ -42,10 +43,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
         var onSuccessTriggered = false
         var onFailureTriggered = false
-        let onSuccess: () -> Void = {
+        let onSuccess: @MainActor @Sendable () -> Void = {
             onSuccessTriggered = true
         }
-        let onFailure: () -> Void = {
+        let onFailure: @MainActor @Sendable () -> Void = {
             onFailureTriggered = true
         }
         var retries = 0
@@ -79,10 +80,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
         var onSuccessTriggered = false
         var onFailureTriggered = false
-        let onSuccess: () -> Void = {
+        let onSuccess: @MainActor @Sendable () -> Void = {
             onSuccessTriggered = true
         }
-        let onFailure: () -> Void = {
+        let onFailure: @MainActor @Sendable () -> Void = {
             onFailureTriggered = true
         }
 

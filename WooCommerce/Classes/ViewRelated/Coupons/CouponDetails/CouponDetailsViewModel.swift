@@ -6,6 +6,7 @@ import WooFoundation
 
 /// View model for `CouponDetails` view
 ///
+@MainActor
 final class CouponDetailsViewModel: ObservableObject {
     let siteID: Int64
 
@@ -273,8 +274,11 @@ private extension CouponDetailsViewModel {
         return currencyFormatter.formatAmount(amount) ?? ""
     }
 
-    func retrieveAnalyticsSetting(completion: @escaping (Result<Bool, Error>) -> Void) {
-        let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID, onCompletion: completion)
+    func retrieveAnalyticsSetting(completion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
+        let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID) { result in
+            // SettingStore completes on the main storage or network queue.
+            MainActor.assumeIsolated { completion(result) }
+        }
         stores.dispatch(action)
     }
 

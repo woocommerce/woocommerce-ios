@@ -2,7 +2,7 @@ import Foundation
 
 /// Defines the `actions` supported by the `CouponStore`.
 ///
-public enum CouponAction: Action {
+public enum CouponAction: Action, Sendable {
 
     /// Retrieves and stores Coupons for a site
     ///
@@ -16,7 +16,7 @@ public enum CouponAction: Action {
     case synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int,
-                            onCompletion: (Result<Bool, Error>) -> Void)
+                            onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void)
 
     /// Deletes a coupon for a site given its ID
     ///
@@ -26,7 +26,7 @@ public enum CouponAction: Action {
     ///
     case deleteCoupon(siteID: Int64,
                       couponID: Int64,
-                      onCompletion: (Result<Void, Error>) -> Void)
+                      onCompletion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 
     /// Updates a coupon for a site given its ID and returns the updated coupon if the request succeeds.
     ///
@@ -36,7 +36,7 @@ public enum CouponAction: Action {
     ///
     case updateCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
-                      onCompletion: (Result<Coupon, Error>) -> Void)
+                      onCompletion: @MainActor @Sendable (Result<Coupon, Error>) -> Void)
 
     /// Creates a coupon for a site given its ID and returns the created coupon if the request succeeds.
     ///
@@ -46,7 +46,7 @@ public enum CouponAction: Action {
     ///
     case createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
-                      onCompletion: (Result<Coupon, Error>) -> Void)
+                      onCompletion: @MainActor @Sendable (Result<Coupon, Error>) -> Void)
 
     /// Loads analytics report for a coupon with the specified coupon ID and site ID.
     ///
@@ -58,7 +58,7 @@ public enum CouponAction: Action {
     case loadCouponReport(siteID: Int64,
                           couponID: Int64,
                           startDate: Date,
-                          onCompletion: (Result<CouponReport, Error>) -> Void)
+                          onCompletion: @MainActor @Sendable (Result<CouponReport, Error>) -> Void)
 
     /// Loads top most active coupons report within the specified time range and site ID.
     ///
@@ -72,7 +72,7 @@ public enum CouponAction: Action {
                                numberOfCouponsToLoad: Int,
                                timeRange: StatsTimeRangeV4,
                                siteTimezone: TimeZone,
-                               onCompletion: (Result<[CouponReport], Error>) -> Void)
+                               onCompletion: @MainActor @Sendable (Result<[CouponReport], Error>) -> Void)
 
     /// Search Coupons matching a given keyword for a site
     ///
@@ -86,7 +86,7 @@ public enum CouponAction: Action {
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
-                       onCompletion: (Result<Void, Error>) -> Void)
+                       onCompletion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 
     /// Retrieve a Coupon for a site given the coupon ID
     ///
@@ -96,11 +96,11 @@ public enum CouponAction: Action {
     ///
     case retrieveCoupon(siteID: Int64,
                         couponID: Int64,
-                        onCompletion: (Result<Coupon, Error>) -> Void)
+                        onCompletion: @MainActor @Sendable (Result<Coupon, Error>) -> Void)
 
     case validateCouponCode(code: String,
                             siteID: Int64,
-                            onCompletion: (Result<Bool, Error>) -> Void)
+                            onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void)
 
     /// Loads the coupons from a site given the coupon IDs
     ///
@@ -110,5 +110,5 @@ public enum CouponAction: Action {
     ///
     case loadCoupons(siteID: Int64,
                      couponIDs: [Int64],
-                     onCompletion: (Result<[Coupon], Error>) -> Void)
+                     onCompletion: @MainActor @Sendable (Result<[Coupon], Error>) -> Void)
 }

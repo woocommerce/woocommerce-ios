@@ -16,5 +16,6 @@ protocol BottomSheetListSelectorCommand {
     func handleSelectedChange(selected: Model)
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: Model)
 }

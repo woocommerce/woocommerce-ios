@@ -4,6 +4,7 @@ import WooFoundation
 @testable import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class CouponDetailsViewModelTests: XCTestCase {
 
     func test_amount_is_correct_for_fixedProduct_discount_type() {

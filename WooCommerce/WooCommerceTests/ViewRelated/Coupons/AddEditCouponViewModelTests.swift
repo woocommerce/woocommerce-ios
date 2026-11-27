@@ -3,6 +3,7 @@ import Combine
 @testable import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_titleView_property_return_expected_values_on_creation() {
@@ -385,7 +386,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChangesMade)
     }
 
-    func test_validatePercentageAmountInput_correctly_control_warning_visibility() {
+    func test_validatePercentageAmountInput_correctly_control_warning_visibility() async throws {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "20000", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
@@ -401,9 +402,9 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.isDisplayingAmountWarning)
 
-        waitFor { promise in
+        try await waitForCompletion { completion in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-                promise(())
+                completion(())
             }
         }
 
@@ -510,7 +511,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.amountField, "100")
     }
 
-    func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
+    func test_discount_type_changed_to_percent_triggers_amount_adjustment() async throws {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "20000")
         let viewModel = AddEditCouponViewModel(
@@ -522,9 +523,9 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // When
         viewModel.discountType = .percent
 
-        waitFor { promise in
+        try await waitForCompletion { completion in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-                promise(())
+                completion(())
             }
         }
 

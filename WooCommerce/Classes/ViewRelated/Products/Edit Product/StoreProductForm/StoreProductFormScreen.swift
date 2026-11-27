@@ -97,7 +97,7 @@ struct StoreProductFormScreen: View {
                                                      onAction: store.onInlineAction)
                             .accessibilityLabel(Localization.imagesAccessibilityLabel)
                             .padding(.horizontal, StorePadding.p7)
-                            .padding(.top, StorePadding.p5)
+                            .padding(.vertical, StorePadding.p5)
                     } else {
                         Button {
                             store.onPrimaryRowSelected(row)

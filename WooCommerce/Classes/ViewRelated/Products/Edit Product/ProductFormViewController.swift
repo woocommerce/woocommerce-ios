@@ -5,6 +5,7 @@ import UIKit
 import WordPressUI
 import Yosemite
 import SwiftUI
+import StoreDesignSystem
 import protocol Storage.StorageManagerType
 
 typealias ProductDuplicateNavigationHandler = (_ sourceViewController: UIViewController, _ duplicatedProduct: Product) -> Void
@@ -41,6 +42,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private var tableViewModel: ProductFormTableViewModel
+    private let usesStoreRenderer: Bool
+    private lazy var storeRenderer = StoreProductFormRendererStore(
+        sections: tableViewModel.sections,
+        imageStatuses: productImageActionHandler.productImageStatuses,
+        imageLoader: productUIImageLoader,
+        onPrimaryRowSelected: { [weak self] row in
+            guard let self else { return }
+            actionRoutingHandler.handle(row, shouldShowBlazeIntroView: viewModel.shouldShowBlazeIntroView)
+        },
+        onSettingsRowSelected: { [weak self] row in
+            guard let self else { return }
+            settingsRowActionHandler.handle(row, sourceView: nil, productID: product.productID)
+        },
+        onInlineAction: { [weak self] in self?.actionRoutingHandler.handle($0) }
+    )
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
             registerTableViewCells()
@@ -119,10 +135,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         usesStoreRenderer: Bool = false,
          userDefaults: UserDefaults = .standard,
          onDeleteCompletion: @escaping () -> Void = {},
          onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) {
         self.viewModel = viewModel
+        self.usesStoreRenderer = usesStoreRenderer
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
         self.currency = currency
@@ -144,12 +162,22 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
 
-        super.init(nibName: "ProductFormViewController", bundle: nil)
-        updateDataSourceActions()
+        super.init(nibName: usesStoreRenderer ? nil : "ProductFormViewController", bundle: nil)
+        if !usesStoreRenderer {
+            updateDataSourceActions()
+        }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func loadView() {
+        if usesStoreRenderer {
+            view = UIView()
+        } else {
+            super.loadView()
+        }
     }
 
     override func viewDidLoad() {
@@ -157,10 +185,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configurePresentationStyle()
         configureNavigationBar()
 
-        configureMainView()
-        configureTableView()
-        configureMoreDetailsContainerView()
-        configureKeyboardAvoidance()
+        if usesStoreRenderer {
+            configureStoreRenderer()
+        } else {
+            configureMainView()
+            configureTableView()
+            configureMoreDetailsContainerView()
+            configureKeyboardAvoidance()
+        }
 
         handleSwipeBackGesture()
 
@@ -204,7 +236,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+        tableView?.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -412,73 +444,94 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        if viewModel.canShowPublishOption() {
-            actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
-                self?.publishProduct()
-            }
+        for option in await moreOptions(from: moreOptionsButton) {
+            let style: UIAlertAction.Style = option.isDestructive ? .destructive : .default
+            actionSheet.addAction(UIAlertAction(title: option.title, style: style) { _ in option.handler() })
         }
 
-        if viewModel.canSaveAsDraft() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
-                self?.saveProductAsDraft()
-            }
-        }
-
-        /// The "View product in store" action will be shown only if the product is published.
-        if viewModel.canViewProductInStore() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
-                self?.displayWebViewForProductInStore()
-            }
-        }
-
-        if viewModel.canShareProduct() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                self?.displayShareProduct(from: moreOptionsButton, analyticSource: .moreMenu)
-            }
-        }
-
-        if viewModel.canFavoriteProduct() {
-            if await viewModel.isFavorite() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
-                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
-                    self?.viewModel.removeFromFavorite()
-                }
-            } else {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
-                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
-                    self?.viewModel.markAsFavorite()
-                }
-            }
-        }
-
-        if viewModel.canEditProductSettings() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
-                self?.displayProductSettings()
-            }
-        }
-
-        if viewModel.canDuplicateProduct() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
-                self?.handleProductDuplication()
-            }
-        }
-
-        if viewModel.canDeleteProduct() {
-            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
-                self?.displayDeleteProductAlert()
-            }
-        }
-
-        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
-        }
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = moreOptionsButton
 
         presentIfIdle(actionSheet)
+    }
+
+    private struct MoreOption {
+        let title: String
+        let isDestructive: Bool
+        let handler: () -> Void
+
+        init(_ title: String, isDestructive: Bool = false, handler: @escaping () -> Void) {
+            self.title = title
+            self.isDestructive = isDestructive
+            self.handler = handler
+        }
+    }
+
+    private func moreOptions(from moreOptionsButton: UIBarButtonItem) async -> [MoreOption] {
+        var options: [MoreOption] = []
+        if viewModel.canShowPublishOption() {
+            options.append(MoreOption(Localization.publishTitle) { [weak self] in
+                self?.publishProduct()
+            })
+        }
+
+        if viewModel.canSaveAsDraft() {
+            options.append(MoreOption(ActionSheetStrings.saveProductAsDraft) { [weak self] in
+                self?.saveProductAsDraft()
+            })
+        }
+
+        /// The "View product in store" action will be shown only if the product is published.
+        if viewModel.canViewProductInStore() {
+            options.append(MoreOption(ActionSheetStrings.viewProduct) { [weak self] in
+                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
+                self?.displayWebViewForProductInStore()
+            })
+        }
+
+        if viewModel.canShareProduct() {
+            options.append(MoreOption(ActionSheetStrings.share) { [weak self, weak moreOptionsButton] in
+                guard let moreOptionsButton else { return }
+                self?.displayShareProduct(from: moreOptionsButton, analyticSource: .moreMenu)
+            })
+        }
+
+        if viewModel.canFavoriteProduct() {
+            if await viewModel.isFavorite() {
+                options.append(MoreOption(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
+                    self?.viewModel.removeFromFavorite()
+                })
+            } else {
+                options.append(MoreOption(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
+                    self?.viewModel.markAsFavorite()
+                })
+            }
+        }
+
+        if viewModel.canEditProductSettings() {
+            options.append(MoreOption(ActionSheetStrings.productSettings) { [weak self] in
+                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
+                self?.displayProductSettings()
+            })
+        }
+
+        if viewModel.canDuplicateProduct() {
+            options.append(MoreOption(ActionSheetStrings.duplicate) { [weak self] in
+                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
+                self?.handleProductDuplication()
+            })
+        }
+
+        if viewModel.canDeleteProduct() {
+            options.append(MoreOption(ActionSheetStrings.trashProduct, isDestructive: true) { [weak self] in
+                self?.displayDeleteProductAlert()
+            })
+        }
+        return options
     }
 
     // MARK: - UIScrollViewDelegate
@@ -536,6 +589,25 @@ private extension ProductFormViewController {
         view.backgroundColor = .basicBackground
     }
 
+    func configureStoreRenderer() {
+        storeRenderer.onMoreDetailsSelected = { [weak self] action in
+            guard let self else { return }
+            actionRoutingHandler.handle(action, productID: product.productID)
+        }
+        storeRenderer.onAITooltipShown = { [weak self] in self?.didShowTooltip = true }
+        storeRenderer.onAITooltipDismissed = { [weak self] in self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true }
+        updateMoreDetailsButtonVisibility()
+        storeRenderer.updateAITooltipEligibility(tooltipUseCase.shouldShowTooltip(for: product))
+
+        let host = UIHostingController(rootView: StoreProductFormScreen(store: storeRenderer))
+        view.backgroundColor = UIColor(Color.storeSurface)
+        addChild(host)
+        host.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(host.view)
+        view.pinSubviewToAllEdges(host.view)
+        host.didMove(toParent: self)
+    }
+
     func configureTableView() {
         registerTableViewCells()
 
@@ -587,7 +659,7 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let title = ProductFormTableViewDataSource.Localization.addMoreDetails
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
                                                             image: .plusImage) { [weak self] button in
@@ -663,9 +735,9 @@ private extension ProductFormViewController {
 
         let tooltip = Tooltip(containerWidth: tableView.bounds.width)
 
-        tooltip.title = Localization.AITooltip.title
-        tooltip.message = Localization.AITooltip.message
-        tooltip.primaryButtonTitle = Localization.AITooltip.gotIt
+        tooltip.title = ProductFormAITooltipLocalization.title
+        tooltip.message = ProductFormAITooltipLocalization.message
+        tooltip.primaryButtonTitle = ProductFormAITooltipLocalization.gotIt
         tooltipPresenter = TooltipPresenter(
             containerView: tableView,
             tooltip: tooltip,
@@ -725,10 +797,12 @@ private extension ProductFormViewController {
     /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
     ///
     func observeProductName() {
-        productNameSubscription = viewModel.productName?.sink { [weak self] _ in
+        productNameSubscription = viewModel.productName?.sink { [weak self] name in
             guard let self else { return }
             self.updateBackButtonTitle()
-            if self.view.window == nil { // If window is nil, this screen isn't the active screen.
+            if self.usesStoreRenderer {
+                self.storeRenderer.updateProductName(name)
+            } else if self.view.window == nil { // If window is nil, this screen isn't the active screen.
                 self.onProductUpdated(product: self.product)
             }
         }
@@ -774,12 +848,12 @@ private extension ProductFormViewController {
     }
 
     func onProductUpdated(product: ProductModel) {
-        updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+        updateMoreDetailsButtonVisibility()
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
@@ -828,6 +902,12 @@ private extension ProductFormViewController {
     ///   - reloadClosure: custom tableView reload action, by default `reloadData()` will be triggered
     ///
     func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus], reloadClosure: (() -> Void)? = nil) {
+        if usesStoreRenderer {
+            storeRenderer.update(sections: tableViewModel.sections)
+            storeRenderer.updateImageStatuses(statuses)
+            storeRenderer.updateAITooltipEligibility(tooltipUseCase.shouldShowTooltip(for: product))
+            return
+        }
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
@@ -882,8 +962,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
-        let title = NSLocalizedString("Add more details",
-                                      comment: "Title of the bottom sheet from the product form to add more product details.")
+        let title = ProductFormTableViewDataSource.Localization.addMoreDetails
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
@@ -899,7 +978,11 @@ private extension ProductFormViewController {
 
     func updateMoreDetailsButtonVisibility() {
         let moreDetailsActions = viewModel.actionsFactory.bottomSheetActions()
-        moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
+        if usesStoreRenderer {
+            storeRenderer.updateMoreDetailsActions(moreDetailsActions)
+        } else {
+            moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
+        }
     }
 }
 
@@ -1303,10 +1386,30 @@ private extension ProductFormViewController {
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(didTapMoreOptions(_:)))
+        let moreButton: UIBarButtonItem
+        if usesStoreRenderer {
+            moreButton = UIBarButtonItem(image: .moreImage, menu: nil)
+            let actions = UIDeferredMenuElement.uncached { [weak self, weak moreButton] completion in
+                Task { @MainActor in
+                    guard let self, let moreButton else {
+                        completion([])
+                        return
+                    }
+                    let options = await self.moreOptions(from: moreButton)
+                    completion(options.map { option in
+                        UIAction(title: option.title, attributes: option.isDestructive ? .destructive : []) { _ in
+                            option.handler()
+                        }
+                    })
+                }
+            }
+            moreButton.menu = UIMenu(children: [actions])
+        } else {
+            moreButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(didTapMoreOptions(_:)))
+        }
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
@@ -1403,8 +1506,8 @@ private extension ProductFormViewController {
         viewModel.updateName(newName)
 
         /// This refresh is used to adapt the size of the cell to the text
-        tableView.beginUpdates()
-        tableView.endUpdates()
+        tableView?.beginUpdates()
+        tableView?.endUpdates()
     }
 }
 
@@ -2204,15 +2307,6 @@ private enum Localization {
     )
     static let defaultTitle = NSLocalizedString("productForm.defaultTitle", value: "Product", comment: "Product title")
 
-    enum AITooltip {
-        static let title = NSLocalizedString("Write with AI",
-                                             comment: "The title of the Write with AI tooltip")
-        static let message = NSLocalizedString("Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!",
-                                               comment: "The message for the Write with AI tooltip")
-        static let gotIt = NSLocalizedString("Got it",
-                                             comment: "Button title that dismisses the Write with AI tooltip")
-    }
-
     enum ImageUploadError {
         static let title = NSLocalizedString(
             "productFormViewController.imageUploadError.title",
@@ -2248,6 +2342,15 @@ private enum Localization {
             comment: "Button on the alert when there is an error saving a product. Tapping the button should retry the saving."
         )
     }
+}
+
+enum ProductFormAITooltipLocalization {
+    static let title = NSLocalizedString("Write with AI",
+                                         comment: "The title of the Write with AI tooltip")
+    static let message = NSLocalizedString("Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!",
+                                           comment: "The message for the Write with AI tooltip")
+    static let gotIt = NSLocalizedString("Got it",
+                                         comment: "Button title that dismisses the Write with AI tooltip")
 }
 
 private enum URLs {

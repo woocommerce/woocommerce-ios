@@ -1,22 +1,25 @@
 import StoreDesignSystem
 import SwiftUI
+import Yosemite
 
-struct StoreProductFormScreen<PinnedContent: View>: View {
-    private let store: StoreProductFormRendererStore
+struct StoreProductFormScreen: View {
+    let store: StoreProductFormRendererStore
     @FocusState private var isNameFocused: Bool
-    private let pinnedContent: PinnedContent
-
-    init(store: StoreProductFormRendererStore, @ViewBuilder pinnedContent: () -> PinnedContent = { EmptyView() }) {
-        self.store = store
-        self.pinnedContent = pinnedContent()
-    }
+    @State private var isShowingMoreDetails = false
+    @State private var selectedDetail: ProductFormBottomSheetAction?
+    @State private var isAIButtonVisible = false
+    @State private var isShowingAITooltip = false
+    @State private var didShowAITooltip = false
 
     var body: some View {
         ScrollView {
             LazyVStack(spacing: StoreSpacing.s0) {
                 ForEach(store.primaryRows) { item in
                     primaryRow(item.row)
-                    StoreDivider()
+                    switch item.row {
+                    case .description(_, _, true), .descriptionAI: EmptyView()
+                    default: StoreDivider()
+                    }
                 }
                 if !store.primaryRows.isEmpty && !store.settingsRows.isEmpty {
                     Color.storeSurface.frame(height: StoreSpacing.s3)
@@ -30,11 +33,50 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                 }
             }
         }
+        .accessibilityIdentifier("product-form")
         .scrollDismissesKeyboard(.interactively)
         .background(Color.storeSurface)
         .safeAreaInset(edge: .bottom, spacing: StoreSpacing.s0) {
-            pinnedContent
+            if !store.moreDetailsActions.isEmpty {
+                VStack(spacing: StoreSpacing.s0) {
+                    StoreDivider()
+                    StoreButton(Localization.addMoreDetails, icon: StoreIcon.Plus.regular, variant: .text) {
+                        isNameFocused = false
+                        isShowingAITooltip = false
+                        isShowingMoreDetails = true
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(StorePadding.p3)
+                }
+                .background(Color.storeSurfaceBright)
+            }
         }
+        .storeSheet(isPresented: $isShowingMoreDetails, onDismiss: openSelectedDetail) {
+            Text(Localization.addMoreDetails)
+                .storeTextStyle(.titleLarge.strong)
+                .foregroundStyle(Color.storeOnSurface)
+                .accessibilityAddTraits(.isHeader)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, StorePadding.p7)
+                .padding(.vertical, StorePadding.p4)
+            ForEach(store.moreDetailsActions, id: \.self) { action in
+                let selectDetail = {
+                    selectedDetail = action
+                    isShowingMoreDetails = false
+                }
+                StoreCell(action.title,
+                          description: action.subtitle,
+                          configuration: .init(density: .compact),
+                          showsDisclosureIndicator: true,
+                          action: selectDetail)
+            }
+        }
+    }
+
+    private func openSelectedDetail() {
+        guard let action = selectedDetail else { return }
+        selectedDetail = nil
+        store.onMoreDetailsSelected(action)
     }
 
     @ViewBuilder
@@ -68,9 +110,17 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                 }
                 .background(Color.storeSurfaceBright)
             }
-        case .name(_, let isEditable, _):
-            productName(isEditable: isEditable)
-                .background(Color.storeSurfaceBright)
+        case .name(_, let isEditable, let status):
+            VStack(alignment: .leading, spacing: StoreSpacing.s0) {
+                if isEditable && status != .published {
+                    StoreBadge(status == .privateStatus ? LabeledTextViewTableViewCell.privateStatusTitle : status.description,
+                               tone: status == .pending ? .warning : .neutral)
+                        .padding(.horizontal, StorePadding.p7)
+                        .padding(.top, StorePadding.p4)
+                }
+                productName(isEditable: isEditable)
+            }
+            .background(Color.storeSurfaceBright)
         case .variationName(let name):
             readOnlyName(name)
                 .modifier(NameStyle())
@@ -86,9 +136,73 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
                 .accessibilityHint(isEditable && hasDescription ? Localization.Accessibility.descriptionHint : "")
                 .accessibilityIdentifier("product-description")
                 .background(Color.storeSurfaceBright)
-        case .linkedProductsPromo, .descriptionAI, .learnMoreAboutAI, .promoteWithBlaze, .separator:
+        case .linkedProductsPromo(let viewModel):
+            StoreDashboardFeatureAnnouncementCard(viewModel: viewModel) {
+                store.onInlineAction(.reloadLinkedProductsPromo)
+            } callToAction: {
+                store.onInlineAction(.openLinkedProducts)
+            }
+            .padding(StorePadding.p4)
+            .accessibilityIdentifier("product-linked-products-promo-cell")
+        case .descriptionAI:
+            descriptionAIButton
+        case .learnMoreAboutAI:
+            aiLegalText
+        case .promoteWithBlaze:
+            StoreCell(Localization.promoteWithBlaze,
+                      configuration: .init(density: .compact, iconTint: .title),
+                      showsDisclosureIndicator: true,
+                      action: { store.onPrimaryRowSelected(row) },
+                      leading: StoreIcon.ArrowTrendUp.regular.image(size: .large).accessibilityHidden(true))
+                .accessibilityHint(Localization.promoteWithBlazeAccessibilityHint)
+        case .separator:
             EmptyView()
         }
+    }
+
+    private var descriptionAIButton: some View {
+        StoreButton(Localization.writeWithAI, icon: StoreIcon.Sparkles.regular, variant: .tonal) {
+            isShowingAITooltip = false
+            store.onInlineAction(.descriptionAI)
+        }
+        .accessibilityIdentifier("product-description-ai")
+        .storeTooltip(isPresented: $isShowingAITooltip,
+                      preferredPlacement: .below,
+                      title: ProductFormAITooltipLocalization.title,
+                      message: ProductFormAITooltipLocalization.message,
+                      onDismiss: store.onAITooltipDismissed)
+        .onScrollVisibilityChange(threshold: 0.99) { isAIButtonVisible = $0 }
+        .onChange(of: isAIButtonVisible && store.canShowAITooltip) { _, canShowTooltip in
+            if !canShowTooltip {
+                isShowingAITooltip = false
+            } else if !didShowAITooltip {
+                isShowingAITooltip = true
+                didShowAITooltip = true
+                store.onAITooltipShown()
+            }
+        }
+        .padding(.horizontal, StorePadding.p7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.storeSurfaceBright)
+    }
+
+    private var aiLegalText: some View {
+        var text = AttributedString(String.localizedStringWithFormat(Localization.legalText, Localization.learnMore))
+        if let linkRange = text.range(of: Localization.learnMore) {
+            text[linkRange].link = ProductFormTableViewDataSource.legalURL
+        }
+        return Text(text)
+            .storeTextStyle(.bodySmall)
+            .foregroundStyle(Color.storeOnSurfaceVariant)
+            .tint(Color.storePrimary)
+            .environment(\.openURL, OpenURLAction { url in
+                store.onInlineAction(.openAILegalPage(url))
+                return .handled
+            })
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, StorePadding.p7)
+            .padding(.vertical, StorePadding.p4)
+            .background(Color.storeSurfaceBright)
     }
 
     private func productName(isEditable: Bool) -> some View {
@@ -129,7 +243,35 @@ struct StoreProductFormScreen<PinnedContent: View>: View {
         Text(name).accessibilityAddTraits(.isHeader)
     }
 
+    @ViewBuilder
     private func settingsRow(_ item: StoreProductFormSettingsRow) -> some View {
+        switch item.row {
+        case .status(let model, let isEditable):
+            let title = model.viewModel.title ?? ""
+            StoreCell(title,
+                      description: model.viewModel.details,
+                      configuration: .init(density: .compact, iconTint: .title),
+                      leading: item.icon.image(size: .largeIncreased).accessibilityHidden(true)) {
+                Toggle(title, isOn: Binding(get: { model.isSwitchOn }, set: { store.onInlineAction(.statusChanged($0)) }))
+                    .labelsHidden()
+                    .tint(Color.storePrimary)
+                    .disabled(!isEditable || !model.isActionable)
+                    .accessibilityIdentifier(item.accessibilityIdentifier)
+            }
+        case .noPriceWarning, .noVariationsWarning:
+            StoreNoticeBanner(item.viewModel.title ?? "",
+                              tone: .warning,
+                              icon: item.icon,
+                              actionTitle: item.isActionable ? DefaultProductFormTableViewModel.Localization.variationsTitle : nil,
+                              action: item.isActionable ? { store.onSettingsRowSelected(item.row) } : nil)
+                .padding(StorePadding.p4)
+                .accessibilityIdentifier(item.accessibilityIdentifier)
+        default:
+            settingsCell(item)
+        }
+    }
+
+    private func settingsCell(_ item: StoreProductFormSettingsRow) -> some View {
         let model = item.viewModel
         let action: (() -> Void)? = item.isActionable ? { store.onSettingsRowSelected(item.row) } : nil
         let descriptionLineLimit = model.numberOfLinesForDetails > 0 ? model.numberOfLinesForDetails : nil

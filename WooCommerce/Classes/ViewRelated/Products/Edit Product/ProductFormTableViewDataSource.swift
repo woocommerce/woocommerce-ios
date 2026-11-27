@@ -281,12 +281,8 @@ private extension ProductFormTableViewDataSource {
         guard let cell = cell as? ButtonTableViewCell else {
             fatalError()
         }
-        let title = NSLocalizedString(
-            "Write with AI",
-            comment: "Product description AI row on Product form screen when the feature is available."
-        )
         cell.configure(style: .subtle,
-                       title: title,
+                       title: Localization.writeWithAI,
                        image: .sparklesImage,
                        accessibilityIdentifier: "product-description-ai",
                        topSpacing: 6,
@@ -323,7 +319,7 @@ private extension ProductFormTableViewDataSource {
                                                             .foregroundColor: linkColor,
                                                             .underlineStyle: NSUnderlineStyle.single.rawValue,
                                                             .underlineColor: UIColor.clear,
-                                                            .link: Constants.legalURL])
+                                                            .link: Self.legalURL])
             attributedString.replaceFirstOccurrence(of: linkContent, with: legalLink)
             return attributedString
         }()
@@ -345,26 +341,16 @@ private extension ProductFormTableViewDataSource {
         guard let cell = cell as? LeftImageTableViewCell else {
             fatalError("Unexpected table view cell for the promote with Blaze cell")
         }
-        let title = NSLocalizedString(
-            "productFormTableViewDataSource.promoteWithBlazeButton",
-            value: "Promote with Blaze",
-            comment: "Label for button on product form to open Blaze flow"
-        )
-
         cell.configure(
             image: .blaze.resize(to: Constants.blazeButtonIconSize),
-            text: title,
+            text: Localization.promoteWithBlaze,
             textColor: .accent
         )
         cell.hideSeparator()
 
         // Configure accessibility for VoiceOver
         cell.accessibilityTraits = .button
-        cell.accessibilityHint = NSLocalizedString(
-            "productFormTableViewDataSource.promoteWithBlazeAccessibilityHint",
-            value: "Opens Blaze campaign creation flow for this product",
-            comment: "VoiceOver accessibility hint for the Promote with Blaze button"
-        )
+        cell.accessibilityHint = Localization.promoteWithBlazeAccessibilityHint
     }
 
     func configureSeparator(cell: UITableViewCell) {
@@ -505,7 +491,6 @@ private extension ProductFormTableViewDataSource {
 
 private extension ProductFormTableViewDataSource {
     enum Constants {
-        static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
         static let learnMoreTextHeight: CGFloat = 16
         static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 4, right: 0)
         static let settingsHeaderHeight = CGFloat(16)
@@ -514,6 +499,8 @@ private extension ProductFormTableViewDataSource {
 }
 
 extension ProductFormTableViewDataSource {
+    static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
+
     enum Localization {
         static let imagesAccessibilityLabel = NSLocalizedString(
             "List of images of the product",
@@ -532,14 +519,32 @@ extension ProductFormTableViewDataSource {
             "Describe your product",
             comment: "Placeholder in the Product description row on Product form screen."
         )
-        fileprivate static let legalText = NSLocalizedString(
+        static let writeWithAI = NSLocalizedString(
+            "Write with AI",
+            comment: "Product description AI row on Product form screen when the feature is available."
+        )
+        static let legalText = NSLocalizedString(
             "Powered by AI. %1$@.",
             comment: "Label to indicate AI-generated content in the product detail screen. " +
             "Reads: Powered by AI. Learn more."
         )
-        fileprivate static let learnMore = NSLocalizedString(
+        static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Title for the link to open the legal URL for AI-generated content in the product detail screen"
+        )
+        static let promoteWithBlaze = NSLocalizedString(
+            "productFormTableViewDataSource.promoteWithBlazeButton",
+            value: "Promote with Blaze",
+            comment: "Label for button on product form to open Blaze flow"
+        )
+        static let promoteWithBlazeAccessibilityHint = NSLocalizedString(
+            "productFormTableViewDataSource.promoteWithBlazeAccessibilityHint",
+            value: "Opens Blaze campaign creation flow for this product",
+            comment: "VoiceOver accessibility hint for the Promote with Blaze button"
+        )
+        static let addMoreDetails = NSLocalizedString(
+            "Add more details",
+            comment: "Title of the button at the bottom of the product form to add more product details."
         )
         static let wpComStoreNotPublicTitle = NSLocalizedString(
             "productFormTableViewDataSource.wpComStoreNotPublicTitle",

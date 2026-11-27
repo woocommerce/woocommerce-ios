@@ -60,16 +60,7 @@ private extension LabeledTextViewTableViewCell {
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
-
-        switch productStatus {
-        case .privateStatus:
-            productStatusLabel.text = NSLocalizedString("productDetail.privateStatusLabel",
-                                                        value: "Private published",
-                                                        comment: "Display label in product for the product's private status"
-            )
-        default:
-            productStatusLabel.text = productStatus.description
-        }
+        productStatusLabel.text = productStatus == .privateStatus ? Self.privateStatusTitle : productStatus.description
 
         switch productStatus {
         case .pending:
@@ -90,6 +81,12 @@ private extension LabeledTextViewTableViewCell {
             static let pendingBg: UIColor = .withColorStudio(.orange, shade: .shade10)
         }
     }
+}
+
+extension LabeledTextViewTableViewCell {
+    static let privateStatusTitle = NSLocalizedString("productDetail.privateStatusLabel",
+                                                     value: "Private published",
+                                                     comment: "Display label in product for the product's private status")
 }
 
 // Styles

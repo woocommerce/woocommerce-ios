@@ -31,10 +31,10 @@ final class TooltipPresenter {
     /// Shows — or, for the active presentation, updates — the tooltip for the request's `id`,
     /// claiming the shared window from any other presentation (whose caller's binding is reset via
     /// its `onDismiss` first, so it isn't left stuck "presented" but invisible). `onDismiss` is
-    /// invoked when the user taps the bubble.
-    func show(_ request: TooltipRequest, onDismiss: @escaping () -> Void) {
+    /// invoked with `true` when the user taps the bubble.
+    func show(_ request: TooltipRequest, onDismiss: @escaping (_ wasTapped: Bool) -> Void) {
         if let activeID, activeID != request.id {
-            model.onDismiss()
+            model.onDismiss(false)
         }
         activeID = request.id
         model.request = request
@@ -49,7 +49,7 @@ final class TooltipPresenter {
         guard activeID == id else { return }
         activeID = nil
         model.isPresented = false
-        model.onDismiss = {}
+        model.onDismiss = { _ in }
         // Clear the hit region so a tap can't land on a stale bubble frame before the next render.
         model.bubbleFrame = .zero
         window?.isHidden = true
@@ -94,7 +94,7 @@ final class TooltipOverlayModel {
     /// The rendered bubble's frame in window/global space; the window forwards touches only here.
     var bubbleFrame: CGRect = .zero
     /// Invoked when the user taps the bubble, so the presenting caller can update its binding.
-    var onDismiss: () -> Void = {}
+    var onDismiss: (_ wasTapped: Bool) -> Void = { _ in }
 }
 
 /// A window that only intercepts touches over the tooltip bubble, letting every other touch fall
@@ -139,7 +139,7 @@ private struct TooltipOverlayRootView: View {
                         model.bubbleFrame = frame
                     }
                     .contentShape(Rectangle())
-                    .onTapGesture { model.onDismiss() }
+                    .onTapGesture { model.onDismiss(true) }
                     // `idealWidth` + `fixedSize` lets the bubble hug short text yet wrap before it
                     // would spill off the chosen side; the bubble centers in this invisible frame.
                     .frame(idealWidth: layout.availableBubbleWidth(for: arrowEdge))

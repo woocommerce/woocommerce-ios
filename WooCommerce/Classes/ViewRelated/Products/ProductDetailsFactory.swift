@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import WooFoundation
+import protocol Experiments.FeatureFlagService
 
 struct ProductDetailsFactory {
     /// Creates a product details view controller asynchronously based on the app settings.
@@ -37,6 +38,7 @@ struct ProductDetailsFactory {
                                isLocalProduct: Bool = false,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+                               featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                                onProductCreated: @escaping (_ product: Product, _ canShareProduct: Bool) -> Void = { _, _ in },
                                onDeleteCompletion: @escaping () -> Void = {},
                                onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
@@ -62,6 +64,7 @@ struct ProductDetailsFactory {
                                                        currency: currencySettings.symbol(from: currencySettings.currencyCode),
                                                        presentationStyle: presentationStyle,
                                                        productImageUploader: productImageUploader,
+                                                       usesStoreRenderer: featureFlagService.usesStoreDesignSystem && formType != .add,
                                                        onDeleteCompletion: onDeleteCompletion,
                                                        onDuplicateCompletion: onDuplicateCompletion)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.

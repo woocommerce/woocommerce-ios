@@ -6,15 +6,17 @@ public extension View {
     /// The tooltip is non-modal, shows in a window above the app (so nothing clips it), and stays
     /// on screen with the arrow pointing at this view. Tapping it dismisses it; showing it is the
     /// caller's job through `isPresented`. `preferredPlacement` requests a side, flipped only when
-    /// that side lacks room.
+    /// that side lacks room. `onDismiss` runs when the user taps the tooltip.
     func storeTooltip(isPresented: Binding<Bool>,
                       preferredPlacement: StoreTooltipPlacement? = nil,
                       title: String,
-                      message: String? = nil) -> some View {
+                      message: String? = nil,
+                      onDismiss: (() -> Void)? = nil) -> some View {
         modifier(StoreTooltipPresentationModifier(isPresented: isPresented,
                                                   preferredPlacement: preferredPlacement,
                                                   title: title,
-                                                  message: message))
+                                                  message: message,
+                                                  onDismiss: onDismiss))
     }
 }
 
@@ -23,6 +25,7 @@ private struct StoreTooltipPresentationModifier: ViewModifier {
     let preferredPlacement: StoreTooltipPlacement?
     let title: String
     let message: String?
+    let onDismiss: (() -> Void)?
 
     /// The anchor's frame in global space, kept current so placement follows the anchor as it moves.
     @State private var anchorFrame: CGRect = .zero
@@ -36,9 +39,9 @@ private struct StoreTooltipPresentationModifier: ViewModifier {
             }
             // Keeps a presented tooltip in sync with everything it renders from — the anchor frame
             // as it moves, and the title/message/placement inputs as they change.
-            .onChange(of: request) { _, request in
+            .onChange(of: request) {
                 if isPresented {
-                    TooltipPresenter.shared.show(request, onDismiss: { isPresented = false })
+                    show()
                 }
             }
             .onChange(of: isPresented) { _, presented in
@@ -72,6 +75,11 @@ private struct StoreTooltipPresentationModifier: ViewModifier {
     }
 
     private func show() {
-        TooltipPresenter.shared.show(request, onDismiss: { isPresented = false })
+        TooltipPresenter.shared.show(request) { wasTapped in
+            isPresented = false
+            if wasTapped {
+                onDismiss?()
+            }
+        }
     }
 }

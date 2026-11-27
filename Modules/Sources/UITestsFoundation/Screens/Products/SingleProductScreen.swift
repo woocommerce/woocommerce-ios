@@ -16,7 +16,7 @@ public final class SingleProductScreen: ScreenObject {
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ {$0.tables["product-form"]} ],
+            expectedElementGetter: { $0.descendants(matching: .any).matching(identifier: "product-form").firstMatch },
             app: app
         )
     }
@@ -36,9 +36,17 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func verifyProduct(product: ProductData) throws -> Self {
-        XCTAssertTrue(productFormTable.staticTexts["product-stock-status-\(product.stock_status)"].exists)
-        productFormTable.assertTextVisibilityCount(textToFind: product.regular_price, expectedCount: 1)
-        XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
+        if productFormTable.exists {
+            XCTAssertTrue(productFormTable.staticTexts["product-stock-status-\(product.stock_status)"].exists)
+            productFormTable.assertTextVisibilityCount(textToFind: product.regular_price, expectedCount: 1)
+            XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
+        } else {
+            let title = app.descendants(matching: .any)["product-title"].firstMatch
+            XCTAssertEqual(title.value as? String, product.name)
+            XCTAssertTrue(title.isFullyVisibleOnScreen(), "Product name is not visible on screen!")
+            XCTAssertTrue(app.buttons["product-inventory-cell"].exists)
+            XCTAssertTrue(app.buttons["product-price-cell"].label.contains(product.regular_price))
+        }
 
         return self
     }
@@ -78,6 +86,7 @@ public final class SingleProductScreen: ScreenObject {
         let typeID = ["physical": "simple", "virtual": "simpleVirtual", "external": "affiliate"][productType] ?? productType
 
         // the common fields on add product screen
+        XCTAssertTrue(productFormTable.exists, "Add Product should use the UIKit product form")
         XCTAssertTrue(app.cells["product-review-cell"].exists)
         XCTAssertTrue(productFormTable.staticTexts["product-type-\(typeID)"].exists)
 

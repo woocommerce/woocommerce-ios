@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-04 09:58:59+0000 */
+/* Translation-Revision-Date: 2026-11-18 09:55:57+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -824,8 +824,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "أذربيجان";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "رجوع";
 
 /* Accessibility announcement message when device goes back online */
@@ -2036,7 +2035,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express.";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "نطاق التاريخ";
@@ -2814,7 +2814,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "ملء نموذج الجمارك";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2885,9 +2886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "هل نسيت كلمة المرور؟";
-
-/* Next web page */
-"Forward" = "إعادة التوجيه";
 
 /* Country option for a site address. */
 "France" = "فرنسا";
@@ -3747,9 +3745,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "تحميل المنتجات";
 
-/* Loading. Verb */
-"Loading..." = "جاري التحميل ...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4043,7 +4038,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "مزيد من التفاصيل هنا";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "مزيد من الخيارات";
 
@@ -4461,9 +4457,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "يفتح تفاصيل المنتج.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "يفتح صفحة الويب في متصفح Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "اسم الخيار";
@@ -5342,8 +5335,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "إيصال من %1$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "تحديث";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5604,9 +5596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "تم إرسال SMS";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "سانت بارتيليمي";
@@ -5918,7 +5907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "مشاركة";
 
@@ -7066,8 +7054,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "نصيحة";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "العنوان";
 
@@ -8475,10 +8462,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "متري";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "اختر وقت تحديث بيانات التحليلات.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "هذا إعداد عام للمتجر، ويحكم أيضًا خيار \"التحديثات\" في إعدادات التحليلات الخاصة بـ WooCommerce في لوحة الإدارة. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -8487,7 +8476,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "فورًا";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "معرفة المزيد";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8499,10 +8489,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "مجدول";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "تحديثات التحليلات";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "تعذر تحديث الإعداد. يُرجى المحاولة مرة أخرى.";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10196,6 +10188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "يُرجى الاتصال بفريق الدعم الخاص بنا للحصول على المساعدة إذا تعذر تحميل بياناتك.";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "يزيل القسيمة من عربة التسوق";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "تم التطبيق";
 
@@ -10529,7 +10524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "تم";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "جرِّب إعادة تحميل هذه البطاقة. إذا استمرت المشكلة، فيرجى %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -12034,6 +12030,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "تمت مشاركة رابط الدفع عبر ميزة Scan to Pay. يُرجى التحقق من عملية الدفع قبل تنفيذ الطلب.";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "تعذر على بيانات تسجيل الدخول هذه الاطلاع على إعدادات المدفوعات";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "لم يسمح متجرك لعملية تسجيل الدخول هذه بالاطلاع على إعدادات المدفوعات. سجل الدخول مجددًا باستخدام حساب مسؤول أو مدير المتجر، ثم اضغط على \"إعادة المحاولة\".";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "الحساب لا يدعم عملة المتجر";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "لا يمكن لحساب المدفوعات الخاص بك تحصيل المدفوعات بعملة متجرك. لا يؤدي تغيير عملة المتجر إلى تحويل أسعار منتجاتك، لذا استمر في التواصل عبر الدردشة قبل تغييره.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "حساب المدفوعات غير مفعّل للاستخدام الفعلي";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "قد تفشل مدفوعات البطاقات الفعلية إلى أن يصبح الحساب مفعّلاً للاستخدام الفعلي. تحقق من حالة الحساب في إعدادات المدفوعات.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "حساب المدفوعات مقيد";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "لا يوجد شيء تحتاج إلى إرساله الآن. استمر في التواصل عبر الدردشة إذا كنت بحاجة إلى مساعدة بشأن الحساب.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "حظر موقعك عملية التحقق من الإعدادات";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "حالة إعداد المدفوعات غير معروفة. غالبًا ما يكون السبب إضافة أمان أو جدار حماية على موقعك. اسمح بالطلبات الواردة من تطبيق WooCommerce في تلك الإضافة، أو اطلب من مزود الخدمة السماح بها. لا تحتاج إلى إيقاف الإضافة.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "تعذر على الحساب تحصيل المدفوعات الفعلية";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "يفيد مزود خدمة المدفوعات بأن حسابك غير مؤهل لقبول مدفوعات البطاقات الفعلية. قم بإنهاء إعداد الحساب في إعدادات المدفوعات.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "اختيار مزود خدمة المدفوعات";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "كل من WooPayments وStripe مفعّلان. في التطبيق، انتقل إلى القائمة > المدفوعات، واضغط على \"متابعة الإعداد\"، ثم اختر مزود خدمة. لا تحتاج إلى تعطيل أي من الإضافتين.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "لا يتطابق بلد الحساب مع بلد المتجر";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "تحقق من أن عنوان متجرك صحيح. تعذر تغيير بلد حساب المدفوعات الخاص بك، لذا استمر في التواصل عبر الدردشة قبل تغيير الإعدادات الأخرى.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "تعذر على التطبيق التحقق من إعدادات المدفوعات لديك. استمر في التواصل عبر الدردشة حتى نتمكن من التحقق من موقعك.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "إضافة المدفوعات غير مفعّلة";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "قم بتفعيل إضافة المدفوعات، ثم أكمل إعدادها.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "عنوان المتجر غير مكتمل";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "تتطلب قارئات البطاقات وميزة Tap to Pay إدخال عنوان الشارع، والمدينة، والرمز البريدي. قم بإضافتها إلى إعدادات متجرك.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "لم يتم تحديد بلد المتجر";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "حدد بلد متجرك من إعدادات المتجر.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "لم يتم تحديد عملة المتجر";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "قم بتعيين عملة متجرك في إعدادات متجرك.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "لا توجد إضافة مدفوعات شخصية مفعّلة";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "قم بتثبيت WooPayments وتفعيله، ثم أكمل إعداده.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "تحتاج إضافة المدفوعات إلى تحديث";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "إصدار إضافة المدفوعات لديك قديم جدًا ولا يدعم المدفوعات المباشرة. تحديث الإضافة";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "توجد متطلبات متأخرة على الحساب";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "قد تتوقف المدفوعات وتحويلات الأموال إليك إلى أن ترسل المعلومات المطلوبة. قم بإرساله في إعدادات المدفوعات.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "يحتاج مزود خدمة المدفوعات الخاص بك إلى مزيد من المعلومات قبل الموعد النهائي. أرسله للحفاظ على تحويلات الأموال مفعّلة.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "مزود الخدمة غير متاح في بلدك";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "لا يدعم مزود خدمة المدفوعات الخاص بك المدفوعات الشخصية في بلد متجرك. قم بتثبيت WooPayments وتفعيله، ثم انتقل إلى القائمة > المدفوعات واضغط على \"متابعة الإعداد\".";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "تم رفض حساب المدفوعات";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "المدفوعات الشخصية غير متاحة مع حساب المدفوعات هذا. استمر في التواصل عبر الدردشة للتعرف على الخيارات المتاحة لك. لا يزال بإمكانك قبول المدفوعات النقدية من خلال التطبيق.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "تعذر التحقق من إعداد المدفوعات";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "حالة إعداد المدفوعات غير معروفة. تحقق من اتصالك بالإنترنت، ثم اضغط على \"إعادة المحاولة\".";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "لا يوجد حساب مدفوعات مرتبط";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "متجرك غير متصل بحساب مدفوعات. قم بإنهاء إعداد الحساب في إعدادات المدفوعات.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "لم يستجب المتجر بشكل صحيح";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "حالة إعداد المدفوعات غير معروفة. اطلب من مزود الخدمة مراجعة سجلات أخطاء الخادم.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "الوضع التجريبي قيد التشغيل";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "إضافة المدفوعات لديك في الوضع التجريبي، لذا لن تعمل مدفوعات البطاقات الفعلية. أوقف الوضع التجريبي من إعدادات المدفوعات. إذا كنت تستخدم نسخة تشغيل مرحلي من متجرك، فاستقبل المدفوعات من خلال متجرك الفعلي بدلاً منها.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "المدفوعات التجريبية فقط";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "حساب المدفوعات الخاص بك في الوضع التجريبي، لذا لن تعمل مدفوعات البطاقات الفعلية. أكمل إعداد الحساب الفعلي من إعدادات المدفوعات. إذا كنت تستخدم موقع تشغيل مرحلي، فاستخدم متجرك الفعلي بدلاً من ذلك.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "حالة الحساب غير معروفة";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "لا يتعرف التطبيق على حالة حساب المدفوعات الخاص بك. تحقق من الحساب في إعدادات المدفوعات، أو استمر في الدردشة.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "بلد المتجر غير مدعوم";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "لا تتوفر إمكانية قبول مدفوعات البطاقات الشخصية في بلد متجرك. إذا كان البلد المحدد في عنوان متجرك غير صحيح، فصحّحه. لا يزال بإمكانك قبول المدفوعات النقدية من خلال التطبيق.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "عملة المتجر غير مدعومة";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "لا تدعم المدفوعات الشخصية عملة متجرك في هذا البلد. لا يؤدي تغيير العملة إلى تحويل أسعار منتجك، لذا يُرجى التواصل عبر الدردشة قبل تغييره.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "المدفوعات، النقر للدفع، woocommerce، woo، المدفوعات الشخصية، الدفعات الشخصية، تحصيل الدفع، المدفوعات، القارئ، قارئ البطاقات، قارئ بطاقة الطلبات ";
 
@@ -12529,6 +12681,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "لم يتم تطبيق الخصم";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "تحرير مبلغ مخصص";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "إلغاء إعادة الاتصال";
 
@@ -12564,12 +12719,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "الإعدادات";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "تحرير";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "إزالة";
@@ -12946,9 +13095,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "مطلوب الحصول على الموافقة لتغيير الإعدادات";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "مطلوب الحصول على الموافقة لإدارة فريق العمل";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "الإعدادات";
 
@@ -12975,12 +13121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "المدفوعات";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "عرض بيانات فريق العمل وصلاحية الوصول عبر رمز PIN";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "فريق العمل";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "تكوين المتجر والإعدادات";
@@ -13639,11 +13779,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "موافق";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "أغلق غطاء الطابعة، ثم حاول مرة أخرى.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "غطاء الطابعة مفتوح";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "إرسال الإيصال عبر البريد الإلكتروني";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "حدث خطأ ما أثناء الطباعة. يُرجى المحاولة مرة أخرى.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "تعذرت طباعة الإيصال";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "تأكد من تحميل لفة الورق ووضعها بشكل صحيح، ثم أعد المحاولة.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "التحقق من ورق الطابعة";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "تأكد من أن الطابعة قيد التشغيل وأن تقنية Bluetooth مفعّلة عليها، وأنها قريبة منك، ثم أعد المحاولة.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "يتعذر الوصول إلى طابعتك";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "إعادة المحاولة";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "توصيل الطابعة";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "جارٍ الاتصال بـ %1$@…";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "تأكد من تشغيل Bluetooth، ثم أعد البحث.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "تعذر البحث عن الطابعات";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "تعذر علينا الاتصال بطابعتك. يُرجى المحاولة مرة أخرى.";
@@ -14030,9 +14206,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "أمين الصندوق";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "مدير";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14215,42 +14388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "المدفوعات";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "يُقفَل نظام نقطة البيع (POS) عند الضغط على \"قفل نقطة البيع\" من القائمة، أو تلقائيًا بعد مرور 5 دقائق من عدم الاستخدام.";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "إدارة فريق العمل على الويب";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "إدارة فريق العمل";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "رمز PIN غير موجود";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "تم تعيين رمز PIN";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "المشرف";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "أمين الصندوق لنقطة البيع (POS)";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "مدير نقطة البيع (POS)";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "تم تسجيل الدخول";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "يتعذر تحميل بيانات فريق العمل. تحقق من الاتصال بالشبكة، ثم أعِد المحاولة.";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "إعادة المحاولة";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "فريق العمل";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "تعذّر العثور على نقطة نهاية واجهة برمجة تطبيقات REST.";
@@ -15390,7 +15527,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "يتعذَّر الوصول إلى متجرك";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "إغلاق";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15458,6 +15596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "اختيار متجر للاتصال به (⁦%1$d⁩ مخفي)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "⁦%1$d⁩ من أصل 5 نجوم";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "مسح";
@@ -15667,6 +15808,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "لم يتم الإرسال. %1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "أنت تتواصل عبر الدردشة مع الذكاء الاصطناعي التابع لفريق دعم Woo.";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "اكتملت جميع عمليات الفحص دون اكتشاف أي مشاكل.";
 
@@ -15730,6 +15874,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "مرحبًا! أنا روبوت دعم Woo Mobile الخاص بك. هل هناك أي شيء يمكنني مساعدتك به اليوم؟";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "إذا فشلت عملية المدفوعات، فتواصل عبر الدردشة وأرسل رقم الطلب.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "اجتازت عملية إعداد المدفوعات جميع عمليات التحقق بنجاح";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "يُرجى وصف مشكلتك بمزيد من التفاصيل حتى أتمكن من مساعدتك.";
 
@@ -15745,11 +15895,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "تمكين تنبيهات الطلبات";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "فتح إعدادات المدفوعات";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "فتح الإضافات";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "تفضيلات التنبيهات";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "فتح الإعدادات";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "فتح إعدادات المتجر";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "تسجيل الجهاز";
@@ -15819,6 +15978,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "جارٍ التحقق من إعدادات التنبيهات";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "التحقق من إعداد المدفوعات في متجرك";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "جارٍ الاتصال بموقعك";
@@ -15924,6 +16086,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "أخرى";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "المدفوعات";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "جارٍ تلقي تنبيهات فورية";
@@ -16293,9 +16458,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "تم";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "تجاهُل";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "أسبوع";
@@ -16758,6 +16920,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "إعادة المحاولة";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "تجاهل الإشعار: %1$@";
 
 /* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
 "wooShipping.createLabels.serviceStatus.severity.error" = "خطأ";

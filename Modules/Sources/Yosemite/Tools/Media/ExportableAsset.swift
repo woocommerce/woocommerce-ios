@@ -1,7 +1,7 @@
 import Photos
 import UIKit
 
-public protocol ExportableAsset {}
+public protocol ExportableAsset: Sendable {}
 
 extension PHAsset: ExportableAsset {}
 

@@ -1,10 +1,12 @@
 import SwiftUI
+import WooFoundation
 
 /// Full-screen guide shown on iPhone when POS opens, until the merchant taps Start selling in person.
 /// It has no close button: the merchant either enters or exits POS.
 struct POSOnboardingGuideView: View {
     @Environment(\.posMetrics) private var metrics
     @State var currentPage = 0
+    @State private var videoURL: URL?
 
     let model: POSOnboardingGuideModel
     let onExit: () -> Void
@@ -14,7 +16,7 @@ struct POSOnboardingGuideView: View {
             TabView(selection: $currentPage) {
                 ForEach(steps.indices, id: \.self) { index in
                     POSOnboardingGuideStepView(step: steps[index],
-                                               onLearnMore: index == steps.indices.last ? learnMore : nil)
+                                               onLearnMore: index == steps.indices.last ? { learnMore() } : nil)
                         .scrollVerticallyIfNeeded()
                         .tag(index)
                 }
@@ -36,6 +38,7 @@ struct POSOnboardingGuideView: View {
         .environment(\.posLayoutScale, .compact)
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .interactiveDismissDisabled()
+        .safariSheet(url: $videoURL)
         .onAppear {
             model.stepViewed(currentStep)
         }
@@ -49,8 +52,8 @@ struct POSOnboardingGuideView: View {
     private var currentStep: POSOnboardingGuideStep { steps[currentPage] }
 
     private func learnMore() {
-        // Only tracked until the video of a sale is ready.
         model.videoTapped(on: currentStep)
+        videoURL = POSConstants.URLs.pointOfSaleOnboardingVideo.asURL()
     }
 
     private var buttonConfiguration: PointOfSaleFlowButtonConfiguration {

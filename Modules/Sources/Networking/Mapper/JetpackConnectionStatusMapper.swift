@@ -19,7 +19,7 @@ struct JetpackConnectionStatusMapper: Mapper {
 /// this endpoint is not gated by Jetpack capabilities, so it remains reachable even when the site is in
 /// Offline Mode (which otherwise makes the connection data endpoint return a 403).
 ///
-public struct JetpackConnectionStatus: Decodable {
+public struct JetpackConnectionStatus: Decodable, Sendable {
     /// The site's Jetpack Offline Mode state, if reported.
     public let offlineMode: OfflineMode?
 
@@ -32,7 +32,7 @@ public struct JetpackConnectionStatus: Decodable {
         self.offlineMode = offlineMode
     }
 
-    public struct OfflineMode: Decodable {
+    public struct OfflineMode: Decodable, Sendable {
         /// Whether Offline Mode is currently active for the site.
         public let isActive: Bool?
 

@@ -3,7 +3,7 @@ import Codegen
 
 /// WordPress.com Account
 ///
-public struct Account: Codable, Equatable, GeneratedFakeable {
+public struct Account: Codable, Equatable, GeneratedFakeable, Sendable {
 
     /// Dotcom UserID
     ///

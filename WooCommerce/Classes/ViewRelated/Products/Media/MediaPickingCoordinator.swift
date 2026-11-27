@@ -20,6 +20,7 @@ enum MediaPickingSource: Hashable, Identifiable {
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.
 ///
+@MainActor
 final class MediaPickingCoordinator {
     private lazy var cameraCapture: CameraCaptureCoordinator = {
         return CameraCaptureCoordinator(onCompletion: onCameraCaptureCompletion)
@@ -69,7 +70,6 @@ final class MediaPickingCoordinator {
         self.onProductImagePickerCompletion = onProductImagePickerCompletion
     }
 
-    @MainActor
     func present(context: MediaPickingContext) {
         let origin = context.origin
         let fromView = context.view
@@ -92,7 +92,6 @@ final class MediaPickingCoordinator {
         origin.present(menuAlert, animated: true)
     }
 
-    @MainActor
     func showMediaPicker(source: MediaPickingSource, from origin: UIViewController) {
         analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: [
             "source": source.analyticsValue,
@@ -114,7 +113,6 @@ final class MediaPickingCoordinator {
 // MARK: Alert Actions
 //
 private extension MediaPickingCoordinator {
-    @MainActor
     func cameraAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
@@ -123,7 +121,6 @@ private extension MediaPickingCoordinator {
         }
     }
 
-    @MainActor
     func photoLibraryAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
@@ -132,7 +129,6 @@ private extension MediaPickingCoordinator {
         }
     }
 
-    @MainActor
     func siteMediaLibraryAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
@@ -161,7 +157,6 @@ private extension MediaPickingCoordinator {
         wpMediaLibraryPicker.start(from: origin)
     }
 
-    @MainActor
     func showProductImagePicker(productID: Int64, from origin: UIViewController) {
         let viewModel = ProductImagePickerViewModel(siteID: siteID, productID: productID)
         let viewController = ProductImagePickerViewController(viewModel: viewModel, onSelection: { [weak self] selectedImage in

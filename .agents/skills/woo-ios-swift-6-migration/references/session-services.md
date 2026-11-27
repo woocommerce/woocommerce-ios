@@ -55,6 +55,12 @@ Use `@MainActor @Sendable` instead when the store already delivers every complet
 
 Treat callback isolation and argument ownership as separate contracts. When an Action completion returns an immutable value model, prefer adding checked `Sendable` conformance to that model and its stored-value graph. Adding `@Sendable` to the callback does not make its arguments transferable, while changing the parameter to `sending` can introduce warnings in stores, mocks, and fixtures that produce actor-isolated values. Reserve `sending` for APIs that genuinely transfer ownership, and compile every producer and caller before adopting it.
 
+In a Swift 5 target, a completion typed only as `@MainActor` can still warn when storage captures it in a `@Sendable` closure. Use both attributes when the callback has main-actor delivery and crosses a sendable boundary. Check the caller that creates the closure too. `MainActor.assumeIsolated` checks the executor at runtime. The compiler can still report a transfer of a non-`Sendable` store or completion captured at a nonisolated dispatcher entry point.
+
+Combine can run `receiveCancel` on the thread that releases the last `AnyCancellable`. A request can finish on the main queue and still cancel from a background thread. Trace both paths before adding `MainActor.assumeIsolated`. Keep a sendable cancellation result on its existing thread. When a consumer updates UI, check the current thread before moving that work to the main actor. Cover cancellation before the queued write and off-main cancellation at the app boundary.
+
+When an existing XCTest passes a promise to a new `@Sendable` Action completion, use TestKit's `waitForCompletion` with a `Sendable` result. Mark async tests that exercise the main-thread dispatcher `@MainActor`. Preserve existing assertions about synchronous delivery or callback order.
+
 ## Transitional configuration
 
 Before you add a public eligibility case or error for a missing service, check two facts:

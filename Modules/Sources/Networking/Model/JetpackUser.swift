@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Information of a WP.com user connected to a site's Jetpack if exists
-public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// Whether the user has connected a WP.com account to the site's Jetpack
     public let isConnected: Bool

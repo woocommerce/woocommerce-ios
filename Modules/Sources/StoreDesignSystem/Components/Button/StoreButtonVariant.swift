@@ -34,10 +34,6 @@ public struct StoreButtonVariant: Sendable {
         enabled: Appearance(background: nil, foreground: .storeOnSecondaryContainer, border: .storeSecondaryContainer)
     )
 
-    public static let text = StoreButtonVariant(
-        enabled: Appearance(background: nil, foreground: .storePrimary, border: nil)
-    )
-
     static func filled(background: Color, foreground: Color) -> StoreButtonVariant {
         StoreButtonVariant(enabled: Appearance(background: background, foreground: foreground, border: nil))
     }

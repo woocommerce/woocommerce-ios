@@ -38,17 +38,14 @@ struct StoreProductFormScreen: View {
         .background(Color.storeSurface)
         .safeAreaInset(edge: .bottom, spacing: StoreSpacing.s0) {
             if !store.moreDetailsActions.isEmpty {
-                VStack(spacing: StoreSpacing.s0) {
-                    StoreDivider()
-                    StoreButton(Localization.addMoreDetails, icon: StoreIcon.Plus.regular, variant: .text) {
-                        isNameFocused = false
-                        isShowingAITooltip = false
-                        isShowingMoreDetails = true
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(StorePadding.p3)
-                }
-                .background(Color.storeSurfaceBright)
+                StoreCell(Localization.addMoreDetails,
+                          showsDisclosureIndicator: true,
+                          action: showMoreDetails,
+                          leading: StoreIcon.Plus.regular.image(size: .largeIncreased)
+                            .foregroundStyle(Color.storePrimary)
+                            .accessibilityHidden(true))
+                    .compositingGroup()
+                    .shadow(radius: StoreSpacing.s2, y: -StoreSpacing.s1)
             }
         }
         .storeSheet(isPresented: $isShowingMoreDetails, onDismiss: openSelectedDetail) {
@@ -71,6 +68,12 @@ struct StoreProductFormScreen: View {
                           action: selectDetail)
             }
         }
+    }
+
+    private func showMoreDetails() {
+        isNameFocused = false
+        isShowingAITooltip = false
+        isShowingMoreDetails = true
     }
 
     private func openSelectedDetail() {
@@ -149,11 +152,17 @@ struct StoreProductFormScreen: View {
         case .learnMoreAboutAI:
             aiLegalText
         case .promoteWithBlaze:
+            let iconSize = ProductFormTableViewDataSource.blazeButtonIconSize
             StoreCell(Localization.promoteWithBlaze,
                       configuration: .init(density: .compact, iconTint: .title),
                       showsDisclosureIndicator: true,
                       action: { store.onPrimaryRowSelected(row) },
-                      leading: StoreIcon.ArrowTrendUp.regular.image(size: .large).accessibilityHidden(true))
+                      leading: Image(uiImage: .blaze)
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: iconSize.width, height: iconSize.height)
+                        .accessibilityHidden(true))
                 .accessibilityHint(Localization.promoteWithBlazeAccessibilityHint)
         case .separator:
             EmptyView()

@@ -342,7 +342,7 @@ private extension ProductFormTableViewDataSource {
             fatalError("Unexpected table view cell for the promote with Blaze cell")
         }
         cell.configure(
-            image: .blaze.resize(to: Constants.blazeButtonIconSize),
+            image: .blaze.resize(to: Self.blazeButtonIconSize),
             text: Localization.promoteWithBlaze,
             textColor: .accent
         )
@@ -494,11 +494,11 @@ private extension ProductFormTableViewDataSource {
         static let learnMoreTextHeight: CGFloat = 16
         static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 4, right: 0)
         static let settingsHeaderHeight = CGFloat(16)
-        static let blazeButtonIconSize = CGSize(width: 20, height: 20)
     }
 }
 
 extension ProductFormTableViewDataSource {
+    static let blazeButtonIconSize = CGSize(width: 20, height: 20)
     static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
 
     enum Localization {

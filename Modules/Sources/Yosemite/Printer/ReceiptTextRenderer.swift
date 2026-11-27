@@ -15,7 +15,7 @@ public struct ReceiptTextRenderer {
     private let dateFormatter: DateFormatter
 
     public init(lineWidth: Int = Constants.defaultLineWidth,
-                dateFormatter: DateFormatter = ReceiptTextRenderer.makeDefaultDateFormatter()) {
+                dateFormatter: DateFormatter) {
         precondition(lineWidth > 0, "lineWidth must be positive; the wrapping logic assumes at least one column.")
         self.lineWidth = lineWidth
         self.dateFormatter = dateFormatter
@@ -219,8 +219,14 @@ public extension ReceiptTextRenderer {
         public static let defaultLineWidth = 48
     }
 
-    static func makeDefaultDateFormatter() -> DateFormatter {
+    /// Formats the paid date in the store's timezone with the Gregorian calendar, so the printed date
+    /// and year match the order and the email receipt whatever the device's timezone or region calendar.
+    static func makeDateFormatter(timeZone: TimeZone, locale: Locale = .current) -> DateFormatter {
         let formatter = DateFormatter()
+        // Set the calendar after the locale, since assigning a locale can replace it with the locale's own calendar.
+        formatter.locale = locale
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = timeZone
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter

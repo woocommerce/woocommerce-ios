@@ -15,6 +15,8 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private var isUpdatingPreferredContentSize = false
+
     /// Used for calculating the full content height in `DrawerPresentable` implementation.
     var contentSize: CGSize {
         guard let tableView else {
@@ -143,6 +145,13 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func configurePreferredContentSize() {
+        // A popover lays its content out again synchronously when the preferred size changes.
+        // If the size doesn't settle, updating it from that nested pass recurses until the stack overflows.
+        guard !isUpdatingPreferredContentSize else {
+            return
+        }
+        isUpdatingPreferredContentSize = true
+        defer { isUpdatingPreferredContentSize = false }
         tableView.layoutIfNeeded()
         preferredContentSize = contentSize
     }

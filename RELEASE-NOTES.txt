@@ -3,6 +3,7 @@
 
 26.3
 -----
+- [*] Login: When a store gives an unexpected response to site credentials, like a two-factor code page, you can now sign in with your browser instead. [https://github.com/woocommerce/woocommerce-ios/pull/18492]
 
 
 26.2

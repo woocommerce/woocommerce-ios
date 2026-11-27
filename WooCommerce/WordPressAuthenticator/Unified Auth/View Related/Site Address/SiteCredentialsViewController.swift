@@ -28,6 +28,7 @@ final class SiteCredentialsViewController: LoginViewController {
     private var recoveredLoginURL: String?
     private var recoveredAdminURL: String?
     private var isAuthenticatingSiteCredentials = false
+    private var offersBrowserAlternativeOnForm = false
 
     private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
@@ -329,6 +330,10 @@ private extension SiteCredentialsViewController {
         if configuration.displayHintButtons {
             rows.append(.forgotPassword)
         }
+
+        if offersBrowserAlternativeOnForm {
+            rows.append(.browserAlternative)
+        }
     }
 
     /// Configure cells.
@@ -616,6 +621,12 @@ private extension SiteCredentialsViewController {
             // The authenticator cannot present this screen without a delegate, so the flow is already unusable here.
             fatalError("Error: Where did the delegate go?")
         }
+        if offersBrowserAlternativeOnForm {
+            offersBrowserAlternativeOnForm = false
+            loadRows()
+            tableView.reloadData()
+            updateAccessibilityElements()
+        }
         // manually construct the XMLRPC since this is needed to get the site address later
         let credentials = WordPressOrgCredentials(
             username: loginFields.username,
@@ -656,6 +667,7 @@ private extension SiteCredentialsViewController {
     /// Swaps the credential form for the inline prompt asking where the given endpoint lives.
     ///
     func showEndpointRecovery(_ recovery: SiteCredentialRecovery) {
+        offersBrowserAlternativeOnForm = false
         switch recovery {
         case .login(let draftURL, let error):
             recoveryEndpoint = .login
@@ -737,7 +749,7 @@ private extension SiteCredentialsViewController {
             handleLoginFailure(error: error, incorrectCredentials: incorrectCredentials)
             return
         }
-        WordPressAuthenticator.shared.delegate?.presentSiteCredentialLoginFailure(
+        let showsBrowserAlternative = WordPressAuthenticator.shared.delegate?.presentSiteCredentialLoginFailure(
             error: error,
             offersBrowserAlternative: recoveryEndpoint == nil && offersBrowserAlternative,
             for: loginFields.siteAddress,
@@ -746,7 +758,13 @@ private extension SiteCredentialsViewController {
                 guard let self else { return }
                 authenticateSiteCredentials(verifying: recoveryEndpoint, retryingFailure: error, onRetryResult: result)
             }
-        )
+        ) ?? false
+        if showsBrowserAlternative, recoveryEndpoint == nil {
+            offersBrowserAlternativeOnForm = true
+            loadRows()
+            tableView.reloadData()
+            updateAccessibilityElements()
+        }
     }
 
     func handleLoginFailure(error: Error, incorrectCredentials: Bool) {

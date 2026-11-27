@@ -113,9 +113,7 @@ enum SiteCredentialLoginError: LocalizedError {
             return false
         }
         switch self {
-        case .unexpectedResponse:
-            return presentationError.offersBrowserAlternative(at: stage)
-        case .invalidCredentials, .invalidLoginResponse, .loginFailed:
+        case .unexpectedResponse, .invalidCredentials, .invalidLoginResponse, .loginFailed:
             return true
         case .unacceptableStatusCode(let code):
             return code == 401

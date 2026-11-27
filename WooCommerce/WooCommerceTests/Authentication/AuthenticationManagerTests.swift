@@ -1296,56 +1296,107 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    func test_unexpected_credential_401_when_forwarded_then_offers_browser_recovery() throws {
-        // Given
-        let provider = MockAnalyticsProvider()
-        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
-        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
-                                            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
-        let context = LoginUnexpectedResponseFailure(stage: .credentials, statusCode: 401)
-        var receivedError: Error?
-        var verifiedLoginURL: String?
-        var offersBrowserAlternative = false
-        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
-                                            endpointUnderVerification: .login, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
-                                            onRecovery: { _ in XCTFail("Expected failure"); return false },
-                                            onFailure: { error, incorrectCredentials, verifiedURL, browserAlternative in
-            receivedError = error
-            verifiedLoginURL = verifiedURL
-            XCTAssertFalse(incorrectCredentials)
-            offersBrowserAlternative = browserAlternative
-        })
+    func test_unexpected_credential_response_when_forwarded_then_offers_browser_alternative() throws {
+        let contexts = [
+            LoginUnexpectedResponseFailure(stage: .credentials, statusCode: 401),
+            LoginUnexpectedResponseFailure(stage: .credentials, statusCode: 500),
+            LoginUnexpectedResponseFailure(stage: .credentials, statusCode: 200, kind: .unexpectedContent)
+        ]
+        for context in contexts {
+            // Given
+            let message = "status \(context.statusCode.map(String.init) ?? "nil")"
+            let provider = MockAnalyticsProvider()
+            let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+            let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
+                                                siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+            var receivedError: Error?
+            var verifiedLoginURL: String?
+            var offersBrowserAlternative = false
+            manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
+                                                endpointUnderVerification: .login, onLoading: { _ in },
+                                                onSuccess: { _ in XCTFail("Expected failure, \(message)") },
+                                                onRecovery: { _ in XCTFail("Expected failure, \(message)"); return false },
+                                                onFailure: { error, incorrectCredentials, verifiedURL, browserAlternative in
+                receivedError = error
+                verifiedLoginURL = verifiedURL
+                XCTAssertFalse(incorrectCredentials, message)
+                offersBrowserAlternative = browserAlternative
+            })
 
-        // When
-        useCase.fail(with: .unexpectedResponse(context), loginEntryVerified: true, offersBrowserAlternative: true)
+            // When
+            useCase.fail(with: .unexpectedResponse(context), loginEntryVerified: true, offersBrowserAlternative: true)
 
-        // Then
-        guard case .unexpectedResponse(let receivedContext) = try XCTUnwrap(receivedError as? SiteCredentialLoginError) else {
-            return XCTFail("Expected preserved response context")
+            // Then
+            guard case .unexpectedResponse(let receivedContext) = try XCTUnwrap(receivedError as? SiteCredentialLoginError, message) else {
+                XCTFail("Expected preserved response context, \(message)")
+                continue
+            }
+            XCTAssertEqual(receivedContext, context, message)
+            XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login", message)
+            XCTAssertTrue(offersBrowserAlternative, message)
+            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue], message)
+            XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
+                           SiteCredentialLoginError.unexpectedResponse(context).underlyingError.description, message)
         }
-        XCTAssertEqual(receivedContext, context)
-        XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
-        XCTAssertTrue(offersBrowserAlternative)
-        XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
-        XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
-                       SiteCredentialLoginError.unacceptableStatusCode(code: 401).underlyingError.description)
     }
 
-    func test_unexpected_credential_401_when_browser_recovery_is_offered_then_presents_site_credential_alert() throws {
+    func test_unexpected_credential_response_when_browser_alternative_is_offered_then_presents_standard_alert_and_offers_form_link() {
+        for code in [401, 500, 200] {
+            // Given
+            let provider = MockAnalyticsProvider()
+            let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider))
+            let presenter = DeferredCredentialAlertPresenter()
+            let kind: LoginUnexpectedResponseFailure.Kind = code == 200 ? .unexpectedContent : .unacceptableStatusCode
+            let context = LoginUnexpectedResponseFailure(stage: .credentials, statusCode: code, kind: kind)
+
+            // When
+            let offersBrowserOnForm = manager.presentSiteCredentialLoginFailure(
+                error: SiteCredentialLoginError.unexpectedResponse(context),
+                offersBrowserAlternative: true,
+                for: "https://example.com",
+                in: presenter
+            )
+            presenter.completePresentation()
+
+            // Then
+            XCTAssertTrue(offersBrowserOnForm, "status \(code)")
+            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue], "status \(code)")
+        }
+    }
+
+    func test_unexpected_response_when_browser_alternative_is_not_offered_then_hides_form_link() {
+        // Given
+        let manager = AuthenticationManager()
+        let presenter = DeferredCredentialAlertPresenter()
+
+        // When
+        let offersBrowserOnForm = manager.presentSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.unexpectedResponse(.init(stage: .nonce, statusCode: 500)),
+            offersBrowserAlternative: false,
+            for: "https://example.com",
+            in: presenter
+        )
+
+        // Then
+        XCTAssertFalse(offersBrowserOnForm)
+    }
+
+    func test_invalid_credentials_when_browser_alternative_is_offered_then_presents_centered_alert_without_form_link() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()
         navigationController.setViewControllers([presenter], animated: false)
         let manager = AuthenticationManager()
 
         // When
-        manager.presentSiteCredentialLoginFailure(
-            error: SiteCredentialLoginError.unexpectedResponse(.init(stage: .credentials, statusCode: 401)),
+        let offersBrowserOnForm = manager.presentSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.invalidCredentials,
             offersBrowserAlternative: true,
             for: "https://example.com",
             in: presenter
         )
 
         // Then
+        XCTAssertFalse(offersBrowserOnForm)
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 

@@ -210,7 +210,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                     XCTAssertTrue(logs.first?.contains("kind=unacceptable_status_code, status=\(code)") == true)
                     XCTAssertEqual(error.errorCode, code)
                     XCTAssertEqual(error.errorMessage, SiteCredentialLoginError.unacceptableStatusCode(code: code).errorMessage)
-                    XCTAssertFalse(error.offersBrowserAlternative(at: stage))
+                    XCTAssertEqual(error.offersBrowserAlternative(at: stage), stage == .credentials)
                 }
             }
         }
@@ -672,6 +672,35 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             return XCTFail("Expected unexpected credential response")
         }
         XCTAssertEqual(failure.statusCode, 401)
+        XCTAssertEqual(failure.step, .credentialsSubmission)
+        XCTAssertEqual(outcome.loginEntryVerified, true)
+        XCTAssertEqual(outcome.offersBrowserAlternative, true)
+    }
+
+    func test_handle_login_when_credentials_return_two_factor_page_then_offers_browser_alternative() async {
+        // Given
+        let siteURL = "https://test.com"
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        let twoFactorPage = "<form name=\"validate_2fa_form\" method=\"post\"><input name=\"authcode\" type=\"text\"></form>"
+        loginSession.simulateResponse(
+            for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath,
+            data: Data(twoFactorPage.utf8)
+        )
+
+        // When
+        let outcome = await performLoginWithVerification(
+            siteURL: siteURL,
+            session: session,
+            loginSession: loginSession
+        )
+
+        // Then
+        guard case .failure(.unexpectedResponse(let failure)) = outcome.result else {
+            return XCTFail("Expected unexpected credential response")
+        }
+        XCTAssertEqual(failure.statusCode, 200)
+        XCTAssertEqual(failure.kind, .unexpectedContent)
         XCTAssertEqual(failure.step, .credentialsSubmission)
         XCTAssertEqual(outcome.loginEntryVerified, true)
         XCTAssertEqual(outcome.offersBrowserAlternative, true)
@@ -1357,7 +1386,10 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             .invalidLoginResponse,
             .loginFailed(message: "Captcha required"),
             .unacceptableStatusCode(code: 401),
-            .unexpectedResponse(.init(stage: .credentials, statusCode: 401))
+            .unexpectedResponse(.init(stage: .credentials, statusCode: 401)),
+            .unexpectedResponse(.init(stage: .credentials, statusCode: 429)),
+            .unexpectedResponse(.init(stage: .credentials, statusCode: 500)),
+            .unexpectedResponse(.init(stage: .credentials))
         ]
         for error in eligibleErrors {
             XCTAssertTrue(error.offersBrowserAlternative(at: .credentials))

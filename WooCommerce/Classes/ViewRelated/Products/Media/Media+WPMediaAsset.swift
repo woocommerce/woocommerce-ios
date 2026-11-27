@@ -23,7 +23,9 @@ extension CancellableMedia: WPMediaAsset {
                 completionHandler(image, error)
             }
         }
-        return Int32(media.mediaID)
+        // `WPMediaRequestID` is 32-bit but media IDs are 64-bit. The ID is only an opaque token here: `cancelImageRequest` ignores it,
+        // so truncating is safe where a trapping conversion is not.
+        return Int32(truncatingIfNeeded: media.mediaID)
     }
 
     public func cancelImageRequest(_ requestID: WPMediaRequestID) {

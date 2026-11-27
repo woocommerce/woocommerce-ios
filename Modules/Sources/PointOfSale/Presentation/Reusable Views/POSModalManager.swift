@@ -46,6 +46,7 @@ class POSModalManager: ObservableObject {
     }
 
     func onDisappear() {
+        isPresented = false
         reset()
     }
 

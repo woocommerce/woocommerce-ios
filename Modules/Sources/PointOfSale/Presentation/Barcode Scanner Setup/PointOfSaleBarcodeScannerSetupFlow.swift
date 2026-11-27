@@ -336,6 +336,7 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
         return PointOfSaleFlowButtonConfiguration(
             primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.retryButtonTitle,
+                stepsBackward: true,
                 action: { flow.transition(to: .retry) }
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(

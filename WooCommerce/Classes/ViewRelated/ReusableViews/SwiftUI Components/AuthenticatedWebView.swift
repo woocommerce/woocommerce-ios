@@ -150,20 +150,24 @@ struct AuthenticatableWebView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationStack {
+        Group {
             let stores = ServiceLocator.stores
             let site = stores.sessionManager.defaultSite
             if let site, stores.shouldAuthenticateAdminPage(for: site) {
-                AuthenticatedWebView(isPresented: .constant(true), url: url)
-                    .navigationTitle(title)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(Localization.doneButton, action: { dismiss() })
+                NavigationStack {
+                    AuthenticatedWebView(isPresented: .constant(true), url: url)
+                        .navigationTitle(title)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button(Localization.doneButton, action: { dismiss() })
+                            }
                         }
-                    }
+                }
             } else {
+                // A NavigationStack around SFSafariViewController blocks the sheet's pull-to-dismiss.
                 SafariSheetView(url: url)
+                    .ignoresSafeArea()
             }
         }
         .onDisappear {

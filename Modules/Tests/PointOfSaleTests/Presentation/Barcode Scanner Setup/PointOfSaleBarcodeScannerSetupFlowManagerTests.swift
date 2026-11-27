@@ -145,4 +145,46 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         }
         #expect(sut.getCurrentStep() == nil)
     }
+
+    @Test func test_currentPageID_when_moving_between_steps_and_selection_then_each_page_has_its_own_id() {
+        // Given
+        let sut = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: .constant(true), analytics: MockPOSAnalytics())
+        let selectionPageID = sut.currentPageID
+
+        // When
+        sut.selectScanner(.starBSH20B)
+        let firstStepPageID = sut.currentPageID
+        sut.buttonConfiguration.primaryButton?.action()
+
+        // Then
+        #expect(firstStepPageID == PointOfSaleBarcodeScannerStepID.setupBarcodeHID.rawValue)
+        #expect(sut.currentPageID == PointOfSaleBarcodeScannerStepID.pairing.rawValue)
+        #expect(selectionPageID != firstStepPageID)
+    }
+
+    @Test func test_retry_button_when_scan_failed_then_steps_backward() {
+        // Given
+        let sut = PointOfSaleBarcodeScannerSetupFlow(scannerType: .starBSH20B,
+                                                     analytics: MockPOSAnalytics(),
+                                                     onBackToSelection: {},
+                                                     onDismiss: {})
+        sut.transition(to: .testScanFailed)
+
+        // When
+        let retryButton = sut.getButtonConfiguration().primaryButton
+        retryButton?.action()
+
+        // Then
+        #expect(retryButton?.stepsBackward == true)
+        #expect(sut.currentStepKey == .setupBarcodeHID)
+    }
+
+    @Test(arguments: PointOfSaleBarcodeScannerStepID.allCases)
+    func test_pageID_when_step_then_only_timeout_shares_the_test_page(step: PointOfSaleBarcodeScannerStepID) {
+        // Given / When
+        let pageID = step.pageID
+
+        // Then
+        #expect(pageID == (step == .testScanTimedOut ? .test : step))
+    }
 }

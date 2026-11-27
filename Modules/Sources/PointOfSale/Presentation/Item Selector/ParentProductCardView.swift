@@ -9,6 +9,7 @@ struct ParentProductCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posHidesItemCardImage) private var hidesImage
 
     private var dimension: CGFloat {
         min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
@@ -26,31 +27,44 @@ struct ParentProductCardView: View {
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
+            .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
-                    .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
-                Text(detailText)
-                    .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
-            }
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
-            Spacer()
+                HStack(spacing: metrics.spacing.small) {
+                    Text(detailText)
+                        .foregroundStyle(Constants.detailColor)
+                        .font(Constants.itemDetailFont)
 
-            Image(systemName: "chevron.forward")
-                .accessibilityHidden(true)
-                .font(.posButtonSymbolSmall)
-                .foregroundStyle(Color.posOnSurfaceVariantLowest)
-                .padding(.horizontal, metrics.padding.medium * (1 / scale))
+                    if hidesImage {
+                        Spacer()
+                        chevron
+                    }
+                }
+            }
+            .multilineTextAlignment(.leading)
+            .posItemCardTextPadding()
+
+            if !hidesImage {
+                Spacer()
+                chevron
+                    .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            }
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
+    }
+
+    private var chevron: some View {
+        Image(systemName: "chevron.forward")
+            .accessibilityHidden(true)
+            .font(.posButtonSymbolSmall)
+            .foregroundStyle(Color.posOnSurfaceVariantLowest)
     }
 }
 

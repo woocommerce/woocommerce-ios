@@ -7,11 +7,10 @@ final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMe
     ///
     weak var parentController: UIViewController?
 
-    /// Called once when the screen closes.
-    ///
-    var onDismiss: (() -> Void)?
+    private var onDismiss: (() -> Void)?
 
-    init(viewModel: PaymentMethodsViewModel) {
+    init(viewModel: PaymentMethodsViewModel, onDismiss: (() -> Void)? = nil) {
+        self.onDismiss = onDismiss
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController

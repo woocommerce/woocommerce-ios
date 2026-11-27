@@ -6,7 +6,8 @@ import YosemiteTestHelpers
 
 @MainActor
 struct PaymentMethodsHostingControllerTests {
-    @Test func test_dismiss_when_screen_closes_in_code_and_by_swipe_then_calls_onDismiss_once() {
+    @Test(arguments: [false, true])
+    func test_dismiss_when_screen_closes_then_calls_onDismiss_once(swipeFirst: Bool) {
         // Given
         let dependencies = PaymentMethodsViewModel.Dependencies(stores: MockStoresManager(sessionManager: .testingInstance),
                                                                storage: MockStorageManager())
@@ -15,17 +16,25 @@ struct PaymentMethodsHostingControllerTests {
                                                 flow: .simplePayment,
                                                 channel: .storeManagement,
                                                 dependencies: dependencies)
-        let viewController = PaymentMethodsHostingController(viewModel: viewModel)
         var dismissCount = 0
-        viewController.onDismiss = {
+        let viewController = PaymentMethodsHostingController(viewModel: viewModel) {
             dismissCount += 1
         }
 
+        let presentation = UIPresentationController(presentedViewController: viewController, presenting: nil)
+
         // When
+        if swipeFirst {
+            viewController.presentationControllerDidDismiss(presentation)
+        } else {
+            viewController.rootView.dismiss()
+        }
+        let countAfterFirstDismiss = dismissCount
         viewController.rootView.dismiss()
-        viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
+        viewController.presentationControllerDidDismiss(presentation)
 
         // Then
+        #expect(countAfterFirstDismiss == 1)
         #expect(dismissCount == 1)
     }
 }

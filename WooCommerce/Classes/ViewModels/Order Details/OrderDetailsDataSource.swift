@@ -47,13 +47,23 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForPayment: Bool {
+    private var isEligibleForPayment: Bool {
         return order.datePaid == nil
     }
 
-    /// Hides Collect Payment while the order refresh after a completed card payment runs.
-    ///
-    var isWaitingForPaidOrder = false
+    private var isRefreshingPaidOrder = false
+
+    var canCollectPayment: Bool {
+        isEligibleForPayment && !isRefreshingPaidOrder
+    }
+
+    func hideCollectPayment(while refresh: @escaping @MainActor () async -> Void) -> Task<Void, Never> {
+        isRefreshingPaidOrder = true
+        return Task {
+            await refresh()
+            isRefreshingPaidOrder = false
+        }
+    }
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
@@ -1503,7 +1513,7 @@ extension OrderDetailsDataSource {
             rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
             rows.append(.netAmount)
         }
-        if isEligibleForPayment && !isWaitingForPaidOrder {
+        if canCollectPayment {
             rows.append(.collectCardPaymentButton)
         }
         if isEligibleForBackendReceipt {

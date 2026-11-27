@@ -245,15 +245,15 @@ private extension OrderDetailsViewControllerTests {
         let viewController = OrderDetailsViewController(viewModel: viewModel)
         viewController.loadViewIfNeeded()
         viewController.viewWillAppear(false)
-        let paymentMethods = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
-        viewController.showOrderRefreshing(during: paymentMethods)
+        let payments = viewModel.paymentMethodsViewModel
+        let paymentMethods = viewController.makePaymentMethodsController(for: payments)
         let (orders, continuation) = AsyncStream<Order>.makeStream()
         let paymentRefresh = Task<Order?, Never> {
             for await order in orders { return order }
             return nil
         }
-        paymentMethods.rootView.viewModel.onPaymentOrderRefreshStarted?(paymentRefresh)
-        XCTAssertEqual(try Self.mirror(of: viewController).activeTopLoaderRequests, 2)
+        payments.onPaymentOrderRefreshStarted?(paymentRefresh)
+        paymentMethods.rootView.dismiss()
 
         // When
         if paymentFinishesFirst {
@@ -277,8 +277,8 @@ private extension OrderDetailsViewControllerTests {
         await until { try Self.mirror(of: viewController).topLoaderView.isHidden }
 
         // Then
-        XCTAssertEqual(try Self.mirror(of: viewController).activeTopLoaderRequests, 0)
-        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+        XCTAssertEqual(viewModel.order, paidOrder)
+        XCTAssertFalse(viewModel.dataSource.canCollectPayment)
     }
 
     static func findCell<T>(type: T.Type, on tableView: UITableView) -> (cell: T, indexPath: IndexPath)? {

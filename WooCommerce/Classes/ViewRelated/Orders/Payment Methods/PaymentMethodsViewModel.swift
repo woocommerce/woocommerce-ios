@@ -35,12 +35,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showLoadingIndicator = false
 
-    /// The order refresh started after a completed card payment. It returns the refreshed order, or `nil` when the refresh fails.
-    ///
     private var paymentOrderRefresh: Task<Order?, Never>?
 
-    /// Called when a completed card payment starts its order refresh, so the screen behind payments can show it updating.
-    ///
     var onPaymentOrderRefreshStarted: ((Task<Order?, Never>) -> Void)?
 
     /// Stores the payment link for the order.
@@ -309,8 +305,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                 guard let self else { return }
 
                 trackFlowFailed()
-                // Order details refreshes the order when this screen closes. A refresh here could finish after
-                // a cash payment chosen as the Tap to Pay fallback, and save the unpaid order over it.
                 if shouldReturnToOrderDetails(for: discoveryMethod, error: error) {
                     onFailure()
                     return
@@ -320,11 +314,9 @@ final class PaymentMethodsViewModel: ObservableObject {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
             onPaymentCompletion: { [weak self] _ in
-                // Refresh while the receipt is open, so the paid order is usually saved before the merchant leaves.
                 self?.startPaymentOrderRefresh()
             },
             onCompleted: { [weak self] in
-                // Without a receipt, this runs before `onPaymentCompletion`.
                 self?.startPaymentOrderRefresh()
 
                 // Inform success to consumer

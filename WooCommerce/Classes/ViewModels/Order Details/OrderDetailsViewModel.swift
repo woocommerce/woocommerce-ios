@@ -443,38 +443,30 @@ extension OrderDetailsViewModel {
         }
     }
 
-    /// Refreshes an unpaid order during or after the payment flow.
-    /// For a completed card payment, it waits for that payment's refresh and hides Collect Payment until it ends.
-    /// Without one, it syncs the order, unless a payment refresh is still running.
-    ///
-    @MainActor
     func refreshOrderAfterPayment(waitingFor paymentOrderRefresh: Task<Order?, Never>?) -> Task<Void, Never>? {
-        guard dataSource.isEligibleForPayment, !dataSource.isWaitingForPaidOrder else { return nil }
+        guard dataSource.canCollectPayment else { return nil }
+        if let paymentOrderRefresh {
+            return dataSource.hideCollectPayment { [weak self] in
+                let order = await paymentOrderRefresh.value
+                await self?.applyPaymentRefresh(order)
+            }
+        }
 
-        dataSource.isWaitingForPaidOrder = paymentOrderRefresh != nil
-        return Task { @MainActor [weak self] in
-            let refreshedOrder: Order?
-            if let paymentOrderRefresh {
-                refreshedOrder = await paymentOrderRefresh.value
-            } else {
-                refreshedOrder = await withCheckedContinuation { continuation in
-                    guard let self else { return continuation.resume(returning: nil) }
-                    syncOrder { order, _ in continuation.resume(returning: order) }
-                }
+        return Task { [weak self] in
+            let order: Order? = await withCheckedContinuation { continuation in
+                guard let self else { return continuation.resume(returning: nil) }
+                syncOrder { order, _ in continuation.resume(returning: order) }
             }
+            await self?.applyPaymentRefresh(order)
+        }
+    }
 
-            // Apply the response without relying on the storage listener running first.
-            // The listener then sees no status change, so the receipt check runs here too.
-            if let order = refreshedOrder, let self {
-                let previousStatus = self.order.status
-                update(order: order)
-                if order.status != previousStatus {
-                    await refreshReceiptEligibility()
-                }
-            }
-            if paymentOrderRefresh != nil {
-                self?.dataSource.isWaitingForPaidOrder = false
-            }
+    private func applyPaymentRefresh(_ refreshedOrder: Order?) async {
+        guard let refreshedOrder else { return }
+        let statusChanged = refreshedOrder.status != order.status
+        update(order: refreshedOrder)
+        if statusChanged {
+            await refreshReceiptEligibility()
         }
     }
 

@@ -128,7 +128,20 @@ final class OrderDetailsViewController: UIViewController {
     }
 
     func isPresentingViewModelOrder(_ viewModel: OrderDetailsViewModel) -> Bool {
-        return self.viewModel.order.orderID == viewModel.order.orderID
+        isPresentingOrder(withID: viewModel.order.orderID)
+    }
+
+    func isPresentingOrder(withID orderID: Int64) -> Bool {
+        viewModel.order.orderID == orderID
+    }
+
+    func makePaymentMethodsController(for payments: PaymentMethodsViewModel) -> PaymentMethodsHostingController {
+        payments.onPaymentOrderRefreshStarted = { [weak self] refresh in
+            self?.refreshOrderAfterPayment(waitingFor: refresh)
+        }
+        return PaymentMethodsHostingController(viewModel: payments) { [weak self] in
+            self?.refreshOrderAfterPayment(waitingFor: nil)
+        }
     }
 
     func isQuickOrderNavigationSupported() -> Bool {
@@ -330,27 +343,6 @@ private extension OrderDetailsViewController {
         viewModel.reloadSections()
     }
 }
-
-// MARK: - Payments
-//
-extension OrderDetailsViewController {
-
-    func isPresentingOrder(withID orderID: Int64) -> Bool {
-        viewModel.order.orderID == orderID
-    }
-
-    /// Shows this order refreshing while the payment methods run and after they close.
-    ///
-    func showOrderRefreshing(during paymentMethodsViewController: PaymentMethodsHostingController) {
-        paymentMethodsViewController.rootView.viewModel.onPaymentOrderRefreshStarted = { [weak self] paymentOrderRefresh in
-            self?.refreshOrderAfterPayment(waitingFor: paymentOrderRefresh)
-        }
-        paymentMethodsViewController.onDismiss = { [weak self] in
-            self?.refreshOrderAfterPayment(waitingFor: nil)
-        }
-    }
-}
-
 
 // MARK: - Notices
 //
@@ -824,9 +816,8 @@ private extension OrderDetailsViewController {
     }
 
     private func collectPayment() {
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
+        let paymentMethodsViewController = makePaymentMethodsController(for: viewModel.paymentMethodsViewModel)
         paymentMethodsViewController.parentController = self
-        showOrderRefreshing(during: paymentMethodsViewController)
         present(paymentMethodsViewController, animated: true)
     }
 

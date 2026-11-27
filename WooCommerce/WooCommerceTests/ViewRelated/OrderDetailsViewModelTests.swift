@@ -1290,14 +1290,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // When
         let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: paymentRefresh))
-        let isWaitingDuringRefresh = viewModel.dataSource.isWaitingForPaidOrder
+        let canCollectDuringRefresh = viewModel.dataSource.canCollectPayment
         finishPaymentRefresh.yield(paidOrder)
         finishPaymentRefresh.finish()
         await refresh.value
 
         // Then
-        XCTAssertTrue(isWaitingDuringRefresh)
-        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+        XCTAssertFalse(canCollectDuringRefresh)
+        XCTAssertFalse(viewModel.dataSource.canCollectPayment)
         XCTAssertEqual(viewModel.order, paidOrder)
         XCTAssertTrue(viewModel.dataSource.isEligibleForBackendReceipt)
         XCTAssertEqual(retrieveOrderActionCount, 0)
@@ -1316,7 +1316,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         await refresh.value
 
         // Then
-        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+        XCTAssertTrue(viewModel.dataSource.canCollectPayment)
         XCTAssertEqual(viewModel.order, unpaidOrder)
         XCTAssertEqual(retrieveOrderActionCount, 0)
     }
@@ -1360,11 +1360,11 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // When
         let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: nil))
-        let isWaitingDuringRefresh = viewModel.dataSource.isWaitingForPaidOrder
+        let canCollectDuringRefresh = viewModel.dataSource.canCollectPayment
         await refresh.value
 
         // Then
-        XCTAssertFalse(isWaitingDuringRefresh)
+        XCTAssertTrue(canCollectDuringRefresh)
         XCTAssertEqual(retrieveOrderActionCount, 1)
         XCTAssertEqual(viewModel.order.status, .failed)
         XCTAssertTrue(viewModel.dataSource.isEligibleForBackendReceipt)

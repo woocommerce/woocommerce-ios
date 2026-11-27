@@ -779,14 +779,11 @@ private extension OrdersRootViewController {
             return
         }
 
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel)
-        paymentMethodsViewController.parentController = presenter
-        // On iPad, the new order's details may not be in the window yet, so another screen presents payments.
-        // The details showing this order still show it refreshing.
-        [orderDetailsViewController, presenter as? OrderDetailsViewController]
+        let details = [orderDetailsViewController, presenter as? OrderDetailsViewController]
             .compactMap { $0 }
-            .first { $0.isPresentingOrder(withID: viewModel.orderID) }?
-            .showOrderRefreshing(during: paymentMethodsViewController)
+            .first { $0.isPresentingOrder(withID: viewModel.orderID) }
+        let paymentMethodsViewController = details?.makePaymentMethodsController(for: viewModel) ?? PaymentMethodsHostingController(viewModel: viewModel)
+        paymentMethodsViewController.parentController = presenter
         presenter.present(paymentMethodsViewController, animated: true)
     }
 

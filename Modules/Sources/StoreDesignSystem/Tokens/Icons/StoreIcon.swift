@@ -1,4 +1,7 @@
 public enum StoreIcon {
+    public enum AlignLeft {
+        public static let regular = StoreIconImage("AlignLeft-Regular")
+    }
     public enum AngleDown {
         public static let regular = StoreIconImage("AngleDown-Regular")
         public static let solid = StoreIconImage("AngleDown-Solid")
@@ -102,6 +105,9 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("CalendarDays-Regular")
         public static let solid = StoreIconImage("CalendarDays-Solid")
     }
+    public enum CalendarXmark {
+        public static let regular = StoreIconImage("CalendarXmark-Regular")
+    }
     public enum CaretDown {
         public static let solid = StoreIconImage("CaretDown-Solid")
     }
@@ -135,6 +141,7 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("CircleInfo-Regular")
     }
     public enum CirclePlus {
+        public static let regular = StoreIconImage("CirclePlus-Regular")
         public static let solid = StoreIconImage("CirclePlus-Solid")
     }
     public enum Clock {
@@ -164,6 +171,9 @@ public enum StoreIcon {
     }
     public enum Flask {
         public static let regular = StoreIconImage("Flask-Regular")
+    }
+    public enum Folder {
+        public static let regular = StoreIconImage("Folder-Regular")
     }
     public enum Gauge {
         public static let regular = StoreIconImage("Gauge-Regular")
@@ -196,6 +206,9 @@ public enum StoreIcon {
     public enum HandHoldingHeart {
         public static let regular = StoreIconImage("HandHoldingHeart-Regular")
     }
+    public enum Hourglass {
+        public static let regular = StoreIconImage("Hourglass-Regular")
+    }
     public enum House {
         public static let light = StoreIconImage("House-Light")
         public static let regular = StoreIconImage("House-Regular")
@@ -217,6 +230,9 @@ public enum StoreIcon {
         public static let light = StoreIconImage("List-Light")
         public static let regular = StoreIconImage("List-Regular")
         public static let solid = StoreIconImage("List-Solid")
+    }
+    public enum ListCheck {
+        public static let regular = StoreIconImage("ListCheck-Regular")
     }
     public enum MagnifyingGlass {
         public static let regular = StoreIconImage("MagnifyingGlass-Regular")
@@ -272,6 +288,9 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("ScrewdriverWrench-Regular")
         public static let solid = StoreIconImage("ScrewdriverWrench-Solid")
     }
+    public enum Shapes {
+        public static let regular = StoreIconImage("Shapes-Regular")
+    }
     public enum Share {
         public static let light = StoreIconImage("Share-Light")
         public static let regular = StoreIconImage("Share-Regular")
@@ -320,6 +339,12 @@ public enum StoreIcon {
         public static let light = StoreIconImage("TicketPerforated-Light")
         public static let regular = StoreIconImage("TicketPerforated-Regular")
         public static let solid = StoreIconImage("TicketPerforated-Solid")
+    }
+    public enum Truck {
+        public static let regular = StoreIconImage("Truck-Regular")
+    }
+    public enum UpRightFromSquare {
+        public static let regular = StoreIconImage("UpRightFromSquare-Regular")
     }
     public enum UseShield {
         public static let regular = StoreIconImage("UseShield-Regular")

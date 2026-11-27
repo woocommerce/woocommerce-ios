@@ -24,6 +24,7 @@ struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
     let stockStatusKey: String
+    let productStatus: ProductStatus
     let productVariation: ProductVariation?
     let detailsAttributedString: NSAttributedString
     /// Draft, pending or private; `nil` for published products.
@@ -55,6 +56,7 @@ struct ProductsTabProductViewModel {
         self.isSelected = isSelected
         self.isDraggable = isDraggable
         self.hasPendingUploads = hasPendingUploads
+        productStatus = product.productStatus
         statusText = product.createStatusText()
         detailsText = product.createDetailsText(isPriceShown: isPriceShown, currencySettings: currencySettings)
         skuText = isSKUShown ? product.createSKUText() : nil

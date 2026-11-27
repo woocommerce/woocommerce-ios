@@ -23,7 +23,10 @@ private struct POSFooterBottomPaddingModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(.bottom, bottomPadding)
-            .onGeometryChange(for: CGFloat.self, of: { $0.safeAreaInsets.bottom }) { bottomSafeAreaInset = $0 }
+            .onGeometryChange(for: CGFloat.self, of: { $0.safeAreaInsets.bottom }) { inset in
+                // Writing inline re-enters SwiftUI's update and froze POS on iPhone Duo when the inset kept changing.
+                DispatchQueue.main.async { bottomSafeAreaInset = inset }
+            }
     }
 
     private var bottomPadding: CGFloat {

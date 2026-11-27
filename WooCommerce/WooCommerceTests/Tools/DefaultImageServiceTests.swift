@@ -411,6 +411,28 @@ final class DefaultImageServiceTests: XCTestCase {
         XCTAssertEqual(resource?.cacheKey, "https://woocommerce.com/image.jpg")
     }
 
+    func test_httpsURL_when_host_is_localhost_then_keeps_http() throws {
+        // Given
+        let urls = try ["http://localhost:8080/image.jpg", "http://LocalHost:8080/image.jpg"].map { try XCTUnwrap(URL(string: $0)) }
+
+        // When
+        let results = urls.map { DefaultImageService.httpsURL(from: $0) }
+
+        // Then
+        XCTAssertEqual(results, urls)
+    }
+
+    func test_httpsURL_when_host_is_loopback_ip_then_keeps_http() throws {
+        // Given
+        let urls = try ["http://127.0.0.1:8080/image.jpg", "http://[::1]:8080/image.jpg"].map { try XCTUnwrap(URL(string: $0)) }
+
+        // When
+        let results = urls.map { DefaultImageService.httpsURL(from: $0) }
+
+        // Then
+        XCTAssertEqual(results, urls)
+    }
+
     func test_imageResource_when_string_is_nil_then_returns_nil() {
         // When
         let resource = DefaultImageService.imageResource(from: nil)

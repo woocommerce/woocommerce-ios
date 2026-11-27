@@ -137,6 +137,14 @@ struct DefaultImageService: ImageService {
         encodedURL(from: string).map(httpsResource(for:))
     }
 
+    /// Keeps `http` for loopback hosts, which ATS allows. The screenshot tool serves images from `http://localhost`.
+    static func httpsURL(from url: URL) -> URL {
+        if let host = url.host?.lowercased(), Constants.loopbackHosts.contains(host) {
+            return url
+        }
+        return URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
+    }
+
     /// Returns `nil` for cancelled loads, e.g. on cell reuse, and for items without an image URL.
     /// Includes only the host and scheme, as paths and queries can hold private data.
     static func loadFailureDescription(originalURL: URL?, error: Error) -> String? {
@@ -164,10 +172,6 @@ private extension DefaultImageService {
     static func encodedURL(from string: String?) -> URL? {
         let encodedString = string?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         return URL(string: encodedString ?? "")
-    }
-
-    static func httpsURL(from url: URL) -> URL {
-        URL(string: url.absoluteString.normalizedToHTTPS()) ?? url
     }
 
     /// Caches under the caller's URL, so `retrieveImageFromCache` and `storeImageInCache` with that URL still match.
@@ -221,6 +225,7 @@ private extension DefaultImageService {
         /// The exact ratio isn't important because the library only needs
         /// the higher dimension for creating thumbnails.
         static let defaultThumbnailSize = CGSize(width: 800, height: 800)
+        static let loopbackHosts: Set<String> = ["localhost", "127.0.0.1", "::1"]
     }
 }
 

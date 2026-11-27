@@ -455,7 +455,7 @@ extension OrderDetailsViewModel {
         return Task { [weak self] in
             let order: Order? = await withCheckedContinuation { continuation in
                 guard let self else { return continuation.resume(returning: nil) }
-                syncOrder { order, _ in continuation.resume(returning: order) }
+                self.syncOrder { order, _ in continuation.resume(returning: order) }
             }
             await self?.applyPaymentRefresh(order)
         }

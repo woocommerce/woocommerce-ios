@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage:
+#   sentry-crashes releases
+#   sentry-crashes list [--min-version X.Y] [--days N] [--limit N]
+#   sentry-crashes event <issue-id>
+#   sentry-crashes redact < text
+#
+# Prints Sentry crash data for woocommerce-ios with user data removed.
+# Only allowlisted fields leave this script: never breadcrumbs, user, tags, request or extra.
+
+readonly ORG="${SENTRY_ORG:-a8c}"
+readonly PROJECT="${SENTRY_PROJECT:-woocommerce-ios}"
+readonly API="https://sentry.io/api/0"
+
+# Free text can embed user input, so literals become placeholders that keep only their shape.
+readonly JQ_REDACT='
+def redact:
+  if type != "string" then . else
+    gsub("[A-Za-z][A-Za-z0-9+.-]*://[^\\s\"'"'"'<>)]+"; "<url>")
+    | gsub("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"; "<email>")
+    | gsub("\\b[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\\b"; "<uuid>")
+    | gsub("\\b([0-9]{1,3}\\.){3}[0-9]{1,3}\\b"; "<ip>")
+    | gsub("\"[^\"]*\""; "\"<string>\"")
+    | gsub("(?<![A-Za-z])'"'"'[^'"'"']*'"'"'"; "'"'"'<string>'"'"'")
+    | gsub("\\b[0-9]{4,}\\b"; "<number>")
+  end;
+'
+
+die() { echo "error: $*" >&2; exit 1; }
+
+sentry_get() {
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "SENTRY_AUTH_TOKEN is not set"
+  local path="$1"
+  shift
+  curl -sSf -G -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" "$API/$path" "$@"
+}
+
+list_releases() {
+  local project_id
+  project_id="$(sentry_get "projects/$ORG/$PROJECT/" | jq -r .id)"
+  sentry_get "organizations/$ORG/releases/" --data-urlencode "project=$project_id" --data-urlencode per_page=20 \
+    | jq -r '.[] | select(.version | startswith("com.automattic.woocommerce@")) | "\(.version)\t\(.dateCreated)"'
+}
+
+list_crashes() {
+  local days=14 limit=25 min_version=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --days) days="$2"; shift 2 ;;
+      --limit) limit="$2"; shift 2 ;;
+      --min-version) min_version="$2"; shift 2 ;;
+      *) die "unknown option: $1" ;;
+    esac
+  done
+
+  local query="is:unresolved error.unhandled:true"
+  [[ -z "$min_version" ]] || query+=" release.version:>=$min_version"
+
+  sentry_get "projects/$ORG/$PROJECT/issues/" \
+    --data-urlencode "query=$query" \
+    --data-urlencode "statsPeriod=${days}d" \
+    --data-urlencode sort=freq \
+    --data-urlencode "limit=$limit" \
+    | jq "$JQ_REDACT"'[.[] | {
+        id, shortId, permalink, count, userCount, firstSeen, lastSeen,
+        title: (.title | redact),
+        culprit: (.culprit | redact)
+      }]'
+}
+
+event_filter() {
+  jq "$JQ_REDACT"'{
+    issueId: .groupID,
+    eventId: .eventID,
+    release: .release.version?,
+    os: "\(.contexts.os.name // "") \(.contexts.os.version // "")",
+    device: (.contexts.device.model // .contexts.device.family),
+    exceptions: [.entries[] | select(.type == "exception") | .data.values[] | {
+      type,
+      value: (.value | redact),
+      mechanism: .mechanism.type?,
+      handled: .mechanism.handled?
+    }],
+    crashedThread: ([.entries[] | select(.type == "threads") | .data.values[] | select(.crashed)][0]
+      | if . == null then null else {
+          frames: [.stacktrace.frames[]? | {
+            binary: ((.package // "") | split("/") | last),
+            function: (.function | redact),
+            filename, lineNo, inApp
+          }] | reverse
+        } end)
+  }'
+}
+
+show_event() {
+  local issue_id="$1"
+  [[ "$issue_id" =~ ^[0-9]+$ ]] || die "issue id must be numeric, got: $issue_id"
+  sentry_get "organizations/$ORG/issues/$issue_id/events/latest/" | event_filter
+}
+
+main() {
+  local command="${1:-}"
+  shift || true
+  case "$command" in
+    releases) list_releases ;;
+    list) list_crashes "$@" ;;
+    event) [[ $# -eq 1 ]] || die "usage: sentry-crashes event <issue-id>"; show_event "$1" ;;
+    event-filter) event_filter ;;
+    redact) jq -Rr "$JQ_REDACT"'redact' ;;
+    *) die "usage: sentry-crashes {releases|list|event <issue-id>|event-filter|redact}" ;;
+  esac
+}
+
+main "$@"

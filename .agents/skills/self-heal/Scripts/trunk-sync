@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: trunk-sync [checkout] (default: the current directory)
+#
+# Prints one line per open self-heal PR, validation PRs included:
+#   #<n> <branch> current behind=<k>
+#   #<n> <branch> sync conflict|overlap|stale behind=<k> [files touched on both sides]
+# A PR needs a sync when merging trunk would conflict, when trunk changed a file the PR touches,
+# or when the trunk it builds on is older than SELF_HEAL_SYNC_MAX_AGE_HOURS.
+# Behind on unrelated files alone, it waits: each sync costs a full Buildkite build.
+
+readonly REPO="${SELF_HEAL_REPO:-woocommerce/woocommerce-ios}"
+readonly TRUNK="${SELF_HEAL_TRUNK:-trunk}"
+readonly MAX_AGE_HOURS="${SELF_HEAL_SYNC_MAX_AGE_HOURS:-24}"
+
+cd "${1:-.}"
+
+branches=$(gh pr list --repo "$REPO" --author @me --state open --json number,headRefName \
+  | jq -r '.[] | select(.headRefName | startswith("self-heal/")) | "\(.number) \(.headRefName)"')
+
+[[ -z "$branches" ]] && exit 0
+
+refspecs=("+refs/heads/$TRUNK:refs/remotes/origin/$TRUNK")
+while read -r _ branch; do
+  refspecs+=("+refs/heads/$branch:refs/remotes/origin/$branch")
+done <<< "$branches"
+git fetch --quiet origin "${refspecs[@]}"
+
+readonly trunk="origin/$TRUNK"
+now=$(date +%s)
+
+while read -r number branch; do
+  head="origin/$branch"
+  behind=$(git rev-list --count "$head..$trunk")
+  if (( behind == 0 )); then
+    echo "#$number $branch current behind=0"
+    continue
+  fi
+
+  base=$(git merge-base "$trunk" "$head")
+  overlap=$(comm -12 \
+    <(git diff --name-only "$base" "$trunk" | sort) \
+    <(git diff --name-only "$base" "$head" | sort) | paste -sd ' ' -)
+  age_hours=$(( (now - $(git show -s --format=%ct "$base")) / 3600 ))
+
+  if ! git merge-tree --write-tree --quiet "$trunk" "$head" > /dev/null; then
+    reason=conflict
+  elif [[ -n "$overlap" ]]; then
+    reason=overlap
+  elif (( age_hours >= MAX_AGE_HOURS )); then
+    reason=stale
+  else
+    echo "#$number $branch current behind=$behind"
+    continue
+  fi
+  echo "#$number $branch sync $reason behind=$behind${overlap:+ $overlap}"
+done <<< "$branches"

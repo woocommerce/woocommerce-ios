@@ -24,6 +24,7 @@ struct POSOtherPaymentMethodsSheet: View {
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
+                    .layoutPriority(1)
 
                 // The phone bottom sheet closes with the grabber instead.
                 if horizontalSizeClass != .compact {

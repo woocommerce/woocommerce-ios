@@ -216,6 +216,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     private func titleText(_ title: String, isSelected: Bool, font: Font?) -> some View {
         titleLabel(title, font: font)
+            .multilineTextAlignment(.leading)
             // Single titles can shrink by up to 20% and wrap to two lines;
             // selectable titles keep their natural width for the horizontal scroll fallback.
             .lineLimit(hasSelectableTitles ? 1 : 2)

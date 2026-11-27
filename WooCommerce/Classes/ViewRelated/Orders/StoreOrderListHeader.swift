@@ -36,23 +36,12 @@ struct StoreOrderListHeader: View {
             case .none:
                 EmptyView()
             case let .error(title, message):
-                StoreNoticeBanner(title,
-                                  description: state.isBannerExpanded ? message : nil,
-                                  tone: .error,
-                                  icon: StoreIcon.CircleInfo.regular,
-                                  actionTitle: state.isBannerExpanded ? ErrorTopBannerFactory.Localization.contactSupport : nil,
-                                  action: state.isBannerExpanded ? onContactSupport : nil,
-                                  prominentActionTitle: state.isBannerExpanded ? ErrorTopBannerFactory.Localization.troubleshoot : nil,
-                                  prominentAction: state.isBannerExpanded ? onTroubleshoot : nil,
-                                  accessibilityStatus: OrderListLocalization.errorAccessibilityStatus)
-                    .contentShape(Rectangle())
-                    .onTapGesture(perform: onToggleBanner)
-                    .accessibilityAddTraits(.isButton)
-                    .accessibilityValue(state.bannerAccessibilityValue)
-                    .accessibilityHint(state.bannerAccessibilityHint)
-                    .accessibilityAction {
-                        onToggleBanner()
-                    }
+                StoreOrderListErrorBanner(title: title,
+                                          message: message,
+                                          isExpanded: state.isBannerExpanded,
+                                          onToggle: onToggleBanner,
+                                          onTroubleshoot: onTroubleshoot,
+                                          onContactSupport: onContactSupport)
             case .currencyUnavailable:
                 StoreNoticeBanner(OrderListLocalization.currencyUnavailableTitle,
                                   description: OrderListLocalization.currencyUnavailableInfo,

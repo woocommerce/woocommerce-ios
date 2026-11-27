@@ -67,14 +67,17 @@ struct POSBarcodeScannerSetup: View {
 
     /// The buttons stay at the bottom, so they don't move between steps.
     private var compactBody: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
-            centeredCurrentContent
-                .scrollVerticallyIfNeeded()
+        POSModalFlowSteps(step: flowManager.currentPageID) {
+            VStack(spacing: metrics.spacing.xLarge) {
+                centeredCurrentContent
+                    .scrollVerticallyIfNeeded()
 
-            flowButtons
+                flowButtons
+            }
+            .posModalCloseButton(action: close, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
+            // Inside the sliding page, so the page and its padding travel the full screen width.
+            .posModalSizing()
         }
-        .posModalCloseButton(action: close, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
-        .posModalSizing()
         .background(Color.posSurfaceBright)
     }
 

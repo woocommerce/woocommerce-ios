@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-03 15:54:45+0000 */
+/* Translation-Revision-Date: 2026-11-18 15:58:35+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -824,8 +824,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "Азербайджан";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Назад";
 
 /* Accessibility announcement message when device goes back online */
@@ -2036,7 +2035,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Период";
@@ -2814,7 +2814,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Заполните таможенную форму";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2885,9 +2886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Забыли пароль?";
-
-/* Next web page */
-"Forward" = "Направить";
 
 /* Country option for a site address. */
 "France" = "Франция";
@@ -3747,9 +3745,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Загрузка товаров";
 
-/* Loading. Verb */
-"Loading..." = "Загрузка...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4043,7 +4038,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "Подробности здесь.";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Дополнительные параметры";
 
@@ -4461,9 +4457,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Открывает сведения о товаре.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "Открывать вебстраницу в Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Название опции";
@@ -5342,8 +5335,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Квитанция от %1$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "Обновить";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5604,9 +5596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS отправлено";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "Сент-Бартельми";
@@ -5918,7 +5907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Поделиться";
 
@@ -7066,8 +7054,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Совет";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Заголовок";
 
@@ -8475,10 +8462,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Критерии";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "Укажите, когда следует обновлять аналитические данные.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Это настройка уровня магазина, которая также управляет параметром «Обновления» в настройках аналитики администратора WooCommerce. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -8487,7 +8476,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "Сразу же";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "Подробнее";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8499,10 +8489,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "По графику";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "Обновления аналитики";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "Не удалось обновить настройку. Повторите попытку.";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10196,6 +10188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "Если ваши данные по-прежнему не загружаются, обратитесь за помощью в службу поддержки.";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "Удаляет купон из корзины";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "Применено";
 
@@ -10529,7 +10524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Готово";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "Попробуйте перезагрузить карточку. Если устранить проблему не удалось, %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -12034,6 +12030,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "Ссылка для оплаты отправлена через Scan to Pay. Проверьте платёж перед выполнением заказа.";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "Этот пользователь не может прочитать настройки платежей";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "Ваш магазин не позволил этому пользователю прочитать настройки платежей. Войдите заново через учётную запись администратора или менеджера магазина, а затем нажмите «Повторить».";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "Учётная запись не поддерживает валюту магазина";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "Ваша платёжная учётная запись не может принимать платежи в валюте магазина. При изменении валюты в магазине цены на товары не конвертируются, поэтому, прежде чем изменить валюту, продолжите общение в чате.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "Платёжная учётная запись не работает";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "Платежи с помощью реальных карт могут не проходить, пока учётная запись не будет активирована. Проверьте статус учётной записи в настройках платежей.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "Платёжная учётная запись ограничена";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "Вам нечего отправить сейчас. Продолжайте общаться в чате, если вам нужна помощь с учётной записью.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "Ваш сайт заблокировал проверку настройки";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "Неизвестная настройка платежа. Обычно это вызвано плагином безопасности или брандмауэром на вашем сайте. Разрешите запросы из приложения WooCommerce в этом плагине или попросите поставщика услуг хостинга разрешить их. Вам не нужно выключать плагин.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "Учётная запись не может принимать реальные платежи";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "Согласно отчёту поставщика платёжных услуг, ваша учётная запись не может принимать платежи с помощью реальных карт. Завершите настройку учётной записи в настройках платежей.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "Выберите поставщика платёжных услуг";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments и Stripe активны. В приложении перейдите в «Меню» > «Платежи», нажмите «Продолжить настройку» и выберите поставщика. Ни один из плагинов не нужно деактивировать.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "Страна учётной записи не совпадает со страной магазина";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "Убедитесь, что адрес магазина указан верно. Страну вашей платёжной записи изменить нельзя, поэтому продолжайте общаться в чате, прежде чем менять другие настройки.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "Приложению не удалось проверить настройки платежа. Продолжайте общаться в чате, чтобы мы могли проверить ваш сайт.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "Платёжный плагин неактивен";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "Активируйте платёжный плагин, затем завершите его настройку.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "Неполный адрес магазина";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "Для работы кардридеров и функции Tap to Pay необходимо указать улицу, город и почтовый индекс. Укажите их в настройках магазина.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "Страна магазина не указана";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "Установите страну магазина в настройках магазина.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "Валюта магазина не указана";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "Установите валюту магазина в настройках магазина.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "Нет активных плагинов очных платежей";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "Установите и активируйте WooPayments, затем завершите настройку.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "Платёжный плагин необходимо обновить";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "Версия вашего платёжного плагина слишком старая для очных платежей. Обновите плагин.";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "Есть просроченные требования в отношении учётной записи";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "Выплаты и платежи могут быть приостановлены до тех пор, пока вы не предоставите запрошенную информацию. Отправьте её в настройках платежей.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "Ваш поставщик платёжных услуг запрашивает дополнительную информацию, которую нужно предоставить до установленного срока. Предоставьте её, чтобы выплаты оставались активными.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "Поставщик недоступен в вашей стране";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "Ваш поставщик платёжных услуг не поддерживает очные платежи в стране вашего магазина. Установите и активируйте WooPayments, затем перейдите в «Меню» > «Платежи» и нажмите «Продолжить настройку».";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "Платёжная учётная запись отклонена";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "Очные платежи недоступны для этой платёжной учётной записи. Продолжайте общение в чате, чтобы узнать о доступных опциях. Вы по-прежнему можете принимать наличные платежи в приложении.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "Не удалось проверить настройку платежа";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "Неизвестная настройка платежа. Проверьте подключение к Интернету и нажмите «Повторить».";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "Платёжная учётная запись не подключена";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "Ваш магазин не подключён к платёжной учётной записи. Завершите настройку учётной записи в настройках платежей.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "Магазин не ответил корректно";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "Неизвестная настройка платежа. Попросите поставщика услуг хостинга проверить журналы ошибок сервера.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "Тестовый режим включён";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "Плагин для проведения платежей находится в тестовом режиме, поэтому платежи по реальным картам не будут работать. Отключите тестовый режим в настройках платежей. Вместо этого принимайте платежи из реального магазина в предварительной версии магазина.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "Только для проверки платежей";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "Ваш платёжный аккаунт находится в тестовом режиме, поэтому платежи с помощью реальных карт не будут работать. Завершите настройку активной учётной записи в настройках платежей. На предварительной версии сайта используйте свой реальный магазин.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "Статус учётной записи неизвестен";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "Приложение не распознаёт статус вашей платёжной учётной записи. Проверьте учётную запись в настройках платежей или продолжите общение в чате.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "Страна магазина не поддерживается";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "Очные платежи картой недоступны в стране вашего магазина. Если в адресе магазина указана неправильная страна, исправьте её. Вы по-прежнему можете принимать наличные платежи в приложении.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "Валюта магазина не поддерживается";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "Очные платежи не поддерживают валюту вашего магазина в этой стране. При изменении валюты цены на товары не конвертируются, поэтому, прежде чем изменить валюту, продолжите общение в чате.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "платежи, оплата в касание, woocommerce, woo, очные платежи, получение оплаты, платежи, устройство чтения, устройство чтения карт, заказ устройства чтения карт";
 
@@ -12529,6 +12681,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "Скидка не применена";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "Изменить произвольную сумму";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Отменить повторное подключение";
 
@@ -12564,12 +12719,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Настройки";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ — %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "Редактировать";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Удалить";
@@ -12946,9 +13095,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "Для изменения настроек требуется одобрение";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "Для управления персоналом требуется одобрение";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Настройки";
 
@@ -12975,12 +13121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Платежи";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Просмотреть сотрудников и доступ по PIN-коду";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "Сотрудник";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Конфигурация и настройки магазина";
@@ -13639,11 +13779,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "ОК";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "Закройте крышку принтера и повторите попытку.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "Крышка принтера открыта";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "Отправить чек по эл. почте";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "Произошла ошибка при печати. Повторите попытку.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "Не удалось распечатать чек";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "Убедитесь, что рулон бумаги загружен и правильно установлен, затем повторите попытку.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "Проверьте бумагу в принтере";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "Убедитесь, что ваш принтер включён и находится поблизости со включённым Bluetooth, затем повторите попытку.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "Не удалось подключиться к принтеру";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "Повторить";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "Подключить принтер";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "Подключение к %1$@…";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "Убедитесь, что Bluetooth включён, и повторите поиск.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "Не удалось найти принтеры";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "Невозможно подключиться к вашему принтеру. Повторите попытку.";
@@ -14030,9 +14206,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "Кассир";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "Управляющий";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14215,42 +14388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "Платежи";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "Пункт продажи блокируется при нажатии кнопки «Заблокировать пункт продажи» в меню или автоматически по истечении 5 минут бездействия.";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "Управляйте сотрудниками в Интернете";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "Управление сотрудниками";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "Нет PIN-кода";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "PIN-код установлен";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "Администратор";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "Кассир пункта продажи";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "Менеджер пункта продажи";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "Выполнен вход";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "Не удаётся загрузить сотрудников. Проверьте подключение и повторите попытку.";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "Повторить";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "Сотрудник";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "Конечная точка REST API не найдена.";
@@ -15390,7 +15527,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "Не удаётся связаться с вашим магазином";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Закрыть";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15458,6 +15596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Выберите магазин для подключения (скрытых: %1$d)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d из 5 звёзд";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "Очистить";
@@ -15667,6 +15808,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Не отправлено. %1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "Вы общаетесь с ИИ службы поддержки Woo.";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "Диагностика выполнена, проблем не обнаружено.";
 
@@ -15730,6 +15874,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Здравствуйте! Я ваш бот поддержки Woo Mobile. Могу ли я вам чем-нибудь помочь?";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "Если платёж не удался, продолжайте общение в чате и сообщите номер заказа.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "Проверки настройки платежей пройдены";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Пожалуйста, опишите вашу проблему подробнее, чтобы я мог вам помочь.";
 
@@ -15745,11 +15895,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Включить уведомления о заказах";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "Открыть настройки платежей";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "Открыть плагины";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "Настройки уведомлений";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Открыть настройки";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "Открыть настройки магазина";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "Зарегистрировать устройство";
@@ -15819,6 +15978,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "Проверка настроек уведомлений";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "Проверка настройки оплаты в магазине";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "Подключение к вашему сайту";
@@ -15924,6 +16086,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "Другое";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "Платежи";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "Получение push-уведомлений";
@@ -16293,9 +16458,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "Готово";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "Закрыть";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "неделя";

@@ -144,7 +144,6 @@ struct WooPaymentsSetupInstructionsView: View {
                 Button(Localization.cancel) {
                     onDismiss()
                 }
-                .buttonStyle(TextButtonStyle())
             }
         }
     }

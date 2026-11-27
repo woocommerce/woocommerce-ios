@@ -121,11 +121,10 @@ private extension ShipmentProvidersViewController {
 
     func configureSearchController() {
         searchController.searchBar.textField?.backgroundColor = .listBackground
-
-        guard table.tableHeaderView == nil else {
-            return
-        }
-        table.tableHeaderView = searchController.searchBar
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        navigationItem.preferredSearchBarPlacement = .stacked
+        definesPresentationContext = true
     }
 
     func configureTable() {

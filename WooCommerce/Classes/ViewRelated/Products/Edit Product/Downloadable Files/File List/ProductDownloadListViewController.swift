@@ -23,15 +23,17 @@ final class ProductDownloadListViewController: UIViewController {
     //
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
         return DeviceMediaLibraryPicker(imagesOnly: false,
-                                        allowsMultipleSelections: false,
-                                        onCompletion: onDeviceMediaLibraryPickerCompletion)
+                                        allowsMultipleSelections: false) { assets in
+            self.onDeviceMediaLibraryPickerCompletion(assets: assets)
+        }
     }()
 
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =
         .init(siteID: product.siteID,
               imagesOnly: false,
-              allowsMultipleSelections: false,
-              onCompletion: onWPMediaPickerCompletion)
+              allowsMultipleSelections: false) { mediaItems in
+            self.onWPMediaPickerCompletion(mediaItems: mediaItems)
+        }
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()

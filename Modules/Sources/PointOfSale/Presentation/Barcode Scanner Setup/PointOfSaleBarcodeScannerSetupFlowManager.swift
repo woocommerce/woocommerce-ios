@@ -19,6 +19,10 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow?.currentStepKey.rawValue
     }
 
+    var currentPageID: String {
+        currentFlow?.currentStepKey.pageID.rawValue ?? Constants.scannerSelectionPageID
+    }
+
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
         self.analytics = analytics
@@ -105,5 +109,9 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     private func handleKeyboardConnected() {
         guard case .setupFlow(let scannerType) = currentState else { return }
         analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType))
+    }
+
+    private enum Constants {
+        static let scannerSelectionPageID = "scannerSelection"
     }
 }

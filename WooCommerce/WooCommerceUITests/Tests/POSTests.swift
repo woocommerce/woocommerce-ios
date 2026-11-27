@@ -18,7 +18,10 @@ final class POSTests: XCTestCase {
         "-com.woocommerce.featureflag.override.remote.pointOfSale",
         "YES",
         // Keep POS UI tests focused on POS behavior instead of rollout country/tab visibility gates.
-        "bypass-pos-tab-visibility-checks"
+        "bypass-pos-tab-visibility-checks",
+        // The onboarding guide covers POS when it opens.
+        "-com.woocommerce.featureflag.override.pointOfSaleOnboardingGuide",
+        "NO"
     ]
 
     private static let checkoutLaunchArguments = [

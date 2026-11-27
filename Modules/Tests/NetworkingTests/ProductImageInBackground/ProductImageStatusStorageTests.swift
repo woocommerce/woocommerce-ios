@@ -3,6 +3,7 @@ import Combine
 @testable import Networking
 @testable import NetworkingCore
 
+@MainActor
 class ProductImageStatusStorageTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
     private var userDefaults: UserDefaults!
@@ -13,16 +14,14 @@ class ProductImageStatusStorageTests: XCTestCase {
     private let productID: ProductOrVariationID = .product(id: 3456)
     private let productVariationID: ProductOrVariationID = .variation(productID: 7890, variationID: 4321)
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
         userDefaults = UserDefaults.standard
         userDefaults.removeObject(forKey: userDefaultsKey)
         storage = ProductImageStatusStorage(userDefaults: userDefaults, key: userDefaultsKey)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         userDefaults.removeObject(forKey: userDefaultsKey)
-        super.tearDown()
     }
 
     // MARK: - Test Cases
@@ -334,11 +333,10 @@ class ProductImageStatusStorageTests: XCTestCase {
         storage.addStatus(failureStatus2)
 
         storage.errorsPublisher
+            .first(where: { $0.count == 2 })
             .sink { errorInfos in
                 receivedErrorInfos = errorInfos
-                if receivedErrorInfos.count == 2 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
             .store(in: &cancellables)
 

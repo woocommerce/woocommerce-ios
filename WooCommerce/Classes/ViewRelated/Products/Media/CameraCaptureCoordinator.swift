@@ -4,10 +4,11 @@ import Photos
 
 /// Encapsulates capturing media from a device camera.
 ///
+@MainActor
 final class CameraCaptureCoordinator {
     private var capturePresenter: WPMediaCapturePresenter?
 
-    typealias Completion = ((_ media: PHAsset?, _ error: Error?) -> Void)
+    typealias Completion = @MainActor @Sendable (_ media: PHAsset?, _ error: Error?) -> Void
     private let onCompletion: Completion
 
     init(onCompletion: @escaping Completion) {
@@ -45,17 +46,20 @@ final class CameraCaptureCoordinator {
     }
 
     private func processMediaCaptured(_ mediaInfo: NSDictionary) {
-        let completionBlock: WPMediaAddedBlock = { [weak self] media, error in
-            guard let media = media as? PHAsset, error == nil else {
-                guard self?.hasPhotoLibraryPermission() == true else {
-                    self?.onCompletion(nil, CameraCaptureError.photoLibraryPermissionNotAuthorized)
+        let completionBlock: @Sendable (WPMediaAsset?, Error?) -> Void = { [weak self] media, error in
+            let asset = media as? PHAsset
+            MainActor.assumeIsolated {
+                guard let asset, error == nil else {
+                    guard self?.hasPhotoLibraryPermission() == true else {
+                        self?.onCompletion(nil, CameraCaptureError.photoLibraryPermissionNotAuthorized)
+                        return
+                    }
+                    self?.onCompletion(nil, error)
                     return
                 }
-                self?.onCompletion(nil, error)
-                return
-            }
 
-            self?.onCompletion(media, nil)
+                self?.onCompletion(asset, nil)
+            }
         }
 
         guard let mediaType = mediaInfo[UIImagePickerController.InfoKey.mediaType.rawValue] as? String else {
@@ -84,7 +88,7 @@ private extension CameraCaptureCoordinator {
         return PHPhotoLibrary.authorizationStatus() == .authorized
     }
 
-    func requestPhotoLibraryPermission(completion: @escaping (_ authorized: Bool) -> Void) {
+    func requestPhotoLibraryPermission(completion: @escaping @MainActor @Sendable (_ authorized: Bool) -> Void) {
         PHPhotoLibrary.requestAuthorization { status in
             // The requestAuthorization block can be called on a serial queue so we're making sure
             // the completion block is called on the main thread.

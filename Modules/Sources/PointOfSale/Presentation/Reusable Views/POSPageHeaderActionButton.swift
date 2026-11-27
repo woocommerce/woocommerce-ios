@@ -2,13 +2,18 @@ import SwiftUI
 
 struct POSPageHeaderActionButton: View {
     let systemName: String
+    let title: String
     var backgroundColor: Color = .posSurfaceContainerLow
     var imageColor: Color = .posOnSurface
     let action: () -> Void
 
+    @Environment(\.posLayoutScale) private var layoutScale
     @ScaledMetric private var scaledButtonSize: CGFloat = POSHeaderLayoutConstants.minHeight
     private var constrainedButtonSize: CGFloat {
-        max(POSHeaderLayoutConstants.minHeight, min(scaledButtonSize, POSHeaderLayoutConstants.minHeight * 1.2))
+        guard layoutScale == .regular else {
+            return POSHeaderLayoutConstants.minHeight
+        }
+        return max(POSHeaderLayoutConstants.minHeight, min(scaledButtonSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     var body: some View {
@@ -24,5 +29,9 @@ struct POSPageHeaderActionButton: View {
                 .frame(width: constrainedButtonSize, height: constrainedButtonSize)
         }
         .fixedSize()
+        .accessibilityLabel(title)
+        .accessibilityShowsLargeContentViewer {
+            Label(title, systemImage: systemName)
+        }
     }
 }

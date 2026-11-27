@@ -26,6 +26,14 @@ struct POSMetrics: Equatable {
         self == .compact ? 60 : 80
     }
 
+    /// The onboarding guide only shows on iPhone, so its sizes depend on orientation rather than the layout scale.
+    static func onboardingGuideIllustrationHeight(isVerticallyCompact: Bool) -> CGFloat {
+        isVerticallyCompact ? 64 : 120
+    }
+
+    /// Before Dynamic Type scaling. As in the design, it keeps the guide's titles in line across steps.
+    static let onboardingGuideTextMinHeight: CGFloat = 144
+
     var statusErrorMarkSize: POSErrorAndAlertIconSize {
         self == .compact ? .largeCompact : .large
     }

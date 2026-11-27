@@ -1,1 +1,0 @@
-Agora você pode adicionar e editar atributos em cada tipo de produto. A leitura do código de barras da câmera é mais precisa. A pesquisa de produtos no ponto de venda é mais rápida para catálogos grandes. Os avisos de interrupção da transportadora são exibidos enquanto você cria etiquetas de envio. Experimente esta atualização e dê sua opinião.

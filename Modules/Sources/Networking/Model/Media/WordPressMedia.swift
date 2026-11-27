@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Media from WordPress Site API
-public struct WordPressMedia: Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct WordPressMedia: Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     public let mediaID: Int64
     public let date: Date
     public let slug: String
@@ -59,7 +59,7 @@ extension WordPressMedia: Decodable {
 
 public extension WordPressMedia {
     /// Details about a WordPress site media.
-    struct MediaDetails: Decodable, Equatable {
+    struct MediaDetails: Decodable, Equatable, Sendable {
 
         public let width: Double?
         public let height: Double?
@@ -89,7 +89,7 @@ public extension WordPressMedia {
     }
 
     /// Details about a size of WordPress site media (e.g. `thumbnail`, `medium`, `2048x2048`).
-    struct MediaSizeDetails: Decodable, Equatable {
+    struct MediaSizeDetails: Decodable, Equatable, Sendable {
         public let fileName: String
         public let src: String
         public let width: Double
@@ -104,7 +104,7 @@ public extension WordPressMedia {
     }
 
     /// Title of the WordPress site media.
-    struct MediaTitle: Decodable, Equatable {
+    struct MediaTitle: Decodable, Equatable, Sendable {
         /// `GET` media list request's `title` field only contains `rendered`, while `POST` media request includes both `raw` and `rendered`.
         public let rendered: String
 

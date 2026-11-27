@@ -52,13 +52,13 @@ struct POSOrderListView: View {
                     if !isSearching && !ordersViewState.orders.isEmpty {
                         POSPageHeaderActionButton(
                             systemName: "magnifyingglass",
+                            title: Localization.searchButtonAccessibilityLabel,
                             backgroundColor: .posSurface,
                             imageColor: .posOnSurface
                         ) {
                             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListSearchButtonTapped())
                             setSearch(true)
                         }
-                        .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
                         .transition(.asymmetric(
                             insertion: .scale.combined(with: .opacity)
                                 .animation(.easeInOut(duration: Constants.animationDuration).delay(Constants.animationDuration)),

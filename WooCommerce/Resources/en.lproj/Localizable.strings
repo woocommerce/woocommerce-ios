@@ -639,7 +639,7 @@ which should be translated separately and considered part of this sentence. */
 /* Name of final step in Install Jetpack flow. */
 "All done" = "All done";
 
-/* Header bar label on top of order list when no filters are applied */
+/* Header title on the Orders list when no filters are applied. */
 "All Orders" = "All Orders";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
@@ -3779,7 +3779,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
 "couponCardView.appliedAccessibilityHint" = "Removes the coupon from the cart";
 
-/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
+/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. Also shown on the card at large text sizes. */
 "couponCardView.appliedAccessibilityValue" = "Applied";
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
@@ -5318,9 +5318,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback Sent!";
 
-/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
-"Fees" = "Fees";
-
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Fetching Variations...";
 
@@ -5339,14 +5336,14 @@ which should be translated separately and considered part of this sentence. */
 "Fill out customs form" = "Fill out customs form";
 
 /* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button that opens order filters when no filters are applied.
    Title of the button to select all products on the Select Product screen
-   Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "Filter";
 
-/* Title of the button to filter products with filters applied on the Select Product screen
-   Title of the toolbar button to filter orders with filters applied.
+/* Title of the button that opens order filters. %ld is the number of active filters.
+   Title of the button to filter products with filters applied on the Select Product screen
    Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "Filter (%ld)";
 
@@ -5356,7 +5353,7 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder on the search field to search for a specific state */
 "Filter States" = "Filter States";
 
-/* Header bar label on top of order list when filters are applied */
+/* Header title on the Orders list when one or more filters are applied. */
 "Filtered Orders" = "Filtered Orders";
 
 /* Apply button on the Filter History view */
@@ -5404,8 +5401,7 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering products by favorite products. */
 "filterProductListViewModel.favoriteProduct" = "Favorite Products";
 
-/* Filters button text on header bar on top of order list
-   Navigation bar title format for filtering a list of products without filters applied. */
+/* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filters";
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
@@ -5863,6 +5859,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "The reader returned from discovery does not have an IP address and cannot be connected to.";
+
+/* Notice shown when a barcode scanner sends a code without Enter at the end. */
+"hardwareBarcodeScanner.missingEnterSuffix" = "Scan not finished. Set your scanner to send Enter after each barcode.";
+
+/* Explains how to connect an external barcode scanner. */
+"hardwareBarcodeScannerInfo.setup" = "Pair your scanner in your device's Bluetooth settings, or connect it with USB. Set it to keyboard (HID) mode.";
+
+/* Accessibility label of the barcode to scan when testing an external barcode scanner. */
+"hardwareBarcodeScannerInfo.testBarcode.accessibilityLabel" = "Test barcode";
+
+/* Asks the merchant to scan the test barcode with an external barcode scanner. */
+"hardwareBarcodeScannerInfo.testInstruction" = "Scan this barcode with your scanner.";
+
+/* Shown when the test barcode was scanned correctly with an external barcode scanner. */
+"hardwareBarcodeScannerInfo.testSuccess" = "Your scanner works";
+
+/* Heading of the test scan section in the external barcode scanner sheet. */
+"hardwareBarcodeScannerInfo.testTitle" = "Test your scanner";
+
+/* Title of the sheet that explains how to use an external barcode scanner. */
+"hardwareBarcodeScannerInfo.title" = "Use a Bluetooth or USB scanner";
+
+/* Explains where an external barcode scanner can be used. */
+"hardwareBarcodeScannerInfo.usage" = "Scan on the Orders and Products screens, or while creating an order. You don't need to open the camera.";
+
+/* Shown when an external barcode scanner sends a different code than the test barcode. */
+"hardwareBarcodeScannerInfo.wrongValue" = "The scanned code doesn't match. Set your scanner to the same keyboard layout as your device.";
+
+/* Separates scanning with the camera from using an external barcode scanner. Shown in uppercase. */
+"hardwareBarcodeScannerOffer.or" = "or";
+
+/* Button on the camera barcode scanner that explains how to use a Bluetooth or USB barcode scanner. */
+"hardwareBarcodeScannerOffer.useExternalScanner" = "Use an external scanner";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Have your store credentials ready.";
@@ -6338,6 +6367,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error when loading refund history before a new refund. */
 "issueRefund.fetchRefunds.failed" = "Could not load previous refunds.";
 
+/* Error shown on the Issue Refund screen when the store could not calculate the refund amount. */
+"issueRefund.preview.failed" = "Couldn't calculate the refund. Please try again.";
+
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Issuing Refund...";
 
@@ -6499,9 +6531,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "Last Sold";
 
-/* Time for when the orders were last updated
-   Time for when the performance card was last updated
-   Time for when the top performers card was last updated */
+/* Time for when the performance card was last updated
+   Time for when the top performers card was last updated
+   Time when the orders were last updated. %@ is a localized time or date and time. */
 "Last Updated: %@" = "Last Updated: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -6783,6 +6815,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title. Takes the user to the Enter account password screen. */
 "Login with account password" = "Login with account password";
+
+/* Error message when the application password approval page belongs to a different site than the store being logged into */
+"login.applicationPassword.siteMismatch" = "This approval page belongs to a different site. For your safety, we stopped the login.";
+
+/* Button to contact support from the alert shown when the application password approval page belongs to a different site */
+"login.applicationPassword.siteMismatch.contactSupport" = "Contact Support";
 
 /* Description text for the magic link request form. */
 "login.magicLinkRequest.description" = "We'll email you a link that'll log you in instantly, no password needed.";
@@ -8186,6 +8224,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
 "orderList.currencyUnavailable.banner.title" = "Store currency unavailable";
 
+/* Accessibility status announced for an error banner on the Orders list. */
+"orderList.error.banner.accessibilityStatus" = "Error";
+
+/* Accessibility status announced for a warning banner on the Orders list. */
+"orderList.warning.banner.accessibilityStatus" = "Warning";
+
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
 
@@ -9443,6 +9487,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "Couldn't mark this order as paid. Try again.";
 
+/* Accessibility label for the ellipsis button that opens a Point of Sale action menu. */
+"pointOfSale.menu.moreActions.accessibilityLabel" = "More actions";
+
 /* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
 "pointOfSale.orderController.orderDoesNotMatchCart2" = "There was a problem creating this order, the items don't match your selection. Check the cart contents and try again.";
 
@@ -9616,9 +9663,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "Settings";
-
-/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
-"pointOfSaleDashboard.settings.overrideReason" = "Opening settings requires approval";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Cancel";
@@ -9805,9 +9849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "Store";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
-"pointOfSaleSettingsView.editOverrideReason" = "Changing settings requires approval";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Settings";
 
@@ -9862,20 +9903,44 @@ which should be translated separately and considered part of this sentence. */
 /* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
 "pos.addCustomAmount.defaultName" = "Custom amount";
 
-/* Title of the full-screen Point of Sale form when editing an existing custom amount on the order. */
-"pos.addCustomAmount.editTitle" = "Edit custom amount";
-
-/* Label above the name field in the Point of Sale add custom amount form. */
-"pos.addCustomAmount.nameLabel" = "Name";
-
 /* Placeholder for the name field in the Point of Sale add custom amount form. */
 "pos.addCustomAmount.namePlaceholder" = "Custom amount";
 
-/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
-"pos.addCustomAmount.title" = "Custom amount";
-
 /* Primary button in the Point of Sale custom amount form when editing, that saves the changes to the order. */
 "pos.addCustomAmount.updateButton" = "Update custom amount";
+
+/* Accessibility label of the button that returns to choosing the admin PIN. */
+"pos.adminPINOnboarding.back" = "Back";
+
+/* Title while choosing an admin PIN in POS. */
+"pos.adminPINOnboarding.choose.title" = "Choose your admin PIN";
+
+/* Accessibility label of the button that closes admin PIN setup. */
+"pos.adminPINOnboarding.close" = "Close";
+
+/* Title while re-entering an admin PIN in POS. */
+"pos.adminPINOnboarding.confirm.title" = "Confirm your admin PIN";
+
+/* Button that skips the Guided Access offer and returns to Security. */
+"pos.adminPINOnboarding.guidedAccess.maybeLater" = "Maybe later";
+
+/* Explains the optional iOS Guided Access feature after admin PIN setup. */
+"pos.adminPINOnboarding.guidedAccess.message" = "Enable Guided Access to prevent users from switching to other apps.";
+
+/* Button that starts setting up iOS Guided Access. */
+"pos.adminPINOnboarding.guidedAccess.setUp" = "Set up Guided Access";
+
+/* Title of the optional Guided Access offer after admin PIN setup. */
+"pos.adminPINOnboarding.guidedAccess.title" = "Keep your device on POS";
+
+/* Button after the admin PIN is saved. Shows the Guided Access offer. */
+"pos.adminPINOnboarding.saved.continue" = "Continue";
+
+/* Explanation after an admin PIN is saved in POS. */
+"pos.adminPINOnboarding.saved.message" = "Use your admin PIN to unlock Point of Sale with full access.";
+
+/* Title after an admin PIN is saved in POS. */
+"pos.adminPINOnboarding.saved.title" = "Your admin PIN is set";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barcode scanning";
@@ -9979,6 +10044,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instruction for scanning the Bluetooth HID barcode during scanner setup */
 "pos.barcodeScannerSetup.hidSetup.instruction" = "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.";
 
+/* Title in the header of the full-screen barcode scanner setup flow on phone. */
+"pos.barcodeScannerSetup.modal.title" = "Barcode scanner";
+
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
 
@@ -10048,8 +10116,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Test your scanner";
 
+/* Title in the header of the full-screen card payments onboarding flow on phone. */
+"pos.cardPaymentsOnboarding.modal.title" = "Card payments";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce Settings";
+
+/* Title in the header of the full-screen card reader connection flow on phone. */
+"pos.cardReaderConnection.modal.title" = "Card reader";
 
 /* Number of items in the cart when there are multiple items. %1$d is the number of items. */
 "pos.cart.itemCount.plural" = "%1$d items";
@@ -10102,8 +10176,29 @@ which should be translated separately and considered part of this sentence. */
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "Create coupon";
 
-/* Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale. */
-"pos.exitPOSModal.cancelButton" = "Cancel";
+/* Button on the Point of Sale custom amount entry screen that goes to the next step of the flow. */
+"pos.customAmount.amountStep.continueButton" = "Continue";
+
+/* Button that saves an edited custom amount and returns to its details. */
+"pos.customAmount.amountStep.saveButton" = "Save";
+
+/* Title of the Point of Sale screen where the merchant enters the value of a new custom amount. */
+"pos.customAmount.amountStep.title" = "Amount";
+
+/* Title of the POS custom amount editor and accessibility label for the Amount card that opens it. */
+"pos.customAmount.details.editAmount" = "Edit amount";
+
+/* Accessibility label for the name card in POS custom amount details. */
+"pos.customAmount.details.editName" = "Edit name";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.customAmount.details.nameLabel" = "Name (optional)";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.customAmount.details.title" = "Custom amount details";
+
+/* Title of the editor for the optional POS custom amount name. */
+"pos.customAmount.nameStep.title" = "Name";
 
 /* Accessibility label for the button to close the exit Point of Sale modal alert. */
 "pos.exitPOSModal.closeButton.accessibilityLabel" = "Close";
@@ -10116,6 +10211,51 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Exit Point of Sale mode?";
+
+/* Accessibility label of the button that closes the Guided Access guide. */
+"pos.guidedAccessGuide.close" = "Close";
+
+/* Button that closes the Guided Access guide. */
+"pos.guidedAccessGuide.done" = "Done";
+
+/* Name of the Accessibility section of the iOS Settings app, shown in an illustration. */
+"pos.guidedAccessGuide.illustration.accessibility" = "Accessibility";
+
+/* Message that confirms a Guided Access session has started, shown in an illustration. */
+"pos.guidedAccessGuide.illustration.active" = "Guided Access Active";
+
+/* Header of the group that lists Guided Access in iOS Accessibility settings, shown in an illustration. */
+"pos.guidedAccessGuide.illustration.general" = "General";
+
+/* Name of the passcode row in iOS Guided Access settings, shown in an illustration. */
+"pos.guidedAccessGuide.illustration.passcodeSettings" = "Passcode Settings";
+
+/* Name of the row that sets the passcode in iOS Guided Access settings, shown in an illustration. */
+"pos.guidedAccessGuide.illustration.setPasscode" = "Set Guided Access Passcode";
+
+/* Accessibility label of the arrow that shows the next step of the Guided Access guide. */
+"pos.guidedAccessGuide.next" = "Next step";
+
+/* Button in the Guided Access guide that opens the iOS Settings app. */
+"pos.guidedAccessGuide.openSettings" = "Open Settings";
+
+/* Accessibility label of the arrow that shows the previous step of the Guided Access guide. */
+"pos.guidedAccessGuide.previous" = "Previous step";
+
+/* Second step of the Guided Access guide. */
+"pos.guidedAccessGuide.separatePasscode.caption" = "Turn on Guided Access and set its passcode. This is separate from your POS PIN.";
+
+/* Explains that Settings may open this app's page, requiring Back navigation first. */
+"pos.guidedAccessGuide.settingsDestinationHint" = "Opens Settings. Go back to the main screen if needed.";
+
+/* First step of the Guided Access guide. Names the path in the iOS Settings app. */
+"pos.guidedAccessGuide.settingsPath.caption" = "In Settings, go to Accessibility → Guided Access.";
+
+/* Last step of the Guided Access guide. */
+"pos.guidedAccessGuide.startSession.caption" = "Return to POS. Triple-click the side, top, or Home button, choose Guided Access if asked, then tap Start.";
+
+/* Title of the guide that explains how to turn on iOS Guided Access. */
+"pos.guidedAccessGuide.title" = "Set up Guided Access";
 
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Exit POS";
@@ -10210,8 +10350,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Coupons";
 
+/* Accessibility label of the button at the top of the Point of Sale coupon list that creates a new coupon, also shown when the button is long pressed at large text sizes. */
+"pos.itemlistview.createCouponButton.title" = "Create coupon";
+
 /* Label/placeholder text for the search field for Products in Point of Sale. */
 "pos.itemListView.products.searchField.label.1" = "Search products";
+
+/* Accessibility label of the search button at the top of the Point of Sale item list, also shown when the button is long pressed at large text sizes. */
+"pos.itemlistview.searchButton.title" = "Search";
 
 /* Fallback label/placeholder text for the search field in Point of Sale. */
 "pos.itemListView.searchField.label" = "Search";
@@ -10225,8 +10371,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Products";
 
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "Search your store";
+/* Subtitle shown on the coupon search screen in POS before a search term is typed, when there are no recent searches */
+"pos.itemsearch.before.search.coupons.emptySubtitle" = "Type a coupon code to search.";
+
+/* Title shown on the coupon search screen in POS before a search term is typed, when there are no recent searches */
+"pos.itemsearch.before.search.coupons.emptyTitle" = "Find a coupon";
 
 /* Title for the list of popular products shown before a search term is typed in POS */
 "pos.itemsearch.before.search.popularProducts.title" = "Popular products";
@@ -10238,7 +10387,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.listError.exitButton" = "Exit POS";
 
 /* Title shown on the POS lock screen. */
-"pos.lockScreen.enterYourPIN.title" = "Enter your PIN";
+"pos.lockScreen.unlockPOS.title" = "Enter your PIN to unlock POS";
 
 /* Title shown on the POS manager approval modal. */
 "pos.managerOverride.approvalRequired.title" = "Approval required";
@@ -10246,8 +10395,47 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for dismissing the POS manager approval screen. */
 "pos.managerOverride.close" = "Close";
 
+/* Accessibility label for the grabber at the top of a POS bottom sheet on phone. Activating it closes the sheet. */
+"pos.modal.bottomSheet.grabber.accessibilityLabel" = "Close";
+
+/* Accessibility label of the back arrow in the header of a full-screen POS flow on phone. */
+"pos.modalFlowHeader.backButton.accessibilityLabel" = "Back";
+
+/* Accessibility label of the X in the header of a full-screen POS flow on phone. */
+"pos.modalFlowHeader.closeButton.accessibilityLabel" = "Close";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Dismiss";
+
+/* Secondary button in the POS onboarding guide. Leaves POS. */
+"pos.onboardingGuide.exitButton" = "Exit POS";
+
+/* Accessibility label of the Learn more link on the last step of the POS onboarding guide. It opens a video of a sale. */
+"pos.onboardingGuide.learnMore.accessibilityLabel" = "Learn more: watch a video of a sale";
+
+/* Link on the last step of the POS onboarding guide that opens a video of a sale. */
+"pos.onboardingGuide.learnMore.title" = "Learn more";
+
+/* Message of the second step of the POS onboarding guide shown on iPhone. \"in‑person\" uses a non-breaking hyphen so it doesn't split across lines. */
+"pos.onboardingGuide.sameStore.message" = "A single source of truth for products, prices, stock, and orders across online and in‑person sales.";
+
+/* Title of the second step of the POS onboarding guide shown on iPhone. */
+"pos.onboardingGuide.sameStore.title" = "Same store, more ways to sell";
+
+/* Message of the first step of the POS onboarding guide shown on iPhone. */
+"pos.onboardingGuide.sellInPerson.message" = "Take payments with Tap to Pay on iPhone, a card reader, or cash.";
+
+/* Title of the first step of the POS onboarding guide shown on iPhone. */
+"pos.onboardingGuide.sellInPerson.title" = "Sell in person with Point of Sale";
+
+/* Message of the third step of the POS onboarding guide shown on iPhone. Check out is the name of the button that starts the payment. */
+"pos.onboardingGuide.simpleSale.message" = "Add items to the cart, tap Check out, and choose a payment method.";
+
+/* Title of the third step of the POS onboarding guide shown on iPhone. */
+"pos.onboardingGuide.simpleSale.title" = "Selling in person is simple";
+
+/* Primary button in the POS onboarding guide. Closes the guide and opens POS. */
+"pos.onboardingGuide.startSellingButton" = "Start selling in person";
 
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "Order status: %1$@";
@@ -10352,7 +10540,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Refresh";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle.2" = "We couldn't find any orders with that name. Try adjusting your search term.";
+"pos.orderListView.emptyOrdersSearchSubtitle.3" = "Try a different search.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "No orders found";
@@ -10432,6 +10620,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
 "pos.otherPaymentMethods.tapToPay.title" = "Tap to Pay";
 
+/* Accessibility label of the page dots in POS. */
+"pos.pageIndicator.label" = "Page";
+
+/* Accessibility value of the page dots in POS when pages have names. %1$@ is the page name, %2$@ is its position, e.g. \"2 of 3\". Example: One store for every sale, 2 of 3 */
+"pos.pageIndicator.namedPosition" = "%1$@, %2$@";
+
+/* Accessibility value of the page dots in POS. %1$d is the current page number, %2$d is the number of pages. Example: 1 of 3 */
+"pos.pageIndicator.position" = "%1$d of %2$d";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options available";
 
@@ -10447,14 +10644,35 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
 "pos.pinEntry.dots.accessibilityValue" = "%1$d of %2$d digits entered";
 
-/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+/* VoiceOver announcement on a POS PIN screen when a wait or temporary problem ends and the keypad is enabled again. */
+"pos.pinEntry.entryAvailable.accessibilityAnnouncement" = "You can enter your PIN now.";
+
+/* Error message and VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
 "pos.pinEntry.error.generic" = "Something went wrong. Try again.";
 
-/* VoiceOver announcement when an entered POS PIN is incorrect. */
+/* Error message and VoiceOver announcement when an entered POS PIN is incorrect. */
 "pos.pinEntry.error.invalidPIN" = "Incorrect PIN. Try again.";
 
-/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
-"pos.pinEntry.lockout.countdown" = "Too many attempts. Try again in %1$@.";
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration, such as 0:30 on screen or 30 seconds for VoiceOver. */
+"pos.pinEntry.lockout.incorrectAttemptsCountdown" = "Too many incorrect attempts.\nTry again in %1$@.";
+
+/* Message and VoiceOver announcement when the POS PIN check is unavailable. The app retries automatically while input is disabled. */
+"pos.pinEntry.unavailable.retrying" = "Something went wrong. Retrying…";
+
+/* Title while choosing a Cashier PIN in POS. */
+"pos.pinSetup.cashier.choose.title" = "Choose a Cashier PIN";
+
+/* Title while confirming a Cashier PIN in POS. */
+"pos.pinSetup.cashier.confirm.title" = "Confirm the Cashier PIN";
+
+/* Explains what the saved Cashier PIN permits in POS. */
+"pos.pinSetup.cashier.saved.message" = "Your team can use this PIN to unlock Point of Sale and process sales. Creating coupons, issuing refunds, and exiting Point of Sale require admin approval.";
+
+/* Title after the Cashier PIN is saved in POS. */
+"pos.pinSetup.cashier.saved.title" = "The cashier PIN is set";
+
+/* Closes Cashier PIN setup or an Admin PIN change after saving. */
+"pos.pinSetup.saved.done" = "Done";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "We couldn’t find any coupons with that name. Try adjusting your search term.";
@@ -10472,10 +10690,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "To add one, exit POS and go to Products.";
 
 /* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variation names can't be searched, so use the parent product name.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint.2" = "To find a variation, search for its parent product.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "We couldn't find any matching products. Try adjusting your search term.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.4" = "Try a different search.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "No products found";
@@ -10519,9 +10737,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.title" = "Something went wrong";
 
-/* Button to close the receipt printer setup without connecting in POS settings. */
-"pos.printerSetup.foundMultiple.cancelButton" = "Cancel";
-
 /* Button in a printer row to connect to that receipt printer in POS settings. */
 "pos.printerSetup.foundMultiple.connectButton" = "Connect";
 
@@ -10546,6 +10761,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
 "pos.printerSetup.foundOne.titleFormat" = "Found %1$@";
 
+/* Title in the header of the full-screen receipt printer setup flow on phone. */
+"pos.printerSetup.modal.title" = "Receipt printer";
+
 /* Message shown when no receipt printers are discovered in POS settings. */
 "pos.printerSetup.noPrinters.pairInSettingsMessage" = "Make sure your printer is on and paired in the Settings app under Bluetooth, then search again.";
 
@@ -10554,6 +10772,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
 "pos.printerSetup.pair.enableBluetoothInstruction" = "Bluetooth access is turned off. Tap Open Settings to turn it on, then pair your printer under Bluetooth.";
+
+/* Title for the receipt printer pairing step in POS settings when the app's Bluetooth permission is disabled. */
+"pos.printerSetup.pair.enableBluetoothTitle" = "Turn on Bluetooth access";
 
 /* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
 "pos.printerSetup.pair.pairInSettingsInstruction" = "Turn on your Star Micronics receipt printer, then pair it in the Settings app under Bluetooth. Once it's paired, tap Connect printer to find it.";
@@ -10569,6 +10790,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS. */
 "pos.printerSetup.settingsButton" = "Open Settings";
+
+/* Accessibility label of the button that closes the POS print failure dialog. */
+"pos.printReceiptFailure.closeButton.accessibilityLabel" = "Close";
 
 /* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
 "pos.printReceiptFailure.coverOpen.message" = "Close the printer cover, then try again.";
@@ -10907,6 +11131,123 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Clear Search";
 
+/* Button on POS Security that starts setting the admin PIN. */
+"pos.security.accessControl.getStarted" = "Get started";
+
+/* Explanation on POS Security before any PIN is set. */
+"pos.security.accessControl.message" = "Use PINs to manage what your team can do in the app.";
+
+/* Title on POS Security before any PIN is set. */
+"pos.security.accessControl.title" = "Set up access control";
+
+/* Explains what the Admin PIN allows. */
+"pos.security.adminPIN.detail" = "Full access to POS and its settings.";
+
+/* Explains what the Cashier PIN allows. */
+"pos.security.cashierPIN.detail" = "Unlock POS without access to protected settings.";
+
+/* Button to change an existing PIN. */
+"pos.security.change" = "Change";
+
+/* Explains the fresh approval required before changing the Admin PIN. */
+"pos.security.changeAdminPINReason" = "Enter your current Admin PIN to change it.";
+
+/* Change PIN accessibility label. %1$@ is the Admin or Cashier role. */
+"pos.security.changeRolePIN" = "Change %1$@ PIN";
+
+/* Menu action that deletes a PIN. */
+"pos.security.deletePINAction" = "Delete";
+
+/* Delete PIN accessibility label. %1$@ is the Cashier role. */
+"pos.security.deleteRolePIN" = "Delete %1$@ PIN";
+
+/* Title of the Security card with device-level protections. */
+"pos.security.deviceSecurity" = "Device security";
+
+/* Explains the action requiring Admin approval before PIN protection is turned off. */
+"pos.security.disableProtectionReason" = "Turning off PIN protection removes both PINs. POS will no longer ask for a PIN.";
+
+/* Error shown when Admin and Cashier PINs match. */
+"pos.security.distinctPINs" = "Admin and Cashier PINs must be different.";
+
+/* Label of the switch that turns off PIN protection. */
+"pos.security.enableProtection" = "Enable PIN protection";
+
+/* Explains the PIN protection switch. */
+"pos.security.enableProtection.detail" = "Require a PIN to unlock POS and access protected settings.";
+
+/* Name of the iOS Guided Access feature. */
+"pos.security.guidedAccess" = "Guided Access";
+
+/* Badge shown while a Guided Access session is running. */
+"pos.security.guidedAccess.active" = "Active";
+
+/* Explains what Guided Access does. */
+"pos.security.guidedAccess.detail" = "Prevent users from leaving POS or switching to other apps.";
+
+/* Inactivity lock option. %1$d is a number of minutes greater than one. */
+"pos.security.inactivity.minutes" = "%1$d minutes";
+
+/* Inactivity lock option that never locks POS after inactivity. */
+"pos.security.inactivity.never" = "Never";
+
+/* Inactivity lock option of one minute. */
+"pos.security.inactivity.oneMinute" = "1 minute";
+
+/* Link to more information about POS roles. */
+"pos.security.learnMoreAboutRoles" = "Learn more about roles";
+
+/* Label of the menu that selects how long POS can be inactive before it locks. */
+"pos.security.lockAfterInactivity" = "Lock POS after";
+
+/* Switch that locks POS when a new order starts after a completed sale. */
+"pos.security.lockAfterSale" = "Lock POS after each sale";
+
+/* Switch that locks POS when the app goes to the background. */
+"pos.security.lockInBackground" = "Lock POS when app goes to background";
+
+/* Title of the Security card with automatic lock settings. */
+"pos.security.lockSettings" = "Lock settings";
+
+/* Switch that locks POS whenever it opens. */
+"pos.security.lockWhenPOSOpens" = "Require PIN to launch POS";
+
+/* PIN confirmation mismatch. */
+"pos.security.pinMismatchRetry" = "The PINs didn’t match. Try again.";
+
+/* Title of the Security card with the PIN protection switch and PINs. */
+"pos.security.pinProtection" = "PIN protection";
+
+/* Security settings subtitle. */
+"pos.security.pinsAndLockSubtitle" = "Manage PINs and lock settings";
+
+/* Button to retry loading PIN settings. */
+"pos.security.retry" = "Try again";
+
+/* PIN label. %1$@ is the Admin or Cashier role. */
+"pos.security.rolePIN" = "%1$@ PIN";
+
+/* Accessibility label of the menu with PIN actions. %1$@ is the Cashier role. */
+"pos.security.rolePINActions" = "%1$@ PIN actions";
+
+/* Set PIN accessibility label. %1$@ is the Admin or Cashier role. */
+"pos.security.setRolePIN" = "Set %1$@ PIN";
+
+/* Accessibility label of the button that sets up Guided Access. */
+"pos.security.setUpGuidedAccess" = "Set up Guided Access";
+
+/* Label of the Guided Access setup button in POS Security. */
+"pos.security.setUpGuidedAccess.button" = "Set up";
+
+/* Button to create a PIN. */
+"pos.security.setUpPIN" = "Set up";
+
+/* POS Security settings title. */
+"pos.security.title" = "Security";
+
+/* Error shown when PIN settings cannot be read or saved. */
+"pos.security.updatePINsError" = "Couldn't update PINs. Try again.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Create an order in store management";
 
@@ -11095,6 +11436,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Catalog size unavailable";
+
+/* Message in the PIN approval prompt when changing whether POS can sync the catalog using cellular data. */
+"posSettingsLocalCatalogViewModel.cellularSync.approvalReason" = "Changing cellular data usage requires approval";
 
 /* Text shown when no update has been performed yet. */
 "posSettingsLocalCatalogViewModel.neverSynced" = "Not updated";
@@ -11820,6 +12164,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a stock type displayed on the Stock section on My Store screen */
 "productStockDashboardCardViewModel.stockType.outOfStock" = "Out of stock";
 
+/* Title of the error notice shown on the products list when the product for a scanned barcode cannot be loaded. */
+"productsViewController.scanProducts.errorNoticeTitle" = "Cannot load product.";
+
 /* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
 "ProductType.service" = "Service";
 
@@ -12243,6 +12590,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label above the payment date on a printed receipt. */
 "receipt.datePaid" = "Date Paid";
+
+/* Line description on the receipt for a fee or custom amount whose name is missing or blank. Only shown when non-zero. */
+"receipt.defaultFeeLineDescription" = "Custom amount";
 
 /* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
 "receipt.itemTitleAndQuantity" = "%1$@ x%2$@";
@@ -14360,6 +14710,9 @@ which should be translated separately and considered part of this sentence. */
 /* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
 "tapToPay.aboutTapToPay.contactlessLimit.gb" = "In the United Kingdom, you can accept card payments with Tap to Pay for transactions up to %1$@. For payments over %1$@, some cards allow customers to enter their PIN directly on the phone, while others require a card reader to complete the payment.";
 
+/* A description of the contactless limit, shown on the About Tap to Pay screen for countries other than the UK. %1$@ will be replaced with the limit amount in the store currency, formatted correctly for the locale. */
+"tapToPay.aboutTapToPay.contactlessLimit.pin" = "For card payments over %1$@, customers may need to enter their PIN on the iPhone. If a card can't complete the payment with a PIN, ask for another card or use another payment method.";
+
 /* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "tapToPay.aboutTapToPay.overLimitSuggestion" = "To accept all payments above this limit, consider purchasing a card reader.";
 
@@ -14424,7 +14777,7 @@ which should be translated separately and considered part of this sentence. */
 "tapToPay.education.step.contactlessCard.title" = "How to accept contactless card with Tap to Pay on iPhone.";
 
 /* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
-"tapToPay.education.step.fallbackMethod.description" = "Some cards are not able to complete contactless transactions using a PIN, which can result in payment failure.\n\nAsk the customer if they have another contactless card or digital wallet and select Try Collecting Again to continue the transaction using Tap to Pay on iPhone.\n\nOtherwise, select Try Another Payment Method and choose a supported alternative, such as Cash, Share Payment Link, Cash Reader, or Scan to Pay.";
+"tapToPay.education.step.fallbackMethod.descriptionWithCardReader" = "Some cards are not able to complete contactless transactions using a PIN, which can result in payment failure.\n\nAsk the customer if they have another contactless card or digital wallet and select Try Collecting Again to continue the transaction using Tap to Pay on iPhone.\n\nOtherwise, select Try Another Payment Method and choose a supported alternative, such as Cash, Share Payment Link, Card Reader, or Scan to Pay.";
 
 /* Title for the 'Fallback payment method' Tap to Pay merchant education step */
 "tapToPay.education.step.fallbackMethod.title" = "How to accept an alternative payment method.";

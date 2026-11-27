@@ -8,6 +8,7 @@ struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.posHidesItemCardImage) private var hidesItemCardImage
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     var state: ItemListState? {
@@ -78,10 +79,10 @@ struct ItemList<HeaderView: View>: View {
         case .loading(let items):
             if items.isEmpty {
                 ForEach(0..<8) { _ in
-                    GhostItemCardView()
+                    GhostItemCardView(showProductImage: .constant(!hidesItemCardImage))
                 }
             } else {
-                GhostItemCardView()
+                GhostItemCardView(showProductImage: .constant(!hidesItemCardImage))
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState,

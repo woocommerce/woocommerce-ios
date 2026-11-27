@@ -119,6 +119,16 @@ enum ProductImagesCellConfig: Equatable {
 
         // only the extended add image cell
         case extendedAddImages(isVariation: Bool)
+
+    init(statuses: [ProductImageStatus], isEditable: Bool, allowsMultiple: Bool, isVariation: Bool) {
+        if !isEditable {
+            self = .images
+        } else if statuses.isEmpty {
+            self = .extendedAddImages(isVariation: isVariation)
+        } else {
+            self = allowsMultiple ? .addImages : .images
+        }
+    }
 }
 
 /// Private Methods

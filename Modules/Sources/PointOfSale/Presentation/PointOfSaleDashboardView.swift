@@ -18,6 +18,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+    @State private var hasAppeared = false
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
@@ -26,15 +27,12 @@ struct PointOfSaleDashboardView: View {
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
+    private let opensAfterOnboardingGuide: Bool
 
-    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil) {
+    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil, opensAfterOnboardingGuide: Bool = false) {
         self.httpsConfigurationNotice = httpsConfigurationNotice
+        self.opensAfterOnboardingGuide = opensAfterOnboardingGuide
     }
-
-    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
-    /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
-    /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
-    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -156,8 +154,8 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingBarcodeScannerSetup = false
             }
         }
-        .onChange(of: posModel.paymentState.cash) { _, newValue in
-            if newValue != .collectingCash {
+        .onChange(of: posModel.paymentState.cash) { oldValue, newValue in
+            if PointOfSaleDashboardViewHelper.shouldResetCashAmountInput(oldValue: oldValue, newValue: newValue) {
                 viewStateCoordinator.cashAmountInput = .init()
             }
         }
@@ -242,6 +240,12 @@ struct PointOfSaleDashboardView: View {
         }
         .onAppear {
             trackTimeForInitialLoadingState()
+            // The onboarding guide waits for eligibility, so POS can open straight to content
+            // and no change to content would track it as loaded.
+            if opensAfterOnboardingGuide && !hasAppeared && viewState == .content {
+                trackElapsedTimeForInitialLoadingState()
+            }
+            hasAppeared = true
             loadItemsWhenEligible()
         }
         .onChange(of: viewState) { oldValue, newValue in
@@ -420,6 +424,7 @@ struct PointOfSaleDashboardView: View {
             TotalsView()
         }
         .background(Color.posSurface)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbar(.hidden, for: .navigationBar)
     }
 
@@ -485,16 +490,14 @@ struct PointOfSaleDashboardView: View {
                         .foregroundColor(.posOnSurface)
                         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
-                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
+                .frame(width: POSHeaderLayoutConstants.minHeight, height: POSHeaderLayoutConstants.minHeight)
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
+        .accessibilityShowsLargeContentViewer {
+            Label(Localization.phoneMenuAccessibilityLabel, systemImage: "ellipsis")
+        }
         .accessibilityIdentifier("pos-compact-overflow-menu")
-    }
-
-    private var phoneOverflowMenuConstrainedSize: CGFloat {
-        max(POSHeaderLayoutConstants.minHeight,
-            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
     private var phoneCartItemsCount: Int {
@@ -731,7 +734,9 @@ private extension PointOfSaleDashboardView {
     func trackElapsedTimeForInitialLoadingState() {
         if let waitingTimeTracker {
             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
-            let event = waitingTimeTracker.end(using: .milliseconds, additionalProperties: ["sync_strategy": syncStrategy])
+            let event = waitingTimeTracker.end(using: .milliseconds,
+                                               additionalProperties: ["sync_strategy": syncStrategy,
+                                                                      "after_onboarding_guide": opensAfterOnboardingGuide ? "true" : "false"])
             analytics.track(event: event)
             self.waitingTimeTracker = nil
         }

@@ -106,7 +106,7 @@ Run without a terminal and without credentials, the script exits immediately nam
 is missing rather than failing further in.
 
 Requirements: `expect` (ships with macOS), app credentials at
-`~/.configure/woocommerce-ios/secrets/woo_app_credentials.json` (`rake dependencies`), and
+`~/.a8c-secrets/woocommerce-ios@github.com@woocommerce/woo_app_credentials.json` (`rake dependencies`), and
 a **WordPress.com test account with two-factor authentication disabled** — the OAuth
 password grant cannot answer a 2FA challenge non-interactively. Use test accounts only.
 

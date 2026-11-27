@@ -2,10 +2,10 @@ import Foundation
 import Combine
 
 /// Save product image upload statuses in User Defaults.
-/// This class is declared in the Networking layer because it will also be accessed by the background URLSession operations.
 /// This class avoid KVO, and uses Combine to handle notifications, and efficiently checks for actual data changes.
 /// We're not using KVO, because `ProductImageStatus` use a swift type (enum), not compatible with Obj-C.
 ///
+@MainActor
 public final class ProductImageStatusStorage {
     private let key: String
     private let userDefaults: UserDefaults

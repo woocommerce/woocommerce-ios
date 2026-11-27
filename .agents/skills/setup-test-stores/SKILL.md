@@ -17,7 +17,7 @@ hand against a site created in a browser.
 ## Prerequisites
 
 - ContextA8C MCP configured with the `jurassic-ninja` provider (see `.agents/rules/context-a8c.md`).
-- App credentials present at `~/.configure/woocommerce-ios/secrets/woo_app_credentials.json`.
+- App credentials present at `~/.a8c-secrets/woocommerce-ios@github.com@woocommerce/woo_app_credentials.json`.
   If missing, run `rake dependencies`.
 - `expect` on PATH (ships with macOS) for password-based SSH.
 - A **WordPress.com test account with two-factor authentication disabled**. The OAuth

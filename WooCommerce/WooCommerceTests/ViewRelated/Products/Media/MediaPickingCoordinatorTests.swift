@@ -1,31 +1,32 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class MediaPickingCoordinatorTests: XCTestCase {
 
     private let siteID: Int64 = 123
-    private let sourceViewController = UIViewController()
+    private var sourceViewController: UIViewController!
+    private var window: UIWindow!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIViewController()
-        window.makeKeyAndVisible()
+        sourceViewController = UIViewController()
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = sourceViewController
+        window.makeKeyAndVisible()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
+        window = nil
+        sourceViewController = nil
         analytics = nil
         analyticsProvider = nil
-        super.tearDown()
     }
 
-    @MainActor
     func test_showMediaPicker_tracks_correct_event_and_properties() throws {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,
@@ -49,7 +50,6 @@ final class MediaPickingCoordinatorTests: XCTestCase {
         assertEqual(("product_from_image_form"), eventProperties["flow"] as? String)
     }
 
-    @MainActor
     func test_showMediaPicker_tracks_correct_event_and_properties_when_source_is_product_media() throws {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,
@@ -73,7 +73,6 @@ final class MediaPickingCoordinatorTests: XCTestCase {
         assertEqual(("blaze_edit_ad_form"), eventProperties["flow"] as? String)
     }
 
-    @MainActor
     func test_showMediaPicker_present_product_image_picker_when_appropriate() {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,

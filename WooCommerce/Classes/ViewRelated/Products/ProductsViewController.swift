@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import StoreDesignSystem
 import WordPressUI
 import Yosemite
 import Combine
@@ -39,6 +40,7 @@ final class ProductsViewController: UIViewController {
     private var presentedProducts: [ProductListItem] = []
     private var isShowingLoadingRows = false
     private lazy var emptyStateView = ListEmptyView()
+    let usesStoreDesignSystem: Bool
 
     /// Pull To Refresh Support.
     ///
@@ -105,7 +107,7 @@ final class ProductsViewController: UIViewController {
     }
 
     private var headerBackgroundColor: UIColor {
-        .listBackground
+        usesStoreDesignSystem ? UIColor(Color.storeSurface) : .listBackground
     }
 
     private var toolbarBackgroundColor: UIColor {
@@ -188,8 +190,10 @@ final class ProductsViewController: UIViewController {
          selectedProduct: AnyPublisher<Product?, Never>,
          navigateToContent: @escaping (NavigationContentType) -> Void,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil) {
+         hardwareBarcodeScanner: HardwareBarcodeScanner? = nil,
+         usesStoreDesignSystem: Bool = false) {
         self.siteID = siteID
+        self.usesStoreDesignSystem = usesStoreDesignSystem
         self.hardwareBarcodeScanner = hardwareBarcodeScanner ?? .shared
         self.pushNotesManager = pushNotesManager
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores, resultsController: resultsController)
@@ -725,7 +729,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = usesStoreDesignSystem ? UIColor(Color.storeSurface) : .listBackground
     }
 
     func configureTabBarItem() {
@@ -743,7 +747,7 @@ private extension ProductsViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = usesStoreDesignSystem ? UIColor(Color.storeSurface) : .listBackground
         tableView.tableFooterView = footerSpinnerView
         tableView.separatorStyle = .none
 
@@ -1013,6 +1017,11 @@ private extension ProductsViewController {
     /// Register table cells.
     ///
     func registerTableViewCells() {
+        if usesStoreDesignSystem {
+            tableView.register(StoreProductListTableViewCell.self)
+            tableView.register(StoreProductListTableViewCell.self, forCellReuseIdentifier: Constants.loadingCellIdentifier)
+            return
+        }
         tableView.register(ProductsTabProductTableViewCell.self)
         // Loading cells never receive product content or accessibility identifiers.
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: Constants.loadingCellIdentifier)
@@ -1280,19 +1289,30 @@ extension ProductsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isShowingLoadingRows {
             let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
-            cell.stopGhostAnimation()
+            if let storeCell = cell as? StoreProductListTableViewCell {
+                storeCell.configurePlaceholder()
+            } else {
+                cell.stopGhostAnimation()
+            }
             cell.isUserInteractionEnabled = false
             cell.accessibilityElementsHidden = true
             return cell
         }
 
-        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         let product = presentedProducts[indexPath.row]
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product,
                                                     hasPendingUploads: hasPendingUploads,
                                                     isSKUShown: true,
                                                     isPriceShown: true)
+        if usesStoreDesignSystem {
+            let cell = tableView.dequeueReusableCell(StoreProductListTableViewCell.self, for: indexPath)
+            // Every page change reloads all rows, so the previous last row regains its divider.
+            cell.configure(viewModel: viewModel, showsDivider: indexPath.row < presentedProducts.count - 1, isChecked: nil)
+            return cell
+        }
+
+        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
@@ -1311,7 +1331,9 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.stopGhostAnimation()
+        if !usesStoreDesignSystem {
+            cell.stopGhostAnimation()
+        }
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -1359,8 +1381,10 @@ extension ProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if isShowingLoadingRows {
-            cell.layoutIfNeeded()
-            cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            if !usesStoreDesignSystem {
+                cell.layoutIfNeeded()
+                cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            }
             return
         }
         // Preserve the Cell Height
@@ -1426,7 +1450,7 @@ extension ProductsViewController: UITableViewDelegate {
             ServiceLocator.analytics.track(.productListShareButtonTapped)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
-        shareAction.backgroundColor = .brand
+        shareAction.backgroundColor = usesStoreDesignSystem ? UIColor(Color.storePrimary) : .brand
         shareAction.image = .init(systemName: "square.and.arrow.up")
 
         return UISwipeActionsConfiguration(actions: [shareAction])

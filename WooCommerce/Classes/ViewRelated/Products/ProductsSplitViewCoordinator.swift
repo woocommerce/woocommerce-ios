@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
 @MainActor
@@ -41,14 +42,17 @@ final class ProductsSplitViewCoordinator: NSObject {
                                                                 secondaryNavigationController: secondaryNavigationController)
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
-                                                                     navigateToContent: showFromProductList)
+                                                                     navigateToContent: showFromProductList,
+                                                                     usesStoreDesignSystem: featureFlagService.usesStoreDesignSystem)
     private let secondaryStackRestorationPolicy = ProductsSecondaryStackRestorationPolicy()
+    private let featureFlagService: FeatureFlagService
 
     private var addProductCoordinator: AddProductCoordinator?
 
-    init(siteID: Int64, splitViewController: UISplitViewController) {
+    init(siteID: Int64, splitViewController: UISplitViewController, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.splitViewController = splitViewController
+        self.featureFlagService = featureFlagService
         self.primaryNavigationController = WooTabNavigationController()
         self.secondaryNavigationController = WooNavigationController()
     }

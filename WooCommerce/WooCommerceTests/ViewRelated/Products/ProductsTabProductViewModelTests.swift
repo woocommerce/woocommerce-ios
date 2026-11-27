@@ -165,6 +165,46 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.detailsAttributedString.string, "\(Localization.inStock) • $6.00")
     }
 
+    // The design-system row shows these parts separately, so they must hold exactly what the legacy cell shows.
+    func test_plain_details_when_draft_product_shows_price_and_sku_then_split_the_legacy_details() {
+        // Given
+        let sku = "pear"
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          statusKey: ProductStatus.draft.rawValue,
+                                          sku: sku,
+                                          price: "6",
+                                          manageStock: false,
+                                          stockStatusKey: ProductStockStatus.inStock.rawValue,
+                                          variations: []).toListItem()
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+
+        // Then
+        let expectedSKU = String.localizedStringWithFormat(Localization.skuFormat, sku)
+        XCTAssertEqual(viewModel.statusText, ProductStatus.draft.description)
+        XCTAssertEqual(viewModel.detailsText, "\(Localization.inStock) • $6.00")
+        XCTAssertEqual(viewModel.skuText, expectedSKU)
+        XCTAssertEqual(viewModel.detailsAttributedString.string,
+                       "\(ProductStatus.draft.description) • \(Localization.inStock) • $6.00\n\(expectedSKU)")
+    }
+
+    func test_plain_details_when_published_product_hides_sku_then_have_no_status_or_sku() {
+        // Given
+        let product = productWith(price: "6", sku: "pear")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, isSKUShown: false, isPriceShown: true, currencySettings: usdCurrencySettings)
+
+        // Then
+        XCTAssertNil(viewModel.statusText)
+        XCTAssertNil(viewModel.skuText)
+        XCTAssertEqual(viewModel.detailsText, "\(Localization.inStock) • $6.00")
+    }
+
     func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle",

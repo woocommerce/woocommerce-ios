@@ -343,17 +343,41 @@ struct ProductsSplitViewCoordinatorTests {
         // Then
         #expect(refusesSwipeBack == false)
     }
+
+    // MARK: - Store Design System
+
+    @Test(arguments: [true, false])
+    func test_start_then_creates_the_product_list_with_the_storeDesignSystem_flag(isFlagOn: Bool) throws {
+        // Given
+        let featureFlagService = makeFeatureFlagService(usesStoreDesignSystem: isFlagOn)
+
+        // When
+        let (_, primaryNavigationController, _) = try makeSUT(featureFlagService: featureFlagService)
+
+        // Then
+        let list = try #require(primaryNavigationController.topViewController as? ProductsViewController)
+        #expect(list.usesStoreDesignSystem == isFlagOn)
+    }
 }
 
 private extension ProductsSplitViewCoordinatorTests {
     func makeSUT(
-        splitViewController: UISplitViewController = UISplitViewController(style: .doubleColumn)
+        splitViewController: UISplitViewController = UISplitViewController(style: .doubleColumn),
+        featureFlagService: MockFeatureFlagService? = nil
     ) throws -> (ProductsSplitViewCoordinator, UINavigationController, UINavigationController) {
-        let sut = ProductsSplitViewCoordinator(siteID: 123, splitViewController: splitViewController)
+        let sut = ProductsSplitViewCoordinator(siteID: 123,
+                                               splitViewController: splitViewController,
+                                               featureFlagService: featureFlagService ?? makeFeatureFlagService(usesStoreDesignSystem: false))
         sut.start()
         let primaryNavigationController = try #require(splitViewController.viewController(for: .primary) as? UINavigationController)
         let secondaryNavigationController = try #require(splitViewController.viewController(for: .secondary) as? UINavigationController)
         return (sut, primaryNavigationController, secondaryNavigationController)
+    }
+
+    func makeFeatureFlagService(usesStoreDesignSystem: Bool) -> MockFeatureFlagService {
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.storeDesignSystem] = usesStoreDesignSystem
+        return featureFlagService
     }
 }
 

@@ -9,6 +9,10 @@ extension ProductsTabProductViewModel {
         imageUrl = productVariationModel.productVariation.image?.src
         name = productVariationModel.name
         detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)
+        productStatus = productVariationModel.productVariation.status
+        statusText = nil
+        detailsText = detailsAttributedString.string
+        skuText = nil
         productVariation = productVariationModel.productVariation
         imageService = ServiceLocator.imageService
         isSelected = false

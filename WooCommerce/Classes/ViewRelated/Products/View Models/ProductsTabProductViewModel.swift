@@ -24,8 +24,14 @@ struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
     let stockStatusKey: String
+    let productStatus: ProductStatus
     let productVariation: ProductVariation?
     let detailsAttributedString: NSAttributedString
+    /// Draft, pending or private; `nil` for published products.
+    let statusText: String?
+    /// Stock, price and variations, without the status.
+    let detailsText: String
+    let skuText: String?
     let isSelected: Bool
     let isDraggable: Bool
     let hasPendingUploads: Bool
@@ -50,9 +56,11 @@ struct ProductsTabProductViewModel {
         self.isSelected = isSelected
         self.isDraggable = isDraggable
         self.hasPendingUploads = hasPendingUploads
-        detailsAttributedString = product.createDetailsAttributedString(isSKUShown: isSKUShown,
-                                                                        isPriceShown: isPriceShown,
-                                                                        currencySettings: currencySettings)
+        productStatus = product.productStatus
+        statusText = product.createStatusText()
+        detailsText = product.createDetailsText(isPriceShown: isPriceShown, currencySettings: currencySettings)
+        skuText = isSKUShown ? product.createSKUText() : nil
+        detailsAttributedString = product.createDetailsAttributedString(statusText: statusText, detailsText: detailsText, skuText: skuText)
 
         self.imageService = imageService
     }
@@ -71,10 +79,7 @@ struct ProductsTabProductViewModel {
 }
 
 private extension ProductListItem {
-    func createDetailsAttributedString(isSKUShown: Bool,
-                                       isPriceShown: Bool,
-                                       currencySettings: CurrencySettings) -> NSAttributedString {
-        let statusText = createStatusText()
+    func createDetailsText(isPriceShown: Bool, currencySettings: CurrencySettings) -> String {
         let stockText = String.createStockText(productType: productType,
                                                manageStock: manageStock,
                                                stockStatus: productStockStatus,
@@ -83,12 +88,16 @@ private extension ProductListItem {
                                                bundleStockQuantity: bundleStockQuantity)
         let priceText = isPriceShown ? createPriceText(currencySettings: currencySettings): nil
         let variationsText = createVariationsText()
-
-        let detailsText = [statusText, stockText, priceText, variationsText]
+        return [stockText, priceText, variationsText]
             .compactMap({ $0 })
             .joined(separator: " • ")
-        let skuText = isSKUShown ? createSKUText(): nil
-        let text = [detailsText, skuText].compactMap { $0 }.joined(separator: "\n")
+    }
+
+    func createDetailsAttributedString(statusText: String?, detailsText: String, skuText: String?) -> NSAttributedString {
+        let statusAndDetailsText = [statusText, detailsText]
+            .compactMap({ $0 })
+            .joined(separator: " • ")
+        let text = [statusAndDetailsText, skuText].compactMap { $0 }.joined(separator: "\n")
 
         let attributedString = NSMutableAttributedString(string: text,
                                                          attributes: [

@@ -63,6 +63,32 @@ struct ProductsViewControllerTests {
         #expect(refreshControl.superview === table)
     }
 
+    @Test(arguments: [false, true])
+    func test_product_cell_when_design_system_flag_changes_then_uses_expected_cell_type(usesStoreDesignSystem: Bool) async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        try await insert(makeProducts(["Shirt"], firstID: 1), into: storage)
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in },
+                                                 usesStoreDesignSystem: usesStoreDesignSystem)
+
+        // When
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        let cell = controller.tableView(table, cellForRowAt: IndexPath(row: 0, section: 0))
+
+        // Then: UI tests find rows by product name in both states
+        #expect((cell is StoreProductListTableViewCell) == usesStoreDesignSystem)
+        #expect((cell is ProductsTabProductTableViewCell) != usesStoreDesignSystem)
+        #expect(cell.accessibilityIdentifier == "Shirt")
+    }
+
     @Test
     func test_sync_when_products_arrive_during_initial_load_then_replaces_placeholders_before_selection() async throws {
         // Given

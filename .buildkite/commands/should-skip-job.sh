@@ -1,76 +1,76 @@
 #!/bin/bash -eu
 
-# Usage: should-skip-job.sh [validation|build|localization]
+# Usage: should-skip-job.sh <validation|build|localization|prototype-build> [verified trunk base]
 # validation: For jobs like unit/UI tests, authenticator tests...
 #     Skip when changes are limited to documentation, tooling, non-code files, and localization files
-# localization: For jobs that check localization files
-#     Skip when NO localization files have changed, and outside pull requests
+# localization: GlotPress extracts strings from source, merges English InfoPlist.strings
+#     and uses Fastlane and its gems. Skip only for known documentation and metadata changes.
 # build: For jobs building app binaries, e.g. Build, Prototype Builds...
 #     Skip when changes are limited to documentation, tooling, and non-code files
 #     Does not skip if localization files changed
+# prototype-build: Like build, but only on PRs: a trunk prototype is explicitly requested
 #
 # Prints the reason to skip the job, or `false` to run it. Exits 0 either way, and 15 for invalid arguments.
 # `shared-pipeline-vars` exports the result as SKIP_<JOB TYPE>, used as the step's `skip:` (`false` runs the step).
-# Only PR builds skip validation and build jobs. Errors and empty diffs run the job.
+# Webhook PRs and trunk merges can skip jobs. API and trigger builds on trunk can
+# supply an ancestor commit in CI_CHANGED_FILES_BASE. Errors and empty diffs run the job.
+# CI_FULL_BUILD=1 forces a full run.
 
 run_job() { echo false; exit 0; }
-skip_job() { echo "$1"; exit 0; }
 
 COMMON_PATTERNS=(
   "*.md"
   "*.pot"
-  "*.txt"
+  "RELEASE-NOTES.txt"
+  "WooCommerce/Resources/release_notes.txt"
   ".gitignore"
   "config/Version.Public.xcconfig"
-  "docs/**"
+  "docs/*"
   "fastlane/appstoreres/*"
   "fastlane/helpers/*_test.rb"
   "fastlane/metadata/*"
   "fastlane/screenshots.json"
-  "Gemfile"
-  "Gemfile.lock"
-)
-
-LOCALIZATION_PATTERNS=(
-  "**/*.strings"
-  "**/*.stringsdict"
 )
 
 # Check if the job type is valid
 job_type="${1:-}"
 case "$job_type" in
-  validation|build|localization) ;;
+  validation|build|localization|prototype-build) ;;
   *)
-    echo "Error: Job type must be either 'validation', 'build', or 'localization'" >&2
+    echo "Error: Job type must be either 'validation', 'build', 'localization', or 'prototype-build'" >&2
     exit 15
     ;;
 esac
 
-if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
-  # As before, the localization check only runs for PRs that change localization files.
-  [[ "$job_type" != localization ]] || skip_job "Not a pull request"
+if [[ "${CI_FULL_BUILD:-}" == 1 || -n "${BUILDKITE_TAG:-}" ]]; then
+  run_job
+fi
+case "${BUILDKITE_SOURCE:-}" in
+  webhook) ;;
+  api|trigger_job) [[ "${BUILDKITE_PULL_REQUEST-false}" == false && -n "${CI_CHANGED_FILES_BASE:-}" ]] || run_job ;;
+  *) run_job ;;
+esac
+
+if [[ "${BUILDKITE_PULL_REQUEST-false}" =~ ^[0-9]+$ ]]; then
+  changed_files_command=(pr_changed_files)
+elif [[ "${BUILDKITE_PULL_REQUEST-false}" == false && "${BUILDKITE_BRANCH:-}" == trunk && "$job_type" != prototype-build ]]; then
+  # The uploader resolves this once for all jobs. A standalone caller can also resolve it.
+  if [[ $# -eq 2 ]]; then
+    base_commit=$2
+  else
+    base_commit=$("$(dirname "${BASH_SOURCE[0]}")/trunk-diff-base.sh") || run_job
+  fi
+  [[ -n $base_commit ]] || run_job
+  changed_files_command=(check_changed_files --base "$base_commit")
+else
   run_job
 fi
 
-case "$job_type" in
-  "validation")
-    # We should skip if changes are limited to documentation, tooling, non-code files, and localization files
-    PATTERNS=("${COMMON_PATTERNS[@]}" "${LOCALIZATION_PATTERNS[@]}")
-    pr_changed_files --all-match "${PATTERNS[@]}" || run_job
-    skip_job "No relevant files changed"
-    ;;
-  "localization")
-    # We should skip if NO localization files have changed. Errors run the job.
-    pr_changed_files || run_job
-    localization_changed=$(pr_changed_files --stdout --any-match "${LOCALIZATION_PATTERNS[@]}") || run_job
-    [[ "$localization_changed" == false ]] || run_job
-    skip_job "No localization files changed"
-    ;;
-  "build")
-    # We should skip if changes are limited to documentation, tooling, and non-code files
-    # We'll let the job run (won't skip) if PR includes changes in localization files though
-    PATTERNS=("${COMMON_PATTERNS[@]}")
-    pr_changed_files --all-match "${PATTERNS[@]}" || run_job
-    skip_job "No relevant files changed"
-    ;;
-esac
+if [[ "$job_type" != localization ]]; then
+  COMMON_PATTERNS+=("Gemfile" "Gemfile.lock")
+fi
+if [[ "$job_type" == validation ]]; then
+  COMMON_PATTERNS+=("*.strings" "*.stringsdict")
+fi
+"${changed_files_command[@]}" --all-match "${COMMON_PATTERNS[@]}" || run_job
+echo "No relevant files changed"

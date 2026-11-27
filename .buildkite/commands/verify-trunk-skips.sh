@@ -26,7 +26,7 @@ base=$(git rev-parse HEAD)
 git switch -q -c topic
 case "$scenario" in
   docs) path='docs/ci-probe.md'; expected=(1 0 1 1) ;;
-  code) path='WooCommerce/Classes/CIProbe.swift'; expected=(0 0 0 1) ;;
+  code) path='WooCommerce/Classes/CIProbe.swift'; expected=(0 0 0 0) ;;
   *) echo "Expected docs or code" >&2; exit 1 ;;
 esac
 mkdir -p "$(dirname "$path")"
@@ -92,7 +92,52 @@ read_vars
 check_values
 unset CI_CHANGED_FILES_BASE
 
+# An unrelated commit can have the same tree as the real base. Its diff must not enable skipping.
+unrelated_base=$(git commit-tree "${base}^{tree}" -m 'Unrelated root')
+for source in webhook api trigger_job; do
+  export BUILDKITE_SOURCE=$source CI_CHANGED_FILES_BASE=$unrelated_base
+  expected=(0 0 0 0)
+  read_vars
+  check_values
+done
+
+for source in api trigger_job; do
+  export BUILDKITE_SOURCE=$source
+  unset CI_CHANGED_FILES_BASE
+  read_vars
+  check_values
+
+  export CI_CHANGED_FILES_BASE=$base
+  expected=("${selected_expected[@]}")
+  read_vars
+  check_values
+  expected=(0 0 0 0)
+done
+
+# The UI and scheduled paths always run, even with a valid base.
+for source in ui schedule; do
+  export BUILDKITE_SOURCE=$source CI_CHANGED_FILES_BASE=$base
+  read_vars
+  check_values
+done
+
+# PRs select their own merge base, regardless of the supplied trunk base.
+git branch fixture-pr-base "$base"
+git remote add origin "$PWD"
+export BUILDKITE_SOURCE=webhook BUILDKITE_PULL_REQUEST=123 BUILDKITE_PULL_REQUEST_BASE_BRANCH=fixture-pr-base
+export CI_CHANGED_FILES_BASE=$unrelated_base
+expected=("${selected_expected[@]}")
+[[ $scenario != docs ]] || expected[1]=1 # Prototype builds can skip on a docs-only PR.
+read_vars
+check_values
+export BUILDKITE_SOURCE=api
+expected=(0 0 0 0)
+read_vars
+check_values
+
 # Use the same notifier/upload flow as the central uploader, with a harmless probe job and its own status.
+export BUILDKITE_SOURCE=webhook BUILDKITE_PULL_REQUEST=false
+unset CI_CHANGED_FILES_BASE BUILDKITE_PULL_REQUEST_BASE_BRANCH
 cat > smoke.yml <<'YAML'
 steps:
   - label: "Trunk $PROBE_SCENARIO selection"

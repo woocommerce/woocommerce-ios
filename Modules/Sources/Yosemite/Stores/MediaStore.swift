@@ -6,7 +6,7 @@ import Storage
 //
 public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
-    private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
+    private let mediaExportService: MediaExportService
 
     override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
@@ -15,6 +15,7 @@ public final class MediaStore: Store {
 
     init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: MediaRemoteProtocol) {
         self.remote = remote
+        self.mediaExportService = DefaultMediaExportService()
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -32,8 +33,8 @@ public final class MediaStore: Store {
          network: Network,
          remote: MediaRemoteProtocol) {
         self.remote = remote
-        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     /// Registers for supported Actions.
@@ -119,46 +120,26 @@ private extension MediaStore {
                      mediaAsset: ExportableAsset,
                      altText: String?,
                      filename: String?,
-                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        Task { @MainActor in
+                     onCompletion: @escaping @MainActor @Sendable (Result<Media, Error>) -> Void) {
+        Task { @MainActor [mediaExportService, remote] in
             do {
-                let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
-                uploadMedia(siteID: siteID,
-                            productID: productID,
-                            altText: altText,
-                            uploadableMedia: uploadableMedia,
-                            shouldRemoveFileUponCompletion: true,
-                            onCompletion: onCompletion)
+                let media = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
+                let result = await Self.uploadMedia(siteID: siteID, productID: productID, media: media, remote: remote)
+                try MediaFileManager().removeLocalMedia(at: media.localURL)
+                onCompletion(result)
             } catch {
                 onCompletion(.failure(error))
             }
         }
     }
 
-    func uploadMedia(siteID: Int64,
-                     productID: Int64,
-                     altText: String?,
-                     uploadableMedia media: UploadableMedia,
-                     shouldRemoveFileUponCompletion: Bool,
-                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        remote.uploadMedia(siteID: siteID,
-                           productID: productID,
-                           mediaItem: media) { result in
-            // Removes local media after the upload API request.
-            if shouldRemoveFileUponCompletion {
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
-                }
-            }
-
-            switch result {
-            case .success(let uploadedMedia):
-                onCompletion(.success(uploadedMedia.toMedia()))
-            case .failure(let error):
-                onCompletion(.failure(error))
+    static func uploadMedia(siteID: Int64,
+                            productID: Int64,
+                            media: UploadableMedia,
+                            remote: MediaRemoteProtocol) async -> Result<Media, Error> {
+        await withCheckedContinuation { continuation in
+            remote.uploadMedia(siteID: siteID, productID: productID, mediaItem: media) { result in
+                continuation.resume(returning: result.map { $0.toMedia() })
             }
         }
     }
@@ -167,18 +148,14 @@ private extension MediaStore {
                     productID: Int64,
                     localURL: URL,
                     altText: String?,
-                    onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        Task { @MainActor in
-            let uploadableMedia = UploadableMedia(localURL: localURL,
-                                                  filename: localURL.lastPathComponent,
-                                                  mimeType: localURL.mimeTypeForPathExtension,
-                                                  altText: altText)
-            uploadMedia(siteID: siteID,
-                        productID: productID,
-                        altText: altText,
-                        uploadableMedia: uploadableMedia,
-                        shouldRemoveFileUponCompletion: false,
-                        onCompletion: onCompletion)
+                    onCompletion: @escaping @MainActor @Sendable (Result<Media, Error>) -> Void) {
+        let media = UploadableMedia(localURL: localURL,
+                                    filename: localURL.lastPathComponent,
+                                    mimeType: localURL.mimeTypeForPathExtension,
+                                    altText: altText)
+        Task { @MainActor [remote] in
+            let result = await Self.uploadMedia(siteID: siteID, productID: productID, media: media, remote: remote)
+            onCompletion(result)
         }
     }
 

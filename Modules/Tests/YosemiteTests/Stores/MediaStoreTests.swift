@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 
+@MainActor
 final class MediaStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -31,8 +32,7 @@ final class MediaStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()

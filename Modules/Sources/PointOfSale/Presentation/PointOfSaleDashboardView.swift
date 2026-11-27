@@ -73,73 +73,17 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        Group {
-            switch viewState {
-            case .loading(let catalogSyncState):
-                PointOfSaleLoadingView(
-                    catalogSyncState: catalogSyncState,
-                    onExit: { requestExit() }
-                )
-                    .transition(.opacity)
-            case .ineligible(let reason):
-                POSIneligibleView(reason: reason, onRefresh: {
-                    try await posModel.entryPointController.refreshEligibility(reason: reason)
-                }, onExit: { requestExit() })
-                .frame(maxWidth: .infinity)
-            case .error(let error):
-                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                    if error.errorType == .initialCatalogSyncError {
-                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
-                    }
-
-                    Task {
-                        switch viewStateCoordinator.selectedItemListType {
-                        case .products(search: false):
-                            await posModel.purchasableItemsController.loadItems(base: .root)
-                        case .products(search: true):
-                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                        case .coupons(search: false):
-                            await posModel.couponsSearchController.loadItems(base: .root)
-                        case .coupons(search: true):
-                            await posModel.couponsSearchController.loadItems(base: .root)
-                        }
-                    }
-                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    requestExit()
-                } : nil)
-            case .content:
-                POSPushTransitionContainer(
-                    item: posModel.customAmountFlow,
-                    // Each custom amount step owns Back; the container must not also dismiss the flow.
-                    isBackGestureEnabled: false,
-                    onBack: { posModel.customAmountFlow = nil }
-                ) {
-                    contentView
-                } pushed: { flow in
-                    if let flow {
-                        POSCustomAmountFlowView(flow: flow)
-                    }
-                }
-                .accessibilitySortPriority(2)
+        POSPushTransitionContainer(
+            item: posModel.customAmountFlow,
+            // Each custom amount step owns Back; the container must not also dismiss the flow.
+            isBackGestureEnabled: false,
+            onBack: { posModel.customAmountFlow = nil }
+        ) {
+            dashboardRoot
+        } pushed: { flow in
+            if let flow {
+                POSCustomAmountFlowView(flow: flow)
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
-        // report its own ideal height while POS is being presented, which must not drive this position.
-        .overlay(alignment: .bottomLeading) {
-            POSFloatingControlView(onExitSelected: { requestExit() },
-                                   showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings,
-                                   onOrdersSelected: presentOrders)
-            .offset(x: metrics.padding.medium, y: -Constants.floatingControlVerticalOffset)
-            .padding(.bottom, metrics.padding.medium)
-            .trackSize(size: $floatingSize)
-            .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed && posModel.customAmountFlow == nil)
-        }
-        .overlay {
-            POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + metrics.padding.medium,
@@ -252,6 +196,66 @@ struct PointOfSaleDashboardView: View {
             if newValue == .content && oldValue != newValue {
                 trackElapsedTimeForInitialLoadingState()
             }
+        }
+    }
+
+    private var dashboardRoot: some View {
+        Group {
+            switch viewState {
+            case .loading(let catalogSyncState):
+                PointOfSaleLoadingView(
+                    catalogSyncState: catalogSyncState,
+                    onExit: { requestExit() }
+                )
+                    .transition(.opacity)
+            case .ineligible(let reason):
+                POSIneligibleView(reason: reason, onRefresh: {
+                    try await posModel.entryPointController.refreshEligibility(reason: reason)
+                }, onExit: { requestExit() })
+                .frame(maxWidth: .infinity)
+            case .error(let error):
+                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                    if error.errorType == .initialCatalogSyncError {
+                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
+                    }
+
+                    Task {
+                        switch viewStateCoordinator.selectedItemListType {
+                        case .products(search: false):
+                            await posModel.purchasableItemsController.loadItems(base: .root)
+                        case .products(search: true):
+                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                        case .coupons(search: false):
+                            await posModel.couponsSearchController.loadItems(base: .root)
+                        case .coupons(search: true):
+                            await posModel.couponsSearchController.loadItems(base: .root)
+                        }
+                    }
+                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
+                    requestExit()
+                } : nil)
+            case .content:
+                contentView
+                    .accessibilitySortPriority(2)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
+        // report its own ideal height while POS is being presented, which must not drive this position.
+        .overlay(alignment: .bottomLeading) {
+            POSFloatingControlView(onExitSelected: { requestExit() },
+                                   showSupport: $showSupport,
+                                   showDocumentation: $showDocumentation,
+                                   showSettings: $showSettings,
+                                   onOrdersSelected: presentOrders)
+            .offset(x: metrics.padding.medium, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, metrics.padding.medium)
+            .trackSize(size: $floatingSize)
+            .accessibilitySortPriority(1)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+        }
+        .overlay {
+            POSConnectivityView()
         }
     }
 
@@ -423,7 +427,7 @@ struct PointOfSaleDashboardView: View {
             }
             TotalsView()
         }
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbar(.hidden, for: .navigationBar)
     }

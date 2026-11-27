@@ -70,12 +70,15 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
     var body: some View {
         GeometryReader { geometry in
             let totalWidth = geometry.size.width
-            let progress = pushProgress(totalWidth: totalWidth)
+            let horizontalExtension = sideBySide == nil
+                ? geometry.safeAreaInsets.leading + geometry.safeAreaInsets.trailing : 0
+            let transitionWidth = totalWidth + horizontalExtension
+            let progress = pushProgress(totalWidth: transitionWidth)
 
-            HStack(spacing: sideBySide?.spacing ?? 0) {
+            ZStack(alignment: .leading) {
                 root
                     .frame(width: sideBySide?.rootWidth ?? totalWidth)
-                    .offset(x: policy.outgoingParallaxOffset(progress: progress, totalWidth: totalWidth))
+                    .offset(x: policy.outgoingParallaxOffset(progress: progress, totalWidth: transitionWidth))
                     // The panes lay out inside the safe area, so a dim that stops there leaves undimmed
                     // bands above and below it, which reads as banding rather than one screen sliding
                     // under another.
@@ -85,24 +88,25 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
                             .ignoresSafeArea()
                             .allowsHitTesting(false)
                     }
-                    .allowsHitTesting(progress < 1)
+                    .offset(x: policy.incomingOffset(progress: progress, totalWidth: transitionWidth))
+                    .allowsHitTesting(sideBySide != nil || displayedItem == nil)
                     .accessibilityHidden(progress == 1)
 
                 pushed(displayedItem)
                     .frame(width: sideBySide?.pushedWidth ?? totalWidth)
                     .overlay(alignment: .leading) {
-                        leadingEdgeShadow(progress: progress)
+                        leadingEdgeShadow(progress: progress, leadingInset: sideBySide == nil ? geometry.safeAreaInsets.leading : 0)
                     }
+                    .padding(.leading, sideBySide.map { $0.rootWidth + $0.spacing } ?? 0)
+                    .offset(x: sideBySide == nil
+                            ? transitionWidth + policy.incomingOffset(progress: progress, totalWidth: transitionWidth) : 0)
                     .accessibilityHidden(sideBySide == nil && !isPushed)
             }
-            .offset(x: policy.incomingOffset(progress: progress, totalWidth: totalWidth))
             .frame(width: totalWidth, height: geometry.size.height, alignment: .leading)
-            // Clips the offscreen pane horizontally. While sliding, each pane's background has to reach under
-            // the status bar and home indicator and move with it, otherwise those strips change color at once
-            // for the whole width. Side by side, the caller paints those strips instead.
-            .clipShape(VerticallyExtendedRectangle(top: sideBySide == nil ? geometry.safeAreaInsets.top : 0,
-                                                   bottom: sideBySide == nil ? geometry.safeAreaInsets.bottom : 0))
-            .simultaneousGesture(backGesture(totalWidth: totalWidth), isEnabled: isBackGestureActive)
+            // Keep controls inside the safe area while backgrounds slide under the system bars.
+            // The full-canvas offset keeps the hidden pane beyond this extended clip.
+            .clipShape(SafeAreaExtendedRectangle(insets: sideBySide == nil ? geometry.safeAreaInsets : EdgeInsets()))
+            .simultaneousGesture(backGesture(totalWidth: transitionWidth, contentWidth: totalWidth), isEnabled: isBackGestureActive)
         }
         // Anchors the gesture's coordinates to this view rather than to the window, which is only the
         // same thing when the window fills the screen.
@@ -201,16 +205,16 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
     ///
     /// Kept in the hierarchy and faded by `progress` rather than inserted and removed: a view removed
     /// part-way through a transition stops following the pane and is left hanging mid-screen.
-    private func leadingEdgeShadow(progress: CGFloat) -> some View {
+    private func leadingEdgeShadow(progress: CGFloat, leadingInset: CGFloat) -> some View {
         LinearGradient(
             colors: [.clear, .black.opacity(Constants.leadingEdgeShadowOpacity)],
             startPoint: .leading,
             endPoint: .trailing
         )
         .frame(width: Constants.leadingEdgeShadowWidth)
-        .offset(x: -Constants.leadingEdgeShadowWidth)
+        .offset(x: -(Constants.leadingEdgeShadowWidth + leadingInset))
         .opacity(progress)
-        .ignoresSafeArea()
+        .ignoresSafeArea(edges: .vertical)
         .allowsHitTesting(false)
     }
 
@@ -234,7 +238,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
         canNavigateBack && item != nil
     }
 
-    private func backGesture(totalWidth: CGFloat) -> some Gesture {
+    private func backGesture(totalWidth: CGFloat, contentWidth: CGFloat) -> some Gesture {
         DragGesture(
             minimumDistance: POSEdgeSwipePolicy.minimumDragDistance,
             coordinateSpace: .named(Constants.coordinateSpaceName)
@@ -243,7 +247,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
             isActive = true
         }
         .onChanged { value in
-            guard policy.startsAtLeadingEdge(value.startLocation.x, totalWidth: totalWidth),
+            guard policy.startsAtLeadingEdge(value.startLocation.x, totalWidth: contentWidth),
                   policy.isPredominantlyHorizontal(value.translation) else {
                 return
             }
@@ -251,7 +255,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
             dragTranslation = policy.clampedTranslation(value.translation.width, totalWidth: totalWidth)
         }
         .onEnded { value in
-            guard policy.startsAtLeadingEdge(value.startLocation.x, totalWidth: totalWidth) else { return }
+            guard policy.startsAtLeadingEdge(value.startLocation.x, totalWidth: contentWidth) else { return }
             let shouldNavigateBack = policy.isPredominantlyHorizontal(value.translation)
                 && policy.shouldComplete(
                     translation: value.translation.width,
@@ -301,11 +305,13 @@ private enum Constants {
     static let transition: Animation = .snappy(duration: 0.3)
 }
 
-private struct VerticallyExtendedRectangle: Shape {
-    let top: CGFloat
-    let bottom: CGFloat
+private struct SafeAreaExtendedRectangle: Shape {
+    let insets: EdgeInsets
 
     func path(in rect: CGRect) -> Path {
-        Path(CGRect(x: rect.minX, y: rect.minY - top, width: rect.width, height: rect.height + top + bottom))
+        Path(CGRect(x: rect.minX - insets.leading,
+                    y: rect.minY - insets.top,
+                    width: rect.width + insets.leading + insets.trailing,
+                    height: rect.height + insets.top + insets.bottom))
     }
 }

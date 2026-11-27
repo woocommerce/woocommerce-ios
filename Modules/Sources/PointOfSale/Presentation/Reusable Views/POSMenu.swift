@@ -126,11 +126,12 @@ private struct POSMenuBubble: Shape {
 
 private struct POSMenuLabelStyle: LabelStyle {
     @Environment(\.posMetrics) private var metrics
+    @ScaledMetric private var iconScale: CGFloat = 1
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: metrics.spacing.medium) {
             configuration.icon
-                .frame(minWidth: metrics.spacing.large)
+                .frame(width: metrics.spacing.large * iconScale)
             configuration.title
         }
     }

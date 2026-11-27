@@ -173,7 +173,7 @@ private extension POSRootModalViewModifier {
                 UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
                                        topTrailingRadius: POSCornerRadiusStyle.extraLarge.value)
                 .fill(Color.posSurfaceBright)
-                .ignoresSafeArea(edges: .bottom)
+                .ignoresSafeArea(edges: [.horizontal, .bottom])
             }
             .offset(y: bottomSheetDragOffset)
             .gesture(bottomSheetDismissGesture)

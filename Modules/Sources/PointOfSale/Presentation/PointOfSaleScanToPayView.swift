@@ -108,7 +108,7 @@ struct PointOfSaleScanToPayView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         .posEdgeSwipeBackAction(isEnabled: !isLoading, onBack: cancelScanToPayPayment)
     }
 

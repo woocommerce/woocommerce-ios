@@ -37,7 +37,7 @@ struct CustomerListSyncable: ListSyncable {
     func createSyncAction(
         pageNumber: Int,
         pageSize: Int,
-        completion: @escaping (Result<Bool, Error>) -> Void
+        completion: @escaping Completion
     ) -> Action {
         CustomerAction.synchronizeLightCustomersData(
             siteID: siteID,
@@ -46,12 +46,12 @@ struct CustomerListSyncable: ListSyncable {
             orderby: .name,
             order: .asc,
             filterEmpty: .email,
-            onCompletion: completion
+            onCompletion: onMain(completion)
         )
     }
 
     /// Creates the action to search items with keyword
-    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action {
         CustomerAction.searchCustomers(
             siteID: siteID,
             pageNumber: pageNumber,
@@ -61,8 +61,13 @@ struct CustomerListSyncable: ListSyncable {
             keyword: keyword,
             filter: .all,
             filterEmpty: .email,
-            onCompletion: completion
+            onCompletion: onMain(completion)
         )
+    }
+
+    private func onMain(_ completion: @escaping Completion) -> (Result<Bool, Error>) -> Void {
+        // CustomerStore delivers storage completions on .main and forwards failures from the main-queue REST callback.
+        { result in MainActor.assumeIsolated { completion(result) } }
     }
 
     /// Creates the predicate for filtering search results

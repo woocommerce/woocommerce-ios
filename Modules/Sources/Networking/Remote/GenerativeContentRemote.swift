@@ -2,7 +2,7 @@ import Foundation
 import os
 
 /// Used by backend to track AI-generation usage and measure costs
-public enum GenerativeContentRemoteFeature: String {
+public enum GenerativeContentRemoteFeature: String, Sendable {
     case productDescription = "woo_ios_product_description"
     case productSharing = "woo_ios_share_product"
     case productDetailsFromScannedTexts = "woo_ios_product_details_from_scanned_texts"
@@ -10,14 +10,14 @@ public enum GenerativeContentRemoteFeature: String {
     case productCreation = "woo_ios_product_creation"
 }
 
-public enum GenerativeContentRemoteResponseFormat: String {
+public enum GenerativeContentRemoteResponseFormat: String, Sendable {
     case json = "json_object"
     case text = "text"
 }
 
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
 ///
-public protocol GenerativeContentRemoteProtocol {
+public protocol GenerativeContentRemoteProtocol: Sendable {
     /// Generates text based on the given prompt using Jetpack AI. Currently, Jetpack AI is only supported for sites hosted on WPCOM.
     /// - Parameters:
     ///   - siteID: WPCOM ID of the site.

@@ -37,7 +37,7 @@ struct BookableProductListSyncable: ListSyncable {
     func createSyncAction(
         pageNumber: Int,
         pageSize: Int,
-        completion: @escaping (Result<Bool, Error>) -> Void
+        completion: @escaping Completion
     ) -> Action {
         ProductAction.synchronizeProducts(
             siteID: siteID,
@@ -56,7 +56,7 @@ struct BookableProductListSyncable: ListSyncable {
     }
 
     /// Creates the action to search items with keyword
-    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action {
         ProductAction.searchProducts(
             siteID: siteID,
             keyword: keyword,

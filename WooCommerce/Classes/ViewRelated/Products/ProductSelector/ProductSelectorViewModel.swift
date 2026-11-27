@@ -716,7 +716,7 @@ extension ProductSelectorViewModel: @MainActor PaginationTrackerDelegate {
                                            pageSize: Int,
                                            filters: FilterProductListViewModel.Filters,
                                            productIDs: [Int64] = [],
-                                           onCompletion: @escaping (Result<RetrievedProducts, Error>) -> Void) {
+                                           onCompletion: @escaping @MainActor @Sendable (Result<RetrievedProducts, Error>) -> Void) {
         let productIDs = filters.favoriteProduct != nil ? favoriteProductIDs : productIDs
         let action = ProductAction.retrieveProductsTransiently(siteID: siteID,
                                                                currency: currency,

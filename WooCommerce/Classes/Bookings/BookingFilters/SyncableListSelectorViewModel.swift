@@ -4,6 +4,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 // Generic view model for syncable data list selector views
+@MainActor
 final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObject {
     @Published private(set) var items: [Syncable.ModelType] = []
 
@@ -116,7 +117,7 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
     }
 }
 
-extension SyncableListSelectorViewModel: PaginationTrackerDelegate {
+extension SyncableListSelectorViewModel: @MainActor PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
 

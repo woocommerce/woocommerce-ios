@@ -7,6 +7,7 @@ import YosemiteTestHelpers
 
 /// ProductStore Unit Tests with different sort orders
 ///
+@MainActor
 final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
     /// Mock Dispatcher!
@@ -35,8 +36,8 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()

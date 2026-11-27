@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     typealias ResultData = ProductFormRemoteActionUseCase.ResultData
     private var storesManager: MockStoresManager!
@@ -15,8 +16,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     private let pluginName = "WooCommerce"
     private let pluginSlug = "woocommerce"
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
         storesManager.sessionManager.setStoreId(siteID)
         storageManager = MockStorageManager()
@@ -25,13 +26,13 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storesManager = nil
         storageManager = nil
         ServiceLocator.setAnalytics(originalAnalytics)
         analyticsProvider = nil
         originalAnalytics = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - Adding a product (`addProduct`)

@@ -34,18 +34,18 @@ struct TeamMemberListSyncable: @MainActor ListSyncable {
     func createSyncAction(
         pageNumber: Int,
         pageSize: Int,
-        completion: @escaping (Result<Bool, Error>) -> Void
+        completion: @escaping Completion
     ) -> Action {
         BookingAction.synchronizeResources(
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            onCompletion: { completion($0) }
+            onCompletion: completion
         )
     }
 
     /// Creates the action to search items with keyword
-    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action {
         fatalError("Searching is not supported")
     }
 

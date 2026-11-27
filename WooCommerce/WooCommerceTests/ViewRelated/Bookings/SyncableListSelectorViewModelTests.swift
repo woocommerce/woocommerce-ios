@@ -447,7 +447,7 @@ private struct MockListSyncable: ListSyncable {
         [NSSortDescriptor(key: "productID", ascending: false)]
     }
 
-    func createSyncAction(pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+    func createSyncAction(pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action {
         ProductAction.synchronizeProducts(
             siteID: siteID,
             pageNumber: pageNumber,
@@ -462,7 +462,7 @@ private struct MockListSyncable: ListSyncable {
         )
     }
 
-    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping Completion) -> Action {
         ProductAction.searchProducts(
             siteID: siteID,
             keyword: keyword,

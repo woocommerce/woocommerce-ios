@@ -131,6 +131,30 @@ final class ProductDetailsFactoryTests: XCTestCase {
         XCTAssertTrue(isAIContent)
     }
 
+    func test_factory_selects_store_renderer_for_existing_products_when_flag_is_enabled() throws {
+        let featureFlagService = MockFeatureFlagService()
+        let cases: [(ProductFormType, Bool, Bool)] = [
+            (.edit, true, true), (.readonly, true, true), (.add, true, false),
+            (.edit, false, false), (.readonly, false, false), (.add, false, false)
+        ]
+
+        for (formType, isFlagEnabled, expectedStoreRenderer) in cases {
+            // Given
+            featureFlagService.isFeatureFlagEnabledReturnValue[.storeDesignSystem] = isFlagEnabled
+
+            // When
+            let controller = ProductDetailsFactory.productDetails(product: .fake(),
+                                                                  presentationStyle: .navigationStack,
+                                                                  formType: formType,
+                                                                  featureFlagService: featureFlagService,
+                                                                  onDuplicateCompletion: { _, _ in })
+
+            // Then
+            let usesStoreRenderer: Bool = try XCTUnwrap(property(named: "usesStoreRenderer", in: controller))
+            XCTAssertEqual(usesStoreRenderer, expectedStoreRenderer, "Form type \(formType), flag enabled \(isFlagEnabled)")
+        }
+    }
+
     func test_factory_forwards_product_creation_callback_with_share_eligibility() throws {
         // Given
         let product = Product.fake()

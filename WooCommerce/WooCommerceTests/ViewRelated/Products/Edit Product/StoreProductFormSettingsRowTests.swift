@@ -15,7 +15,7 @@ struct StoreProductFormSettingsRowTests {
         let row = ProductFormSection.SettingsRow.reviews(viewModel: viewModel, ratingCount: count, averageRating: average)
 
         // When
-        let review = try #require(StoreProductFormSettingsRow(row)?.review)
+        let review = try #require(StoreProductFormSettingsRow(row).review)
 
         // Then
         #expect(review.average == expected)

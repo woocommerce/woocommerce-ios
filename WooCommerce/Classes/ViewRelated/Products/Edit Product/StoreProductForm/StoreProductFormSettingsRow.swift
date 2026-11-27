@@ -25,7 +25,7 @@ struct StoreProductFormSettingsRow: Identifiable {
         return viewModel.isActionable
     }
 
-    init?(_ row: Row) {
+    init(_ row: Row) {
         switch row {
         case .price(let model, _): self.init("price", row, model)
         case .customFields(let model): self.init("custom-fields", row, model)
@@ -53,8 +53,14 @@ struct StoreProductFormSettingsRow: Identifiable {
         case .subscriptionFreeTrial(let model, _): self.init("subscription-free-trial", row, model)
         case .subscriptionExpiry(let model, _): self.init("subscription-expiry", row, model)
         case .quantityRules(let model): self.init("quantity-rules", row, model)
-        case .status, .noPriceWarning, .noVariationsWarning: return nil
+        case .status(let model, _): self.init("status", row, model.viewModel)
+        case .noPriceWarning(let model): self.init("no-price-warning", row, warning: model)
+        case .noVariationsWarning(let model): self.init("no-variations-warning", row, warning: model)
         }
+    }
+
+    private init(_ id: String, _ row: Row, warning: Row.WarningViewModel) {
+        self.init(id, row, .init(icon: warning.icon, title: warning.title, details: nil, isActionable: warning.isActionable))
     }
 
     private init(_ id: String, _ row: Row, _ viewModel: Row.ViewModel, review: Review? = nil, accessibilityIdentifier: String? = nil) {

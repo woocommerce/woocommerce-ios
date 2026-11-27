@@ -702,6 +702,10 @@ extension DefaultProductFormTableViewModel {
             "Categories",
             comment: "Title of the Categories row on Product main screen"
         )
+        static let variationsTitle = NSLocalizedString(
+            "Variations",
+            comment: "Title of the Product Variations row on Product main screen for a variable product"
+        )
         static let pluralReviewsFormat = NSLocalizedString(
             "rated %ld times",
             comment: "Format of the number of product ratings in plural form"
@@ -876,10 +880,6 @@ private extension DefaultProductFormTableViewModel.Localization {
         // Variations
         static let addVariationsTitle = NSLocalizedString("Add variations",
                                                           comment: "Title for adding variations row on Product main screen for a variable product")
-        static let variationsTitle =
-            NSLocalizedString("Variations",
-                              comment: "Title of the Product Variations row on Product main screen for a variable product")
-
         static func variationsDetail(count: Int) -> String {
             let format: String = {
                 switch count {

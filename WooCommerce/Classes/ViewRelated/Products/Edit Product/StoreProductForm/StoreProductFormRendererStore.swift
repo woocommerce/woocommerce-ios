@@ -8,6 +8,8 @@ final class StoreProductFormRendererStore {
     private(set) var primaryRows: [PrimaryRow] = []
     private(set) var settingsRows: [StoreProductFormSettingsRow] = []
     private(set) var imageStatuses: [ProductImageStatus] = []
+    private(set) var moreDetailsActions: [ProductFormBottomSheetAction] = []
+    private(set) var canShowAITooltip = false
 
     private var name = ""
     var productName: String {
@@ -23,6 +25,9 @@ final class StoreProductFormRendererStore {
     let onPrimaryRowSelected: (ProductFormSection.PrimaryFieldRow) -> Void
     let onSettingsRowSelected: (ProductFormSection.SettingsRow) -> Void
     let onInlineAction: (ProductFormInlineAction) -> Void
+    var onMoreDetailsSelected: (ProductFormBottomSheetAction) -> Void = { _ in }
+    var onAITooltipShown: () -> Void = {}
+    var onAITooltipDismissed: () -> Void = {}
 
     init(sections: [ProductFormSection],
          imageStatuses: [ProductImageStatus],
@@ -46,7 +51,7 @@ final class StoreProductFormRendererStore {
             case .primaryFields(let rows):
                 primaryRows.append(contentsOf: rows.compactMap(PrimaryRow.init))
             case .settings(let rows):
-                settingsRows.append(contentsOf: rows.compactMap(StoreProductFormSettingsRow.init))
+                settingsRows.append(contentsOf: rows.map(StoreProductFormSettingsRow.init))
             }
         }
         self.primaryRows = primaryRows
@@ -61,16 +66,26 @@ final class StoreProductFormRendererStore {
     }
 
     func updateProductName(_ name: String) {
-        self.name = name
+        if self.name != name {
+            self.name = name
+        }
     }
 
     func updateImageStatuses(_ statuses: [ProductImageStatus]) {
         imageStatuses = statuses
     }
 
+    func updateMoreDetailsActions(_ actions: [ProductFormBottomSheetAction]) {
+        moreDetailsActions = actions
+    }
+
+    func updateAITooltipEligibility(_ isEligible: Bool) {
+        canShowAITooltip = isEligible
+    }
+
     struct PrimaryRow: Identifiable {
         enum ID {
-            case images, name, variationName, description
+            case images, name, variationName, description, linkedProductsPromo, descriptionAI, learnMoreAboutAI, promoteWithBlaze
         }
 
         let id: ID
@@ -83,8 +98,11 @@ final class StoreProductFormRendererStore {
             case .name: id = .name
             case .variationName: id = .variationName
             case .description: id = .description
-            // The screen spaces sections directly. Promo and AI content follow in the next rollout.
-            case .separator, .linkedProductsPromo, .descriptionAI, .learnMoreAboutAI, .promoteWithBlaze: return nil
+            case .linkedProductsPromo: id = .linkedProductsPromo
+            case .descriptionAI: id = .descriptionAI
+            case .learnMoreAboutAI: id = .learnMoreAboutAI
+            case .promoteWithBlaze: id = .promoteWithBlaze
+            case .separator: return nil
             }
         }
     }

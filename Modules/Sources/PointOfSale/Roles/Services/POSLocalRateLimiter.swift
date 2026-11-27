@@ -42,6 +42,12 @@ actor POSLocalRateLimiter {
         }
     }
 
+    func resetAfterRecovery(token: POSPINSessionTokens.Token) throws(POSAuthError) {
+        guard !isAuthenticating else { throw .unknown }
+        try requireCurrentAndNotCancelled(token)
+        try replace(with: AttemptRecord())
+    }
+
     func authenticate(pin: String,
                       using authenticator: POSPINAuthenticating,
                       capability requiredCapability: POSCapability? = nil,

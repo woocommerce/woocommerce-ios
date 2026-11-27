@@ -57,6 +57,7 @@ struct WPComMagicLinkView: View {
 
     private let viewModel: WPComMagicLinkViewModel
     var onOpenMail: () -> Void = {}
+    var onPasteSignInLink: ((URL) -> Void)?
 
     init(title: String, flow: WPComLoginFlow, isSignup: Bool, viewModel: WPComMagicLinkViewModel) {
         self.title = title
@@ -68,8 +69,7 @@ struct WPComMagicLinkView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                switch flow {
-                case .jetpackSetup:
+                if case .jetpackSetup = flow {
                     JetpackInstallHeaderView()
                 }
 
@@ -94,7 +94,7 @@ struct WPComMagicLinkView: View {
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
 
-                    Text(Localization.emailConfirmationHint)
+                    Text(onPasteSignInLink == nil ? Localization.emailConfirmationHint : Localization.recoveryInstructions)
                         .multilineTextAlignment(.center)
                         .padding(.top)
                 }
@@ -113,6 +113,13 @@ struct WPComMagicLinkView: View {
                     onOpenMail()
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                if let onPasteSignInLink {
+                    PasteButton(payloadType: URL.self) { urls in
+                        if let url = urls.first {
+                            onPasteSignInLink(url)
+                        }
+                    }
+                }
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -140,6 +147,11 @@ private extension WPComMagicLinkView {
             "wpComMagicLinkView.emailConfirmationHint",
             value: "Ensure your email is correct and double check your spam folder.",
             comment: "Text hinting the user to ensure their email is correct and check their spam folder"
+        )
+        static let recoveryInstructions = NSLocalizedString(
+            "wpComMagicLinkView.posPINRecovery.copyLink",
+            value: "Copy the sign-in link from your email, then return here and tap Paste.",
+            comment: "Instructions for using an email sign-in link in POS PIN recovery."
         )
     }
 }

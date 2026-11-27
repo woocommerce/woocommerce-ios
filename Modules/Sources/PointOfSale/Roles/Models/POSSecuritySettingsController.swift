@@ -136,6 +136,16 @@ final class POSSecuritySettingsController {
         let scope = session.accessScope
         guard await requestApproval(.changeAdminPIN, using: handler, reason: reason) == .completed,
               session.accessScope == scope, isVisible, !Task.isCancelled else { return nil }
+        return makeAdminPINChangeFlow()
+    }
+
+    func takeRecoveredAdminPINChangeFlow() -> POSPINSetupFlow? {
+        guard isVisible, roles?.contains(.admin) == true,
+              session.consumeAdminPINChangeAuthorization() else { return nil }
+        return makeAdminPINChangeFlow()
+    }
+
+    private func makeAdminPINChangeFlow() -> POSPINSetupFlow {
         let configuration = POSPINSetupFlow.Configuration.adminChange
         let setup = makePINSetupController(for: configuration.role, permitsAdminChange: true)
         return POSPINSetupFlow(configuration: configuration, setup: setup, sleep: flowSleep)

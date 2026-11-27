@@ -63,6 +63,8 @@ public protocol POSExternalViewProviding {
                                           onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
     @MainActor
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
+    @MainActor
+    func createPINRecoveryView(siteID: Int64, onCompletion: @escaping (POSPINRecoveryResult) -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

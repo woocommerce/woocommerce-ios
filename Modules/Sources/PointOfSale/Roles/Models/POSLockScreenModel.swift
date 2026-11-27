@@ -5,7 +5,7 @@ import Observation
 @MainActor
 final class POSLockScreenModel {
     private let session: POSAccessSession
-    private var isSigningIn = false
+    private(set) var isSigningIn = false
     private(set) var pinEntryState: POSPINEntryState = .checkingLockout
 
     var isLocked: Bool { session.isLocked }
@@ -35,6 +35,19 @@ final class POSLockScreenModel {
             pinEntryState = state(for: error)
             return false
         }
+    }
+
+    func recoverWithFreshSignIn(using authenticate: POSPINRecoveryAuthentication) async -> POSPINRecoveryResult {
+        guard !isSigningIn else { return .failed }
+        isSigningIn = true
+        let outcome = await session.recoverAdminAccess(using: authenticate)
+        isSigningIn = false
+        if case .verified = outcome {
+            pinEntryState = .idle
+        } else if !Task.isCancelled {
+            await refreshLockoutState()
+        }
+        return outcome
     }
 
     func refreshLockoutState() async {

@@ -233,6 +233,19 @@ import WordPressUI
         presenter.present(navController, animated: true, completion: nil)
     }
 
+    @MainActor
+    public class func makeSiteCredentialEntryController(
+        siteURL: String,
+        onSubmit: @escaping @MainActor (String, String, @escaping @MainActor (String) -> Void) -> Void
+    ) -> UIViewController? {
+        guard let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) else { return nil }
+        let fields = LoginFields()
+        fields.siteAddress = siteURL
+        controller.loginFields = fields
+        controller.credentialSubmission = CustomSiteCredentialSubmission(onSubmit: onSubmit)
+        return controller
+    }
+
     /// A helper method to fetch site info for a given URL.
     /// - Parameters:
     ///     - siteURL: The URL of the site to fetch information for.

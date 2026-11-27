@@ -58,8 +58,7 @@ struct WPComPasswordLoginView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                switch flow {
-                case .jetpackSetup:
+                if case .jetpackSetup = flow {
                     JetpackInstallHeaderView()
                 }
 

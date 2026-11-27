@@ -22,6 +22,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
         switch flow {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        case .posPINRecovery:
+            Localization.recoveryTitle
         }
     }
 
@@ -29,6 +31,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
         switch flow {
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        case .posPINRecovery:
+            Localization.recoverySubtitle
         }
     }
 
@@ -36,6 +40,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
         switch flow {
         case .jetpackSetup:
             titleString
+        case .posPINRecovery:
+            Localization.recoveryContinue
         }
     }
 
@@ -79,6 +85,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
                 switch flow {
                 case .jetpackSetup:
                     String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                case .posPINRecovery:
+                    ""
                 }
             }()
 
@@ -127,7 +135,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
                 return
             }
 
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, failure: error))
             onError(error.localizedDescription)
         }
     }
@@ -157,16 +165,22 @@ final class WPComEmailLoginViewModel: ObservableObject {
             onMagicLinkSent(email, forAccountCreation)
         } catch {
             onError(error.localizedDescription)
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
         }
     }
 }
 
 private extension WPComEmailLoginViewModel {
+    func trackJetpackSetup(_ event: WooAnalyticsEvent) {
+        if flow.isJetpackSetup {
+            analytics.track(event: event)
+        }
+    }
+
     @MainActor
     func handleUnkownUserError(emailOrUsername: String, error: Error) async {
         guard emailOrUsername.isValidEmail() else {
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            trackJetpackSetup(.JetpackSetup.loginFlow(step: .emailAddress, failure: error))
             onError(Localization.unknownUsername)
             return
         }
@@ -213,6 +227,21 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let recoveryTitle = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.title",
+            value: "Sign in to WordPress.com",
+            comment: "Title of the WordPress.com email screen in POS PIN recovery."
+        )
+        static let recoverySubtitle = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.subtitle",
+            value: "Use the WordPress.com account that is signed in to the app.",
+            comment: "Subtitle of the WordPress.com email screen in POS PIN recovery."
+        )
+        static let recoveryContinue = NSLocalizedString(
+            "wpComEmailLoginViewModel.posPINRecovery.continue",
+            value: "Continue",
+            comment: "Button that submits the email or username in POS PIN recovery."
         )
         static let unknownUsername = NSLocalizedString(
             "wpComEmailLoginViewModel.unknownUsername",

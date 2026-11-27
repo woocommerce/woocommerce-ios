@@ -174,5 +174,8 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(EmptyView())
     }
+    func createPINRecoveryView(siteID: Int64, onCompletion: @escaping (POSPINRecoveryResult) -> Void) -> AnyView {
+        AnyView(EmptyView())
+    }
     init() {}
 }

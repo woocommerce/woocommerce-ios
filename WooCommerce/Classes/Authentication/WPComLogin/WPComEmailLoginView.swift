@@ -9,7 +9,10 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         return noticePresenter
     }()
 
+    private let flow: WPComLoginFlow
+
     init(viewModel: WPComEmailLoginViewModel) {
+        self.flow = viewModel.flow
         super.init(rootView: WPComEmailLoginView(viewModel: viewModel))
     }
 
@@ -21,6 +24,7 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTransparentNavigationBar()
+        guard flow.isJetpackSetup else { return }
         navigationController?.presentationController?.delegate = self
         if navigationController?.viewControllers.first == self {
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
@@ -104,7 +108,9 @@ struct WPComEmailLoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.primaryButtonTitle) {
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
+                    if viewModel.flow.isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
+                    }
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
                         await viewModel.checkWordPressComAccount(emailOrUsername: viewModel.emailOrUsername)
@@ -126,8 +132,7 @@ struct WPComEmailLoginView: View {
 private extension WPComEmailLoginView {
     @ViewBuilder
     var headerView: some View {
-        switch viewModel.flow {
-        case .jetpackSetup:
+        if case .jetpackSetup = viewModel.flow {
             JetpackInstallHeaderView()
         }
     }

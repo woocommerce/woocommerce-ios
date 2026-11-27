@@ -1,3 +1,4 @@
+import AuthenticationServices
 import UIKit
 import enum Yosemite.Credentials
 import protocol Yosemite.StoresManager
@@ -6,11 +7,20 @@ import WooFoundation
 
 enum WPComLoginFlow {
     case jetpackSetup(requiresConnectionOnly: Bool)
+    case posPINRecovery
 
-    var pendingAuthFlow: PendingAuthFlow {
+    var pendingAuthFlow: PendingAuthFlow? {
         switch self {
         case .jetpackSetup: .jetpackSetup
+        case .posPINRecovery: nil
         }
+    }
+
+    var isJetpackSetup: Bool {
+        if case .jetpackSetup = self {
+            return true
+        }
+        return false
     }
 }
 
@@ -26,11 +36,12 @@ final class WPComLoginCoordinator {
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: (Credentials) -> Void
+    private var recoveryLinkSession: POSPINRecoveryLinkSession?
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
               flow: flow,
-              allowAccountCreation: true,
+              allowAccountCreation: flow.isJetpackSetup,
               accountService: accountService,
               onPasswordUIRequest: { email in self.showPasswordUIForLogin(email: email) },
               onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
@@ -68,6 +79,12 @@ final class WPComLoginCoordinator {
             showAlert(message: error.localizedDescription)
         }
     }
+
+    func cancelRecoveryLink() {
+        let session = recoveryLinkSession
+        recoveryLinkSession = nil
+        session?.cancel()
+    }
 }
 
 // MARK: - Login steps
@@ -83,8 +100,12 @@ private extension WPComLoginCoordinator {
     func handleMagicLink(email: String) async {
         do {
             try await requestAuthenticationLink(email: email)
+            if case .posPINRecovery = flow {
+                guard !Task.isCancelled, navigationController.presentingViewController != nil else { return }
+            }
             showMagicLinkSentUI(email: email)
         } catch {
+            guard !Task.isCancelled else { return }
             showAlert(message: error.localizedDescription)
         }
     }
@@ -145,7 +166,8 @@ private extension WPComLoginCoordinator {
                              onUseUsernamePassword: { self.showWPComUsernameLogin() },
                              onError: { [weak self] message in
                                  self?.showAlert(message: message)
-                             })
+                             },
+                             tracksJetpackSetup: flow.isJetpackSetup)
         )
         navigationController.show(magicLinkRequestController, sender: self)
     }
@@ -157,12 +179,42 @@ private extension WPComLoginCoordinator {
     ///
     func showMagicLinkSentUI(email: String) {
         let storage = PendingAuthFlowStorage()
-        storage.updateCurrentFlow(flow.pendingAuthFlow)
+        if let pendingAuthFlow = flow.pendingAuthFlow {
+            storage.updateCurrentFlow(pendingAuthFlow)
+        }
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
                                                              flow: flow,
                                                              isSignup: false)
+        if case .posPINRecovery = flow {
+            viewController.rootView.onPasteSignInLink = { [weak self] url in
+                self?.openRecoveryLink(url, email: email)
+            }
+        }
         navigationController.show(viewController, sender: self)
+    }
+
+    func openRecoveryLink(_ url: URL, email: String) {
+        let scheme = Bundle.main.dotcomAuthScheme
+        guard recoveryLinkSession == nil else { return }
+        guard POSPINRecoveryMagicLink.isSignInLink(url, callbackScheme: scheme), let window = navigationController.view.window else {
+            return showAlert(message: Localization.invalidRecoveryLink)
+        }
+        let session = POSPINRecoveryLinkSession(anchor: window)
+        recoveryLinkSession = session
+        let started = session.start(url: url, callbackScheme: scheme) { [weak self, weak session] callback in
+            guard let self, let session, recoveryLinkSession === session else { return }
+            recoveryLinkSession = nil
+            guard let callback else { return }
+            guard let token = POSPINRecoveryMagicLink.token(from: callback, callbackScheme: scheme) else {
+                return showAlert(message: Localization.invalidRecoveryLink)
+            }
+            completeLogin(username: email, authToken: token)
+        }
+        if !started {
+            recoveryLinkSession = nil
+            showAlert(message: Localization.invalidRecoveryLink)
+        }
     }
 
     func showWPComUsernameLogin() {
@@ -223,6 +275,11 @@ private extension WPComLoginCoordinator {
 
 private extension WPComLoginCoordinator {
     enum Localization {
+        static let invalidRecoveryLink = NSLocalizedString(
+            "wpComLoginCoordinator.posPINRecovery.invalidLink",
+            value: "Copy the WordPress.com sign-in link from your email and try again.",
+            comment: "Alert shown when an invalid WordPress.com link is pasted during POS PIN recovery."
+        )
         static let login = NSLocalizedString(
             "wpComLoginCoordinator.title",
             value: "Log In",
@@ -233,5 +290,60 @@ private extension WPComLoginCoordinator {
             value: "Cancel",
             comment: "Button to dismiss an error alert in the WPCom login flow"
         )
+    }
+}
+
+enum POSPINRecoveryMagicLink {
+    static func isSignInLink(_ url: URL, callbackScheme: String) -> Bool {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.scheme == "https", components.host == "wordpress.com", components.path == "/wp-login.php",
+              components.user == nil, components.password == nil, components.port == nil else { return false }
+        let items = components.queryItems ?? []
+        return value("action", in: items) == "magic-login"
+            && value("scheme", in: items) == callbackScheme
+            && value("token", in: items) != nil
+    }
+
+    static func token(from url: URL, callbackScheme: String) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.scheme == callbackScheme, components.host == "magic-login", components.path.isEmpty,
+              components.user == nil, components.password == nil, components.port == nil else { return nil }
+        let items = components.queryItems ?? []
+        guard items.allSatisfy({ $0.name != "flow" }) || value("flow", in: items) == "login" else { return nil }
+        return value("token", in: items)
+    }
+
+    private static func value(_ name: String, in items: [URLQueryItem]) -> String? {
+        let matches = items.filter { $0.name == name }
+        guard matches.count == 1, let value = matches.first?.value, !value.isEmpty else { return nil }
+        return value
+    }
+}
+
+@MainActor
+private final class POSPINRecoveryLinkSession: NSObject, ASWebAuthenticationPresentationContextProviding {
+    private let anchor: ASPresentationAnchor
+    private var browser: ASWebAuthenticationSession?
+
+    init(anchor: ASPresentationAnchor) {
+        self.anchor = anchor
+    }
+
+    func start(url: URL, callbackScheme: String, completion: @escaping @MainActor @Sendable (URL?) -> Void) -> Bool {
+        let browser = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackScheme) { url, _ in
+            Task { @MainActor in completion(url) }
+        }
+        browser.presentationContextProvider = self
+        browser.prefersEphemeralWebBrowserSession = true
+        self.browser = browser
+        return browser.start()
+    }
+
+    func cancel() {
+        browser?.cancel()
+    }
+
+    nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        MainActor.assumeIsolated { anchor }
     }
 }

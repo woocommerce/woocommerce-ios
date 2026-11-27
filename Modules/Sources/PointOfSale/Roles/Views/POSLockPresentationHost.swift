@@ -29,6 +29,7 @@ struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable
         // Do not copy the source's disabled/accessibility-hidden environment into the PIN UI.
         let content = lockContent
             .environment(\.posLayoutScale, environment.posLayoutScale)
+            .environment(\.posExternalViews, environment.posExternalViews)
             .environment(\.horizontalSizeClass, environment.horizontalSizeClass)
             .environment(\.dynamicTypeSize, environment.dynamicTypeSize)
             .environment(\.colorScheme, environment.colorScheme)

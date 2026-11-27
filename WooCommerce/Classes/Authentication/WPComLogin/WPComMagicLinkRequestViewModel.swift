@@ -15,13 +15,15 @@ final class WPComMagicLinkRequestViewModel: ObservableObject {
 
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
+    private let tracksJetpackSetup: Bool
 
     init(email: String,
          onMagicLinkSent: @escaping (String) -> Void,
          onUseUsernamePassword: @escaping () -> Void,
          onError: @escaping (String) -> Void,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         tracksJetpackSetup: Bool = true) {
         self.email = email
         self.avatarURL = Gravatar.gravatarUrl(for: email, defaultImage: .mp)
 
@@ -31,6 +33,7 @@ final class WPComMagicLinkRequestViewModel: ObservableObject {
 
         self.accountService = accountService
         self.analytics = analytics
+        self.tracksJetpackSetup = tracksJetpackSetup
     }
 
     @MainActor
@@ -62,7 +65,9 @@ private extension WPComMagicLinkRequestViewModel {
             onMagicLinkSent(email)
         } catch {
             onError(error.localizedDescription)
-            analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, failure: error))
+            if tracksJetpackSetup {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, failure: error))
+            }
         }
     }
 }

@@ -666,8 +666,58 @@ struct POSSecuritySettingsControllerTests {
         let before = storage.values
 
         // When / Then
+        #expect(controller.takeRecoveredAdminPINChangeFlow() == nil)
         #expect(await save("2468", for: .admin, using: controller) == false)
         #expect(storage.values == before)
+    }
+
+    @Test func test_admin_change_when_recovered_then_opens_once_and_saves_after_confirmation() async throws {
+        // Given
+        let (controller, session, store) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
+        let before = try store.credentials()
+        session.lock()
+        #expect(await session.recoverAdminAccess { .verified(siteID: $0) } == .verified(siteID: 123))
+        controller.load()
+
+        // When
+        #expect(session.hasPendingAdminPINChange)
+        let flow = try #require(controller.takeRecoveredAdminPINChangeFlow())
+        #expect(flow.configuration == .adminChange)
+        #expect(!session.hasPendingAdminPINChange)
+        #expect(controller.takeRecoveredAdminPINChangeFlow() == nil)
+        #expect(await flow.submit("2468"))
+        #expect(try store.credentials() == before)
+        #expect(await flow.submit("2468"))
+
+        // Then
+        let after = try store.credentials()
+        #expect(after.first { $0.staff == POSLocalRole.cashier.staff } == before.first { $0.staff == POSLocalRole.cashier.staff })
+        session.lock()
+        await #expect(throws: POSAuthError.invalidPIN) { try await session.signIn(withPIN: "1234") }
+        try await session.signIn(withPIN: "2468")
+        #expect(session.currentStaff == POSLocalRole.admin.staff)
+    }
+
+    @Test func test_admin_change_when_pos_relocks_before_editor_opens_then_revokes_recovery_authorization() async throws {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        session.lock()
+        #expect(await session.recoverAdminAccess { .verified(siteID: $0) } == .verified(siteID: 123))
+        #expect(session.hasPendingAdminPINChange)
+
+        // When
+        session.lock()
+        try await session.signIn(withPIN: "1234")
+        controller.load()
+
+        // Then
+        #expect(!session.hasPendingAdminPINChange)
+        #expect(controller.takeRecoveredAdminPINChangeFlow() == nil)
     }
 
     @Test(arguments: ["0000", "5678"])

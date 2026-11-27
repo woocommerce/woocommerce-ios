@@ -779,7 +779,10 @@ private extension OrdersRootViewController {
             return
         }
 
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel)
+        let details = [orderDetailsViewController, presenter as? OrderDetailsViewController]
+            .compactMap { $0 }
+            .first { $0.isPresentingOrder(withID: viewModel.orderID) }
+        let paymentMethodsViewController = details?.makePaymentMethodsController(for: viewModel) ?? PaymentMethodsHostingController(viewModel: viewModel)
         paymentMethodsViewController.parentController = presenter
         presenter.present(paymentMethodsViewController, animated: true)
     }

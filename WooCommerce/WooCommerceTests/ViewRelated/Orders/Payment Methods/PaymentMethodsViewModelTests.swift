@@ -1161,44 +1161,94 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(calledOnSuccess)
     }
 
-    func test_view_model_updates_order_async_after_collecting_payment_successfully() throws {
+    func test_collect_payment_when_payment_completes_without_receipt_then_reports_order_refresh_before_calling_onSuccess() throws {
         // Given
         let order = Order.fake().copy(status: .pending)
         storage.insertSampleOrder(readOnlyOrder: order)
-
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
-                onCompletion(PaymentGatewayAccount.fake())
-            }
+        let viewModel = makeCardPaymentViewModel()
+        var refreshedOrderIDs: [Int64] = []
+        whenRefreshingOrderRemotely { orderID in
+            refreshedOrderIDs.append(orderID)
         }
-
+        var events: [String] = []
+        viewModel.onPaymentOrderRefreshStarted = { _ in
+            events.append("refreshStarted")
+        }
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
-        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-                                        stores: stores,
-                                        storage: storage)
-        let viewModel = PaymentMethodsViewModel(total: "12",
-                                                formattedTotal: "$12.00",
-                                                flow: .simplePayment,
-                                                channel: .storeManagement,
-                                                dependencies: dependencies)
 
         // When
-        let (siteID, orderID): (Int64, Int64) = waitFor { promise in
-            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case let .retrieveOrder(siteID, orderID, _):
-                    promise((siteID, orderID))
-                default:
-                    XCTFail("Unexpected action: \(action)")
-                }
-            }
-            viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
-        }
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {
+            events.append("onSuccess")
+        }, onFailure: {})
 
         // Then
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertEqual(events, ["refreshStarted", "onSuccess"])
+        XCTAssertEqual(refreshedOrderIDs, [order.orderID])
+    }
+
+    func test_collect_payment_when_receipt_opens_then_reports_one_order_refresh_before_receipt_closes() throws {
+        // Given
+        let order = Order.fake().copy(status: .pending)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        let viewModel = makeCardPaymentViewModel()
+        var refreshedOrderIDs: [Int64] = []
+        whenRefreshingOrderRemotely { orderID in
+            refreshedOrderIDs.append(orderID)
+        }
+        var reportedRefreshCount = 0
+        viewModel.onPaymentOrderRefreshStarted = { _ in
+            reportedRefreshCount += 1
+        }
+        var openReceipt: (() -> Void)?
+        var closeReceipt: (() -> Void)?
+        var useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        useCase.onSuccessfulPayment = { onPaymentCompletion, onCompleted in
+            openReceipt = onPaymentCompletion
+            closeReceipt = onCompleted
+        }
+        var onSuccessCalled = false
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {
+            onSuccessCalled = true
+        }, onFailure: {})
+
+        // When
+        try XCTUnwrap(openReceipt)()
+        let reportedRefreshCountWhileReceiptIsOpen = reportedRefreshCount
+        let onSuccessCalledWhileReceiptIsOpen = onSuccessCalled
+        try XCTUnwrap(closeReceipt)()
+
+        // Then
+        XCTAssertEqual(reportedRefreshCountWhileReceiptIsOpen, 1)
+        XCTAssertFalse(onSuccessCalledWhileReceiptIsOpen)
+        XCTAssertTrue(onSuccessCalled)
+        XCTAssertEqual(reportedRefreshCount, 1)
+        XCTAssertEqual(refreshedOrderIDs, [order.orderID])
+    }
+
+    func test_collect_payment_when_order_refresh_finishes_then_reported_refresh_returns_the_refreshed_order() async throws {
+        // Given
+        let order = Order.fake().copy(status: .pending)
+        let paidOrder = order.copy(status: .completed, datePaid: .some(Date()))
+        storage.insertSampleOrder(readOnlyOrder: order)
+        let viewModel = makeCardPaymentViewModel()
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrderRemotely(_, _, onCompletion) = action {
+                onCompletion(.success(paidOrder))
+            }
+        }
+        var reportedRefresh: Task<Order?, Never>?
+        viewModel.onPaymentOrderRefreshStarted = { refresh in
+            reportedRefresh = refresh
+        }
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+
+        // When
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
+        let refresh = try XCTUnwrap(reportedRefresh)
+        let refreshedOrder = await refresh.value
+
+        // Then
+        XCTAssertEqual(refreshedOrder, paidOrder)
     }
 
     func test_collectPayment_when_ttp_payment_error_then_onFailure_called() {
@@ -1264,6 +1314,47 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(onFailureCalled)
     }
 
+    func test_collect_payment_when_payment_fails_then_returns_without_refreshing_order() {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let viewModel = makeCardPaymentViewModel()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+        var reportedRefreshCount = 0
+        viewModel.onPaymentOrderRefreshStarted = { _ in
+            reportedRefreshCount += 1
+        }
+
+        // When
+        var onFailureCalled = false
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+            onFailureCalled = true
+        })
+
+        // Then
+        XCTAssertTrue(onFailureCalled)
+        XCTAssertEqual(orderRefreshActionCount, 0)
+        XCTAssertEqual(reportedRefreshCount, 0)
+    }
+
+    func test_collect_payment_when_tap_to_pay_requires_fallback_then_does_not_refresh_order() {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let viewModel = makeCardPaymentViewModel()
+        let error: CardReaderServiceError = .paymentCapture(underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(error))
+        var reportedRefreshCount = 0
+        viewModel.onPaymentOrderRefreshStarted = { _ in
+            reportedRefreshCount += 1
+        }
+
+        // When
+        viewModel.collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
+
+        // Then
+        XCTAssertEqual(orderRefreshActionCount, 0)
+        XCTAssertEqual(reportedRefreshCount, 0)
+    }
+
     func test_collectPayment_when_card_reader_payment_error_requiresFallbackPaymentMethod_then_onFailure_called() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -1298,6 +1389,42 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 }
 
 private extension PaymentMethodsViewModelTests {
+    var orderRefreshActionCount: Int {
+        stores.receivedActions.filter { action in
+            switch action as? OrderAction {
+            case .retrieveOrder?, .retrieveOrderRemotely?:
+                return true
+            default:
+                return false
+            }
+        }.count
+    }
+
+    func makeCardPaymentViewModel() -> PaymentMethodsViewModel {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
+        let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: MockCardPresentPaymentsOnboardingPresenter(),
+                                        stores: stores,
+                                        storage: storage)
+        return PaymentMethodsViewModel(total: "12",
+                                       formattedTotal: "$12.00",
+                                       flow: .simplePayment,
+                                       channel: .storeManagement,
+                                       dependencies: dependencies)
+    }
+
+    /// Records remote order refreshes and leaves them running.
+    func whenRefreshingOrderRemotely(_ onRefresh: @escaping (Int64) -> Void) {
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrderRemotely(_, orderID, _) = action {
+                onRefresh(orderID)
+            }
+        }
+    }
+
     private func simulate(cardPaymentEligibility: Bool, tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
         simulate(cardPaymentEligibility: cardPaymentEligibility, on: stores)
         simulate(tapToPayDeviceAvailability: tapToPayDeviceAvailability, on: stores)

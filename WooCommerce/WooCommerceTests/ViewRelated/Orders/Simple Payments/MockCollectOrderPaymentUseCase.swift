@@ -5,11 +5,15 @@ import Yosemite
 /// Mock type for `CollectOrderPaymentProtocol`
 ///
 struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
+    typealias SuccessfulPaymentHandler = (_ onPaymentCompletion: @escaping () -> Void, _ onCompleted: @escaping () -> Void) -> Void
+
     /// Assign to configure `collectPayment` behaviour.
     ///
     var onCollectResult: Result<Void, Error>
 
-    /// Calls `onCompleted` for a successful collect result, and `onFailure` for an errer .
+    var onSuccessfulPayment: SuccessfulPaymentHandler?
+
+    /// Uses the no-receipt callback order unless the test controls when the receipt closes.
     ///
     func collectPayment(using: Yosemite.CardReaderDiscoveryMethod,
                         channel: PaymentChannel,
@@ -19,7 +23,12 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
                         onCompleted: @escaping () -> Void) {
         switch onCollectResult {
         case .success:
-            onCompleted()
+            if let onSuccessfulPayment {
+                onSuccessfulPayment({ onPaymentCompletion(nil) }, onCompleted)
+            } else {
+                onCompleted()
+                onPaymentCompletion(nil)
+            }
         case .failure(let error):
             onFailure(error)
         }

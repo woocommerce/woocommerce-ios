@@ -7,13 +7,23 @@ final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMe
     ///
     weak var parentController: UIViewController?
 
-    init(viewModel: PaymentMethodsViewModel) {
+    private var onDismiss: (() -> Void)?
+
+    init(viewModel: PaymentMethodsViewModel, onDismiss: (() -> Void)? = nil) {
+        self.onDismiss = onDismiss
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
+            self?.notifyDismiss()
             self?.parentController?.dismiss(animated: true, completion: nil)
         }
+    }
+
+    private func notifyDismiss() {
+        let onDismiss = onDismiss
+        self.onDismiss = nil
+        onDismiss?()
     }
 
     override func viewDidLoad() {
@@ -87,6 +97,7 @@ private extension HostedPaymentMethodsView {
 ///
 extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        notifyDismiss()
         rootView.viewModel.userDidCancelFlow()
     }
 
@@ -96,6 +107,7 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         presentCancelOrderActionSheet(viewController: self) { [weak self] _ in
+            self?.notifyDismiss()
             self?.dismiss(animated: true, completion: nil)
             self?.rootView.viewModel.userDidCancelFlow()
         }

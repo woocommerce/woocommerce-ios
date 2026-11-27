@@ -3,6 +3,7 @@
 
 26.3
 -----
+- [*] In-Person Payments: Show the updated order after a successful card payment. [https://github.com/woocommerce/woocommerce-ios/pull/18213]
 
 
 26.2

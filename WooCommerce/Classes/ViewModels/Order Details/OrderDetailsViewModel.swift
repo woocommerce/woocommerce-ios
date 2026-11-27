@@ -443,6 +443,33 @@ extension OrderDetailsViewModel {
         }
     }
 
+    func refreshOrderAfterPayment(waitingFor paymentOrderRefresh: Task<Order?, Never>?) -> Task<Void, Never>? {
+        guard dataSource.canCollectPayment else { return nil }
+        if let paymentOrderRefresh {
+            return dataSource.hideCollectPayment { [weak self] in
+                let order = await paymentOrderRefresh.value
+                await self?.applyPaymentRefresh(order)
+            }
+        }
+
+        return Task { [weak self] in
+            let order: Order? = await withCheckedContinuation { continuation in
+                guard let self else { return continuation.resume(returning: nil) }
+                self.syncOrder { order, _ in continuation.resume(returning: order) }
+            }
+            await self?.applyPaymentRefresh(order)
+        }
+    }
+
+    private func applyPaymentRefresh(_ refreshedOrder: Order?) async {
+        guard let refreshedOrder else { return }
+        let statusChanged = refreshedOrder.status != order.status
+        update(order: refreshedOrder)
+        if statusChanged {
+            await refreshReceiptEligibility()
+        }
+    }
+
     /// Checks if shipment tracking is enabled for the order.
     /// - Returns: Whether shipment tracking is enabled for the user by checking the products and if the Shipment Tracking plugin is active.
     func isShipmentTrackingEnabled() -> Bool {

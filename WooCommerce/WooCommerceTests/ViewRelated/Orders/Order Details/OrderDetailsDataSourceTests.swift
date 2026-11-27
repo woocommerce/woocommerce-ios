@@ -285,6 +285,27 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
+    func test_reloadSections_when_refreshing_paid_order_then_hides_collect_payment_until_refresh_finishes() async throws {
+        // Given
+        let order = makeOrder().copy(datePaid: .some(nil))
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
+
+        // When
+        let refresh = dataSource.hideCollectPayment {}
+        dataSource.reloadSections()
+        let duringRefresh = try section(withTitle: Title.payment, from: dataSource)
+        await refresh.value
+        dataSource.reloadSections()
+
+        // Then
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: duringRefresh))
+        let afterRefresh = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: afterRefresh))
+    }
+
     func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() throws {
         // Given
         var order = makeOrder()

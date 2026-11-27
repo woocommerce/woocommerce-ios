@@ -35,6 +35,10 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showLoadingIndicator = false
 
+    private var paymentOrderRefresh: Task<Order?, Never>?
+
+    var onPaymentOrderRefreshStarted: ((Task<Order?, Never>) -> Void)?
+
     /// Stores the payment link for the order.
     ///
     let paymentLink: URL?
@@ -67,7 +71,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Order's ID to update
     ///
-    private let orderID: Int64
+    let orderID: Int64
 
     /// Formatted total to charge.
     ///
@@ -301,9 +305,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                 guard let self else { return }
 
                 trackFlowFailed()
-                // Update order in case its status and/or other details are updated after a failed in-person payment
-                updateOrderAsynchronously()
-
                 if shouldReturnToOrderDetails(for: discoveryMethod, error: error) {
                     onFailure()
                     return
@@ -312,12 +313,11 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
-            onPaymentCompletion: { _ in
-                // No tracking required at present because it's handled internally.
+            onPaymentCompletion: { [weak self] _ in
+                self?.startPaymentOrderRefresh()
             },
             onCompleted: { [weak self] in
-                // Update order in case its status and/or other details are updated after a successful in-person payment
-                self?.updateOrderAsynchronously()
+                self?.startPaymentOrderRefresh()
 
                 // Inform success to consumer
                 onSuccess()
@@ -549,6 +549,30 @@ private extension PaymentMethodsViewModel {
     func updateOrderAsynchronously() {
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { _, _  in }
         stores.dispatch(action)
+    }
+
+    @MainActor
+    func startPaymentOrderRefresh() {
+        guard paymentOrderRefresh == nil else { return }
+        let (refreshedOrder, finishRefresh) = AsyncStream<Order>.makeStream()
+        let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { result in
+            switch result {
+            case .success(let order):
+                finishRefresh.yield(order)
+            case .failure(let error):
+                DDLogError("⛔️ Error refreshing order after payment: \(error)")
+            }
+            finishRefresh.finish()
+        }
+        stores.dispatch(action)
+        let refresh = Task<Order?, Never> {
+            for await order in refreshedOrder {
+                return order
+            }
+            return nil
+        }
+        paymentOrderRefresh = refresh
+        onPaymentOrderRefreshStarted?(refresh)
     }
 
     /// Tracks the `paymentsFlowCompleted` event.

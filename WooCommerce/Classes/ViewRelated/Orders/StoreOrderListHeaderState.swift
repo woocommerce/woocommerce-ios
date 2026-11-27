@@ -12,14 +12,6 @@ struct StoreOrderListHeaderState: Equatable {
         OrderListLocalization.filterButtonTitle(activeFilterCount: activeFilterCount)
     }
 
-    var bannerAccessibilityValue: String {
-        isBannerExpanded ? OrderListLocalization.expandedAccessibilityValue : OrderListLocalization.collapsedAccessibilityValue
-    }
-
-    var bannerAccessibilityHint: String {
-        isBannerExpanded ? OrderListLocalization.collapseAccessibilityHint : OrderListLocalization.expandAccessibilityHint
-    }
-
     enum Banner: Equatable {
         case none
         case error(title: String, message: String)

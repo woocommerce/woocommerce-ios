@@ -703,9 +703,8 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             case .unexpectedResponse(let failure) where failure.kind == .unexpectedContent && endpointUnderVerification == .admin &&
                 loginEntryVerified && failure.step == .dashboardVerification:
                 _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL, draftURL: normalizedAdminURL, error: .notFound))
-            case .unexpectedResponse(let failure):
-                let offersBrowserRecovery = failure.statusCode == 401 && offersBrowserAlternative
-                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, offersBrowserRecovery)
+            case .unexpectedResponse:
+                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, offersBrowserAlternative)
                 trackSiteCredentialLoginFailure(error)
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
@@ -740,7 +739,8 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     }
 
     /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
-    /// is only ever offered as a button the merchant has to tap.
+    /// is only ever offered as a button the merchant has to tap: on the credentials form after an unexpected
+    /// response, matching Android, or in the alert for other errors.
     ///
     @MainActor
     @discardableResult
@@ -749,10 +749,9 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
                                            for siteURL: String,
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) -> Bool {
-        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError,
-           offersBrowserAlternative == false {
+        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
             unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
-            return false
+            return offersBrowserAlternative
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
             guard let self, let viewController else { return }

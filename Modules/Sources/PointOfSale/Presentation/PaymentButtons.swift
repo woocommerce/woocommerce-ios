@@ -76,7 +76,14 @@ private extension PaymentsActionButtons {
             if let event = successAction.analyticsEvent {
                 analytics.track(event)
             }
-            successAction.action()
+            if horizontalSizeClass == .compact {
+                // Reset the cart and product navigation without animating behind the departing checkout.
+                var transaction = Transaction(animation: nil)
+                transaction.disablesAnimations = true
+                withTransaction(transaction, successAction.action)
+            } else {
+                successAction.action()
+            }
         }, label: {
             HStack(spacing: metrics.spacing.medium) {
                 Text(successAction.title)

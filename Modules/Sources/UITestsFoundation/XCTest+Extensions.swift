@@ -228,28 +228,6 @@ extension XCUIApplication {
         return existsInOverflowMenu
     }
 
-    /// Dismisses the system prompt asking to allow notifications, which the app requests after login
-    /// while the permission is still undetermined.
-    @discardableResult
-    public func dismissNotificationsPermissionPromptIfNeeded(timeout: TimeInterval = 5) -> Bool {
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let prompt = springboard.alerts
-            .matching(NSPredicate(format: "label CONTAINS %@", "Would Like to Send You Notifications"))
-            .firstMatch
-        guard prompt.waitForExistence(timeout: timeout) else {
-            return false
-        }
-
-        let dontAllowButton = prompt.buttons["Don’t Allow"]
-        guard dontAllowButton.waitForExistence(timeout: 2) else {
-            XCTFail("Notifications prompt has no Don’t Allow button. Buttons: \(prompt.buttons.allElementsBoundByIndex.map(\.label))")
-            return false
-        }
-
-        dontAllowButton.tap()
-        return true
-    }
-
     @discardableResult
     public func dismissSavePasswordPromptIfNeeded(timeout: TimeInterval = 15,
                                                 until element: XCUIElement? = nil,
@@ -272,45 +250,26 @@ extension XCUIApplication {
                                                                  stableFor: TimeInterval,
                                                                  elementDescription: String) -> Bool {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let promptHosts = [self, springboard]
         let deadline = Date().addingTimeInterval(timeout)
-        var elementVisibleWithoutPromptSince: Date?
-        var promptAbsentSince: Date?
+        var readySince: Date?
 
         while Date() < deadline {
-            let promptVisible = isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard)
-            if tapSavePasswordDismissButtonIfNeeded(in: self) || tapSavePasswordDismissButtonIfNeeded(in: springboard) {
-                elementVisibleWithoutPromptSince = nil
-                promptAbsentSince = nil
-                continue
-            }
-
-            guard let element else {
-                if !promptVisible {
-                    if promptAbsentSince == nil {
-                        promptAbsentSince = Date()
-                    }
-                    if let absentSince = promptAbsentSince,
-                       Date().timeIntervalSince(absentSince) >= stableFor {
-                        return true
-                    }
-                } else {
-                    promptAbsentSince = nil
-                }
-
-                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))
-                continue
-            }
-
-            if element.exists, element.isHittable, !promptVisible {
-                if elementVisibleWithoutPromptSince == nil {
-                    elementVisibleWithoutPromptSince = Date()
-                }
-                if let visibleSince = elementVisibleWithoutPromptSince,
-                   Date().timeIntervalSince(visibleSince) >= stableFor {
+            let visiblePromptHosts = promptHosts.filter { isSavePasswordPromptVisible(in: $0) }
+            if visiblePromptHosts.isEmpty && (element.map { $0.exists && $0.isHittable } ?? true) {
+                let now = Date()
+                let stableSince = readySince ?? now
+                readySince = stableSince
+                if now.timeIntervalSince(stableSince) >= stableFor {
                     return true
                 }
             } else {
-                elementVisibleWithoutPromptSince = nil
+                readySince = nil
+                for host in visiblePromptHosts {
+                    if tapSavePasswordDismissButton(in: host) {
+                        break
+                    }
+                }
             }
 
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))
@@ -336,11 +295,9 @@ extension XCUIApplication {
         return false
     }
 
-    private func tapSavePasswordDismissButtonIfNeeded(in app: XCUIApplication) -> Bool {
-        guard isSavePasswordPromptVisible(in: app) else { return false }
-
-        let dismissButton = app.buttons["Not Now"]
-        guard dismissButton.waitForExistence(timeout: 0.5) else { return false }
+    private func tapSavePasswordDismissButton(in app: XCUIApplication) -> Bool {
+        let dismissButton = app.buttons["Not Now"].firstMatch
+        guard dismissButton.exists else { return false }
 
         if dismissButton.isHittable {
             dismissButton.tap()

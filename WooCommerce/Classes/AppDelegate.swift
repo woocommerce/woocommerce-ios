@@ -279,6 +279,12 @@ extension AppDelegate {
         guard stores.isAuthenticated else { return }
         let pushNotesManager = ServiceLocator.pushNotesManager
         pushNotesManager.registerForRemoteNotifications()
+
+        #if targetEnvironment(simulator)
+        // A late permission prompt can block XCTest from querying the dashboard after login.
+        guard !CommandLine.arguments.contains("-ui_testing") else { return }
+        #endif
+
         pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
     }
 

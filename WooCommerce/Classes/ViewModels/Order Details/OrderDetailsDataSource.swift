@@ -51,6 +51,10 @@ final class OrderDetailsDataSource: NSObject {
         return order.datePaid == nil
     }
 
+    /// Hides Collect Payment while the order refresh after a completed card payment runs.
+    ///
+    var isWaitingForPaidOrder = false
+
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
               order.datePaid != nil,
@@ -1499,7 +1503,7 @@ extension OrderDetailsDataSource {
             rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
             rows.append(.netAmount)
         }
-        if isEligibleForPayment {
+        if isEligibleForPayment && !isWaitingForPaidOrder {
             rows.append(.collectCardPaymentButton)
         }
         if isEligibleForBackendReceipt {

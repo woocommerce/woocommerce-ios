@@ -30,6 +30,9 @@ final class OrderDetailsViewController: UIViewController {
         return loaderView
     }()
 
+    private var activeTopLoaderRequests = 0
+    private var hasStartedInitialSync = false
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -98,12 +101,16 @@ final class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
+        let showsInitialLoader = !hasStartedInitialSync
+        hasStartedInitialSync = true
+        if showsInitialLoader {
+            showTopLoader()
+        }
         syncEverything { [weak self] in
             ServiceLocator.analytics.track(event: waitingTracker.end())
 
-            UIView.animate(withDuration: 0.3) {
-                self?.topLoaderView.alpha = 0
-                self?.topLoaderView.isHidden = true
+            if showsInitialLoader {
+                self?.hideTopLoader()
             }
 
             self?.refreshControl.isHidden = false
@@ -324,6 +331,26 @@ private extension OrderDetailsViewController {
     }
 }
 
+// MARK: - Payments
+//
+extension OrderDetailsViewController {
+
+    func isPresentingOrder(withID orderID: Int64) -> Bool {
+        viewModel.order.orderID == orderID
+    }
+
+    /// Shows this order refreshing while the payment methods run and after they close.
+    ///
+    func showOrderRefreshing(during paymentMethodsViewController: PaymentMethodsHostingController) {
+        paymentMethodsViewController.rootView.viewModel.onPaymentOrderRefreshStarted = { [weak self] paymentOrderRefresh in
+            self?.refreshOrderAfterPayment(waitingFor: paymentOrderRefresh)
+        }
+        paymentMethodsViewController.onDismiss = { [weak self] in
+            self?.refreshOrderAfterPayment(waitingFor: nil)
+        }
+    }
+}
+
 
 // MARK: - Notices
 //
@@ -410,6 +437,34 @@ private extension OrderDetailsViewController {
         viewModel.syncEverything(onReloadSections: { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }, onCompletion: onCompletion)
+    }
+
+    func refreshOrderAfterPayment(waitingFor paymentOrderRefresh: Task<Order?, Never>?) {
+        guard let refresh = viewModel.refreshOrderAfterPayment(waitingFor: paymentOrderRefresh) else { return }
+
+        showTopLoader()
+        reloadTableViewSectionsAndData()
+        Task { @MainActor [weak self] in
+            await refresh.value
+            self?.hideTopLoader()
+            self?.reloadTableViewSectionsAndData()
+        }
+    }
+
+    func showTopLoader() {
+        activeTopLoaderRequests += 1
+        topLoaderView.isHidden = false
+        topLoaderView.alpha = 1
+    }
+
+    func hideTopLoader() {
+        activeTopLoaderRequests -= 1
+        guard activeTopLoaderRequests == 0 else { return }
+
+        UIView.animate(withDuration: 0.3) {
+            self.topLoaderView.alpha = 0
+            self.topLoaderView.isHidden = true
+        }
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
@@ -771,6 +826,7 @@ private extension OrderDetailsViewController {
     private func collectPayment() {
         let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
         paymentMethodsViewController.parentController = self
+        showOrderRefreshing(during: paymentMethodsViewController)
         present(paymentMethodsViewController, animated: true)
     }
 

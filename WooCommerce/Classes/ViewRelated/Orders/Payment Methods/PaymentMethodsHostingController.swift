@@ -7,13 +7,24 @@ final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMe
     ///
     weak var parentController: UIViewController?
 
+    /// Called once when the screen closes.
+    ///
+    var onDismiss: (() -> Void)?
+
     init(viewModel: PaymentMethodsViewModel) {
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
+            self?.notifyDismiss()
             self?.parentController?.dismiss(animated: true, completion: nil)
         }
+    }
+
+    private func notifyDismiss() {
+        let onDismiss = onDismiss
+        self.onDismiss = nil
+        onDismiss?()
     }
 
     override func viewDidLoad() {
@@ -46,7 +57,7 @@ struct HostedPaymentMethodsView: View {
 
     /// ViewModel to render the view content.
     ///
-    @ObservedObject var viewModel: PaymentMethodsViewModel
+    var viewModel: PaymentMethodsViewModel
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -69,7 +80,6 @@ struct HostedPaymentMethodsView: View {
                         dismiss()
                         viewModel.userDidCancelFlow()
                     })
-                    .disabled(viewModel.disableViewActions)
                     .accessibilityIdentifier(Accessibility.cancelButton)
                 }
             }
@@ -88,6 +98,7 @@ private extension HostedPaymentMethodsView {
 ///
 extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        notifyDismiss()
         rootView.viewModel.userDidCancelFlow()
     }
 
@@ -96,8 +107,8 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        guard rootView.viewModel.disableViewActions == false else { return }
         presentCancelOrderActionSheet(viewController: self) { [weak self] _ in
+            self?.notifyDismiss()
             self?.dismiss(animated: true, completion: nil)
             self?.rootView.viewModel.userDidCancelFlow()
         }

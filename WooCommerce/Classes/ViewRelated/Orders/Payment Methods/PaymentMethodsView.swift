@@ -146,7 +146,6 @@ struct PaymentMethodsView: View {
         .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
-        .navigationBarBackButtonHidden(viewModel.loadingOperation == .refreshingCardOrder)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 ProgressView()

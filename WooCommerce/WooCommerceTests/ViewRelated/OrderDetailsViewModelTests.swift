@@ -1255,9 +1255,130 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let reloadedCell = try XCTUnwrap(billingViewController.tableView.cellForRow(at: addressIndexPath) as? BillingAddressTableViewCell)
         XCTAssertEqual(reloadedCell.address, address.formattedPostalAddress)
     }
+
+    // MARK: - `refreshOrderAfterPayment`
+
+    func test_refreshOrderAfterPayment_when_order_is_paid_then_does_not_refresh() {
+        // Given
+        let viewModel = OrderDetailsViewModel(order: order.copy(datePaid: .some(Date())), stores: storesManager, storageManager: storageManager)
+
+        // When
+        let refresh = viewModel.refreshOrderAfterPayment(waitingFor: nil)
+
+        // Then
+        XCTAssertNil(refresh)
+        XCTAssertEqual(retrieveOrderActionCount, 0)
+    }
+
+    func test_refreshOrderAfterPayment_when_payment_refresh_is_handed_over_then_hides_collect_payment_and_applies_the_paid_order() async throws {
+        // Given
+        let unpaidOrder = order.copy(status: .pending, datePaid: .some(nil))
+        let paidOrder = unpaidOrder.copy(status: .completed, datePaid: .some(Date()))
+        let receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
+        receiptEligibilityUseCase.isEligibleForReceipt = true
+        let viewModel = OrderDetailsViewModel(order: unpaidOrder,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              receiptEligibilityUseCase: receiptEligibilityUseCase)
+        let (refreshedOrder, finishPaymentRefresh) = AsyncStream<Order>.makeStream()
+        let paymentRefresh = Task<Order?, Never> {
+            for await order in refreshedOrder {
+                return order
+            }
+            return nil
+        }
+
+        // When
+        let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: paymentRefresh))
+        let isWaitingDuringRefresh = viewModel.dataSource.isWaitingForPaidOrder
+        finishPaymentRefresh.yield(paidOrder)
+        finishPaymentRefresh.finish()
+        await refresh.value
+
+        // Then
+        XCTAssertTrue(isWaitingDuringRefresh)
+        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+        XCTAssertEqual(viewModel.order, paidOrder)
+        XCTAssertTrue(viewModel.dataSource.isEligibleForBackendReceipt)
+        XCTAssertEqual(retrieveOrderActionCount, 0)
+    }
+
+    func test_refreshOrderAfterPayment_when_payment_refresh_fails_then_shows_collect_payment_and_keeps_the_order() async throws {
+        // Given
+        let unpaidOrder = order.copy(status: .pending, datePaid: .some(nil))
+        let viewModel = OrderDetailsViewModel(order: unpaidOrder, stores: storesManager, storageManager: storageManager)
+        let failedPaymentRefresh = Task<Order?, Never> {
+            nil
+        }
+
+        // When
+        let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: failedPaymentRefresh))
+        await refresh.value
+
+        // Then
+        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+        XCTAssertEqual(viewModel.order, unpaidOrder)
+        XCTAssertEqual(retrieveOrderActionCount, 0)
+    }
+
+    func test_refreshOrderAfterPayment_when_payment_refresh_is_running_then_closing_payments_does_not_sync_again() async throws {
+        // Given
+        let viewModel = OrderDetailsViewModel(order: order.copy(datePaid: .some(nil)), stores: storesManager, storageManager: storageManager)
+        let (refreshedOrder, finishPaymentRefresh) = AsyncStream<Order>.makeStream()
+        let paymentRefresh = Task<Order?, Never> {
+            for await order in refreshedOrder {
+                return order
+            }
+            return nil
+        }
+        let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: paymentRefresh))
+
+        // When
+        let refreshOnClose = viewModel.refreshOrderAfterPayment(waitingFor: nil)
+        finishPaymentRefresh.finish()
+        await refresh.value
+
+        // Then
+        XCTAssertNil(refreshOnClose)
+        XCTAssertEqual(retrieveOrderActionCount, 0)
+    }
+
+    func test_refreshOrderAfterPayment_when_nothing_is_handed_over_then_syncs_order_with_collect_payment_visible() async throws {
+        // Given
+        let unpaidOrder = order.copy(status: .pending, datePaid: .some(nil))
+        let receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
+        receiptEligibilityUseCase.isEligibleForReceipt = true
+        let viewModel = OrderDetailsViewModel(order: unpaidOrder,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              receiptEligibilityUseCase: receiptEligibilityUseCase)
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(unpaidOrder.copy(status: .failed), nil)
+            }
+        }
+
+        // When
+        let refresh = try XCTUnwrap(viewModel.refreshOrderAfterPayment(waitingFor: nil))
+        let isWaitingDuringRefresh = viewModel.dataSource.isWaitingForPaidOrder
+        await refresh.value
+
+        // Then
+        XCTAssertFalse(isWaitingDuringRefresh)
+        XCTAssertEqual(retrieveOrderActionCount, 1)
+        XCTAssertEqual(viewModel.order.status, .failed)
+        XCTAssertTrue(viewModel.dataSource.isEligibleForBackendReceipt)
+    }
 }
 
 private extension OrderDetailsViewModelTests {
+    var retrieveOrderActionCount: Int {
+        storesManager.receivedActions.filter { action in
+            guard case .retrieveOrder? = action as? OrderAction else { return false }
+            return true
+        }.count
+    }
+
     /// Runs `syncEverything` with `refreshedOrder` as the refresh result (`nil` fails it),
     /// returning once the view model has handled it.
     func syncEverythingAndWaitForOrderRefresh(_ viewModel: OrderDetailsViewModel, refreshedOrder: Order?) {

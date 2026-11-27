@@ -157,6 +157,47 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         let refundFlow: IssueRefundCoordinatingController? = presentationVerifier.verify(animated: true, presentingViewController: viewController)
         XCTAssertNotNil(refundFlow)
     }
+    @MainActor
+    func test_loading_when_order_appears_again_then_syncs_without_showing_banner() async throws {
+        // Given
+        let order = Order.fake()
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+        let originalStores = ServiceLocator.stores
+        ServiceLocator.setStores(storesManager)
+        defer { ServiceLocator.setStores(originalStores) }
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: MockStorageManager(),
+                                              receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+        viewController.loadViewIfNeeded()
+        viewController.viewWillAppear(false)
+        await until { try Self.mirror(of: viewController).topLoaderView.isHidden }
+        var finishSync: ((Order?, Error?) -> Void)?
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                finishSync = onCompletion
+            }
+        }
+
+        // When
+        viewController.viewWillAppear(false)
+
+        // Then
+        XCTAssertNotNil(finishSync)
+        XCTAssertTrue(try Self.mirror(of: viewController).topLoaderView.isHidden)
+        try XCTUnwrap(finishSync)(order, nil)
+    }
+
+    @MainActor
+    func test_loading_when_initial_sync_finishes_first_then_keeps_banner_until_payment_refresh_finishes() async throws {
+        try await verifyLoadingDuringOverlappingSyncs(paymentFinishesFirst: false)
+    }
+
+    @MainActor
+    func test_loading_when_payment_refresh_finishes_first_then_keeps_banner_until_initial_sync_finishes() async throws {
+        try await verifyLoadingDuringOverlappingSyncs(paymentFinishesFirst: true)
+    }
 }
 
 // MARK: - Mirroring
@@ -164,12 +205,16 @@ final class OrderDetailsViewControllerTests: XCTestCase {
 private extension OrderDetailsViewControllerTests {
     struct OrderDetailsViewControllerMirror {
         let tableView: UITableView
+        let topLoaderView: TopLoaderView
+        let activeTopLoaderRequests: Int
     }
 
     static func mirror(of viewController: OrderDetailsViewController) throws -> OrderDetailsViewControllerMirror {
         let mirror = Mirror(reflecting: viewController)
         return OrderDetailsViewControllerMirror(
-            tableView: try XCTUnwrap(mirror.descendant("tableView") as? UITableView)
+            tableView: try XCTUnwrap(mirror.descendant("tableView") as? UITableView),
+            topLoaderView: try XCTUnwrap(mirror.descendant("topLoaderView") as? TopLoaderView),
+            activeTopLoaderRequests: try XCTUnwrap(mirror.descendant("activeTopLoaderRequests") as? Int)
         )
     }
 }
@@ -178,6 +223,64 @@ private extension OrderDetailsViewControllerTests {
 // MARK: - Helpers
 
 private extension OrderDetailsViewControllerTests {
+    @MainActor
+    func verifyLoadingDuringOverlappingSyncs(paymentFinishesFirst: Bool) async throws {
+        // Given
+        let unpaidOrder = Order.fake().copy(status: .pending, datePaid: .some(nil))
+        let paidOrder = unpaidOrder.copy(status: .completed, datePaid: .some(Date()))
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: unpaidOrder)
+        let originalStores = ServiceLocator.stores
+        ServiceLocator.setStores(storesManager)
+        defer { ServiceLocator.setStores(originalStores) }
+        var finishInitialSync: ((Order?, Error?) -> Void)?
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                finishInitialSync = onCompletion
+            }
+        }
+        let viewModel = OrderDetailsViewModel(order: unpaidOrder,
+                                              stores: storesManager,
+                                              storageManager: MockStorageManager(),
+                                              receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+        viewController.loadViewIfNeeded()
+        viewController.viewWillAppear(false)
+        let paymentMethods = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
+        viewController.showOrderRefreshing(during: paymentMethods)
+        let (orders, continuation) = AsyncStream<Order>.makeStream()
+        let paymentRefresh = Task<Order?, Never> {
+            for await order in orders { return order }
+            return nil
+        }
+        paymentMethods.rootView.viewModel.onPaymentOrderRefreshStarted?(paymentRefresh)
+        XCTAssertEqual(try Self.mirror(of: viewController).activeTopLoaderRequests, 2)
+
+        // When
+        if paymentFinishesFirst {
+            continuation.yield(paidOrder)
+            continuation.finish()
+        } else {
+            try XCTUnwrap(finishInitialSync)(unpaidOrder, nil)
+        }
+        await until { try Self.mirror(of: viewController).activeTopLoaderRequests == 1 }
+
+        // Then
+        XCTAssertFalse(try Self.mirror(of: viewController).topLoaderView.isHidden)
+
+        // When
+        if paymentFinishesFirst {
+            try XCTUnwrap(finishInitialSync)(paidOrder, nil)
+        } else {
+            continuation.yield(paidOrder)
+            continuation.finish()
+        }
+        await until { try Self.mirror(of: viewController).topLoaderView.isHidden }
+
+        // Then
+        XCTAssertEqual(try Self.mirror(of: viewController).activeTopLoaderRequests, 0)
+        XCTAssertFalse(viewModel.dataSource.isWaitingForPaidOrder)
+    }
+
     static func findCell<T>(type: T.Type, on tableView: UITableView) -> (cell: T, indexPath: IndexPath)? {
         for section in (0..<tableView.numberOfSections) {
             for row in (0..<tableView.numberOfRows(inSection: section)) {
@@ -273,6 +376,18 @@ private struct OrderDetailStoreManagerFactory {
                 onCompletion(nil)
             default:
                 break
+            }
+        }
+
+        storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            if case let .fetchSystemPluginWithPath(_, _, onCompletion) = action {
+                onCompletion(nil)
+            }
+        }
+
+        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, onCompletion) = action {
+                onCompletion(defaultValue)
             }
         }
 

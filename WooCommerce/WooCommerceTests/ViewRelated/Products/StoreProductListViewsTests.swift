@@ -92,6 +92,22 @@ struct StoreProductListViewsTests {
         #expect(!cell.accessibilityTraits.contains(.selected))
     }
 
+    @Test
+    func test_cell_when_used_as_search_result_then_registers_and_configures_the_cell() throws {
+        // Given
+        let tableView = UITableView()
+        StoreProductListTableViewCell.register(for: tableView)
+
+        // When
+        let cell = try #require(tableView.dequeueReusableCell(withIdentifier: StoreProductListTableViewCell.reuseIdentifier)
+                                as? StoreProductListTableViewCell)
+        cell.configureCell(searchModel: viewModel)
+
+        // Then: search results are never in select mode
+        #expect(cell.accessibilityIdentifier == "Hoodie")
+        #expect(!cell.accessibilityTraits.contains(.selected))
+    }
+
     // MARK: - Error banner
 
     @Test

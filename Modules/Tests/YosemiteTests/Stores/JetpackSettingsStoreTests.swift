@@ -27,13 +27,14 @@ final class JetpackSettingsStoreTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
-    func test_updateJetpackModule_returns_success_result() throws {
+    @MainActor
+    func test_updateJetpackModule_returns_success_result() async throws {
         // Given
         let store = JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/settings", filename: "jetpack-settings-success")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -44,14 +45,15 @@ final class JetpackSettingsStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updateJetpackModule_returns_properly_relays_errors() throws {
+    @MainActor
+    func test_updateJetpackModule_returns_properly_relays_errors() async throws {
         // Given
         let store = JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "jetpack/v4/settings", error: error)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: self.sampleSiteID) { result in
                 promise(result)
             }

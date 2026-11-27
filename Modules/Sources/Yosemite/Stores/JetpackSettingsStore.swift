@@ -5,7 +5,7 @@ import Storage
 // MARK: - JetpackSettingsStore
 //
 public class JetpackSettingsStore: Store {
-    private let remote: JetpackSettingsRemoteProtocol
+    private let remote: JetpackSettingsRemote
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = JetpackSettingsRemote(network: network)
@@ -36,10 +36,11 @@ public class JetpackSettingsStore: Store {
 // MARK: - Services
 //
 private extension JetpackSettingsStore {
-    func enableJetpackModule(_ module: JetpackModule, for siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
-        Task { @MainActor in
+    func enableJetpackModule(_ module: JetpackModule, for siteID: Int64, completion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
+        let moduleSlug = module.rawValue
+        Task { @MainActor [remote] in
             do {
-                try await remote.enableJetpackModule(for: siteID, moduleSlug: module.rawValue)
+                try await remote.enableJetpackModule(for: siteID, moduleSlug: moduleSlug)
                 completion(.success(()))
             } catch {
                 completion(.failure(error))

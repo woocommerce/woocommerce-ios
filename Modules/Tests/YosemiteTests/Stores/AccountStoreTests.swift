@@ -1,4 +1,4 @@
-import Combine
+import Synchronization
 import Fakes
 import XCTest
 import WooFoundation
@@ -45,12 +45,13 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount returns an error, whenever there is not backend response.
     ///
-    func test_synchronizeAccount_returns_error_upon_empty_response() {
+    @MainActor
+    func test_synchronizeAccount_returns_error_upon_empty_response() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+        let result: Result<Yosemite.Account, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccount { result in
                 promise(result)
             }
@@ -64,13 +65,14 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount returns an error whenever there is an error response from the backend.
     ///
-    func test_synchronizeAccount_returns_error_upon_reponse_error() {
+    @MainActor
+    func test_synchronizeAccount_returns_error_upon_reponse_error() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me", filename: "generic_error")
 
         // When
-        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+        let result: Result<Yosemite.Account, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccount { result in
                 promise(result)
             }
@@ -84,14 +86,15 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount effectively inserts a new Default Account.
     ///
-    func test_synchronizeAccount_returns_expected_account_details() throws {
+    @MainActor
+    func test_synchronizeAccount_returns_expected_account_details() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
         // When
-        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+        let result: Result<Yosemite.Account, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccount { result in
                 promise(result)
             }
@@ -147,12 +150,13 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` returns an error, whenever there is no backend reply.
     ///
-    func test_synchronizeAccountSettings_returns_error_on_empty_response() {
+    @MainActor
+    func test_synchronizeAccountSettings_returns_error_on_empty_response() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+        let result: Result<Yosemite.AccountSettings, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
                 promise(result)
             }
@@ -165,14 +169,15 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` effectively persists any retrieved settings.
     ///
-    func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() {
+    @MainActor
+    func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
 
         // When
-        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+        let result: Result<Yosemite.AccountSettings, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
                 promise(result)
             }
@@ -186,7 +191,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` effectively update any retrieved settings.
     ///
-    func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
+    @MainActor
+    func test_synchronizeAccountSettings_effectively_update_retrieved_settings() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         storageManager.insertSampleAccountSettings(readOnlyAccountSettings: sampleAccountSettings())
@@ -194,7 +200,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
 
         // When
-        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+        let result: Result<Yosemite.AccountSettings, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
                 promise(result)
             }
@@ -261,12 +267,13 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
     ///
-    func test_synchronizeSites_returns_error_on_empty_response() {
+    @MainActor
+    func test_synchronizeSites_returns_error_on_empty_response() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -279,7 +286,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists any retrieved sites when all sites have Jetpack-the-plugin.
     ///
-    func test_synchronizeSites_effectively_persists_retrieved_sites() {
+    @MainActor
+    func test_synchronizeSites_effectively_persists_retrieved_sites() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
@@ -290,7 +298,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -305,7 +313,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 2)
     }
 
-    func test_upsertStoredSitesInBackground_when_site_synchronizations_are_cancelled_then_does_not_update_stored_sites() {
+    @MainActor
+    func test_upsertStoredSitesInBackground_when_site_synchronizations_are_cancelled_then_does_not_update_stored_sites() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let cachedSiteID = Int64(1)
@@ -314,7 +323,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         store.cancelSiteSynchronizations()
-        let wasApplied: Bool = waitFor { promise in
+        let wasApplied: Bool = try await waitForCompletion { promise in
             store.upsertStoredSitesInBackground(readOnlySites: [Site.fake().copy(siteID: responseSiteID)]) { wasApplied in
                 promise(wasApplied)
             }
@@ -326,44 +335,95 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: responseSiteID))
     }
 
-    func test_cancelSiteSynchronizations_when_requests_are_pending_then_completes_each_once_without_cached_fallback() {
+    @MainActor
+    func test_cancelSiteSynchronizations_when_requests_are_pending_then_completes_each_once_without_cached_fallback() async throws {
         let site = Site.fake().copy(siteID: 123, url: "https://example.com", isJetpackThePluginInstalled: true)
         storageManager.insertSampleSite(readOnlySite: site)
         for responseArrivesBeforeCancellation in [false, true] {
             // Given
-            let remote = MockAccountRemote()
-            let response = PassthroughSubject<Result<[Networking.Site], Error>, Never>()
-            remote.loadSitesPublisher = response.eraseToAnyPublisher()
+            let remote = MockAccountRemote(defersLoadSites: true)
             let store = AccountStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network, remote: remote)
-            var errors: [Error?] = []
+            let errors = Mutex<[Error?]>([])
 
             // When
-            waitFor { promise in
-                store.onAction(AccountAction.synchronizeSites { errors.append($0.failure) })
-                store.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { errors.append($0.failure) })
-                store.onAction(AccountAction.loadAndSynchronizeSite(siteID: site.siteID, forcedUpdate: true, shouldSynchronize: true) {
-                    errors.append($0.failure)
+            let _: Void = try await waitForCompletion { promise in
+                store.onAction(AccountAction.synchronizeSites { result in
+                    errors.withLock { $0.append(result.failure) }
+                })
+                store.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { result in
+                    errors.withLock { $0.append(result.failure) }
+                })
+                store.onAction(AccountAction.loadAndSynchronizeSite(siteID: site.siteID, forcedUpdate: true, shouldSynchronize: true) { result in
+                    errors.withLock { $0.append(result.failure) }
                 })
                 if responseArrivesBeforeCancellation {
-                    response.send(.success([site]))
+                    remote.sendLoadSitesResult(.success([site]))
                 }
                 store.cancelSiteSynchronizations()
                 store.cancelSiteSynchronizations()
-                response.send(.success([]))
+                remote.sendLoadSitesResult(.success([]))
                 // Let any storage completions queued before cancellation run too.
                 DispatchQueue.main.async { promise(()) }
             }
 
             // Then
-            XCTAssertEqual(errors.count, 3)
-            XCTAssertTrue(errors.allSatisfy { $0 is CancellationError })
+            let capturedErrors = errors.withLock { $0 }
+            XCTAssertEqual(capturedErrors.count, 3)
+            XCTAssertTrue(capturedErrors.allSatisfy { $0 is CancellationError })
             XCTAssertNotNil(viewStorage.loadSite(siteID: site.siteID))
         }
     }
 
+    @MainActor
+    func test_synchronizeSites_when_store_is_released_before_the_pending_write_runs_then_completes_with_the_saved_sites() async throws {
+        // Given
+        let site = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true)
+        let remote = MockAccountRemote(defersLoadSites: true)
+        let deferredStorage = MockDeferredStatsStorageManager(storageManager: storageManager)
+        var store: AccountStore? = AccountStore(dispatcher: dispatcher, storageManager: deferredStorage, network: network, remote: remote)
+        weak let releasedStore = store
+
+        // When
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { completion in
+            store?.onAction(AccountAction.synchronizeSites(onCompletion: completion))
+            remote.sendLoadSitesResult(.success([site]))
+            XCTAssertTrue(deferredStorage.hasPendingWrite)
+            store = nil
+            XCTAssertNil(releasedStore)
+            deferredStorage.performPendingWrite()
+        }
+
+        // Then
+        XCTAssertEqual(try result.get().siteIDs, [site.siteID])
+        XCTAssertNotNil(viewStorage.loadSite(siteID: site.siteID))
+    }
+
+    @MainActor
+    func test_synchronizeSites_when_session_cancels_before_the_pending_write_then_skips_the_write() async throws {
+        // Given
+        let site = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true)
+        let remote = MockAccountRemote(defersLoadSites: true)
+        let deferredStorage = MockDeferredStatsStorageManager(storageManager: storageManager)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: deferredStorage, network: network, remote: remote)
+
+        // When
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { completion in
+            store.onAction(AccountAction.synchronizeSites(onCompletion: completion))
+            remote.sendLoadSitesResult(.success([site]))
+            XCTAssertTrue(deferredStorage.hasPendingWrite)
+            store.cancelSiteSynchronizations()
+            deferredStorage.performPendingWrite()
+        }
+
+        // Then
+        XCTAssertTrue(result.failure is CancellationError)
+        XCTAssertNil(viewStorage.loadSite(siteID: site.siteID))
+    }
+
     /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site and a Jetpack site.
     ///
-    func test_synchronizeSites_effectively_persists_jetpack_cp_and_jetpack_sites() throws {
+    @MainActor
+    func test_synchronizeSites_effectively_persists_jetpack_cp_and_jetpack_sites() async throws {
         // Given
         let siteIDOfJCPSite = Int64(255)
         let siteIDOfJetpackSite = Int64(166)
@@ -388,7 +448,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -423,7 +483,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site without any changes when WP site settings request fails.
     ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wp_settings_request_fails() throws {
+    @MainActor
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wp_settings_request_fails() async throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
@@ -443,7 +504,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -467,7 +528,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site without any changes when WC site settings request fails.
     ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wc_settings_request_fails() throws {
+    @MainActor
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wc_settings_request_fails() async throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
@@ -489,7 +551,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -513,7 +575,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` deletes storage sites that do not exist remotely anymore.
     ///
-    func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
+    @MainActor
+    func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let siteIDInStorageOnly = Int64(127)
@@ -523,7 +586,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -537,7 +600,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
     }
 
-    func test_synchronizeSites_returns_authoritative_empty_site_ids_and_deletes_cached_sites() throws {
+    @MainActor
+    func test_synchronizeSites_returns_authoritative_empty_site_ids_and_deletes_cached_sites() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([])
@@ -545,7 +609,7 @@ final class AccountStoreTests: XCTestCase {
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 127))
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             store.onAction(AccountAction.synchronizeSites { result in
                 promise(result)
             })
@@ -557,7 +621,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: 127))
     }
 
-    func test_synchronizeSites_when_preserving_site_then_deletes_only_other_missing_sites() throws {
+    @MainActor
+    func test_synchronizeSites_when_preserving_site_then_deletes_only_other_missing_sites() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([])
@@ -566,7 +631,7 @@ final class AccountStoreTests: XCTestCase {
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 456))
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             store.onAction(AccountAction.synchronizeSites(preservingSiteID: 123, onCompletion: promise))
         }
 
@@ -578,7 +643,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` deletes the selected site after a successful response omits it.
     ///
-    func test_synchronizeSites_deletes_selected_site_that_does_not_exist_remotely() {
+    @MainActor
+    func test_synchronizeSites_deletes_selected_site_that_does_not_exist_remotely() async throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let selectedSiteID = Int64(127)
@@ -588,7 +654,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -604,7 +670,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns `false` for JCP sites presence when all sites have Jetpack-the-plugin.
     ///
-    func test_synchronizeSites_returns_false_when_all_sites_have_jetpack_plugin() throws {
+    @MainActor
+    func test_synchronizeSites_returns_false_when_all_sites_have_jetpack_plugin() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
@@ -614,7 +681,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -628,7 +695,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns `true` when one site is JCP.
     ///
-    func test_synchronizeSites_returns_true_when_one_site_is_jcp() throws {
+    @MainActor
+    func test_synchronizeSites_returns_true_when_one_site_is_jcp() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
@@ -641,7 +709,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -655,7 +723,8 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists a site with Blaze properties from the remote.
     ///
-    func test_synchronizeSites_effectively_persists_site_with_blaze_properties() throws {
+    @MainActor
+    func test_synchronizeSites_effectively_persists_site_with_blaze_properties() async throws {
         // Given
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
@@ -665,7 +734,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSites { result in
                 promise(result)
             }
@@ -684,7 +753,8 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.synchronizeSitesAndReturnSelectedSiteInfo
 
-    func test_synchronizeSitesAndReturnSelectedSiteInfo_effectively_persists_retrieved_sites_and_returns_the_matching_site() throws {
+    @MainActor
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_effectively_persists_retrieved_sites_and_returns_the_matching_site() async throws {
         // Given
         let expectedSiteURL = "https://example.com"
         let remote = MockAccountRemote()
@@ -697,7 +767,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SelectedSiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SelectedSiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
                 promise(result)
             }
@@ -713,7 +783,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(site.url, expectedSiteURL)
     }
 
-    func test_synchronizeSitesAndReturnSelectedSiteInfo_throws_not_found_error_if_no_matching_site_is_found() {
+    @MainActor
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_throws_not_found_error_if_no_matching_site_is_found() async throws {
         // Given
         let expectedSiteURL = "https://example.com"
         let remote = MockAccountRemote()
@@ -725,7 +796,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SelectedSiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SelectedSiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
                 promise(result)
             }
@@ -740,7 +811,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound())
     }
 
-    func test_synchronizeSitesAndReturnSelectedSiteInfo_relays_error_when_loadSites_fails() {
+    @MainActor
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_relays_error_when_loadSites_fails() async throws {
         // Given
         let expectedSiteURL = "https://example.com"
         let expectedError = NetworkError.timeout()
@@ -750,7 +822,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<SelectedSiteSynchronizationResult, Error> = waitFor { promise in
+        let result: Result<SelectedSiteSynchronizationResult, Error> = try await waitForCompletion { promise in
             let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
                 promise(result)
             }
@@ -811,7 +883,8 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.loadAndSynchronizeSite
 
-    func test_loadAndSynchronizeSite_returns_site_already_in_storage_without_making_network_request_if_forcedUpdate_is_false() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_returns_site_already_in_storage_without_making_network_request_if_forcedUpdate_is_false() async throws {
         // Given
         let network = MockNetwork()
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -819,22 +892,19 @@ final class AccountStoreTests: XCTestCase {
 
         let siteID = Int64(999)
         let sampleSite = sampleSitePristine().copy(siteID: siteID)
-        let group = DispatchGroup()
-        group.enter()
-        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) { _ in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            group.leave()
+        let wasApplied: Bool = try await waitForCompletion { completion in
+            accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) { completion($0) }
         }
+        XCTAssertTrue(wasApplied)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
         // When
-        let result: Result<SiteLoadResult, Error> = waitFor { promise in
-            group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { result in
-                    XCTAssertTrue(Thread.isMainThread)
-                    promise(result)
-                }
-                accountStore.onAction(action)
+        let result: Result<SiteLoadResult, Error> = try await waitForCompletion { promise in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { result in
+                XCTAssertTrue(Thread.isMainThread)
+                promise(result)
             }
+            accountStore.onAction(action)
         }
 
         // Then
@@ -843,7 +913,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(network.requestsForResponseData.count, 0)
     }
 
-    func test_loadAndSynchronizeSite_fetches_from_remote_if_forcedUpdate_is_true() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_fetches_from_remote_if_forcedUpdate_is_true() async throws {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
@@ -853,22 +924,19 @@ final class AccountStoreTests: XCTestCase {
         // The site ID value is in `sites.json` used in the mock network.
         let siteIDInSimulatedResponse = Int64(1112233334444555)
         let sampleSite = sampleSitePristine().copy(siteID: siteIDInSimulatedResponse, isWooCommerceActive: false)
-        let group = DispatchGroup()
-        group.enter()
-        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) { _ in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            group.leave()
+        let wasApplied: Bool = try await waitForCompletion { completion in
+            accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) { completion($0) }
         }
+        XCTAssertTrue(wasApplied)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
         // When
-        let result: Result<SiteLoadResult, Error> = waitFor { promise in
-            group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse, forcedUpdate: true, shouldSynchronize: true) { result in
-                    XCTAssertTrue(Thread.isMainThread)
-                    promise(result)
-                }
-                accountStore.onAction(action)
+        let result: Result<SiteLoadResult, Error> = try await waitForCompletion { promise in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse, forcedUpdate: true, shouldSynchronize: true) { result in
+                XCTAssertTrue(Thread.isMainThread)
+                promise(result)
             }
+            accountStore.onAction(action)
         }
 
         // Then
@@ -877,27 +945,25 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(network.requestsForResponseData.count, 3)
     }
 
-    func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() async throws {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
-        group.enter()
-        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) { _ in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            group.leave()
+        let wasApplied: Bool = try await waitForCompletion { completion in
+            accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) { completion($0) }
         }
+        XCTAssertTrue(wasApplied)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
         // When
-        let result: Result<SiteLoadResult, Error> = waitFor { promise in
-            group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: 9999, forcedUpdate: false, shouldSynchronize: true) { result in
-                    XCTAssertTrue(Thread.isMainThread)
-                    promise(result)
-                }
-                accountStore.onAction(action)
+        let result: Result<SiteLoadResult, Error> = try await waitForCompletion { promise in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: 9999, forcedUpdate: false, shouldSynchronize: true) { result in
+                XCTAssertTrue(Thread.isMainThread)
+                promise(result)
             }
+            accountStore.onAction(action)
         }
 
         // Then
@@ -907,12 +973,13 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
     }
 
-    func test_loadAndSynchronizeSite_does_not_request_wpcom_sites_when_synchronization_is_disabled() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_does_not_request_wpcom_sites_when_synchronization_is_disabled() async throws {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<SiteLoadResult, Error> = waitFor { promise in
+        let result: Result<SiteLoadResult, Error> = try await waitForCompletion { promise in
             accountStore.onAction(AccountAction.loadAndSynchronizeSite(siteID: 9999,
                                                                         forcedUpdate: true,
                                                                         shouldSynchronize: false) { result in
@@ -925,33 +992,31 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(network.requestsForResponseData.isEmpty)
     }
 
-    func test_loadAndSynchronizeSite_returns_site_after_syncing_success() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_returns_site_after_syncing_success() async throws {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
-        group.enter()
-        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) { _ in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            group.leave()
+        let wasApplied: Bool = try await waitForCompletion { completion in
+            accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) { completion($0) }
         }
+        XCTAssertTrue(wasApplied)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
         // When
         // The site ID value is in `sites.json` used in the mock network.
         let siteIDInSimulatedResponse = Int64(1112233334444555)
-        let result: Result<SiteLoadResult, Error> = waitFor { promise in
-            group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse,
-                                                                  forcedUpdate: true,
-                                                                  shouldSynchronize: true) { result in
-                    XCTAssertTrue(Thread.isMainThread)
-                    promise(result)
-                }
-                accountStore.onAction(action)
+        let result: Result<SiteLoadResult, Error> = try await waitForCompletion { promise in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse,
+                                                              forcedUpdate: true,
+                                                              shouldSynchronize: true) { result in
+                XCTAssertTrue(Thread.isMainThread)
+                promise(result)
             }
+            accountStore.onAction(action)
         }
 
         // Then
@@ -959,7 +1024,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(site.siteID, siteIDInSimulatedResponse)
     }
 
-    func test_loadAndSynchronizeSite_makes_3_network_requests_when_one_site_is_jetpack_cp_connected() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_makes_3_network_requests_when_one_site_is_jetpack_cp_connected() async throws {
         // Given
         let network = MockNetwork()
         let remote = MockAccountRemote()
@@ -973,7 +1039,7 @@ final class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let _: Void = waitFor { promise in
+        let _: Void = try await waitForCompletion { promise in
             let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, shouldSynchronize: true) { _ in
                 promise(())
             }
@@ -985,7 +1051,8 @@ final class AccountStoreTests: XCTestCase {
                        [.loadSites, .checkIfWooCommerceIsActive(siteID: siteIDOfJCPSite), .fetchWordPressSiteSettings(siteID: siteIDOfJCPSite)])
     }
 
-    func test_loadAndSynchronizeSite_makes_1_network_requests_when_all_sites_have_jetpack_plugin() throws {
+    @MainActor
+    func test_loadAndSynchronizeSite_makes_1_network_requests_when_all_sites_have_jetpack_plugin() async throws {
         // Given
         let network = MockNetwork()
         let remote = MockAccountRemote()
@@ -997,7 +1064,7 @@ final class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let _: Void = waitFor { promise in
+        let _: Void = try await waitForCompletion { promise in
             let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, shouldSynchronize: true) { _ in
                 promise(())
             }
@@ -1008,7 +1075,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(remote.invocations, [.loadSites])
     }
 
-    func test_disconnectFromSocialService_returns_success_on_dotcom_remote_success() throws {
+    @MainActor
+    func test_disconnectFromSocialService_returns_success_on_dotcom_remote_success() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1019,7 +1087,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = AccountAction.closeAccount { result in
                 promise(result)
             }
@@ -1030,7 +1098,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_disconnectFromSocialService_returns_failure_on_dotcom_remote_failure() throws {
+    @MainActor
+    func test_disconnectFromSocialService_returns_failure_on_dotcom_remote_failure() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1042,7 +1111,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = AccountAction.closeAccount { result in
                 promise(result)
             }
@@ -1056,7 +1125,8 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - updateNotificationSettings
 
-    func test_updateNotificationSettings_returns_success_upon_success() {
+    @MainActor
+    func test_updateNotificationSettings_returns_success_upon_success() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1067,7 +1137,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
             let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
                 promise(result)
@@ -1079,7 +1149,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updateNotificationSettings_relays_error_upon_failure() {
+    @MainActor
+    func test_updateNotificationSettings_relays_error_upon_failure() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1091,7 +1162,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
             let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
                 promise(result)
@@ -1106,7 +1177,8 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - loadNotificationSettings
 
-    func test_loadNotificationSettings_returns_success_upon_success() throws {
+    @MainActor
+    func test_loadNotificationSettings_returns_success_upon_success() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1122,7 +1194,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<NotificationSettings, Error> = waitFor { promise in
+        let result: Result<NotificationSettings, Error> = try await waitForCompletion { promise in
             let action = AccountAction.loadNotificationSettings(deviceID: deviceID) { result in
                 promise(result)
             }
@@ -1134,7 +1206,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), settings)
     }
 
-    func test_loadNotificationSettings_relays_error_upon_failure() {
+    @MainActor
+    func test_loadNotificationSettings_relays_error_upon_failure() async throws {
         // Given
         let network = MockNetwork()
         let accountRemote = MockAccountRemote()
@@ -1146,7 +1219,7 @@ final class AccountStoreTests: XCTestCase {
                                         remote: accountRemote)
 
         // When
-        let result: Result<NotificationSettings, Error> = waitFor { promise in
+        let result: Result<NotificationSettings, Error> = try await waitForCompletion { promise in
             let action = AccountAction.loadNotificationSettings(deviceID: 11) { result in
                 promise(result)
             }

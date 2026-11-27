@@ -12,7 +12,7 @@ struct WordPressSiteSettingsMapper: Mapper {
 
 /// Represents a WordPress Site Settings response.
 ///
-public struct WordPressSiteSettings: Decodable, Equatable {
+public struct WordPressSiteSettings: Decodable, Equatable, Sendable {
     /// Site's Name.
     public let name: String
 

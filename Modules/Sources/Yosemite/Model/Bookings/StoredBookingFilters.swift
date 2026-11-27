@@ -4,7 +4,7 @@ import Codegen
 /// Models a dictionary of `siteID` and Booking Filters
 /// These entities will be serialised to a plist file
 ///
-public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
+public struct StoredBookingFilters: Codable, Equatable, Sendable, GeneratedFakeable {
 
     /// SiteID: Booking Filters
     public let filters: [Int64: Filters]
@@ -13,7 +13,7 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
         self.filters = filters
     }
 
-    public struct Filters: Codable, Equatable {
+    public struct Filters: Codable, Equatable, Sendable {
         public let teamMembers: [BookingTeamMemberFilter]
         public let products: [BookingProductFilter]
         public let attendanceStatus: BookingAttendanceStatus?

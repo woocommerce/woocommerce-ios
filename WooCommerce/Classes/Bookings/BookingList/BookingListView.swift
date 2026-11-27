@@ -109,7 +109,7 @@ private extension BookingListView {
     func bookingList(with bookings: [Booking],
                      isSearching: Bool,
                      onNextPage: @escaping () -> Void,
-                     onRefresh: @escaping () async -> Void) -> some View {
+                     onRefresh: @escaping @Sendable () async -> Void) -> some View {
         List(selection: $selectedBooking) {
             if isSearching {
                 bookingListSection(with: bookings, onNextPage: onNextPage)
@@ -194,7 +194,7 @@ private extension BookingListView {
         .listRowInsets(.init())
     }
 
-    func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {
+    func emptyStateView(isSearching: Bool, onRefresh: @escaping @Sendable () async -> Void) -> some View {
         GeometryReader { proxy in
             ScrollView {
                 if isSearching {

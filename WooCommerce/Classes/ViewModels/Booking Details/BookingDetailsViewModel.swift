@@ -6,6 +6,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
@@ -232,7 +233,6 @@ private extension BookingDetailsViewModel {
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
-    @MainActor
     func syncData() async {
         isLoadingResource = bookingResource == nil && booking.resourceID > 0
         isLoadingLocation = bookingLocation == nil
@@ -270,7 +270,6 @@ extension BookingDetailsViewModel {
 // MARK: Attendance status
 
 extension BookingDetailsViewModel {
-    @MainActor
     func updateAttendanceStatus(to newStatus: BookingAttendanceStatus) {
         let action = BookingAction.updateBookingAttendanceStatus(
             siteID: booking.siteID,
@@ -295,7 +294,6 @@ extension BookingDetailsViewModel {
         analytics.track(Event.bookingDetailAddNoteTap)
     }
 
-    @MainActor
     func updateNote(to newNote: String) async -> MultilineCommitResult {
         await withCheckedContinuation { continuation in
             let action = BookingAction.updateBookingNote(
@@ -347,7 +345,6 @@ extension BookingDetailsViewModel {
         return !ineligibleStatuses.contains(booking.bookingStatus)
     }
 
-    @MainActor
     func cancelBooking() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
@@ -406,7 +403,6 @@ extension BookingDetailsViewModel {
 }
 
 private extension BookingDetailsViewModel {
-    @MainActor
     func fetchResource() async -> BookingResource? {
         do {
             return try await withCheckedThrowingContinuation { continuation in
@@ -425,7 +421,6 @@ private extension BookingDetailsViewModel {
         }
     }
 
-    @MainActor
     func fetchBookingLocation() async -> String? {
         await withCheckedContinuation { continuation in
             let action = BookingAction.fetchBookingLocationResponse(
@@ -445,7 +440,6 @@ private extension BookingDetailsViewModel {
         }
     }
 
-    @MainActor
     func fetchBooking() async {
         do {
             try await withCheckedThrowingContinuation { continuation in
@@ -471,7 +465,6 @@ private extension BookingDetailsViewModel {
         }, completion: {}, on: .main)
     }
 
-    @MainActor
     func fetchProduct() async -> Product? {
         do {
             return try await withCheckedThrowingContinuation { continuation in
@@ -521,7 +514,6 @@ extension BookingDetailsViewModel {
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 
-    @MainActor
     func issueRefund() async {
         analytics.track(Event.bookingDetailRefundTap)
 

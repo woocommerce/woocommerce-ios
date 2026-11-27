@@ -965,7 +965,7 @@ private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProto
 }
 
 @MainActor
-private final class MockAsyncBookingsEligibilityChecker: @preconcurrency BookingsTabEligibilityCheckerProtocol {
+private final class MockAsyncBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
 

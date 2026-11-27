@@ -1,11 +1,13 @@
 import Experiments
 import Yosemite
 
+@MainActor
 protocol BookingsTabEligibilityCheckerProtocol {
     /// Checks the final visibility of the Bookings tab.
     func checkVisibility() async -> Bool
 }
 
+@MainActor
 final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
     private let site: Site
     private let stores: StoresManager
@@ -38,7 +40,6 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
 // MARK: Private helpers
 //
 private extension BookingsTabEligibilityChecker {
-    @MainActor
     func checkIfStoreHasBookableProducts() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: site.siteID, type: .booking) { result in
@@ -48,7 +49,6 @@ private extension BookingsTabEligibilityChecker {
         }
     }
 
-    @MainActor
     func checkIfStoreHasBookings() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(BookingAction.checkIfStoreHasBookings(siteID: site.siteID) { result in

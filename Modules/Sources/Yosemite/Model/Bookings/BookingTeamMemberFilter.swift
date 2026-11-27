@@ -2,7 +2,7 @@ import Foundation
 
 /// Used to filter bookings by team members
 ///
-public struct BookingTeamMemberFilter: Codable, Hashable {
+public struct BookingTeamMemberFilter: Codable, Hashable, Sendable {
     /// ID of the team member (booking resource)
     ///
     public let resourceID: Int64

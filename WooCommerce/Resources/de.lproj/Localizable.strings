@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-03 13:56:15+0000 */
+/* Translation-Revision-Date: 2026-11-18 12:57:52+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -824,8 +824,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "Aserbaidschan";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Zurück";
 
 /* Accessibility announcement message when device goes back online */
@@ -2036,7 +2035,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Zeitraum";
@@ -2814,7 +2814,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Zollformular ausfüllen";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2885,9 +2886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Passwort vergessen?";
-
-/* Next web page */
-"Forward" = "Weiter";
 
 /* Country option for a site address. */
 "France" = "Frankreich";
@@ -3747,9 +3745,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Produkte werden geladen";
 
-/* Loading. Verb */
-"Loading..." = "Wird geladen...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4043,7 +4038,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "Weitere Informationen findest du hier";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Weitere Optionen";
 
@@ -4461,9 +4457,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Öffnet die Produktdetails.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "Öffnet die Webseite in Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Bezeichnung der Option";
@@ -5342,8 +5335,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Beleg vom %1$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "Aktualisieren";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5604,9 +5596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS gesendet";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "Saint-Barthélemy";
@@ -5918,7 +5907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Teilen";
 
@@ -7066,8 +7054,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tipp";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Titel";
 
@@ -8475,10 +8462,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Kennzahl";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "Wähle aus, wann Analysedaten aktualisiert werden sollen.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Dies ist eine Einstellung für den gesamten Shop, die auch die Option „Updates“ in den Analyseeinstellungen der WooCommerce-Administration steuert. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -8487,7 +8476,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "Sofort";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "Weitere Informationen";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8499,10 +8489,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "Geplant";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "Analyse-Updates";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "Die Einstellung konnte nicht aktualisiert werden. Bitte versuche es erneut.";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10196,6 +10188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "Wenn deine Daten immer noch nicht geladen werden, wende dich an unser Support-Team, um Unterstützung zu erhalten.";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "Entfernt den Gutschein aus dem Warenkorb";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "Angewendet";
 
@@ -10529,7 +10524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Fertig";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "Versuche, diese Karte erneut zu laden. Wenn das Problem weiterhin besteht, %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -12034,6 +12030,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "Zahlungslink über „Zum Bezahlen scannen“ geteilt. Bitte verifiziere die Zahlung, bevor du die Bestellung abschließt.";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "Diese Anmeldung kann die Zahlungseinstellungen nicht lesen";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "Dein Shop hat der Anmeldung nicht gestattet, die Zahlungseinstellungen zu lesen. Melde dich erneut mit einem Administrator- oder Shop-Manager-Konto an und tippe dann auf „Erneut versuchen“.";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "Konto unterstützt keine Shop-Währung";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "Dein Zahlungskonto kann keine Zahlungen in der Währung deines Shops empfangen. Wenn du die Währung des Shops änderst, werden deine Produktpreise nicht umgerechnet. Fahre mit dem Chat fort, bevor du sie änderst.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "Zahlungskonto ist nicht aktiv";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "Live-Kartenzahlungen können fehlschlagen, bis das Konto aktiv ist. Prüfe den Kontostatus in den Zahlungseinstellungen.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "Zahlungskonto ist eingeschränkt";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "Zu diesem Zeitpunkt kannst du nichts übermitteln. Fahre mit dem Chat fort, wenn du Hilfe mit dem Konto benötigst.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "Deine Website hat eine Überprüfung der Einrichtung blockiert";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "Deine Zahlungseinrichtung ist unbekannt. Dies wird normalerweise durch ein Sicherheits-Plugin oder eine Firewall auf deiner Website verursacht. Erlaube Anfragen von der WooCommerce-App in diesem Plugin oder bitte deinen Hosting-Anbieter, sie zuzulassen. Du musst das Plugin nicht ausschalten.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "Konto kann keine Live-Zahlungen empfangen";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "Dein Zahlungsanbieter meldet, dass dein Konto keine Live-Kartenzahlungen empfangen kann. Schließe die Kontoeinrichtung in den Zahlungseinstellungen ab.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "Zahlungsanbieter wählen";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments und Stripe sind beide aktiv. Gehe in der App zu Menü > Zahlungen, tippe auf „Einrichtung fortsetzen“ und wähle einen Anbieter aus. Du musst keines der Plugins deaktivieren.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "Land des Kontos stimmt nicht mit Land des Shops überein";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "Überprüfe, ob deine Shop-Adresse korrekt ist. Das Land deines Zahlungskontos kann nicht geändert werden. Fahre mit dem Chat fort, bevor du andere Einstellungen änderst.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "Die App konnte deine Zahlungseinrichtung nicht überprüfen. Bleibe im Chat, damit wir deine Website überprüfen können.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "Zahlungs-Plugin ist nicht aktiv";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "Aktiviere das Zahlungs-Plugin und schließe dann die Einrichtung ab.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "Die Adresse des Shops ist unvollständig";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "Für Kartenlesegeräte und Tap to Pay ist eine Adresse mit Straße, Stadt und Postleitzahl erforderlich. Füge sie in deinen Shop-Einstellungen hinzu.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "Shop-Land ist nicht festgelegt";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "Lege das Land deines Shops in deinen Shop-Einstellungen fest.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "Währung des Shops ist nicht festgelegt";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "Lege die Währung deines Shops in deinen Shop-Einstellungen fest.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "Es ist kein Plugin für persönliche Zahlungen aktiv";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "Installiere und aktiviere WooPayments und schließe dann die Einrichtung ab.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "Zahlungs-Plugin muss aktualisiert werden";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "Die Version deines Zahlungs-Plugins ist zu alt für persönliche Zahlungen. Aktualisiere das Plugin.";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "Konto hat überfällige Anforderungen";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "Zahlungen und Auszahlungen können eingestellt werden, bis du die angeforderten Informationen übermittelst. Reiche sie in den Zahlungseinstellungen ein.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "Dein Zahlungsanbieter benötigt vor Ablauf einer Frist weitere Informationen. Übermittle sie, um Auszahlungen aktiv zu halten.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "Anbieter in deinem Land nicht verfügbar";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "Dein Zahlungsanbieter unterstützt keine persönlichen Zahlungen im Land deines Shops. Installiere und aktiviere WooPayments, gehe dann zu Menü > Zahlungen und tippe auf „Einrichtung fortsetzen“.";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "Zahlungskonto wurde abgelehnt";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "Persönliche Zahlungen sind mit diesem Zahlungskonto nicht verfügbar. Fahre mit dem Chat fort, um mehr über deine Optionen zu erfahren. Du kannst weiterhin Barzahlungen in der App entgegennehmen.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "Zahlungseinrichtung konnte nicht überprüft werden";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "Deine Zahlungseinrichtung ist unbekannt. Überprüfe deine Internetverbindung und tippe auf „Erneut versuchen“.";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "Kein Zahlungskonto verbunden";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "Dein Shop ist nicht mit einem Zahlungskonto verbunden. Schließe die Kontoeinrichtung in den Zahlungseinstellungen ab.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "Shop hat nicht richtig reagiert";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "Deine Zahlungseinrichtung ist unbekannt. Bitte deinen Hosting-Anbieter, die Serverfehlerprotokolle zu überprüfen.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "Testmodus ist aktiviert";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "Dein Zahlungs-Plugin befindet sich im Testmodus. Live-Kartenzahlungen funktionieren deshalb nicht. Deaktiviere den Testmodus in den Zahlungseinstellungen. Nimm in einer Testumgebung deines Shops stattdessen Zahlungen aus deinem Live-Shop entgegen.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "Nur Zahlungen testen";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "Dein Zahlungskonto befindet sich im Testmodus, sodass Live-Kartenzahlungen nicht funktionieren. Schließe die Live-Kontoeinrichtung in den Zahlungseinstellungen ab. Verwende auf einer Staging-Website stattdessen deinen Live-Shop.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "Kontostatus ist unbekannt";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "Die App erkennt den Status deines Zahlungskontos nicht. Überprüfe das Konto in den Zahlungseinstellungen oder fahre mit dem Chat fort.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "Land des Shops wird nicht unterstützt";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "Persönliche Kartenzahlungen sind im Land deines Shops nicht verfügbar. Wenn das Land in deiner Shop-Adresse falsch ist, korrigiere es. Du kannst weiterhin Barzahlungen in der App entgegennehmen.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "Die Währung des Shops wird nicht unterstützt";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "Persönliche Zahlungen unterstützen die Währung deines Shops in diesem Land nicht. Wenn du die Währung änderst, werden deine Produktpreise nicht umgerechnet. Bleib also im Chat, bevor du sie änderst.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "zahlungen, tap to pay, woocommerce, woo, persönliche zahlungen, persönliche zahlungen, zahlung empfangen, zahlungen, reader, kartenlesegerät, kartenlesegerät bestellen";
 
@@ -12529,6 +12681,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "Rabatt nicht angewendet";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "Individuellen Betrag bearbeiten";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Erneute Verbindung abbrechen";
 
@@ -12564,12 +12719,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Einstellungen";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ − %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "Bearbeiten";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Entfernen";
@@ -12946,9 +13095,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "Für die Änderung von Einstellungen ist eine Genehmigung erforderlich";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "Für das Management von Mitarbeitern ist eine Genehmigung erforderlich";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Einstellungen";
 
@@ -12975,12 +13121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Zahlungen";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Mitarbeiter und PIN-Zugriff anzeigen";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "Mitarbeiter";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Shop-Konfiguration und -Einstellungen";
@@ -13639,11 +13779,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "Schließe die Druckerabdeckung und versuche es erneut.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "Druckerabdeckung ist offen";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "Beleg per E-Mail senden";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "Beim Drucken ist ein Fehler aufgetreten. Bitte versuche es erneut.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "Beleg konnte nicht gedruckt werden";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "Stelle sicher, dass eine Papierrolle eingelegt und richtig eingesetzt ist, und versuche es dann erneut.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "Druckerpapier überprüfen";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "Vergewissere dich, dass dein Drucker eingeschaltet ist und sich in Bluetooth-Reichweite befindet, und versuche es dann erneut.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "Kann deinen Drucker nicht erreichen";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "Erneut versuchen";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "Drucker verbinden";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "Verbindung zu %1$@ wird hergestellt …";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "Stelle sicher, dass Bluetooth aktiviert ist, und suche dann erneut.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "Suche nach Druckern nicht möglich";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "Wir konnten keine Verbindung zu deinem Drucker herstellen. Bitte versuche es erneut.";
@@ -14030,9 +14206,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "Kassierer";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "Manager";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14215,42 +14388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "Zahlungen";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "POS wird gesperrt, wenn du im Menü auf die Option zum Sperren des POS tippst – oder automatisch nach 5 Minuten Inaktivität.";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "Mitarbeiter im Web verwalten";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "Mitarbeiter verwalten";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "Keine PIN";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "PIN festgelegt";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "Admin";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "POS-Kassierer";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "POS-Manager";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "Angemeldet";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "Mitarbeiter konnten nicht geladen werden. Überprüfe deine Verbindung und versuche es noch einmal.";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "Erneut versuchen";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "Mitarbeiter";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST-API-Endpunkt nicht gefunden.";
@@ -15390,7 +15527,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "Dein Shop ist nicht erreichbar";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Schließen";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15458,6 +15596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Shop zum Verbinden auswählen (%1$d ausgeblendet)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d von 5 Sternen";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "Löschen";
@@ -15655,6 +15796,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Nicht gesendet: %1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "Du chattest mit der KI des Woo-Supports.";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "Alle Prüfungen wurden ohne Probleme abgeschlossen.";
 
@@ -15718,6 +15862,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ich bin dein mobiler Woo-Support-Bot. Gibt es etwas, womit ich dir heute helfen kann?";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "Wenn eine Zahlung fehlgeschlagen ist, bleibe im Chat und gib die Bestellnummer an.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "Überprüfung der Zahlungseinrichtung erfolgreich";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Beschreibe dein Problem bitte ausführlicher, damit ich dir helfen kann.";
 
@@ -15733,11 +15883,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Bestellbenachrichtigungen aktivieren";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "Zahlungseinstellungen öffnen";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "Plugins öffnen";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "Benachrichtigungseinstellungen";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Einstellungen öffnen";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "Shop-Einstellungen öffnen";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "Gerät registrieren";
@@ -15807,6 +15966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "Überprüfung der Benachrichtigungseinstellungen";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "Die Zahlungseinrichtung deines Shops wird überprüft";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "Verbindung mit deiner Website";
@@ -15912,6 +16074,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "Sonstige";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "Zahlungen";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "Erhalt von Push-Benachrichtigungen";
@@ -16281,9 +16446,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "Fertig";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "Verwerfen";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "Woche";

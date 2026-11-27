@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-03 13:55:26+0000 */
+/* Translation-Revision-Date: 2026-11-17 09:59:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -824,8 +824,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "亞塞拜然";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "上一步";
 
 /* Accessibility announcement message when device goes back online */
@@ -2036,7 +2035,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "日期範圍";
@@ -2814,7 +2814,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "填寫海關表格";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2885,9 +2886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "忘記密碼？";
-
-/* Next web page */
-"Forward" = "轉寄";
 
 /* Country option for a site address. */
 "France" = "法國";
@@ -3747,9 +3745,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "正在載入商品";
 
-/* Loading. Verb */
-"Loading..." = "正在載入...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4043,7 +4038,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "詳情請見此處";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "更多選項";
 
@@ -4461,9 +4457,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "開啟產品詳細資料。";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "在 Safari 中開啟網頁";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "選項名稱";
@@ -5342,8 +5335,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@ 收據";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "重新整理";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5604,9 +5596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "簡訊已傳送";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "聖巴瑟米";
@@ -5918,7 +5907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "分享";
 
@@ -7066,8 +7054,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "秘訣";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "標題";
 
@@ -8475,10 +8462,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "指標";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "選擇更新分析資料的時間。";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "這是全店設定，也會控制 WooCommerce 管理員分析設定中的「更新」選項。%1$@。";
 
 /* Description of the Immediately analytics update option. */
@@ -8487,7 +8476,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "立即";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "深入瞭解";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8499,10 +8489,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "已排程";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "分析更新";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "無法更新設定。 請再試一次。";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10193,6 +10185,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "如果仍無法載入資料，請聯絡我們的支援團隊取得協助。";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "移除購物車的優惠券";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "已套用";
 
@@ -10526,7 +10521,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "完成";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "請嘗試重新載入這張卡片。 如果問題持續發生，請%1$@。";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -12031,6 +12027,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "透過「掃描付款」分享的付款連結。 請在履行訂單前驗證付款。";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "此登入帳號無法讀取付款設定";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "商店不允許此登入帳號讀取付款設定。 使用管理員或商店管理員帳號再次登入，然後點選「重試」。";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "帳號不支援商店幣別";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "付款帳號不接受商店幣別付款。 變更商店幣別不會轉換商品價格，變更設定前，可以繼續聊天。";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "付款帳號未開通";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "帳號開通前，有效信用卡刷卡付款功能可能會失敗。 前往付款設定，檢查帳號狀態。";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "付款帳號已受限制";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "無須提交任何資訊。 如果需要帳號相關協助，請繼續聊天。";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "網站已封鎖設定檢查";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "付款設定不明。 這通常是因為網站裝了安全性外掛程式或防火牆所引起的問題。 前往外掛程式，允許 WooCommerce 應用程式的要求，或要求主機服務提供者允許這些要求。 無須關閉外掛程式。";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "帳號無法接受即時付款";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "付款服務供應商表示，你的帳號無法接受有效信用卡刷卡付款。 前往付款設定，完成帳號設定。";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "選擇付款供應商";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments 和 Stripe 均已啟用。 打開應用程式，前往「選單」>「付款」，點選「繼續設定」，然後選擇供應商。 無須停用其中一個外掛程式。";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "帳號國家\/地區與商店所在國家\/地區不符";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "檢查商店地址是否正確。 無法變更付款帳號國家\/地區，變更其他設定前，請先繼續聊天。";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "應用程式無法檢查付款設定。 繼續聊天，方便我們確認網站狀況。";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "付款外掛程式未啟用";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "啟用付款外掛程式，然後完成設定。";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "商店位址不完整";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "讀卡機和「卡緊收」功能需要街道地址、城市和郵遞區號。 前往商店設定，新增上述資訊。";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "未設定商店所在國家\/地區";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "前往商店設定，設定商店所在國家\/地區。";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "未設定商店幣別";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "前往商店設定，設定商店幣別。";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "未啟用親自收款外掛程式";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "安裝並啟用 WooPayments，然後完成設定。";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "付款外掛程式需要更新";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "付款外掛程式版本太舊，無法使用親自收款功能。 請更新外掛程式。";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "帳號中有逾期要求";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "請提交所需資訊，以免影響付款和款項功能。 前往付款設定，提交相關資訊。";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "在截止日期前，請提供付款服務供應商的相關資訊。 提交後，才能繼續使用款項。";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "所在國家\/地區不支援此服務供應商";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "付款服務供應商不支援在商店所在國家\/地區親自收款。 安裝並啟用 WooPayments，然後前往「選單」>「付款」並點選「繼續設定」。";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "付款帳號已遭拒";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "此付款帳號無法使用親自收款功能。 繼續聊天，深入瞭解有哪些選項。 應用程式依然支援現金付款。";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "無法檢查付款設定";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "付款設定不明。 請檢查你的網際網路連線，然後再點選一下「重試」。";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "未連結付款帳號";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "商店未連結到付款帳號。 前往付款設定，完成帳號設定。";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "商店回應有誤";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "付款設定不明。 要求主機服務提供者檢查伺服器錯誤紀錄。";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "測試模式已開啟";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "付款外掛程式處於測試模式，無法使用有效信用卡的刷卡付款功能。 前往付款設定，關閉測試模式。 前往測試用商店，改為從真實商店收款。";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "僅測試付款";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "付款帳號處於測試模式，無法使用有效信用卡的刷卡付款功能。 前往付款設定，完成真實帳號設定。 請在測試用網站上改用真實商店。";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "帳號狀態不明";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "應用程式無法辨識付款帳號狀態。 請前往付款設定檢查帳號，或繼續聊天。";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "不支援商店所在國家\/地區。";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "商店所在國家\/地區無法使用親自刷卡付款功能。 如果商店地址中的國家\/地區錯誤，請修正。 應用程式依然支援現金付款。";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "不支援商店幣別";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "在此國家\/地區，親自收款功能不支援該商店幣別。 變更幣別不會轉換商品價格，變更設定前，可以繼續聊天。";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "付款、點選支付、woocommerce、woo、親自收款、收取款項、款項、讀卡機、信用卡讀卡機、訂購讀卡機";
 
@@ -12526,6 +12678,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "未套用折扣優惠";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "編輯自訂金額";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "取消重新連結";
 
@@ -12561,12 +12716,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "設定";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "編輯";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";
@@ -12943,9 +13092,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "變更設定需要核准";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "管理員工需要核准";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "設定";
 
@@ -12972,12 +13118,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "付款";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "檢視員工和 PIN 存取權限";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "員工";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "商店組態和設定";
@@ -13636,11 +13776,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "確定";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "請關閉印表機蓋，然後再試一次。";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "印表機蓋開著";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "電子郵件收據";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "列印時發生錯誤， 請再試一次。";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "無法列印收據";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "請確認紙捲已就位，然後再試一次。";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "檢查印表機紙張";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "請確認印表機已開機，且藍牙是打開的，然後再試一次。";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "偵測不到印表機";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "重試";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "連線印表機";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "正在連線至 %1$@……";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "確認藍芽已開啟，然後再次搜尋。";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "搜尋不到印表機";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "無法連線至印表機， 請再試一次。";
@@ -14027,9 +14203,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "收銀員";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "主管";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14212,42 +14385,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "付款";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "點選選單中的「鎖定 POS」時，POS 就會鎖住，閒置 5 分鐘後也會自動鎖住。";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "在網頁上管理員工";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "管理員工";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "沒有 PIN";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "PIN 設定";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "管理員";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "POS 收銀員";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "POS 經理";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "登入身分";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "無法載入統計資料， 請檢查你的連線並再試一次。";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "重試";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "員工";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "找不到 REST API 端點。";
@@ -15387,7 +15524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "無法連線至你的商店";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "關閉";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15455,6 +15593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "挑選要連結的商店 (%1$d 間已隱藏)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d 星 (共 5 星)";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "清除";
@@ -15664,6 +15805,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "未傳送。%1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "你正在與 Woo 支援 AI 聊天。";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "已完成所有檢查，沒有問題。";
 
@@ -15727,6 +15871,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "嗨！ 我是你的 Woo 行動支援機器人。 今天有什麼需要我幫忙的嗎？";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "如果付款失敗，請繼續聊天並分享訂單號碼。";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "付款設定檢查完成";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "請更詳細地描述問題，我才能提供協助。";
 
@@ -15742,11 +15892,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "啟用訂單通知";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "開啟付款設定";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "開啟外掛程式";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "通知喜好設定";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "開啟設定";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "開啟商店設定";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "註冊裝置";
@@ -15816,6 +15975,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "正在檢查通知設定";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "正在檢查商店的付款設定";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "正在連結你的網站";
@@ -15921,6 +16083,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "其他";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "付款";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "正在接收推播通知";
@@ -16290,9 +16455,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "完成";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "關閉";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "週";

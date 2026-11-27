@@ -39,11 +39,26 @@ export BUILDKITE_SOURCE=webhook BUILDKITE_PULL_REQUEST=false BUILDKITE_BRANCH=tr
 export PIPELINE=pipeline.yml
 unset BUILDKITE_TAG CI_CHANGED_FILES_BASE CI_FULL_BUILD
 variables=(SKIP_BUILD SKIP_PROTOTYPE_BUILD SKIP_VALIDATION SKIP_LOCALIZATION)
+
+# Supply only the GitHub push payload; the real toolkit and Git select the jobs.
+mkdir -p "$fixture/meta-bin"
+export PROBE_WEBHOOK="$fixture/webhook.json"
+cat > "$fixture/meta-bin/buildkite-agent" <<'SH'
+#!/bin/sh
+[ "$*" = 'meta-data get buildkite:webhook' ] || exit 1
+cat "$PROBE_WEBHOOK"
+SH
+chmod +x "$fixture/meta-bin/buildkite-agent"
+write_push() {
+  jq -n --arg before "$1" --arg after "$(git rev-parse HEAD)" \
+    '{ref: "refs/heads/trunk", before: $before, after: $after}' > "$PROBE_WEBHOOK"
+}
+write_push "$base"
 read_vars() {
   # Start with the central uploader's bash -e options and no previous decision.
   set +u +o pipefail
   unset "${variables[@]}"
-  source .buildkite/shared-pipeline-vars
+  PATH="$fixture/meta-bin:$PATH" source .buildkite/shared-pipeline-vars
   set -u -o pipefail
 }
 check_values() {
@@ -59,6 +74,17 @@ read_vars
 check_values
 selected_expected=("${expected[@]}")
 export PROBE_SKIP=${!variables[0]} PROBE_SCENARIO=$scenario
+# A payload for another ref or commit cannot authorize skipping this checkout.
+expected=(0 0 0 0)
+for rewrite in '.ref = "refs/heads/another-branch"' '.after = .before' '.before = "HEAD~1"'; do
+  write_push "$base"
+  jq "$rewrite" "$PROBE_WEBHOOK" > "$PROBE_WEBHOOK.tmp"
+  mv "$PROBE_WEBHOOK.tmp" "$PROBE_WEBHOOK"
+  read_vars
+  check_values
+done
+write_push "$base"
+expected=("${selected_expected[@]}")
 export CI_CHANGED_FILES_BASE=$base
 read_vars
 check_values
@@ -84,6 +110,7 @@ unset CI_CHANGED_FILES_BASE
 
 # The same change on a single-parent commit runs fully, even with a PR number in its subject.
 git switch -q topic
+write_push "$base"
 read_vars
 check_values
 export CI_CHANGED_FILES_BASE=$base
@@ -135,9 +162,36 @@ expected=(0 0 0 0)
 read_vars
 check_values
 
-# Use the same notifier/upload flow as the central uploader, with a harmless probe job and its own status.
+# The tip merge touches only docs, but the push also contains an earlier code change.
 export BUILDKITE_SOURCE=webhook BUILDKITE_PULL_REQUEST=false
 unset CI_CHANGED_FILES_BASE BUILDKITE_PULL_REQUEST_BASE_BRANCH
+git switch -qc push-trunk "$base"
+mkdir -p "$(dirname 'WooCommerce/Classes/CIProbe.swift')"
+echo runtime > 'WooCommerce/Classes/CIProbe.swift'
+git add 'WooCommerce/Classes/CIProbe.swift'
+git commit -qm 'Earlier runtime change' -m '[skip-ci]'
+skipped_parent=$(git rev-parse HEAD)
+git switch -qc docs-topic
+echo docs > readme-for-push.md
+git add readme-for-push.md
+git commit -qm 'Docs change'
+git switch -q push-trunk
+git merge --no-ff -qm 'Merge docs (#456)' docs-topic
+write_push "$base"
+expected=(0 0 0 0)
+read_vars
+check_values
+
+# In a separate docs push the previous tip requested no CI. Its code still needs testing.
+write_push "$skipped_parent"
+expected=(0 0 0 0)
+read_vars
+check_values
+echo '{}' > "$PROBE_WEBHOOK"
+read_vars
+check_values
+
+# Use the same notifier/upload flow as the central uploader, with a harmless probe job and its own status.
 cat > smoke.yml <<'YAML'
 steps:
   - label: "Trunk $PROBE_SCENARIO selection"

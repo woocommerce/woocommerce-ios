@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-# Usage: should-skip-job.sh [validation|build|localization|prototype-build]
+# Usage: should-skip-job.sh <validation|build|localization|prototype-build> [verified trunk base]
 # validation: For jobs like unit/UI tests, authenticator tests...
 #     Skip when changes are limited to documentation, tooling, non-code files, and localization files
 # localization: GlotPress extracts strings from source, merges English InfoPlist.strings
@@ -54,15 +54,14 @@ esac
 if [[ "${BUILDKITE_PULL_REQUEST-false}" =~ ^[0-9]+$ ]]; then
   changed_files_command=(pr_changed_files)
 elif [[ "${BUILDKITE_PULL_REQUEST-false}" == false && "${BUILDKITE_BRANCH:-}" == trunk && "$job_type" != prototype-build ]]; then
-  changed_files_command=(check_changed_files)
-  if [[ -n "${CI_CHANGED_FILES_BASE:-}" ]]; then
-    base_commit=$(git rev-parse --quiet --verify --end-of-options "${CI_CHANGED_FILES_BASE}^{commit}") || run_job
-    git merge-base --is-ancestor "$base_commit" HEAD || run_job
-    changed_files_command+=(--base "$base_commit")
+  # The uploader resolves this once for all jobs. A standalone caller can also resolve it.
+  if [[ $# -eq 2 ]]; then
+    base_commit=$2
   else
-    # Woo merges PRs with merge commits. Other trunk commits need an explicit base to skip jobs.
-    git rev-parse --verify --quiet 'HEAD^2' >/dev/null || run_job
+    base_commit=$("$(dirname "${BASH_SOURCE[0]}")/trunk-diff-base.sh") || run_job
   fi
+  [[ -n $base_commit ]] || run_job
+  changed_files_command=(check_changed_files --base "$base_commit")
 else
   run_job
 fi

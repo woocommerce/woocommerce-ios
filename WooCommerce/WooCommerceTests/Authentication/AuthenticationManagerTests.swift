@@ -1304,6 +1304,7 @@ final class AuthenticationManagerTests: XCTestCase {
         ]
         for context in contexts {
             // Given
+            let message = "status \(context.statusCode.map(String.init) ?? "nil")"
             let provider = MockAnalyticsProvider()
             let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
             let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
@@ -1312,12 +1313,13 @@ final class AuthenticationManagerTests: XCTestCase {
             var verifiedLoginURL: String?
             var offersBrowserAlternative = false
             manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
-                                                endpointUnderVerification: .login, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
-                                                onRecovery: { _ in XCTFail("Expected failure"); return false },
+                                                endpointUnderVerification: .login, onLoading: { _ in },
+                                                onSuccess: { _ in XCTFail("Expected failure, \(message)") },
+                                                onRecovery: { _ in XCTFail("Expected failure, \(message)"); return false },
                                                 onFailure: { error, incorrectCredentials, verifiedURL, browserAlternative in
                 receivedError = error
                 verifiedLoginURL = verifiedURL
-                XCTAssertFalse(incorrectCredentials)
+                XCTAssertFalse(incorrectCredentials, message)
                 offersBrowserAlternative = browserAlternative
             })
 
@@ -1325,16 +1327,16 @@ final class AuthenticationManagerTests: XCTestCase {
             useCase.fail(with: .unexpectedResponse(context), loginEntryVerified: true, offersBrowserAlternative: true)
 
             // Then
-            guard case .unexpectedResponse(let receivedContext) = try XCTUnwrap(receivedError as? SiteCredentialLoginError) else {
-                XCTFail("Expected preserved response context")
+            guard case .unexpectedResponse(let receivedContext) = try XCTUnwrap(receivedError as? SiteCredentialLoginError, message) else {
+                XCTFail("Expected preserved response context, \(message)")
                 continue
             }
-            XCTAssertEqual(receivedContext, context)
-            XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
-            XCTAssertTrue(offersBrowserAlternative)
-            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
+            XCTAssertEqual(receivedContext, context, message)
+            XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login", message)
+            XCTAssertTrue(offersBrowserAlternative, message)
+            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue], message)
             XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
-                           SiteCredentialLoginError.unexpectedResponse(context).underlyingError.description)
+                           SiteCredentialLoginError.unexpectedResponse(context).underlyingError.description, message)
         }
     }
 
@@ -1357,8 +1359,8 @@ final class AuthenticationManagerTests: XCTestCase {
             presenter.completePresentation()
 
             // Then
-            XCTAssertTrue(offersBrowserOnForm)
-            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue])
+            XCTAssertTrue(offersBrowserOnForm, "status \(code)")
+            XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue], "status \(code)")
         }
     }
 

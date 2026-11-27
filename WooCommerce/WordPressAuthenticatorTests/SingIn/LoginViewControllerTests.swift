@@ -429,6 +429,68 @@ class LoginViewControllerTests: XCTestCase {
         XCTAssertEqual(controller.submitButton?.isEnabled, false)
     }
 
+    func test_site_credentials_controller_when_failure_offers_browser_on_form_then_shows_browser_link() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        delegate.siteCredentialFailure = (NSError(domain: "UnexpectedResponse", code: 200), false, nil)
+        delegate.siteCredentialFailureOffersBrowserAlternative = true
+        delegate.showsBrowserAlternativeOnFormAfterFailure = true
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+
+        // When
+        try tapContinue(in: controller)
+
+        // Then
+        let cells = try renderedCells(in: controller)
+        XCTAssertEqual(cells.count, 5)
+        let browserCell = try XCTUnwrap(cells.last as? TextLinkButtonTableViewCell)
+        XCTAssertEqual(button(in: browserCell)?.title(for: .normal), "Try signing in with your browser instead")
+        XCTAssertEqual(delegate.presentedSiteCredentialFailureOffersBrowserAlternative, true)
+
+        // When
+        try XCTUnwrap(browserCell.actionHandler)()
+
+        // Then
+        XCTAssertEqual(delegate.presentedSiteCredentialBrowserAlternativeCount, 1)
+    }
+
+    func test_site_credentials_controller_when_continue_is_tapped_after_browser_link_then_hides_it() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        delegate.siteCredentialFailure = (NSError(domain: "UnexpectedResponse", code: 200), false, nil)
+        delegate.siteCredentialFailureOffersBrowserAlternative = true
+        delegate.showsBrowserAlternativeOnFormAfterFailure = true
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+        try tapContinue(in: controller)
+        XCTAssertEqual(try renderedCells(in: controller).count, 5)
+        delegate.defersSiteCredentialAuthentication = true
+
+        // When
+        try tapContinue(in: controller)
+
+        // Then
+        let cells = try renderedCells(in: controller)
+        XCTAssertEqual(cells.count, 4)
+        XCTAssertFalse(cells.contains { button(in: $0)?.title(for: .normal) == "Try signing in with your browser instead" })
+    }
+
+    func test_site_credentials_controller_when_failure_declines_browser_on_form_then_hides_browser_link() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        delegate.siteCredentialFailure = (NSError(domain: "UnexpectedResponse", code: 200), false, nil)
+        delegate.siteCredentialFailureOffersBrowserAlternative = true
+        delegate.showsBrowserAlternativeOnFormAfterFailure = false
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+
+        // When
+        try tapContinue(in: controller)
+
+        // Then
+        let cells = try renderedCells(in: controller)
+        XCTAssertEqual(cells.count, 4)
+        XCTAssertEqual(delegate.presentedSiteCredentialFailureCount, 1)
+    }
+
     func test_site_credentials_controller_when_popped_then_cancels_active_authentication() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()

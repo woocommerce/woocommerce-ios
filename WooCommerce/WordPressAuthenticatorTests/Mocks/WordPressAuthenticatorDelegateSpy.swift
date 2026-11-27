@@ -31,6 +31,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     private(set) var presentedSiteCredentialFailureCount = 0
     private(set) var presentedSiteCredentialFailureOffersBrowserAlternative: Bool?
     private(set) var presentedSiteCredentialBrowserAlternativeCount = 0
+    var showsBrowserAlternativeOnFormAfterFailure = false
 
     func createdWordPressComAccount(username: String, authToken: String) {
         // no-op
@@ -141,10 +142,11 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
-                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) -> Bool {
         presentedSiteCredentialRetry = onRetry
         presentedSiteCredentialFailureCount += 1
         presentedSiteCredentialFailureOffersBrowserAlternative = offersBrowserAlternative
+        return showsBrowserAlternativeOnFormAfterFailure
     }
 
     func cancelSiteCredentialLogin() { credentialCancellationCount += 1 }

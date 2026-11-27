@@ -206,12 +206,15 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - siteURL: The site URL of the login failure.
     ///     - viewController: the view controller containing the site credential input.
     ///
+    /// - Returns: whether the credential form should show the browser sign-in link after the failure.
+    ///
     @MainActor
+    @discardableResult
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
-                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void)
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void) -> Bool
 
     @MainActor
     func cancelSiteCredentialLogin()
@@ -320,12 +323,14 @@ public extension WordPressAuthenticatorDelegate {
     }
 
     @MainActor
+    @discardableResult
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
-                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) -> Bool {
         handleSiteCredentialLoginFailure(error: error, for: siteURL, in: viewController)
+        return false
     }
 
     @MainActor

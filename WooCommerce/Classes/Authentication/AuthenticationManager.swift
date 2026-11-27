@@ -743,15 +743,16 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     /// is only ever offered as a button the merchant has to tap.
     ///
     @MainActor
+    @discardableResult
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
-                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) -> Bool {
         if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError,
            offersBrowserAlternative == false {
             unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
-            return
+            return false
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
             guard let self, let viewController else { return }
@@ -762,6 +763,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             defaultAction: browserAction,
             in: viewController
         )
+        return false
     }
 
     @MainActor

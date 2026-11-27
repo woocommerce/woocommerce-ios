@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 26.2
+Tap to Pay and Point of Sale on iPhone now reach the Netherlands, Ireland, Finland, Luxembourg, New Zealand, and Singapore. Custom amounts are here for in-person sales. Connect Star Micronics printers over Bluetooth and print receipts after sales. POS now greets you with a guide to help you start selling.
+
 ## 26.0
 You can now add and edit attributes on every product type. Camera barcode scanning is more accurate. Product search in Point of Sale is faster for large catalogs. Carrier outage notices appear while you create shipping labels. Give this update a try and let us know what you think.
 

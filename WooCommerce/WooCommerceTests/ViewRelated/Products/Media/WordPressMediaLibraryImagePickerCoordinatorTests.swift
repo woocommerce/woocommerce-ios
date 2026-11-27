@@ -4,26 +4,26 @@ import Yosemite
 
 @testable import WooCommerce
 
+@MainActor
 final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
     typealias Completion = WordPressMediaLibraryPickerCoordinator.Completion
 
     private var sourceViewController: UIViewController!
+    private var window: UIWindow!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
         sourceViewController = UIViewController()
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = sourceViewController
+        window.makeKeyAndVisible()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
+        window = nil
         sourceViewController = nil
-        super.tearDown()
     }
 
-    @MainActor
     func test_start_presents_WordPressMediaLibraryImagePickerViewController() {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -38,7 +38,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         assertThat(sourceViewController.presentedViewController, isAnInstanceOf: WordPressMediaLibraryPickerViewController.self)
     }
 
-    @MainActor
     func test_mediaPicker_is_dismissed_after_didFinishPicking() throws {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -57,7 +56,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_mediaPicker_is_dismissed_after_mediaPickerControllerDidCancel() throws {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -78,7 +76,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 
     /// Since `presentationControllerDidDismiss` is triggered after the view controller is dismissed, it verifies that the coordinator does not
     /// dismiss the modal again.
-    @MainActor
     func test_mediaPicker_is_not_dismissed_when_presentationControllerDidDismiss_is_invoked() throws {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -99,7 +96,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 
     // MARK: - `onCompletion`
 
-    @MainActor
     func test_media_items_are_returned_after_didFinishPicking() throws {
         let expectedMediaItems: [Media] = [.fake().copy(mediaID: 6), .fake().copy(mediaID: 12)]
         let mediaItems: [Media] = try waitFor { promise in
@@ -125,7 +121,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         XCTAssertEqual(mediaItems, expectedMediaItems)
     }
 
-    @MainActor
     func test_empty_media_items_are_returned_after_mediaPickerControllerDidCancel() throws {
         let mediaItems: [Media] = try waitFor { promise in
             // Given
@@ -151,7 +146,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 
     /// Since `presentationControllerDidDismiss` is triggered after the view controller is dismissed, it verifies that the coordinator does not
     /// dismiss the modal again.
-    @MainActor
     func test_empty_media_items_are_returned_when_presentationControllerDidDismiss_is_invoked() throws {
         let mediaItems: [Media] = try waitFor { promise in
             // Given
@@ -179,7 +173,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 }
 
 private extension WordPressMediaLibraryImagePickerCoordinatorTests {
-    @MainActor
     func makeCoordinator(onCompletion: @escaping Completion) -> WordPressMediaLibraryPickerCoordinator {
         .init(siteID: 304, imagesOnly: true, allowsMultipleSelections: false, onCompletion: onCompletion)
     }

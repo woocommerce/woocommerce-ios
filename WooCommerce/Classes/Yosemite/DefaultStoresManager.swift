@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import Synchronization
 import enum Networking.DotcomError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
@@ -217,16 +218,24 @@ class DefaultStoresManager: StoresManager {
             return state.onAction(action)
         }
 
+        // StoresManager.dispatch is nonisolated until WOOMOB-4186; Dispatcher calls run on main.
+        nonisolated(unsafe) let manager = self
         switch accountAction {
         case let .loadAndSynchronizeSite(siteID, forcedUpdate, shouldSynchronize, onCompletion):
-            loadAndSynchronizeSite(siteID: siteID,
-                                   forcedUpdate: forcedUpdate,
-                                   shouldSynchronize: shouldSynchronize,
-                                   onCompletion: onCompletion)
+            MainActor.assumeIsolated {
+                manager.loadAndSynchronizeSite(siteID: siteID,
+                                               forcedUpdate: forcedUpdate,
+                                               shouldSynchronize: shouldSynchronize,
+                                               onCompletion: onCompletion)
+            }
         case let .synchronizeSites(siteIDToPreserve, onCompletion):
-            synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
+            MainActor.assumeIsolated {
+                manager.synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
+            }
         case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
-            synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
+            MainActor.assumeIsolated {
+                manager.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
+            }
         default:
             state.onAction(action)
         }
@@ -377,19 +386,22 @@ class DefaultStoresManager: StoresManager {
     func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)? = nil) -> StoresManager {
         let selectedSiteID = preservingSelectedSite ? sessionManager.defaultStoreID : nil
         let group = DispatchGroup()
-
-        group.enter()
-        synchronizeAccount { [weak self] _ in
+        // StoresManager declares no isolation until WOOMOB-4186; this runs on main.
+        nonisolated(unsafe) let manager = self
+        MainActor.assumeIsolated {
             group.enter()
-            self?.synchronizeAccountSettings { _ in
+            manager.synchronizeAccount { [weak manager] _ in
+                group.enter()
+                manager?.synchronizeAccountSettings { _ in
+                    group.leave()
+                }
                 group.leave()
             }
-            group.leave()
-        }
 
-        group.enter()
-        synchronizeSitesForSession(preservingSiteID: selectedSiteID) { _ in
-            group.leave()
+            group.enter()
+            manager.synchronizeSitesForSession(preservingSiteID: selectedSiteID) { _ in
+                group.leave()
+            }
         }
 
         group.notify(queue: .main) {
@@ -517,7 +529,11 @@ class DefaultStoresManager: StoresManager {
             }
         }
 
-        ServiceLocator.productImageUploader.reset()
+        if Thread.isMainThread {
+            MainActor.assumeIsolated { ServiceLocator.productImageUploader.reset() }
+        } else {
+            DispatchQueue.main.sync { ServiceLocator.productImageUploader.reset() }
+        }
 
         updateAndReloadWidgetInformation(with: nil)
 
@@ -647,46 +663,59 @@ private extension DefaultStoresManager {
 
     /// Runs `/me/sites` only for WordPress.com sessions and applies successful results while the
     /// credentials that started the request are still active.
-    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
+    @MainActor
+    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping @Sendable (Result<SiteSynchronizationResult, Error>) -> Void) {
         guard let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials) else {
             onCompletion(.failure(StoresManagerError.missingDefaultSite))
             return
         }
 
-        state.onAction(AccountAction.synchronizeSites(preservingSiteID: preservingSiteID) { [weak self] result in
-            if case let .success(result) = result {
-                self?.reconcileSynchronizedSites(result, authToken: authToken, preservingSiteID: preservingSiteID)
+        let reconcile: @MainActor @Sendable (SiteSynchronizationResult) -> Void = { [weak self] result in
+            self?.reconcileSynchronizedSites(result, authToken: authToken, preservingSiteID: preservingSiteID)
+        }
+        state.onAction(AccountAction.synchronizeSites(preservingSiteID: preservingSiteID) { result in
+            if case let .success(value) = result {
+                MainActor.assumeIsolated { reconcile(value) }
             }
             onCompletion(result)
         })
     }
 
+    @MainActor
     func loadAndSynchronizeSite(siteID: Int64,
                                 forcedUpdate: Bool,
                                 shouldSynchronize: Bool,
-                                onCompletion: @escaping (Result<SiteLoadResult, Error>) -> Void) {
+                                onCompletion: @escaping @Sendable (Result<SiteLoadResult, Error>) -> Void) {
         let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials)
-        state.onAction(AccountAction.loadAndSynchronizeSite(siteID: siteID,
-                                                            forcedUpdate: forcedUpdate,
-                                                            shouldSynchronize: shouldSynchronize && authToken != nil) { [weak self] result in
-            if case let .success(result) = result, let synchronizationResult = result.synchronizationResult, let authToken {
+        let reconcile: @MainActor @Sendable (SiteLoadResult) -> Void = { [weak self] result in
+            if let synchronizationResult = result.synchronizationResult, let authToken {
                 self?.reconcileSynchronizedSites(synchronizationResult, authToken: authToken)
             }
-
+        }
+        state.onAction(AccountAction.loadAndSynchronizeSite(siteID: siteID,
+                                                            forcedUpdate: forcedUpdate,
+                                                            shouldSynchronize: shouldSynchronize && authToken != nil) { result in
+            if case let .success(value) = result, value.synchronizationResult != nil {
+                MainActor.assumeIsolated { reconcile(value) }
+            }
             onCompletion(result)
         })
     }
 
+    @MainActor
     func synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: String,
-                                                    onCompletion: @escaping (Result<SelectedSiteSynchronizationResult, Error>) -> Void) {
+                                                    onCompletion: @escaping @Sendable (Result<SelectedSiteSynchronizationResult, Error>) -> Void) {
         guard let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials) else {
             onCompletion(.failure(StoresManagerError.missingDefaultSite))
             return
         }
 
-        state.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress) { [weak self] result in
-            if case let .success(result) = result {
-                self?.reconcileSynchronizedSites(result.synchronizationResult, authToken: authToken)
+        let reconcile: @MainActor @Sendable (SelectedSiteSynchronizationResult) -> Void = { [weak self] result in
+            self?.reconcileSynchronizedSites(result.synchronizationResult, authToken: authToken)
+        }
+        state.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress) { result in
+            if case let .success(value) = result {
+                MainActor.assumeIsolated { reconcile(value) }
             }
             onCompletion(result)
         })
@@ -742,6 +771,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account, associated with the current credentials.
     ///
+    @MainActor
     func synchronizeAccount(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = AccountAction.synchronizeAccount { [weak self] result in
             switch result {
@@ -761,6 +791,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account Settings, associated with the current credentials.
     ///
+    @MainActor
     func synchronizeAccountSettings(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         guard let userID = sessionManager.defaultAccount?.userID else {
             onCompletion(.failure(StoresManagerError.missingDefaultSite))
@@ -801,7 +832,8 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSitesForSession(preservingSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    @MainActor
+    func synchronizeSitesForSession(preservingSiteID: Int64?, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         let action = AccountAction
             .synchronizeSites(preservingSiteID: preservingSiteID) { result in
                 onCompletion(result.map { _ in () })
@@ -824,13 +856,13 @@ private extension DefaultStoresManager {
         }
 
         let group = DispatchGroup()
-        var errors = [Error]()
+        let errors = Mutex([Error]())
 
         group.enter()
         let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             ServiceLocator.selectedSiteSettings.refresh()
             if let error {
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -839,7 +871,7 @@ private extension DefaultStoresManager {
         group.enter()
         let productSettingsAction = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
             if let error {
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -851,7 +883,7 @@ private extension DefaultStoresManager {
             group.enter()
             let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
                 if case let .failure(error) = result {
-                    errors.append(error)
+                    errors.withLock { $0.append(error) }
                 }
                 group.leave()
             }
@@ -859,6 +891,7 @@ private extension DefaultStoresManager {
         }
 
         group.notify(queue: .main) {
+            let errors = errors.withLock { $0 }
             if errors.isEmpty {
                 DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
             } else {
@@ -1138,8 +1171,20 @@ private extension DefaultStoresManager {
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
     func restoreJetpackSiteAndSynchronizeIfNeeded(with siteID: Int64) {
-        let action = AccountAction
-            .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { [weak self] result in
+        // StoresManager declares no isolation until WOOMOB-4186; this runs on main.
+        nonisolated(unsafe) let manager = self
+        let handleResult = MainActor.assumeIsolated {
+            manager.makeRestoreJetpackSiteCompletion(siteID: siteID)
+        }
+        dispatch(AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { result in
+            guard case .success = result else { return }
+            runOnMainActor { handleResult(result) }
+        })
+    }
+
+    @MainActor
+    func makeRestoreJetpackSiteCompletion(siteID: Int64) -> @MainActor @Sendable (Result<SiteLoadResult, Error>) -> Void {
+        { [weak self] result in
             guard let self else { return }
             guard case let .success(siteLoadResult) = result else {
                 return
@@ -1161,7 +1206,6 @@ private extension DefaultStoresManager {
                 }
             })
         }
-        dispatch(action)
     }
 
     /// Updates the necessary dependencies for the widget to function correctly.
@@ -1294,4 +1338,12 @@ protocol StoresManagerState {
 //
 enum StoresManagerError: Error {
     case missingDefaultSite
+}
+
+func runOnMainActor(_ operation: @escaping @MainActor @Sendable () -> Void) {
+    if Thread.isMainThread {
+        MainActor.assumeIsolated { operation() }
+    } else {
+        DispatchQueue.main.async { operation() }
+    }
 }

@@ -1419,6 +1419,11 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
+    case pointOfSaleOnboardingShown = "pos_onboarding_shown"
+    case pointOfSaleOnboardingStepViewed = "pos_onboarding_step_viewed"
+    case pointOfSaleOnboardingStartSellingTapped = "pos_onboarding_start_selling_tapped"
+    case pointOfSaleOnboardingExitTapped = "pos_onboarding_exit_tapped"
+    case pointOfSaleOnboardingVideoTapped = "pos_onboarding_video_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

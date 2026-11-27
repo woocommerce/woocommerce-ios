@@ -161,7 +161,10 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func cancelCashPayment() {
-        isTextFieldFocused = false
+        // Device check, not size class: only on iPhone the navigation pop takes the keyboard along with the screen.
+        if UIDevice.current.userInterfaceIdiom != .phone {
+            isTextFieldFocused = false
+        }
         Task { @MainActor in
             await paymentModel.cancelCashPayment()
             router.popToRoot()

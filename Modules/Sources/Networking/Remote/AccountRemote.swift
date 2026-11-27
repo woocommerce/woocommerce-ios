@@ -6,7 +6,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol AccountRemoteProtocol {
+public protocol AccountRemoteProtocol: Sendable {
     func loadAccount(completion: @escaping (Result<Account, Error>) -> Void)
     func loadAccountSettings(for userID: Int64, completion: @escaping (Result<AccountSettings, Error>) -> Void)
     func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void)
@@ -241,7 +241,7 @@ private extension AccountRemote {
 }
 
 /// Necessary data for account credentials.
-public struct CreateAccountResult: Decodable, Equatable {
+public struct CreateAccountResult: Decodable, Equatable, Sendable {
     public let authToken: String
     public let username: String
 

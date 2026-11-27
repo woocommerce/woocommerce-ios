@@ -6,7 +6,7 @@ import Yosemite
 /// Displays a collection of media from WordPress media library for picking.
 ///
 final class WordPressMediaLibraryPickerViewController: UIViewController {
-    typealias Completion = ((_ selectedMediaItems: [Media]) -> Void)
+    typealias Completion = @MainActor @Sendable (_ selectedMediaItems: [Media]) -> Void
     private let onCompletion: Completion
 
     private lazy var mediaPickerOptions: WPMediaPickerOptions = {
@@ -94,7 +94,7 @@ private extension WordPressMediaLibraryPickerViewController {
     }
 }
 
-extension WordPressMediaLibraryPickerViewController: WPMediaPickerViewControllerDelegate {
+extension WordPressMediaLibraryPickerViewController: @MainActor WPMediaPickerViewControllerDelegate {
     func mediaPickerController(_ picker: WPMediaPickerViewController, didFinishPicking assets: [WPMediaAsset]) {
         let cancellableMediaItems = assets as? [CancellableMedia] ?? []
         let mediaItems = cancellableMediaItems.map { $0.media }

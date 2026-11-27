@@ -8,6 +8,7 @@ struct CouponCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posHidesItemCardImage) private var hidesImage
 
     private var dimension: CGFloat {
         min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
@@ -22,11 +23,19 @@ struct CouponCardView: View {
         HStack(spacing: metrics.spacing.none) {
             POSCouponImageView(size: dimension,
                                state: imageState)
+            .posItemCardImage()
 
             VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(coupon.code)
                     .foregroundStyle(titleColor)
                     .font(Constants.itemTitleFont)
+
+                if imageState == .applied && hidesImage {
+                    Label(Localization.appliedAccessibilityValue, systemImage: "checkmark")
+                        .foregroundStyle(Color.posSuccess)
+                        .font(Constants.itemDetailFont)
+                        .accessibilityHidden(true)
+                }
 
                 Text(coupon.summary)
                     .foregroundStyle(summaryColor)
@@ -42,8 +51,7 @@ struct CouponCardView: View {
                 }
             }
             .multilineTextAlignment(.leading)
-            .padding(.horizontal, metrics.padding.medium * (1 / scale))
-            .padding(.vertical, metrics.padding.small * (1 / scale))
+            .posItemCardTextPadding()
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
@@ -67,7 +75,8 @@ private extension CouponCardView {
         static let appliedAccessibilityValue = NSLocalizedString(
             "couponCardView.appliedAccessibilityValue",
             value: "Applied",
-            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart."
+            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. " +
+            "Also shown on the card at large text sizes."
         )
 
         static let appliedAccessibilityHint = NSLocalizedString(

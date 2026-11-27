@@ -225,14 +225,14 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                                      mediaAsset: asset,
                                                      altText: nil,
                                                      filename: nil,
-                                                     onCompletion: onCompletion)
+                                                     onCompletion: { result in onCompletion(result) })
                 case .uiImage(let image, let filename, let altText):
                     action = MediaAction.uploadMedia(siteID: self.siteID,
                                                      productID: self.productOrVariationID.id,
                                                      mediaAsset: image,
                                                      altText: altText,
                                                      filename: filename,
-                                                     onCompletion: onCompletion)
+                                                     onCompletion: { result in onCompletion(result) })
             }
             self.stores.dispatch(action)
         }

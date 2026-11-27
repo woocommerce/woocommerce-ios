@@ -17,7 +17,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="uQE-ll-SpT">
-                    <rect key="frame" x="0.0" y="135" width="375" height="94.5"/>
+                    <rect key="frame" x="0.0" y="36" width="375" height="94.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ldr-2h-SOT">
                             <rect key="frame" x="166.5" y="0.0" width="42" height="20.5"/>
@@ -54,7 +54,7 @@
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="uQE-ll-SpT" secondAttribute="trailing" id="DEf-bQ-ufE"/>
                 <constraint firstItem="uQE-ll-SpT" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Jg1-hi-PCG"/>
-                <constraint firstItem="uQE-ll-SpT" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="115" id="hHv-1W-iP1"/>
+                <constraint firstItem="uQE-ll-SpT" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="16" id="hHv-1W-iP1"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="uQE-ll-SpT" secondAttribute="bottom" priority="750" constant="20" id="yDN-yi-0Di"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

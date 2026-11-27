@@ -40,7 +40,7 @@ struct POSCashAmountTextField: View {
                 .fixedSize(horizontal: true, vertical: false)
                 .disableNumberPadPopover()
                 .focused($isFocused)
-                .focused()
+                .posAutofocus($isFocused)
                 .onSubmit {
                     onSubmit()
                 }

@@ -129,7 +129,7 @@ private extension JetpackConnectionStore {
         }
     }
 
-    func fetchJetpackConnectionData(siteID: Int64, completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
+    func fetchJetpackConnectionData(siteID: Int64, completion: @escaping @Sendable (Result<JetpackConnectionData, Error>) -> Void) {
         guard let jetpackConnectionRemote else {
             completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return
@@ -137,7 +137,7 @@ private extension JetpackConnectionStore {
         jetpackConnectionRemote.fetchJetpackConnectionData(siteID: siteID, completion: completion)
     }
 
-    func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping (Result<JetpackConnectionStatus, Error>) -> Void) {
+    func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping @Sendable (Result<JetpackConnectionStatus, Error>) -> Void) {
         guard let jetpackConnectionRemote else {
             completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return
@@ -145,7 +145,7 @@ private extension JetpackConnectionStore {
         jetpackConnectionRemote.fetchJetpackConnectionStatus(siteID: siteID, completion: completion)
     }
 
-    func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {
+    func registerSite(completion: @escaping @Sendable (Result<Int64, Error>) -> Void) {
         guard let jetpackConnectionRemote else {
             completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return
@@ -160,7 +160,7 @@ private extension JetpackConnectionStore {
         }
     }
 
-    func provisionConnection(completion: @escaping (Result<JetpackConnectionProvisionResponse, Error>) -> Void) {
+    func provisionConnection(completion: @escaping @Sendable (Result<JetpackConnectionProvisionResponse, Error>) -> Void) {
         guard let jetpackConnectionRemote else {
             completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return
@@ -179,7 +179,7 @@ private extension JetpackConnectionStore {
                             siteURL: String,
                             provisionResponse: JetpackConnectionProvisionResponse,
                             network: Network,
-                            completion: @escaping (Result<Void, Error>) -> Void) {
+                            completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         /// Intentionally leaving `dotcomClientID` and `dotcomClientSecret` empty
         /// as these are not needed for the `finalizeJetpackConnection` method we're using here.
         let remote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
@@ -194,7 +194,7 @@ private extension JetpackConnectionStore {
         self.siteRemote = remote
     }
 
-    func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {
+    func loadWPComAccount(network: Network, onCompletion: @escaping @Sendable (Account?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.loadAccount { result in
             switch result {

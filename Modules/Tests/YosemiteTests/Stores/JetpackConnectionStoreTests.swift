@@ -203,7 +203,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
+    @MainActor
+    func test_fetchJetpackConnectionData_correctly_returns_parsed_user() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
@@ -213,7 +214,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionData, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.fetchJetpackConnectionData(siteID: 0) { result in
                 promise(result)
             }
@@ -227,7 +228,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertNotNil(user.wpcomUser)
     }
 
-    func test_fetchJetpackConnectionData_properly_relays_errors() {
+    @MainActor
+    func test_fetchJetpackConnectionData_properly_relays_errors() async throws {
         // Given
         let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/data"
@@ -239,7 +241,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionData, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.fetchJetpackConnectionData(siteID: 0) { result in
                 promise(result)
             }
@@ -251,7 +253,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackConnectionStatus_correctly_returns_offline_mode() throws {
+    @MainActor
+    func test_fetchJetpackConnectionStatus_correctly_returns_offline_mode() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-offline-mode")
@@ -261,7 +264,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionStatus, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: 0) { result in
                 promise(result)
             }
@@ -274,7 +277,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(status.isInOfflineMode)
     }
 
-    func test_fetchJetpackConnectionStatus_properly_relays_errors() {
+    @MainActor
+    func test_fetchJetpackConnectionStatus_properly_relays_errors() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -285,7 +289,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionStatus, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: 0) { result in
                 promise(result)
             }
@@ -297,13 +301,14 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_loadWPComAccount_returns_parsed_account() {
+    @MainActor
+    func test_loadWPComAccount_returns_parsed_account() async throws {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
 
         // When
-        let result: Account? = waitFor { promise in
+        let result: Account? = try await waitForCompletion { promise in
             let setupAction = JetpackConnectionAction.loadWPComAccount(network: self.network) { account in
                 promise(account)
             }
@@ -315,13 +320,14 @@ final class JetpackConnectionStoreTests: XCTestCase {
         assertEqual("example@example.blog", result?.email)
     }
 
-    func test_loadWPComAccount_returns_nil_upon_error() {
+    @MainActor
+    func test_loadWPComAccount_returns_nil_upon_error() async throws {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)
         network.simulateError(requestUrlSuffix: "me", error: NetworkError.notFound())
 
         // When
-        let result: Account? = waitFor { promise in
+        let result: Account? = try await waitForCompletion { promise in
             let setupAction = JetpackConnectionAction.loadWPComAccount(network: self.network) { account in
                 promise(account)
             }
@@ -332,7 +338,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    func test_registerSite_returns_correct_blogID() throws {
+    @MainActor
+    func test_registerSite_returns_correct_blogID() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/register"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration")
@@ -342,7 +349,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<Int64, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.registerSite { result in
                 promise(result)
             }
@@ -355,7 +362,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(blogID, 1234567890)
     }
 
-    func test_registerSite_properly_relays_errors() {
+    @MainActor
+    func test_registerSite_properly_relays_errors() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/register"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -366,7 +374,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<Int64, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.registerSite { result in
                 promise(result)
             }
@@ -378,7 +386,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_provisionConnection_returns_correct_provision_response() throws {
+    @MainActor
+    func test_provisionConnection_returns_correct_provision_response() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/remote_provision"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-provision")
@@ -388,7 +397,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionProvisionResponse, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionProvisionResponse, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.provisionConnection { result in
                 promise(result)
             }
@@ -403,7 +412,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(response.secret, "secret_token_12345")
     }
 
-    func test_provisionConnection_properly_relays_errors() {
+    @MainActor
+    func test_provisionConnection_properly_relays_errors() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/remote_provision"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -414,7 +424,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackConnectionProvisionResponse, Error> = waitFor { promise in
+        let result: Result<JetpackConnectionProvisionResponse, Error> = try await waitForCompletion { promise in
             let action = JetpackConnectionAction.provisionConnection { result in
                 promise(result)
             }
@@ -426,14 +436,15 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_finalizeJetpackConnection_returns_success_on_success() throws {
+    @MainActor
+    func test_finalizeJetpackConnection_returns_success_on_success() async throws {
         // Given
         let urlSuffix = "sites/134/jetpack-remote-connect-user"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-success")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
             let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
                                                                     siteURL: "http://test.com",
@@ -448,14 +459,15 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_finalizeJetpackConnection_returns_error_on_failure() throws {
+    @MainActor
+    func test_finalizeJetpackConnection_returns_error_on_failure() async throws {
         // Given
         let urlSuffix = "sites/134/jetpack-remote-connect-user"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
             let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
                                                                     siteURL: "http://test.com",

@@ -47,6 +47,8 @@ Use it to iterate on a module. It does not compile the Xcode targets that consum
 
 Save the build log. Record warnings by target, file path relative to the repository, and diagnostic text. Use the same build scope and settings before and after the change. Remove repeated compiler output with the same method in both logs. Compare warnings without line and column numbers. Keep the file path and number of occurrences.
 
+For a standalone Swift compiler probe of a region-isolation diagnostic, use `swiftc -emit-sil -o /dev/null` with the same SDK, target, language mode, and concurrency flags. On Xcode 27.2, `-typecheck` missed warnings about sending a Photos export session and capturing a legacy store in a main-actor closure. The workspace build is still the measurement.
+
 Use a clean build for each measurement. If you use an incremental build, confirm that every measured file compiled. An incremental log can omit unchanged files. Use a partial build result only if every file in the measured scope compiled. Do not use a partial build to measure the workspace or update its baseline.
 
 The CI toolchain in `.xcode-version` is authoritative. A different local Xcode produces a different warning set. For example, local Xcode 26.2 measured 10,992 warnings where CI's Xcode 26.6 measured 11,158. Some Xcode versions cannot compile trunk at all. Label local counts as local.

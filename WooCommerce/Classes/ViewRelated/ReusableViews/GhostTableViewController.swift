@@ -67,6 +67,9 @@ final class GhostTableViewController: UITableViewController {
         tableView.separatorStyle = options.separatorStyle
         tableView.estimatedRowHeight = options.estimatedRowHeight
         tableView.isScrollEnabled = options.isScrollEnabled
+        if !options.isScrollEnabled {
+            tableView.contentInsetAdjustmentBehavior = .always
+        }
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
         registerCellClass()
         configureSectionHeaderHeight()

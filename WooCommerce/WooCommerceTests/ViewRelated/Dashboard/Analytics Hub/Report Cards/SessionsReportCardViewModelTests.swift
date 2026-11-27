@@ -186,6 +186,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showJetpackStatsCTA)
     }
 
+    @MainActor
     func test_it_tracks_expected_jetpack_stats_CTA_success_events() async {
         // Given
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
@@ -218,6 +219,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_tracks_expected_jetpack_stats_CTA_failure_events() async {
         // Given
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,

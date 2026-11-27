@@ -25,4 +25,8 @@ public enum StoreSize {
 
     /// The minimum height of a `StoreTabRow` (60 pt): the design's tab block at the default text size. The row grows with Dynamic Type.
     public static let tabRowHeight: CGFloat = 60
+
+    /// Minimum heights for a compact list cell and an editable form title row.
+    public static let compactCellHeight: CGFloat = 56
+    public static let formTitleRowHeight: CGFloat = 64
 }

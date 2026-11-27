@@ -10,15 +10,20 @@ struct POSSendReceiptView: View {
 
     private let onDismiss: () -> Void
     private let onSendReceipt: (String) async throws -> Void
+    private let keyboardFollowsNavigationPop: Bool
 
     init(isShowingSendReceiptView: Binding<Bool>, onSendReceipt: @escaping (String) async throws -> Void) {
         self.onDismiss = { isShowingSendReceiptView.wrappedValue = false }
         self.onSendReceipt = onSendReceipt
+        self.keyboardFollowsNavigationPop = false
     }
 
-    init(onDismiss: @escaping () -> Void = {}, onSendReceipt: @escaping (String) async throws -> Void) {
+    init(keyboardFollowsNavigationPop: Bool = false,
+         onDismiss: @escaping () -> Void = {},
+         onSendReceipt: @escaping (String) async throws -> Void) {
         self.onDismiss = onDismiss
         self.onSendReceipt = onSendReceipt
+        self.keyboardFollowsNavigationPop = keyboardFollowsNavigationPop
     }
 
     private var trimmedEmail: String {
@@ -44,20 +49,22 @@ struct POSSendReceiptView: View {
             },
             keyboardType: .emailAddress,
             autocapitalization: .never,
-            disableAutocorrection: true
+            disableAutocorrection: true,
+            keyboardFollowsNavigationPop: keyboardFollowsNavigationPop
         )
     }
 
     private func sendReceipt() {
+        guard buttonState == .idle else { return }
         analytics.track(.pointOfSaleReceiptEmailSendTapped)
+        guard isEmailValid else {
+            errorMessage = Localization.emailValidationErrorText
+            return
+        }
+        buttonState = .loading
+        errorMessage = nil
         Task { @MainActor in
-            guard isEmailValid else {
-                errorMessage = Localization.emailValidationErrorText
-                return
-            }
-            buttonState = .loading
             do {
-                errorMessage = nil
                 try await onSendReceipt(trimmedEmail)
 
                 withAnimation {

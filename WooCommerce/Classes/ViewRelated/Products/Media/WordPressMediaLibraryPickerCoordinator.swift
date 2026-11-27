@@ -1,9 +1,9 @@
 import UIKit
-import WPMediaPicker
 import struct Yosemite.Media
 
 /// Coordinates navigation for picking media from the site's WordPress media library.
 /// `NSObject` is required for `UIAdaptivePresentationControllerDelegate` conformance.
+@MainActor
 final class WordPressMediaLibraryPickerCoordinator: NSObject {
     typealias Completion = WordPressMediaLibraryPickerViewController.Completion
 

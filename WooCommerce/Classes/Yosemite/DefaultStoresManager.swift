@@ -529,7 +529,11 @@ class DefaultStoresManager: StoresManager {
             }
         }
 
-        ServiceLocator.productImageUploader.reset()
+        if Thread.isMainThread {
+            MainActor.assumeIsolated { ServiceLocator.productImageUploader.reset() }
+        } else {
+            DispatchQueue.main.sync { ServiceLocator.productImageUploader.reset() }
+        }
 
         updateAndReloadWidgetInformation(with: nil)
 

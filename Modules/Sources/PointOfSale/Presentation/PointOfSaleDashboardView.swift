@@ -18,6 +18,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+    @State private var hasAppeared = false
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
@@ -26,9 +27,11 @@ struct PointOfSaleDashboardView: View {
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
+    private let opensAfterOnboardingGuide: Bool
 
-    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil) {
+    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil, opensAfterOnboardingGuide: Bool = false) {
         self.httpsConfigurationNotice = httpsConfigurationNotice
+        self.opensAfterOnboardingGuide = opensAfterOnboardingGuide
     }
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
@@ -237,6 +240,12 @@ struct PointOfSaleDashboardView: View {
         }
         .onAppear {
             trackTimeForInitialLoadingState()
+            // The onboarding guide waits for eligibility, so POS can open straight to content
+            // and no change to content would track it as loaded.
+            if opensAfterOnboardingGuide && !hasAppeared && viewState == .content {
+                trackElapsedTimeForInitialLoadingState()
+            }
+            hasAppeared = true
             loadItemsWhenEligible()
         }
         .onChange(of: viewState) { oldValue, newValue in
@@ -725,7 +734,9 @@ private extension PointOfSaleDashboardView {
     func trackElapsedTimeForInitialLoadingState() {
         if let waitingTimeTracker {
             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
-            let event = waitingTimeTracker.end(using: .milliseconds, additionalProperties: ["sync_strategy": syncStrategy])
+            let event = waitingTimeTracker.end(using: .milliseconds,
+                                               additionalProperties: ["sync_strategy": syncStrategy,
+                                                                      "after_onboarding_guide": opensAfterOnboardingGuide ? "true" : "false"])
             analytics.track(event: event)
             self.waitingTimeTracker = nil
         }

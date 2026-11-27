@@ -3,8 +3,9 @@ import MobileCoreServices
 
 /// Encapsulates launching and customization of a media picker to import media from the Photo Library.
 ///
+@MainActor
 final class DeviceMediaLibraryPicker: NSObject {
-    typealias Completion = ((_ selectedMediaItems: [PHAsset]) -> Void)
+    typealias Completion = @MainActor @Sendable (_ selectedMediaItems: [PHAsset]) -> Void
     private let onCompletion: Completion
     private let dataSource = WPPHAssetDataSource()
 
@@ -47,7 +48,7 @@ final class DeviceMediaLibraryPicker: NSObject {
 
 // MARK: - WPMediaPickerViewControllerDelegate
 //
-extension DeviceMediaLibraryPicker: WPMediaPickerViewControllerDelegate {
+extension DeviceMediaLibraryPicker: @MainActor WPMediaPickerViewControllerDelegate {
     func emptyViewController(forMediaPickerController picker: WPMediaPickerViewController) -> UIViewController? {
         return nil
     }

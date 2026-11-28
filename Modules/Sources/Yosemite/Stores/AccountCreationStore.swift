@@ -41,10 +41,10 @@ public final class AccountCreationStore: DeauthenticatedStore {
 }
 
 private extension AccountCreationStore {
-    func createAccount(email: String, password: String, completion: @escaping (Result<CreateAccountResult, CreateAccountError>) -> Void) {
-        Task { @MainActor in
+    func createAccount(email: String, password: String, completion: @escaping @Sendable (Result<CreateAccountResult, CreateAccountError>) -> Void) {
+        Task { @MainActor [remote, dotcomClientID, dotcomClientSecret] in
             // Auto-generates a username based on the email.
-            guard let username = await generateUsername(base: email) else {
+            guard let username = await Self.generateUsername(remote: remote, base: email) else {
                 return completion(.failure(.invalidUsername))
             }
             // Creates a WPCOM account.
@@ -60,7 +60,7 @@ private extension AccountCreationStore {
                 // keywords like `wordpress`) we want to auto-generate another username using a
                 // known base so that the user is not blocked on the internal bug where
                 // `remote.loadUsernameSuggestions` returns an invalid username.
-                guard let fallbackUsername = await generateUsername(base: Constants.fallbackUsernameBase) else {
+                guard let fallbackUsername = await Self.generateUsername(remote: remote, base: Constants.fallbackUsernameBase) else {
                     return completion(.failure(.invalidUsername))
                 }
                 // Creates a WPCOM account with the fallback username.
@@ -76,7 +76,7 @@ private extension AccountCreationStore {
         }
     }
 
-    func generateUsername(base: String) async -> String? {
+    static func generateUsername(remote: AccountRemoteProtocol, base: String) async -> String? {
         try? await remote.loadUsernameSuggestions(from: base).first
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-10 14:55:59+0000 */
+/* Translation-Revision-Date: 2026-11-24 17:54:09+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -821,8 +821,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "Azerbeidzjan";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Terug";
 
 /* Accessibility announcement message when device goes back online */
@@ -2033,7 +2032,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Datumbereik";
@@ -2811,7 +2811,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Douane-formulier invullen";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2882,9 +2883,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Wachtwoord vergeten?";
-
-/* Next web page */
-"Forward" = "Doorsturen";
 
 /* Country option for a site address. */
 "France" = "Frankrijk";
@@ -3744,9 +3742,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Producten worden geladen";
 
-/* Loading. Verb */
-"Loading..." = "Laden...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4040,7 +4035,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "Meer informatie vind je hier";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Meer opties";
 
@@ -4458,9 +4454,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Opent productgegevens.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "Opent de webpagina in Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Naam van optie";
@@ -5339,8 +5332,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Kwitantie van %1$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "Verversen";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5601,9 +5593,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "Sms verzonden";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "Saint-Barthélemy";
@@ -5915,7 +5904,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Delen";
 
@@ -7063,8 +7051,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tip";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Titel";
 
@@ -8472,10 +8459,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Meetwaarde";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "Kies wanneer analysegegevens worden bijgewerkt.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Dit is een winkelbrede instelling, die ook de optie 'Updates' beheert in de instellingen voor beheerdersanalyses van WooCommerce. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -8484,7 +8473,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "verstuur meteen";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "Meer informatie";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8496,10 +8486,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "Gepland";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "Analyse-updates";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "Kon de instelling niet bijwerken. Probeer het nog eens.";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10193,6 +10185,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "Als je gegevens nog steeds niet worden geladen, neem dan contact op met ons ondersteuningsteam voor hulp.";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "Verwijdert de kortingsbon uit de winkelwagen";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "Toegepast";
 
@@ -10526,7 +10521,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Gereed";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "Probeer deze kaart opnieuw te laden. Als het probleem zich blijft voordoen, %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -11111,6 +11107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
 "inPersonPayments.cashOnDelivery.notSetUp.title" = "Wil je Fysiek betalen toevoegen aan online betalen?";
+
+/* Error message when a Card Present Payments extension is not activated,
+shown to users who cannot activate it themselves. %1$@ is the extension name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"inPersonPaymentsPluginNotActivated.messageForNonAdministrator" = "De %1$@-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Vraag een winkelbeheerder om deze te activeren om fysieke betalingen aan te nemen.";
 
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -12025,6 +12027,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "Betaallink gedeeld via Scan to Pay. Verifieer de betaling voordat je de bestelling afrondt.";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "Deze gebruiker heeft geen toegang tot de betalingsinstellingen";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "Je winkel heeft deze gebruiker geen toegang gegeven tot de betalingsinstellingen. Log opnieuw in met een beheerders- of winkelmanageraccount en tik vervolgens op Opnieuw proberen.";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "De rekening ondersteunt de valuta van je winkel niet";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "Je betaalrekening kan geen betalingen in de valuta van je winkel aannemen. Als je de valuta van je winkel wijzigt, worden je productprijzen niet omgezet, dus ga door met chatten voordat je deze wijzigt.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "Betaalrekening is niet live";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "Live kaartbetalingen kunnen mislukken totdat de rekening live is. Controleer de rekeningstatus in de betalingsinstellingen.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "De betaalrekening is beperkt";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "Je kan nu niets indienen. Blijf chatten als je hulp nodig hebt met de rekening.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "Je site heeft een configuratiecontrole geblokkeerd";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "Je betalingsconfiguratie is onbekend. Een beveiligingsplugin of een firewall op je site veroorzaakt dit meestal. Sta verzoeken van de WooCommerce-app in die plugin toe of vraag je hostingprovider om ze toe te staan. Je hoeft de plugin niet uit te schakelen.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "Rekening kan geen live betalingen accepteren";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "Je betalingsprovider meldt dat je rekening geen live kaartbetalingen kan accepteren. Voltooi de rekeninginstelling in de betalingsinstellingen.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "Kies een betalingsprovider";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments en Stripe zijn beide actief. Ga in de app naar Menu > Betalingen, tik op Doorgaan met instellen en kies een provider. Je hoeft geen van beide plugins te deactiveren.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "Het land van je rekening komt niet overeen met het land van je winkel";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "Controleer of het adres van je winkel klopt. Het land van je betaalrekening kan niet worden gewijzigd, dus ga door met chatten voordat je andere instellingen wijzigt.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "De app kon je betalingsinstellingen niet controleren. Ga door met chatten zodat we je site kunnen controleren.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "Betalingsplugin is niet actief";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "Activeer de betalingsplugin en voltooi vervolgens de configuratie.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "Winkeladres is onvolledig";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "Kaartlezers en Tap to Pay hebben een adres, plaats en postcode nodig. Voeg ze toe in je winkelinstellingen.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "Land van je winkel is niet ingesteld";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "Stel het land van je winkel in je winkelinstellingen in.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "Valuta van je winkel is niet ingesteld";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "Stel de valuta van je winkel in je winkelinstellingen in.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "Er is geen plugin voor betalingen op locatie actief";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "Installeer en activeer WooPayments en voltooi vervolgens de configuratie.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "Betalingsplugin moet worden bijgewerkt";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "De versie van je betalingsplugin is te oud voor betalingen op locatie. Werk de plugin bij.";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "Account heeft achterstallige verplichtingen";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "Betalingen en uitbetalingen kunnen worden stopgezet totdat je de gevraagde informatie hebt verstrekt. Verstrek de informatie in de betalingsinstellingen.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "Je betalingsprovider heeft meer informatie nodig voor een deadline. Verstrek de informatie om uitbetalingen actief te houden.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "Provider niet beschikbaar in jouw land";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "Je betalingsprovider ondersteunt geen betalingen op locatie in het land van je winkel. Installeer en activeer WooPayments, ga naar Menu > Betalingen en tik op Doorgaan met instellen.";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "Betaalrekening is geweigerd";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "Betalingen op locatie zijn niet beschikbaar met deze betaalrekening. Ga door met chatten om meer te weten te komen over je opties. Je kan nog steeds contante betalingen ontvangen in de app.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "Kon betalingsconfiguratie niet controleren";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "Je betalingsconfiguratie is onbekend. Controleer je internetverbinding en tik vervolgens op Opnieuw proberen.";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "Geen betaalrekening gekoppeld";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "Je winkel is niet gekoppeld aan een betaalrekening. Voltooi de rekeninginstelling in de betalingsinstellingen.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "Winkel heeft niet correct gereageerd";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "Je betalingsconfiguratie is onbekend. Vraag je hostingprovider om de foutlogboeken van de server te controleren.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "Testmodus is ingeschakeld";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "Je betalingsplugin staat in de testmodus, dus je kunt geen live kaartbetalingen accepteren. Schakel de testmodus uit in de betalingsinstellingen. Accepteer op een testkopie van je winkel betalingen via je live winkel.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "Alleen testbetalingen";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "Je betaalrekening staat in de testmodus, dus je kunt geen live kaartbetalingen accepteren. Voltooi de configuratie van de live rekening in de betalingsinstellingen. Gebruik op een stagingwebsite je live winkel.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "Rekeningstatus is onbekend";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "De app herkent de status van je betaalrekening niet. Controleer de rekening in de betalingsinstellingen of ga verder met chatten.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "Het land waar de winkel is gevestigd, wordt niet ondersteund.";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "Kaartbetalingen op locatie zijn niet beschikbaar in het land waar je winkel is gevestigd. Als het land in je winkeladres onjuist is, corrigeer het dan. Je kan nog steeds contante betalingen ontvangen in de app.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "Winkelvaluta wordt niet ondersteund";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "Je kunt in dit land geen betalingen op locatie accepteren met de valuta die je voor je winkel gebruikt. Als je de valuta wijzigt, worden je productprijzen niet automatisch omgerekend. Ga daarom door in de chat voordat je de valuta wijzigt.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalingen, Tap to Pay, woocommerce, woo, fysieke betalingen, betaling innen, betalingen, lezer, kaartlezer, kaartlezer bestellen";
 
@@ -12520,6 +12678,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "Kortingen toegepast";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "Aangepast bedrag bewerken";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Opnieuw koppelen annuleren";
 
@@ -12555,12 +12716,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Instellingen";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "Bewerken";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Verwijderen";
@@ -12937,9 +13092,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "Voor het wijzigen van de instellingen is goedkeuring vereist";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "Personeel beheren vereist goedkeuring";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Instellingen";
 
@@ -12966,12 +13118,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Betalingen";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Bekijk personeel en PIN-toegang";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "Personeel";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Winkelconfiguratie en -instellingen";
@@ -13630,11 +13776,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "Sluit het deksel van de printer en probeer het opnieuw.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "Deksel van printer is geopend";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "Betalingsbewijs mailen";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "Er is iets fout gegaan tijdens het afdrukken. Probeer het nog eens.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "Kon betalingsbewijs niet afdrukken";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "Zorg dat er een papierrol is geplaatst en goed op zijn plaats zit. Probeer het vervolgens opnieuw.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "Controleer het printerpapier";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "Zorg dat je printer is ingeschakeld en in de buurt is met Bluetooth ingeschakeld en probeer het dan opnieuw.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "Kan je printer niet bereiken";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "Opnieuw proberen";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "Printer verbinden";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "Verbinden met %1$@ …";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "Zorg dat Bluetooth is ingeschakeld en zoek vervolgens opnieuw.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "Kan niet zoeken naar printers";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "We konden geen verbinding maken met je printer. Probeer het nog eens.";
@@ -14021,9 +14203,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "Kassier";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "Beheerder";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14206,42 +14385,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "Betalingen";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "POS vergrendelt wanneer je op POS vergrendelen tikt vanuit het menu, of automatisch na 5 minuten inactiviteit.";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "Personeel beheren op het web";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "Personeel beheren";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "Geen PIN";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "PIN ingesteld";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "Beheerder";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "Kassier POS";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "POS Manager";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "Aangemeld";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "Kan personeel niet laden. Controleer je netwerkverbinding en probeer het nogmaals.";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "Opnieuw proberen";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "Personeel";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API-eindpunt niet gevonden.";
@@ -15381,7 +15524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "Je winkel is niet bereikbaar";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Negeren";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15449,6 +15593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Kies een winkel om te verbinden (%1$d verborgen)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d van de 5 sterren";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "Wissen";
@@ -15658,6 +15805,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Niet verzonden. %1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "Je chat met de AI van Woo-ondersteuning.";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "Alle controles zijn zonder problemen voltooid.";
 
@@ -15721,6 +15871,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ik ben je Woo Mobile Support-bot. Is er iets waar ik je vandaag mee kan helpen?";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "Als een betaling is mislukt, ga dan verder met chatten en deel het bestelnummer.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "Controles voor de betalingsinstellingen zijn geslaagd";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Beschrijf je probleem in meer detail, zodat ik kan helpen.";
 
@@ -15736,11 +15892,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Bestelmeldingen inschakelen";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "Betalingsinstellingen openen";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "Plugins openen";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "Meldingsvoorkeuren";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Instellingen openen";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "Winkelinstellingen openen";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "Apparaat registreren";
@@ -15810,6 +15975,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "Meldingsinstellingen controleren";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "De betalingsconfiguratie van je winkel wordt gecontroleerd";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "Er wordt verbinding gemaakt met je site";
@@ -15915,6 +16083,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "Overige";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "Betalingen";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "Pushmeldingen ontvangen";
@@ -16284,9 +16455,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "Klaar";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "Negeren";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "week";
@@ -17098,6 +17266,9 @@ which should be translated separately and considered part of this sentence. */
 /* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
 "wooShippingHazmatDetailView.detailLine2" = "Ontdek hoe je gevaarlijke goederen via USPS® kunt verpakken, labelen en verzenden op %1$@. Controleer de verzendbaarheid van je product met behulp van de %2$@.";
 
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping ondersteunt op dit moment geen verzendingen met gevaarlijke goederen via %1$@.";
+
 /* Button to confirm selection on the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.save" = "Opslaan";
 
@@ -17439,6 +17610,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "gegevens delen";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By continuing, you agree to our Terms of Service and to share details with WordPress.com. */
+"wpcomPushNotificationsBenefitsViewModel.termsContent" = "Door verder te gaan, ga je akkoord met onze %1$@ en met %2$@ met WordPress.com.";
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Servicevoorwaarden";

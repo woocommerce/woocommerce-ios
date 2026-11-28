@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-03 10:55:52+0000 */
+/* Translation-Revision-Date: 2026-11-18 15:57:57+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -824,8 +824,7 @@ which should be translated separately and considered part of this sentence. */
 "Azerbaijan" = "Azerbaijan";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Kembali";
 
 /* Accessibility announcement message when device goes back online */
@@ -2036,7 +2035,8 @@ which should be translated separately and considered part of this sentence. */
 /* A clickable text link that willredirect the user to a website */
 "DHL Express" = "DHL Express";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Rentang Tanggal";
@@ -2814,7 +2814,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Isi formulir bea cukai";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -2885,9 +2886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Lupa kata sandi?";
-
-/* Next web page */
-"Forward" = "Teruskan";
 
 /* Country option for a site address. */
 "France" = "Prancis";
@@ -3747,9 +3745,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Memuat produk";
 
-/* Loading. Verb */
-"Loading..." = "Memuat...";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4043,7 +4038,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "Detail selengkapnya di sini";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Pilihan lainnya";
 
@@ -4461,9 +4457,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Membuka detail produk.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "Buka halaman web di Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Nama pilihan";
@@ -5342,8 +5335,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Tanda terima dari %1$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "Muat ulang";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5604,9 +5596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Terkirim";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "Saint Barthélemy";
@@ -5918,7 +5907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Bagikan";
 
@@ -7066,8 +7054,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tips";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Judul";
 
@@ -8475,10 +8462,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Metrik";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "Pilih kapan data analitik diperbarui.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Ini adalah pengaturan yang berlaku di seluruh toko, yang juga mengontrol pilihan \"Pembaruan\" di pengaturan analitik admin WooCommerce. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -8487,7 +8476,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "Segera";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "Baca selengkapnya";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -8499,10 +8489,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "Terjadwal";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "Pembaruan analitik";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "Tidak dapat memperbarui pengaturan. Coba lagi.";
 
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
@@ -10193,6 +10185,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "Jika data Anda masih belum dimuat, hubungi tim dukungan untuk mendapatkan bantuan.";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "Menghapus kupon dari keranjang belanja";
+
 /* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
 "couponCardView.appliedAccessibilityValue" = "Diterapkan";
 
@@ -10526,7 +10521,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Selesai";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "Coba muat ulang kartu ini. Jika masalah berlanjut, %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -12031,6 +12027,162 @@ which should be translated separately and considered part of this sentence. */
 /* Note added to order when Scan to Pay is used. */
 "paymentMethods.scanToPayNoteText.note" = "Tautan pembayaran dibagikan melalui Pindai untuk Membayar. Lakukan verifikasi pembayaran sebelum memenuhi pesanan.";
 
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "Login ini tidak dapat membaca pengaturan pembayaran";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "Toko Anda tidak mengizinkan login ini membaca pengaturan pembayaran. Login ulang dengan akun administrator atau manajer toko, lalu ketuk Coba Lagi.";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "Akun tidak mendukung mata uang toko";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "Akun pembayaran Anda tidak dapat menerima pembayaran dalam mata uang toko Anda. Pengubahan mata uang toko tidak mengonversi harga produk. Oleh karena itu, lanjutkan ke obrolan sebelum mengubahnya.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "Akun pembayaran tidak aktif";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "Pembayaran langsung dengan kartu dapat gagal hingga akun aktif. Periksa status akun di pengaturan pembayaran.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "Akun pembayaran dibatasi";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "Tidak ada yang perlu Anda kirimkan saat ini. Lanjutkan ke obrolan jika Anda memerlukan bantuan terkait akun.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "Situs Anda memblokir pemeriksaan penyiapan";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "Penyiapan pembayaran Anda tidak diketahui. Biasanya hal ini disebabkan oleh plugin keamanan atau firewall di situs Anda. Izinkan permintaan dari aplikasi WooCommerce dalam plugin tersebut, atau minta penyedia hosting Anda untuk mengizinkannya. Anda tidak perlu menonaktifkan plugin.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "Akun tidak dapat menerima pembayaran langsung";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "Penyedia pembayaran Anda melaporkan bahwa akun Anda tidak dapat menerima pembayaran langsung dengan kartu. Selesaikan penyiapan akun di pengaturan pembayaran.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "Pilih penyedia pembayaran";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments dan Stripe aktif. Dalam aplikasi, buka Menu > Pembayaran, ketuk Lanjutkan penyiapan, dan pilih penyedia. Anda tidak perlu menonaktifkan plugin mana pun.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "Negara akun tidak cocok dengan negara toko";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "Pastikan alamat toko Anda sudah benar. Negara akun pembayaran Anda tidak dapat diubah. Jadi, lanjutkan ke obrolan sebelum Anda mengubah pengaturan lain.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "Aplikasi tidak dapat memeriksa penyiapan pembayaran Anda. Lanjutkan ke obrolan agar kami dapat memeriksa situs Anda.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "Plugin pembayaran tidak aktif";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "Aktifkan plugin pembayaran, lalu selesaikan penyiapannya.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "Alamat toko tidak lengkap";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "Pembaca kartu dan Ketuk untuk Bayar memerlukan alamat jalan, kota, dan kode pos. Tambahkan di pengaturan toko Anda.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "Negara toko belum diatur";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "Atur negara toko di pengaturan toko Anda.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "Mata uang toko belum diatur";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "Atur mata uang toko di pengaturan toko Anda.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "Tidak ada plugin pembayaran langsung yang aktif";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "Instal dan aktifkan WooPayments, lalu selesaikan penyiapannya.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "Plugin pembayaran memerlukan pembaruan";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "Versi plugin pembayaran Anda terlalu lama untuk pembayaran langsung. Perbarui plugin.";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "Ada persyaratan yang terlambat dipenuhi di akun ini";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "Pembayaran dan pencairan dana dapat berhenti hingga Anda mengirimkan informasi yang diminta. Kirim di pengaturan pembayaran.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "Penyedia pembayaran Anda memerlukan informasi lebih lanjut sebelum tenggat. Kirim agar pencairan dana tetap aktif.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "Penyedia tidak tersedia di negara Anda";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "Penyedia pembayaran tidak mendukung pembayaran langsung di negara toko Anda. Instal dan aktifkan WooPayments, lalu buka Menu > Pembayaran dan ketuk Lanjutkan penyiapan.";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "Akun pembayaran ditolak";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "Pembayaran langsung tidak tersedia dengan akun pembayaran ini. Lanjutkan ke obrolan untuk mempelajari pilihan Anda. Anda masih dapat menerima pembayaran tunai di aplikasi.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "Tidak dapat memeriksa penyiapan pembayaran";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "Penyiapan pembayaran Anda tidak diketahui. Periksa koneksi internet Anda, lalu ketuk Coba Lagi.";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "Tidak ada akun pembayaran yang terhubung";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "Toko Anda tidak terhubung dengan akun pembayaran. Selesaikan penyiapan akun di pengaturan pembayaran.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "Toko tidak merespons dengan benar";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "Penyiapan pembayaran Anda tidak diketahui. Minta penyedia hosting Anda untuk memeriksa log error server.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "Mode uji coba aktif";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "Plugin pembayaran Anda sedang dalam mode uji coba. Jadi, pembayaran menggunakan kartu secara riil tidak akan berfungsi. Nonaktifkan mode uji coba di pengaturan pembayaran. Pada salinan staging toko Anda, terima pembayaran dari toko aktif sebagai gantinya.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "Hanya uji coba pembayaran";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "Akun pembayaran Anda sedang dalam mode uji coba. Jadi, pembayaran menggunakan kartu secara riil tidak akan berfungsi. Selesaikan penyiapan akun aktif di pengaturan pembayaran. Di situs staging, gunakan toko aktif Anda sebagai gantinya.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "Status akun tidak diketahui";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "Aplikasi tidak mengenali status akun pembayaran Anda. Periksa akun di pengaturan pembayaran, atau lanjutkan ke obrolan.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "Negara toko ini tidak didukung";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "Pembayaran langsung dengan kartu tidak tersedia di negara toko Anda. Jika negara di alamat toko Anda salah, silakan perbaiki. Anda masih dapat menerima pembayaran tunai di aplikasi.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "Mata uang toko tidak didukung";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "Pembayaran langsung tidak mendukung mata uang toko Anda di negara ini. Pengubahan mata uang tidak mengonversi harga produk. Oleh karena itu, lanjutkan ke obrolan sebelum mengubahnya.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pembayaran, ketuk untuk membayar, woocommerce, woo, pembayaran langsung, pembayaran langsung, terima pembayaran, pembayaran, pembaca, pembaca kartu, pesan pembaca kartu";
 
@@ -12526,6 +12678,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
 "pointOfSale.customAmountRow.discountNotApplied" = "Diskon tidak digunakan";
 
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "Edit jumlah kustom";
+
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Batalkan penyambungan ulang";
 
@@ -12561,12 +12716,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Pengaturan";
-
-/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
-"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
-
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "Edit";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Hapus";
@@ -12943,9 +13092,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
 "pointOfSaleSettingsView.editOverrideReason" = "Mengubah pengaturan memerlukan persetujuan";
 
-/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
-"pointOfSaleSettingsView.manageStaffOverrideReason" = "Mengelola staf memerlukan persetujuan";
-
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Pengaturan";
 
@@ -12972,12 +13118,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Payments section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Pembayaran";
-
-/* Description of the settings to be found within the Staff section. */
-"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Lihat staf dan akses PIN";
-
-/* Title of the Staff section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "Staf";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Konfigurasi dan pengaturan toko";
@@ -13636,11 +13776,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "Oke";
 
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "Tutup penutup printer, lalu coba lagi.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "Penutup printer terbuka";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "Email tanda terima";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "Terjadi masalah saat mencetak. Coba lagi.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "Tidak dapat mencetak tanda terima";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "Pastikan gulungan kertas terpasang dan diletakkan dengan benar, lalu coba lagi.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "Periksa kertas printer";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "Pastikan printer menyala, jaraknya tidak jauh, dan Bluetooth-nya aktif, lalu coba lagi.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "Tidak dapat menjangkau printer Anda";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "Coba lagi";
+
 /* Button to start printer discovery after pairing in POS settings. */
 "pos.printerSetup.connectButton" = "Hubungkan printer";
 
 /* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
 "pos.printerSetup.connecting.format" = "Menghubungkan ke %1$@...";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "Pastikan Bluetooth telah aktif, lalu cari lagi.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "Tidak dapat mencari printer";
 
 /* Message shown when receipt printer setup fails in POS settings. */
 "pos.printerSetup.error.message" = "Tidak dapat menghubungkan ke printer Anda. Coba lagi.";
@@ -14027,9 +14203,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the cashier POS staff role. */
 "pos.staffPreset.cashier" = "Kasir";
 
-/* Display name for the manager POS staff role. */
-"pos.staffPreset.manager" = "Manajer";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -14212,42 +14385,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "Pembayaran";
-
-/* Footer text explaining how POS locking works, including auto-lock timeout. */
-"posStaffSettingsView.autoLockFooter" = "POS akan terkunci jika Anda mengetuk Kunci POS dari menu, atau secara otomatis setelah 5 menit tidak aktif.";
-
-/* Button to open the WordPress admin staff management page in a web view. */
-"posStaffSettingsView.manageStaffWebButton" = "Kelola staf di web";
-
-/* Navigation title for the web view showing WordPress admin staff management. */
-"posStaffSettingsView.manageStaffWebTitle" = "Kelola Staf";
-
-/* Status label shown next to a staff member who does not have a PIN configured. */
-"posStaffSettingsView.noPINLabel" = "Tanpa PIN";
-
-/* Status label shown next to a staff member who has a PIN configured. */
-"posStaffSettingsView.pinSetLabel" = "PIN sudah ditentukan";
-
-/* Display name for the administrator role in the POS staff list. */
-"posStaffSettingsView.role.admin" = "Administrator";
-
-/* Display name for the POS cashier role in the POS staff list. */
-"posStaffSettingsView.role.posCashier" = "Kasir POS";
-
-/* Display name for the POS manager role in the POS staff list. */
-"posStaffSettingsView.role.posManager" = "Manajer POS";
-
-/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
-"posStaffSettingsView.signedInBadge" = "Sudah masuk";
-
-/* Error message shown when the staff list fails to load from the server. */
-"posStaffSettingsView.staffLoadError" = "Tidak dapat memuat staf. Periksa koneksi Anda dan coba lagi.";
-
-/* Button to retry loading the staff list after a failure. */
-"posStaffSettingsView.staffLoadRetry" = "Coba lagi";
-
-/* Navigation title for the staff settings detail view in POS settings. */
-"posStaffSettingsView.staffTitle" = "Staf";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API endpoint tidak ditemukan.";
@@ -15387,7 +15524,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the warning shown when the app cannot reach the merchant's store. */
 "storeConnectionError.title" = "Toko Anda tidak dapat dijangkau";
 
-/* Default accessibility label for dismissing a store notice banner. */
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Tutup";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
@@ -15455,6 +15593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Pilih Toko yang akan Dihubungkan (%1$d disembunyikan)";
+
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d bintang dari 5";
 
 /* VoiceOver label of the control that empties the text of a search field. */
 "storeSearchField.clear" = "Hapus";
@@ -15664,6 +15805,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Tidak terkirim. %1$@";
 
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "Anda sedang mengobrol dengan AI dari Dukungan Woo.";
+
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "Semua pemeriksaan selesai tanpa kendala.";
 
@@ -15727,6 +15871,12 @@ which should be translated separately and considered part of this sentence. */
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Halo! Saya adalah Bot Dukungan Seluler Woo. Ada yang bisa kami bantu hari ini?";
 
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "Jika pembayaran gagal, lanjutkan ke obrolan dan bagikan nomor pesanannya.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "Lolos pemeriksaan penyiapan pembayaran";
+
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Jelaskan masalahnya secara lebih terperinci agar saya bisa membantu.";
 
@@ -15742,11 +15892,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Aktifkan Pemberitahuan Pesanan";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "Buka Pengaturan Pembayaran";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "Buka Plugin";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "Preferensi Pemberitahuan";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Buka Pengaturan";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "Buka Pengaturan Toko";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "Daftarkan Perangkat";
@@ -15816,6 +15975,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "Memeriksa pengaturan pemberitahuan";
+
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "Memeriksa penyiapan pembayaran toko Anda";
 
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "Menyambungkan ke situs Anda";
@@ -15921,6 +16083,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "Lainnya";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "Pembayaran";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "Menerima pemberitahuan push";
@@ -16290,9 +16455,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to dismiss the authenticated web view */
 "wcAuthenticatedWebView.done.button.title" = "Selesai";
-
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "Tutup";
 
 /* Display label for a product's subscription period when it is a single week. */
 "week" = "minggu";

@@ -16,19 +16,19 @@ public enum JetpackConnectionAction: Action {
     case fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
                                    completion: @Sendable (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
-    case fetchJetpackConnectionData(siteID: Int64, completion: (Result<JetpackConnectionData, Error>) -> Void)
+    case fetchJetpackConnectionData(siteID: Int64, completion: @Sendable (Result<JetpackConnectionData, Error>) -> Void)
     /// Fetches the given site's Jetpack connection status, including Offline Mode.
-    case fetchJetpackConnectionStatus(siteID: Int64, completion: (Result<JetpackConnectionStatus, Error>) -> Void)
+    case fetchJetpackConnectionStatus(siteID: Int64, completion: @Sendable (Result<JetpackConnectionStatus, Error>) -> Void)
     /// Establishes site-level connection and returns WordPress.com blog ID.
-    case registerSite(completion: (Result<Int64, Error>) -> Void)
+    case registerSite(completion: @Sendable (Result<Int64, Error>) -> Void)
     /// Provisions connection and returns provision response with scope and secret.
-    case provisionConnection(completion: (Result<JetpackConnectionProvisionResponse, Error>) -> Void)
+    case provisionConnection(completion: @Sendable (Result<JetpackConnectionProvisionResponse, Error>) -> Void)
     /// Finalizes the Jetpack connection by sending a request to WPCom.
     case finalizeConnection(siteID: Int64,
                             siteURL: String,
                             provisionResponse: JetpackConnectionProvisionResponse,
                             network: Network,
-                            completion: (Result<Void, Error>) -> Void)
+                            completion: @Sendable (Result<Void, Error>) -> Void)
     /// Fetches the WPCom account with the given network
-    case loadWPComAccount(network: Network, onCompletion: (Account?) -> Void)
+    case loadWPComAccount(network: Network, onCompletion: @Sendable (Account?) -> Void)
 }

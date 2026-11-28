@@ -3,6 +3,7 @@ import Combine
 import XCTest
 import Networking
 import Storage
+import Synchronization
 import TestKit
 import WordPressAuthenticator
 @testable import WooCommerce
@@ -1304,18 +1305,48 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
     }
 
+    @MainActor
+    func test_loadAndSynchronizeSite_when_cancelled_off_main_then_delivers_cancellation_on_the_same_thread() async throws {
+        // Given
+        let (manager, state, _) = makeSiteSynchronizationTestContext()
+        let cancellationThreadMarker = UUID().uuidString
+
+        // When
+        let deliveredOnCancellationThread: Bool = try await waitForCompletion { completion in
+            manager.dispatch(AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, shouldSynchronize: true) { result in
+                let isCancellationThread = Thread.current.threadDictionary[cancellationThreadMarker] as? Bool == true
+                completion(result.failure is CancellationError && isCancellationThread)
+            })
+            guard let action = state.receivedActions.first as? AccountAction,
+                  case let .loadAndSynchronizeSite(_, _, _, onCompletion) = action else {
+                XCTFail("Expected loadAndSynchronizeSite action")
+                completion(false)
+                return
+            }
+            DispatchQueue.global().async {
+                let threadDictionary = Thread.current.threadDictionary
+                threadDictionary[cancellationThreadMarker] = true
+                defer { threadDictionary.removeObject(forKey: cancellationThreadMarker) }
+                onCompletion(.failure(CancellationError()))
+            }
+        }
+
+        // Then
+        XCTAssertTrue(deliveredOnCancellationThread)
+    }
+
     func test_synchronizeSites_when_authenticated_with_site_credentials_then_bypasses_wpcom_sync() {
         // Given
         let (manager, state, _) = makeSiteSynchronizationTestContext(credentials: SessionSettings.wporgCredentials)
-        var completionError: Error?
+        let completionError = Mutex<Error?>(nil)
 
         // When
         manager.dispatch(AccountAction.synchronizeSites { result in
-            completionError = result.failure
+            completionError.withLock { $0 = result.failure }
         })
 
         // Then
-        XCTAssertNotNil(completionError)
+        XCTAssertNotNil(completionError.withLock { $0 })
         XCTAssertTrue(state.receivedActions.isEmpty)
     }
 

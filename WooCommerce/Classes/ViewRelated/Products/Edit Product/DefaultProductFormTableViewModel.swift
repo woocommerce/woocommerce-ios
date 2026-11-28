@@ -264,16 +264,9 @@ private extension DefaultProductFormTableViewModel {
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = ProductFormSection.SettingsRow.Icon.reviews
         let title = Localization.reviewsTitle
-        var details = Localization.emptyReviews
-        if product.ratingCount > 0 {
-            details = " · "
-        }
-        if product.ratingCount == 1 {
-            details += Localization.singularReviewFormat
-        }
-        else if product.ratingCount > 1 {
-            details += String.localizedStringWithFormat(Localization.pluralReviewsFormat, product.ratingCount)
-        }
+        let count = product.ratingCount
+        let description = Localization.reviewCountDescription(count)
+        let details = count > 0 ? " · " + description : description
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -693,6 +686,35 @@ private extension DefaultProductFormTableViewModel {
 
 extension DefaultProductFormTableViewModel {
     enum Localization {
+        static let priceSettingsTitle = NSLocalizedString(
+            "Price",
+            comment: "Title for editing the price settings row on Product main screen"
+        )
+        static let reviewsTitle = NSLocalizedString(
+            "Reviews",
+            comment: "Title of the Reviews row on Product main screen"
+        )
+        static let inventorySettingsTitle = NSLocalizedString(
+            "Inventory",
+            comment: "Title of the Inventory Settings row on Product main screen"
+        )
+        static let categoriesTitle = NSLocalizedString(
+            "Categories",
+            comment: "Title of the Categories row on Product main screen"
+        )
+        static let pluralReviewsFormat = NSLocalizedString(
+            "rated %ld times",
+            comment: "Format of the number of product ratings in plural form"
+        )
+
+        static func reviewCountDescription(_ count: Int) -> String {
+            switch count {
+            case 1: singularReviewFormat
+            case 2...: String.localizedStringWithFormat(pluralReviewsFormat, count)
+            default: emptyReviews
+            }
+        }
+
         // Subscription Free Trial
         static let subscriptionFreeTrialTitle = NSLocalizedString("defaultProductFormTableViewModel.freeTrialRow.title",
                                                                   value: "Free Trial",
@@ -746,18 +768,10 @@ extension DefaultProductFormTableViewModel {
 private extension DefaultProductFormTableViewModel.Localization {
         static let addPriceSettingsTitle = NSLocalizedString("Add Price",
                                                              comment: "Title for adding the price settings row on Product main screen")
-        static let priceSettingsTitle = NSLocalizedString("Price",
-                                                          comment: "Title for editing the price settings row on Product main screen")
-        static let reviewsTitle = NSLocalizedString("Reviews",
-                                                    comment: "Title of the Reviews row on Product main screen")
-        static let inventorySettingsTitle = NSLocalizedString("Inventory",
-                                                              comment: "Title of the Inventory Settings row on Product main screen")
         static let productTypeTitle = NSLocalizedString("Product type",
                                                               comment: "Title of the Product Type row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
                                                              comment: "Title of the Shipping Settings row on Product main screen")
-        static let categoriesTitle = NSLocalizedString("Categories",
-                                                       comment: "Title of the Categories row on Product main screen")
         static let tagsTitle = NSLocalizedString("Tags",
                                                  comment: "Title of the Tags row on Product main screen")
         static let shortDescriptionTitle = NSLocalizedString("Short description",
@@ -815,8 +829,6 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                     comment: "Placeholder for empty product ratings")
         static let singularReviewFormat = NSLocalizedString("rated once",
                                                             comment: "Format of the number of product ratings in singular form")
-        static let pluralReviewsFormat = NSLocalizedString("rated %ld times",
-                                                           comment: "Format of the number of product ratings in plural form")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

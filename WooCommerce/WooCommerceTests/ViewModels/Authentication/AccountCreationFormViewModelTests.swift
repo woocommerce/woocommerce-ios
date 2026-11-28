@@ -228,6 +228,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 }
 
 private extension AccountCreationFormViewModelTests {
+    @MainActor
     func mockAccountCreationSuccess(result: CreateAccountResult) {
         stores.whenReceivingAction(ofType: AccountCreationAction.self) { action in
             switch action {

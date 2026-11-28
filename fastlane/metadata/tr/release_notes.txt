@@ -1,1 +1,0 @@
-Artık her ürün türünde nitelik ekleyebilir ve düzenleyebilirsiniz. Kamera barkod taraması daha doğru. Büyük kataloglar için Satış Noktası'nda ürün araması daha hızlıdır. Gönderim etiketleri oluşturduğunuzda kargo şirketi kesnti bildirimleri görünür. Bu güncellemeyi deneyin ve düşüncelerinizi bizimle paylaşın.

@@ -387,6 +387,77 @@ struct ProductsViewControllerTests {
         // Then
         #expect(pushNotesManager.resetBadgeCountKinds == [.storeStock])
     }
+
+    @Test
+    func test_willDisplay_when_restoring_selection_redisplays_rows_then_does_not_recurse_and_selects_every_row() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let products = makeProducts(["A", "B", "C"], firstID: 1)
+        try await insert(products, into: storage)
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        controller.view.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+        controller.view.layoutIfNeeded()
+        try #require(controller.tableView.numberOfRows(inSection: 0) == products.count)
+        controller.viewModel.selectProducts(products)
+        let table = FocusRedisplayingTableView(controller: controller, rowCount: products.count)
+
+        // When: like UIKit's focus system on iPad, selecting a row displays the same and the next row again.
+        controller.tableView(table, willDisplay: UITableViewCell(), forRowAt: IndexPath(row: 0, section: 0))
+
+        // Then
+        #expect(table.maximumSelectionDepth == 1)
+        #expect(table.selectedRows == [0, 1, 2])
+    }
+}
+
+/// Re-enters `willDisplay` from `selectRow`, the loop behind the stack overflow in WOOCOMMERCE-IOS-1QR2.
+private final class FocusRedisplayingTableView: UITableView {
+    private weak var controller: ProductsViewController?
+    private let rowCount: Int
+    private var selectionDepth = 0
+    private(set) var maximumSelectionDepth = 0
+    private(set) var selectedRows: Set<Int> = []
+
+    init(controller: ProductsViewController, rowCount: Int) {
+        self.controller = controller
+        self.rowCount = rowCount
+        super.init(frame: .zero, style: .plain)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var isEditing: Bool {
+        get { true }
+        set {}
+    }
+
+    override var indexPathsForSelectedRows: [IndexPath]? {
+        selectedRows.map { IndexPath(row: $0, section: 0) }
+    }
+
+    override func selectRow(at indexPath: IndexPath?, animated: Bool, scrollPosition: UITableView.ScrollPosition) {
+        guard let indexPath, let controller else { return }
+        selectedRows.insert(indexPath.row)
+        selectionDepth += 1
+        maximumSelectionDepth = max(maximumSelectionDepth, selectionDepth)
+        defer { selectionDepth -= 1 }
+        // Stops the unfixed recursion well before it would overflow the test runner's stack.
+        guard selectionDepth < 20 else { return }
+        controller.tableView(self, willDisplay: UITableViewCell(), forRowAt: indexPath)
+        if indexPath.row + 1 < rowCount {
+            controller.tableView(self, willDisplay: UITableViewCell(), forRowAt: IndexPath(row: indexPath.row + 1, section: 0))
+        }
+    }
 }
 
 private extension ProductsViewControllerTests {

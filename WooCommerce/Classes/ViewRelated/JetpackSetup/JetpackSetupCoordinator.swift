@@ -306,7 +306,7 @@ private extension JetpackSetupCoordinator {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
-        let resultHandler: (Result<Site, Error>) -> Void = { [weak self] result in
+        let resultHandler: @MainActor @Sendable (Result<Site, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let site):
@@ -359,10 +359,12 @@ private extension JetpackSetupCoordinator {
 
         if site.isJetpackCPConnected {
             stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { result in
-                resultHandler(result.map(\.site))
+                runOnMainActor { resultHandler(result.map(\.site)) }
             })
         } else {
-            stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
+            stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme()) { result in
+                runOnMainActor { resultHandler(result) }
+            })
         }
     }
 

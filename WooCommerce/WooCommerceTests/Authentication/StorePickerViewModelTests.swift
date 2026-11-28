@@ -155,6 +155,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertNil(selectedSite)
     }
 
+    @MainActor
     func test_multipleStoresAvailable_is_correct_for_single_store() {
         // Given
         let testSite = Site.fake()
@@ -177,6 +178,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.multipleStoresAvailable)
     }
 
+    @MainActor
     func test_multipleStoresAvailable_is_correct_for_multiple_stores() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123)
@@ -201,6 +203,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.multipleStoresAvailable)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_empty_store_list() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -224,6 +227,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_list_with_only_woo_stores() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
@@ -250,6 +254,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 0))?.siteID, testSite1.siteID)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_list_with_both_woo_and_non_woo_sites() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
@@ -310,12 +315,14 @@ final class StorePickerViewModelTests: XCTestCase {
                                     tracker: tracker)
     }
 
+    @MainActor
     private func refreshAndReport(_ viewModel: StorePickerViewModel) {
         viewModel.refreshSites(currentlySelectedSiteID: nil) { syncSucceeded in
             viewModel.trackLoginOutcome(syncSucceeded: syncSucceeded)
         }
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_the_account_owns_a_store_then_reports_site_list() {
         // Given an account whose stores the merchant has to choose between
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
@@ -335,6 +342,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "no_woo_stores" })
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_the_account_owns_no_store_then_reports_no_woo_stores_then_site_list() {
         // Given an account that owns sites, but none of them sell
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: false))
@@ -353,6 +361,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(events.first?.properties["flow"], "epilogue")
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_the_account_owns_no_sites_at_all_then_reports_no_woo_stores_only() {
         // Given a brand-new account with nothing in storage
         var events: [AnalyticsEvent] = []
@@ -367,6 +376,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_the_sync_fails_with_nothing_cached_then_reports_nothing() {
         // Given a first run that cannot reach the network, so an empty picker proves nothing
         var events: [AnalyticsEvent] = []
@@ -381,6 +391,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_the_sync_fails_with_a_cached_list_then_reports_site_list() {
         // Given a cached list that stays on screen when the sync fails
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
@@ -395,6 +406,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(events.filter { $0.properties["step"] == "site_list" }.count, 1)
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_outside_the_login_flow_then_reports_nothing() {
         // Given the merchant is switching stores, not signing in
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: false))
@@ -410,6 +422,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_listing_stores_from_a_login_error_screen_then_reports_site_list() {
         // Given a login that hit an error screen and recovered through "See connected stores",
         // which opens a listStores picker while still mid-login
@@ -425,6 +438,7 @@ final class StorePickerViewModelTests: XCTestCase {
         waitUntil { events.contains { $0.properties["step"] == "site_list" } }
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_listing_stores_outside_a_login_then_reports_nothing() {
         // Given the same picker opened from an error screen reached outside a login
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
@@ -439,6 +453,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
     }
 
+    @MainActor
     func test_trackLoginOutcome_when_called_twice_then_reports_once() {
         // Given a picker that refreshes more than once in a visit
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
@@ -470,6 +485,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("site_picker_stores_shown"))
     }
 
+    @MainActor
     func test_trackScreenView_tracks_both_number_of_woo_and_non_woo_sites() throws {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)

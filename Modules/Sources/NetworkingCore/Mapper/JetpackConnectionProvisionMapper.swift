@@ -16,7 +16,7 @@ public struct JetpackConnectionProvisionMapper: Mapper {
     }
 }
 
-public struct JetpackConnectionProvisionResponse: Decodable {
+public struct JetpackConnectionProvisionResponse: Decodable, Sendable {
     public let userId: Int64
     public let scope: String
     public let secret: String

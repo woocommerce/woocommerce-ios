@@ -111,6 +111,7 @@ final class StorePickerViewModel {
         }
     }
 
+    @MainActor
     func refreshSites(currentlySelectedSiteID: Int64?, completion: ((Bool) -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
@@ -192,7 +193,8 @@ private extension StorePickerViewModel {
         }()
     }
 
-    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    @MainActor
+    func synchronizeSites(onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
         let action = AccountAction
             .synchronizeSites { result in
@@ -202,9 +204,9 @@ private extension StorePickerViewModel {
                         let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
                         ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
                     }
-                    onCompletion(.success(()))
+                    runOnMainActor { onCompletion(.success(())) }
                 case .failure(let error):
-                    onCompletion(.failure(error))
+                    runOnMainActor { onCompletion(.failure(error)) }
                 }
             }
         stores.dispatch(action)

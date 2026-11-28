@@ -1,1 +1,0 @@
-Je kunt nu eigenschappen toevoegen en bewerken voor elk producttype. Barcodescanning van de camera is nauwkeuriger. Het zoeken naar producten in Point of Sale is sneller voor grote catalogi. Meldingen over uitval van vervoerder verschijnen wanneer je verzendlabels aanmaakt. Probeer deze update eens uit en laat ons weten wat je ervan vindt.

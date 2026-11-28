@@ -1,80 +1,86 @@
 import Combine
 import Foundation
 import Networking
+import Synchronization
 
 import XCTest
 
 /// Mock for `AccountRemote`.
 ///
-final class MockAccountRemote {
-    /// Returns the value as a publisher when `loadSites` is called.
-    var loadSitesResult: Result<[Site], Error> = .success([])
-    var loadSitesPublisher: AnyPublisher<Result<[Site], Error>, Never>?
+final class MockAccountRemote: Sendable {
+    private typealias SitesResult = Result<[Site], Error>
 
-    /// Returns the requests that have been made to `AccountRemoteProtocol`.
-    var invocations = [Invocation]()
+    private struct State {
+        var loadSitesResult: SitesResult = .success([])
+        var invocations = [Invocation]()
+        var checkIfWooCommerceIsActiveResultsBySiteID = [Int64: Result<Bool, Error>]()
+        var fetchWordPressSiteSettingsResultsBySiteID = [Int64: Result<WordPressSiteSettings, Error>]()
+        var loadUsernameSuggestionsResult: Result<[String], Error>?
+        var loadNotificationSettingsResult: Result<NotificationSettings, Error>?
+        var updateNotificationSettingsResult: Result<Void, Error> = .success(())
+        var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
+        var closeAccountResult: Result<Void, Error> = .success(())
+        var updateCrashReportingOptOutResult: Result<Void, Error>?
+    }
 
-    /// The results to return based on the given site ID in `checkIfWooCommerceIsActive`
-    private var checkIfWooCommerceIsActiveResultsBySiteID = [Int64: Result<Bool, Error>]()
+    private let state = Mutex(State())
+    private let deferredSiteResponses = Mutex(PassthroughSubject<SitesResult, Never>())
+    private let defersLoadSites: Bool
 
-    /// The results to return based on the given site ID in `fetchWordPressSiteSettings`
-    private var fetchWordPressSiteSettingsResultsBySiteID = [Int64: Result<WordPressSiteSettings, Error>]()
+    init(defersLoadSites: Bool = false) {
+        self.defersLoadSites = defersLoadSites
+    }
 
-    /// The results to return based on the given site ID in `loadUsernameSuggestions`.
-    private var loadUsernameSuggestionsResult: Result<[String], Error>?
+    var loadSitesResult: Result<[Site], Error> {
+        get { state.withLock { $0.loadSitesResult } }
+        set { state.withLock { $0.loadSitesResult = newValue } }
+    }
 
-    /// Returns the value when `getNotificationSettings` is called
-    private var loadNotificationSettingsResult: Result<NotificationSettings, Error>?
+    var invocations: [Invocation] {
+        state.withLock { $0.invocations }
+    }
 
-    /// Returns the value when `updateNotificationSettings` is called.
-    private var updateNotificationSettingsResult: Result<Void, Error> = .success(())
-
-    /// The results to return based on the given site ID in `createAccount`.
-    private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
-
-    /// Returns the value when `closeAccount` is called.
-    private var closeAccountResult: Result<Void, Error> = .success(())
-
-    /// Returns the value when `updateCrashReportingOptOut` is called.
-    private var updateCrashReportingOptOutResult: Result<Void, Error>?
+    func sendLoadSitesResult(_ result: Result<[Site], Error>) {
+        deferredSiteResponses.withLock { $0 }.send(result)
+    }
 
     /// Returns the value when `updateCrashReportingOptOut` is called.
     func whenUpdatingCrashReportingOptOut(thenReturn result: Result<Void, Error>) {
-        updateCrashReportingOptOutResult = result
+        state.withLock { $0.updateCrashReportingOptOutResult = result }
     }
 
     /// Returns the value as a publisher when `closeAccount` is called.
     func whenClosingAccount(thenReturn result: Result<Void, Error>) {
-        closeAccountResult = result
+        state.withLock { $0.closeAccountResult = result }
     }
 
     /// Returns the value as a publisher when `checkIfWooCommerceIsActive` is called.
     func whenCheckingIfWooCommerceIsActive(siteID: Int64, thenReturn result: Result<Bool, Error>) {
-        checkIfWooCommerceIsActiveResultsBySiteID[siteID] = result
+        state.withLock { $0.checkIfWooCommerceIsActiveResultsBySiteID[siteID] = result }
     }
 
     /// Returns the value as a publisher when `fetchWordPressSiteSettings` is called.
     func whenFetchingWordPressSiteSettings(siteID: Int64, thenReturn result: Result<WordPressSiteSettings, Error>) {
-        fetchWordPressSiteSettingsResultsBySiteID[siteID] = result
+        state.withLock { $0.fetchWordPressSiteSettingsResultsBySiteID[siteID] = result }
     }
 
     /// Returns the value when `loadUsernameSuggestions` is called.
     func whenLoadingUsernameSuggestions(thenReturn result: Result<[String], Error>) {
-        loadUsernameSuggestionsResult = result
+        state.withLock { $0.loadUsernameSuggestionsResult = result }
     }
 
     /// Returns the value when `createAccount` is called.
     func whenCreatingAccount(thenReturn result: Result<CreateAccountResult, CreateAccountError>) {
-        createAccountResult = result
+        state.withLock { $0.createAccountResult = result }
     }
 
     /// Returns  the value when `updateNotificationSettings` is called.
     func whenUpdatingNotificationSettings(thenReturn result: Result<Void, Error>) {
-        updateNotificationSettingsResult = result
+        state.withLock { $0.updateNotificationSettingsResult = result }
     }
 
     func whenLoadingNotificationSettings(thenReturn result: Result<NotificationSettings, Error>) {
-        loadNotificationSettingsResult = result
+        state.withLock { $0.loadNotificationSettingsResult = result }
     }
 }
 
@@ -103,8 +109,11 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func updateCrashReportingOptOut(optOut: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        invocations.append(.updateCrashReportingOptOut(optOut: optOut))
-        guard let result = updateCrashReportingOptOutResult else {
+        let result = state.withLock {
+            $0.invocations.append(.updateCrashReportingOptOut(optOut: optOut))
+            return $0.updateCrashReportingOptOutResult
+        }
+        guard let result else {
             XCTFail("Could not find result for updating the crash reporting opt out.")
             return completion(.failure(NetworkError.notFound()))
         }
@@ -112,13 +121,22 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
-        invocations.append(.loadSites)
-        return loadSitesPublisher ?? Just<Result<[Site], Error>>(loadSitesResult).eraseToAnyPublisher()
+        let result = state.withLock {
+            $0.invocations.append(.loadSites)
+            return $0.loadSitesResult
+        }
+        if defersLoadSites {
+            return deferredSiteResponses.withLock { $0.eraseToAnyPublisher() }
+        }
+        return Just(result).eraseToAnyPublisher()
     }
 
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {
-        invocations.append(.checkIfWooCommerceIsActive(siteID: siteID))
-        if let result = checkIfWooCommerceIsActiveResultsBySiteID[siteID] {
+        let result = state.withLock {
+            $0.invocations.append(.checkIfWooCommerceIsActive(siteID: siteID))
+            return $0.checkIfWooCommerceIsActiveResultsBySiteID[siteID]
+        }
+        if let result {
             return Just<Result<Bool, Error>>(result).eraseToAnyPublisher()
         } else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
@@ -127,8 +145,11 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never> {
-        invocations.append(.fetchWordPressSiteSettings(siteID: siteID))
-        if let result = fetchWordPressSiteSettingsResultsBySiteID[siteID] {
+        let result = state.withLock {
+            $0.invocations.append(.fetchWordPressSiteSettings(siteID: siteID))
+            return $0.fetchWordPressSiteSettingsResultsBySiteID[siteID]
+        }
+        if let result {
             return Just<Result<WordPressSiteSettings, Error>>(result).eraseToAnyPublisher()
         } else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
@@ -141,7 +162,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func loadUsernameSuggestions(from text: String) async throws -> [String] {
-        guard let result = loadUsernameSuggestionsResult else {
+        guard let result = state.withLock({ $0.loadUsernameSuggestionsResult }) else {
             XCTFail("Could not find result for loading username suggestions.")
             throw NetworkError.notFound()
         }
@@ -150,7 +171,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func loadNotificationSettings(deviceID: Int64) async throws -> NotificationSettings {
-        guard let result = loadNotificationSettingsResult else {
+        guard let result = state.withLock({ $0.loadNotificationSettingsResult }) else {
             XCTFail("Could not find result for loading notification settings.")
             throw NetworkError.notFound()
         }
@@ -158,7 +179,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func updateNotificationSettings(with settings: NotificationSettings) async throws {
-        switch updateNotificationSettingsResult {
+        switch state.withLock({ $0.updateNotificationSettingsResult }) {
         case .success:
             break
         case .failure(let error):
@@ -171,7 +192,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
                        password: String,
                        clientID: String,
                        clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
-        guard let result = createAccountResult else {
+        guard let result = state.withLock({ $0.createAccountResult }) else {
             XCTFail("Could not find result for creating an account.")
             return .failure(.unexpected(error: .empty()))
         }
@@ -179,7 +200,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     }
 
     func closeAccount() async throws {
-        switch closeAccountResult {
+        switch state.withLock({ $0.closeAccountResult }) {
         case .success:
             break
         case .failure(let error):

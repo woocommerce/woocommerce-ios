@@ -18,13 +18,14 @@ final class AccountCreationStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_createAccount_returns_result_on_success() throws {
+    @MainActor
+    func test_createAccount_returns_result_on_success() async throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))
         remote.whenCreatingAccount(thenReturn: .success(.init(authToken: "auth", username: "voo")))
 
         // When
-        let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
+        let result: Result<CreateAccountResult, CreateAccountError> = try await waitForCompletion { promise in
             let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
@@ -36,12 +37,13 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(data, .init(authToken: "auth", username: "voo"))
     }
 
-    func test_createAccount_returns_invalidUsername_error_when_username_suggestions_are_empty() throws {
+    @MainActor
+    func test_createAccount_returns_invalidUsername_error_when_username_suggestions_are_empty() async throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success([]))
 
         // When
-        let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
+        let result: Result<CreateAccountResult, CreateAccountError> = try await waitForCompletion { promise in
             let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
@@ -53,12 +55,13 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidUsername)
     }
 
-    func test_createAccount_returns_invalidUsername_error_when_loadUsernameSuggestions_fails() throws {
+    @MainActor
+    func test_createAccount_returns_invalidUsername_error_when_loadUsernameSuggestions_fails() async throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .failure(NetworkError.notFound()))
 
         // When
-        let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
+        let result: Result<CreateAccountResult, CreateAccountError> = try await waitForCompletion { promise in
             let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
@@ -70,13 +73,14 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidUsername)
     }
 
-    func test_createAccount_returns_error_from_remote_on_failure() throws {
+    @MainActor
+    func test_createAccount_returns_error_from_remote_on_failure() async throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))
         remote.whenCreatingAccount(thenReturn: .failure(.emailExists))
 
         // When
-        let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
+        let result: Result<CreateAccountResult, CreateAccountError> = try await waitForCompletion { promise in
             let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
